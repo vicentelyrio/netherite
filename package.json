@@ -1,11 +1,30 @@
 {
   "name": "@netherite/root",
   "version": "0.0.0-semantic-released",
-  "description": "My Electron application description",
-  "keywords": [],
-  "author": {
-    "name": "vicentelyrio",
-    "email": "vicentelyrio@gmail.com"
+  "description": "Netherite app monorepo",
+  "author": "vicentelyrio <vicentelyrio@gmail.com>",
+  "repository": "https://github.com/vicentelyrio/netherite",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "postinstall": "preconstruct dev && manypkg check",
+    "build": "preconstruct build"
   },
-  "license": "MIT"
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "services/*"
+  ],
+  "dependencies": {
+    "@manypkg/cli": "^0.19.2",
+    "@preconstruct/cli": "^2.3.0"
+  },
+  "preconstruct": {
+    "packages": [
+      "apps/*",
+      "packages/*",
+      "services/*"
+    ]
+  }
 }
+
