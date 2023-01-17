@@ -3,7 +3,7 @@
   "version": "0.0.0-semantic-released",
   "description": "Netherite Desktop App",
   "author": "vicentelyrio <vicentelyrio@gmail.com>",
-  "repository": "https://github.com/vicentelyrio/netherite/apps/desktop",
+  "repository": "https://github.com/vicentelyrio/netherite/tree/main/apps/desktop",
   "license": "MIT",
   "private": true
 }
