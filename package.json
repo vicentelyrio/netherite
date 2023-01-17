@@ -2,7 +2,10 @@
   "name": "@netherite/root",
   "version": "0.0.0-semantic-released",
   "description": "Netherite app monorepo",
-  "author": "vicentelyrio <vicentelyrio@gmail.com>",
+  "author": {
+    "name": "vicentelyrio",
+    "email": "vicentelyrio@gmail.com"
+  },
   "repository": "https://github.com/vicentelyrio/netherite",
   "license": "MIT",
   "private": true,
@@ -28,6 +31,9 @@
     "eslint": "^8.32.0",
     "prettier": "^2.8.3",
     "turbo": "^1.7.0"
+  },
+  "devDependencies": {
+    "eslint-utils": "^3.0.0"
   }
 }
 

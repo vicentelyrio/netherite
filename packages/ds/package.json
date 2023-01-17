@@ -1,9 +1,0 @@
-{
-  "name": "@netherite/ds",
-  "version": "0.0.0-semantic-released",
-  "description": "Netherite Design System",
-  "author": "vicentelyrio <vicentelyrio@gmail.com>",
-  "repository": "https://github.com/vicentelyrio/netherite/tree/main/packages/ds",
-  "license": "MIT",
-  "private": true
-}
