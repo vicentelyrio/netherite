@@ -1,0 +1,11 @@
+{
+  "name": "@netherite/root",
+  "version": "0.0.0-semantic-released",
+  "description": "My Electron application description",
+  "keywords": [],
+  "author": {
+    "name": "vicentelyrio",
+    "email": "vicentelyrio@gmail.com"
+  },
+  "license": "MIT"
+}
