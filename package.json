@@ -1,6 +1,6 @@
 {
   "name": "@netherite/root",
-  "version": "0.0.0-semantic-released",
+  "version": "0.0.0",
   "description": "Netherite app monorepo",
   "author": {
     "name": "vicentelyrio",
@@ -17,7 +17,7 @@
     "clean": "turbo run clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
-    "version-packages": "changeset version",
+    "version": "changeset version",
     "release": "turbo run build --filter=docs^... && changeset publish"
   },
   "workspaces": [
@@ -25,15 +25,15 @@
     "packages/*",
     "services/*"
   ],
-  "dependencies": {
+  "devDependencies": {
     "@changesets/cli": "^2.26.0",
     "@manypkg/cli": "^0.19.2",
     "eslint": "^8.32.0",
+    "eslint-utils": "^3.0.0",
+    "eslint-config-netherite": "workspace:*",
     "prettier": "^2.8.3",
     "turbo": "^1.7.0"
   },
-  "devDependencies": {
-    "eslint-utils": "^3.0.0"
-  }
+  "packageManager": "yarn@1.22.19"
 }
 
