@@ -3,5 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
-  "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/tsconfig"
+  "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/tsconfig",
+  "scripts": {
+    "clean": "rm -rf .turbo"
+  }
 }

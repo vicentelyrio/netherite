@@ -4,6 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/eslint-config-netherite",
+  "scripts": {
+    "clean": "rm -rf .turbo"
+  },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",
@@ -13,7 +16,9 @@
     "eslint-config-turbo": "^0.0.7",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-react": "^7.32.1",
-    "eslint-utils": "^3.0.0",
+    "eslint-utils": "^3.0.0"
+  },
+  "devDependencies": {
     "typescript": "^4.9.4"
   }
 }

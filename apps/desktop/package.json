@@ -12,11 +12,15 @@
     "email": "vicentelyrio@gmail.com"
   },
   "scripts": {
-    "lint": "eslint --ext .ts,.tsx .",
+    "lint": "TIMING=1 eslint --ext .ts,.tsx .",
     "dev": "electron-forge start",
     "build": "electron-forge package",
     "make": "electron-forge make",
-    "publish": "electron-forge publish"
+    "publish": "electron-forge publish",
+    "clean:dist": "rm -rf out/",
+    "clean:cache": "rm -rf .turbo",
+    "clean:deps": "rm -rf .webpack/",
+    "clean": "yarn clean:dist && yarn clean:cache && yarn clean:deps"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.4",

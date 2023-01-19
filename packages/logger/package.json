@@ -12,7 +12,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
-    "lint": "TIMING=1 eslint \"src/**/*.ts*\""
+    "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
+    "clean": "rm -rf .turbo"
   },
   "devDependencies": {
     "@netherite/tsconfig": "*",

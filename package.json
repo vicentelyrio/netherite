@@ -24,28 +24,20 @@
     "fix:lint": "turbo run lint --fix",
     "fix:repo": "manypkg fix",
     "clean:deps": "manypkg exec rm -rf node_modules/ && rm -rf node_modules/",
-    "clean:builds": "manypkg exec rm -rf dist/ && manypkg exec rm -rf build/ && manypkg exec rm -rf out/ && manypkg exec rm -rf .turbo/ && manypkg exec rm -rf .webpack/",
     "clean:cache": "turbo run clean",
-    "clean": "yarn clean:cache && yarn clean:builds && yarn clean:deps",
+    "clean": "yarn clean:cache && yarn clean:deps",
     "dev": "turbo run dev --no-cache --continue",
     "build": "turbo run build",
     "cs": "changeset",
     "cs:version": "changeset version",
     "cs:publish": "changeset publish",
-    "deploy:release": "yarn deploy:build && yarn cs:publish"
+    "release": "yarn build && yarn cs:publish"
   },
   "dependencies": {
     "@changesets/cli": "^2.26.0",
     "@manypkg/cli": "^0.19.2",
-    "@typescript-eslint/eslint-plugin": "^5.48.2",
-    "@typescript-eslint/parser": "^5.48.2",
-    "eslint": "^8.32.0",
     "eslint-config-netherite": "*",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-scope": "^7.1.1",
-    "eslint-utils": "^3.0.0",
     "prettier": "^2.8.3",
-    "turbo": "^1.7.0",
-    "typescript": "^4.9.4"
+    "turbo": "^1.7.0"
   }
 }
