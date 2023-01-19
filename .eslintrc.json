@@ -3,7 +3,7 @@
   "extends": ["netherite"],
   "settings": {
     "next": {
-      "rootDir": ["apps/*/"]
+      "rootDir": ["apps/*/", "packages/*/"]
     }
   }
 }
