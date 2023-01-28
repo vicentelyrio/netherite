@@ -11,5 +11,7 @@ module.exports = {
   ],
   "parser": "@typescript-eslint/parser",
   "rules": {
+    "semi": "off",
+    "@typescript-eslint/semi": "off"
   }
 }

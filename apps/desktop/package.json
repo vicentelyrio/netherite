@@ -32,6 +32,8 @@
     "@netherite/logger": "*",
     "@netherite/tsconfig": "*",
     "@types/node": "^18.11.18",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
     "@vercel/webpack-asset-relocator-loader": "1.7.3",
     "css-loader": "^6.0.0",
     "electron": "22.0.2",
@@ -45,6 +47,9 @@
     "webpack": "^5.75.0"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "@netherite/core": "*",
+    "electron-squirrel-startup": "^1.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

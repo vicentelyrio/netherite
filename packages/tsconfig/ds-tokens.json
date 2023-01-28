@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "DS-Tokens",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "lib": ["ES2015"],
+    "module": "CommonJS"
+  },
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "display": "Design System",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "jsx": "react-jsx"
+  },
+  "extends": "@netherite/tsconfig/base.json",
+  "include": ["src/*"]
+}
+
