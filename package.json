@@ -31,6 +31,7 @@
     "build": "turbo run build",
     "cs": "changeset",
     "cs:version": "changeset version",
+    "cs:status": "changeset status",
     "cs:publish": "changeset publish",
     "release": "yarn build && yarn cs:publish"
   },

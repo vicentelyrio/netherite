@@ -1,6 +1,6 @@
 {
   "name": "@netherite/logger",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/logger",
   "main": "./dist/index.js",

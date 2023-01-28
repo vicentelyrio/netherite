@@ -1,6 +1,6 @@
 {
   "name": "@netherite/tsconfig",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "license": "MIT",
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/tsconfig",
