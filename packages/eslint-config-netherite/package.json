@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
+  "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/eslint-config-netherite",
   "scripts": {
     "clean": "rm -rf .turbo"

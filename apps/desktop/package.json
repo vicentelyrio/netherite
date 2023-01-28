@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "description": "My Electron application description",
   "main": ".webpack/main",
+  "private": true,
   "keywords": [],
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/apps/desktop",
   "license": "MIT",
