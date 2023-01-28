@@ -1,11 +1,45 @@
 {
   "name": "@netherite/root",
-  "version": "0.0.0-semantic-released",
-  "description": "My Electron application description",
-  "keywords": [],
+  "version": "0.0.0",
+  "description": "Netherite app monorepo",
   "author": {
     "name": "vicentelyrio",
     "email": "vicentelyrio@gmail.com"
   },
-  "license": "MIT"
+  "repository": "https://github.com/vicentelyrio/netherite",
+  "license": "MIT",
+  "private": true,
+  "packageManager": "yarn@1.22.19",
+  "workspaces": [
+    "apps/*",
+    "docs/*",
+    "packages/*",
+    "services/*"
+  ],
+  "scripts": {
+    "postinstall": "manypkg check",
+    "ci:lint": "turbo run lint",
+    "ci:test": "turbo run test",
+    "ci:format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "ci": "yarn ci:lint && yarn ci:format && yarn ci:test",
+    "fix:lint": "turbo run lint --fix",
+    "fix:repo": "manypkg fix",
+    "clean:deps": "manypkg exec rm -rf node_modules/ && rm -rf node_modules/",
+    "clean:cache": "turbo run clean",
+    "clean": "yarn clean:cache && yarn clean:deps",
+    "dev": "turbo run dev --no-cache --continue",
+    "build": "turbo run build",
+    "cs": "changeset",
+    "cs:version": "changeset version",
+    "cs:status": "changeset status",
+    "cs:publish": "changeset publish",
+    "release": "yarn build && yarn cs:publish"
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.26.0",
+    "@manypkg/cli": "^0.19.2",
+    "eslint-config-netherite": "*",
+    "prettier": "^2.8.3",
+    "turbo": "^1.7.0"
+  }
 }

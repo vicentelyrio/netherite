@@ -1,0 +1,6 @@
+{
+  "extends": "@netherite/tsconfig/desktop.json",
+  "include": ["src/**/*"],
+  "exclude": ["dist", "build", "node_modules"]
+}
+

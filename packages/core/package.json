@@ -1,0 +1,42 @@
+{
+  "name": "@netherite/core",
+  "version": "0.0.1",
+  "private": true,
+  "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/core",
+  "type": "module",
+  "main": "./dist/App.umd.cjs",
+  "module": "./dist/App.js",
+  "types": "./dist/App.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/App.js",
+      "require": [
+        "./dist/App.umd.cjs",
+        "./dist/App.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "yarn build --watch",
+    "dev:local": "vite dev",
+    "preview": "vite preview",
+    "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
+    "clean": "rm -rf .turbo"
+  },
+  "devDependencies": {
+    "@netherite/tsconfig": "*",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@vitejs/plugin-react-swc": "^3.0.0",
+    "eslint-config-netherite": "*",
+    "typescript": "^4.9.4",
+    "vite": "^4.0.0",
+    "vite-plugin-dts": "^1.7.1"
+  },
+  "dependencies": {
+    "@netherite/ds-components": "*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
