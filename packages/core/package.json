@@ -10,7 +10,10 @@
   "exports": {
     ".": {
       "import": "./dist/App.js",
-      "require": ["./dist/App.umd.cjs", "./dist/App.d.ts"]
+      "require": [
+        "./dist/App.umd.cjs",
+        "./dist/App.d.ts"
+      ]
     }
   },
   "scripts": {
