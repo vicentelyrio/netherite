@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Api",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "lib": ["ES2020", "esnext.asynciterable"],
+    "target": "es2020",
+    "module": "esnext",
+    "emitDeclarationOnly": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "rootDir": ".",
+    "outDir": "dist"
+  },
+  "exclude": ["node_modules"]
+}
