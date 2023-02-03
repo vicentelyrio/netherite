@@ -3,12 +3,13 @@
   "display": "Api",
   "extends": "./base.json",
   "compilerOptions": {
-    "lib": ["ES2020", "esnext.asynciterable"],
-    "target": "es2020",
-    "module": "esnext",
-    "emitDeclarationOnly": false,
+    "lib": ["es2018", "esnext.asynciterable"],
+    "target": "es2018",
+    "module": "commonjs",
+    "emitDeclarationOnly": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
     "rootDir": ".",
     "outDir": "dist"
   },

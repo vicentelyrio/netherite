@@ -1,38 +1,21 @@
+import 'reflect-metadata'
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
+import { buildSchema } from 'type-graphql'
 
-const typeDefs = `#graphql
-  type Book {
-    title: String
-    author: String
-  }
+import { RecipeResolver } from './recipe/recipe-resolver'
 
-  type Query {
-    books: [Book]
-  }
-`
+async function bootstrap() {
+  const schema = await buildSchema({
+    resolvers: [RecipeResolver],
+  })
 
-const books = [
-  {
-    title: 'The Awakening',
-    author: 'Kate Chopin',
-  },
-  {
-    title: 'City of Glass',
-    author: 'Paul Auster',
-  },
-]
+  // Create GraphQL server
+  const server = new ApolloServer({ schema })
 
-const resolvers = {
-  Query: {
-    books: () => books,
-  },
+  // Start the server
+  const { url } = await startStandaloneServer(server)
+  console.log(`🚀 Server ready at ${url}`)
 }
 
-const server = new ApolloServer({
-  resolvers,
-  typeDefs
-})
-
-const { url } = await startStandaloneServer(server)
-console.log(`🚀 Server ready at ${url}`)
+bootstrap()

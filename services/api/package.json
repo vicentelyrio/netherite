@@ -6,7 +6,6 @@
   "main": "./dist/index.js",
   "source": "./src/index.ts",
   "types": "./dist/index.d.ts",
-  "type": "module",
   "files": [
     "dist/**"
   ],
@@ -25,7 +24,7 @@
   "dependencies": {
     "@apollo/server": "^4.3.2",
     "class-validator": "^0.14.0",
-    "graphql": "^16.6.0",
+    "graphql": "^15.3.0",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1"
   }
