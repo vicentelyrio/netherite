@@ -1,9 +1,8 @@
 {
+  "extends": "@netherite/tsconfig/ds-tokens.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
-  },
-  "extends": "@netherite/tsconfig/ds-tokens.json",
-  "include": ["src/*"]
+    "rootDir": "."
+  }
 }
 

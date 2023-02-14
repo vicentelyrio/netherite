@@ -3,14 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/ds-tokens",
-  "main": "./dist/index.js",
   "source": "./src/index.ts",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist/**"
-  ],
+  "main": "./dist/index.js",
+  "types": "./dist/types/main.d.ts",
+  "files": ["dist/**"],
   "scripts": {
-    "build": "tsc",
+    "build": "yarn clean:dist && tsc",
     "dev": "tsc -w",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
     "clean:dist": "rm -rf dist/",

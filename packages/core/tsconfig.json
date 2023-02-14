@@ -1,6 +1,10 @@
 {
   "extends": "@netherite/tsconfig/core.json",
-  "include": ["src", "types"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDirs": ["./src/*", "./types/*"]
+  },
+  "include": ["./src", "./types"]
 }
 

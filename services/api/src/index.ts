@@ -3,12 +3,18 @@ import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
 import { buildSchema } from 'type-graphql'
 
+import { RunServerReturnType, SchemaBuilderReturnType } from '@netherite/api'
+
 import { RecipeResolver } from './recipe/recipe-resolver'
 
-async function bootstrap() {
-  const schema = await buildSchema({
+export async function schemaBuilder(): SchemaBuilderReturnType {
+  return await buildSchema({
     resolvers: [RecipeResolver],
   })
+}
+
+export async function runServer(): RunServerReturnType {
+  const schema = await schemaBuilder()
 
   // Create GraphQL server
   const server = new ApolloServer({ schema })
@@ -18,4 +24,6 @@ async function bootstrap() {
   console.log(`🚀 Server ready at ${url}`)
 }
 
-bootstrap()
+if (process.env['LOCALSERVER'] === 'true') {
+  runServer()
+}

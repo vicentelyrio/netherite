@@ -6,19 +6,19 @@
   "type": "module",
   "main": "./dist/App.umd.cjs",
   "module": "./dist/App.js",
-  "types": "./dist/types/main.d.ts",
+  "typings": "./types/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/App.js",
       "require": [
         "./dist/App.umd.cjs",
-        "./dist/App.d.ts"
+        "./dist/types/index.d.ts"
       ]
     }
   },
   "scripts": {
-    "build": "tsc && vite build",
-    "dev": "yarn build --watch",
+    "build": "yarn clean:dist && tsc && vite build",
+    "dev": "tsc && vite build -w",
     "dev:local": "vite dev",
     "preview": "vite preview",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
@@ -41,6 +41,7 @@
     "@netherite/ds-components": "*",
     "graphql": "^16.6.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "vite-tsconfig-paths": "^4.0.5"
   }
 }

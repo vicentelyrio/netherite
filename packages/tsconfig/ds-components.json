@@ -3,8 +3,8 @@
   "display": "DS-Components",
   "extends": "./base.json",
   "compilerOptions": {
-    "lib": ["ES2015"],
-    "module": "CommonJS"
-  },
-  "exclude": ["node_modules"]
+    "lib": ["esnext"],
+    "module": "esnext",
+    "target": "esnext"
+  }
 }
