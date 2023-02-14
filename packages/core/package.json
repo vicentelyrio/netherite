@@ -6,7 +6,7 @@
   "type": "module",
   "main": "./dist/App.umd.cjs",
   "module": "./dist/App.js",
-  "types": "./dist/App.d.ts",
+  "types": "./dist/types/main.d.ts",
   "exports": {
     ".": {
       "import": "./dist/App.js",
@@ -22,7 +22,9 @@
     "dev:local": "vite dev",
     "preview": "vite preview",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
-    "clean": "rm -rf .turbo"
+    "clean:dist": "rm -rf dist/",
+    "clean:cache": "rm -rf .turbo",
+    "clean": "yarn clean:dist && yarn clean:cache"
   },
   "devDependencies": {
     "@netherite/tsconfig": "*",
@@ -35,7 +37,9 @@
     "vite-plugin-dts": "^1.7.1"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.7",
     "@netherite/ds-components": "*",
+    "graphql": "^16.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

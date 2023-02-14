@@ -13,7 +13,9 @@
     "build": "tsc",
     "dev": "tsc -w",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
-    "clean": "rm -rf .turbo"
+    "clean:dist": "rm -rf dist/",
+    "clean:cache": "rm -rf .turbo",
+    "clean": "yarn clean:dist && yarn clean:cache"
   },
   "devDependencies": {
     "@netherite/ds-tokens": "*",

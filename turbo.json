@@ -9,7 +9,8 @@
       "dependsOn": ["build"],
       "inputs": ["src/**/*.tsx", "src/**/*.ts"]
     },
-    "lint": {},
+    "lint": {
+    },
     "deploy": {
       "dependsOn": ["build", "test", "lint"]
     },

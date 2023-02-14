@@ -5,9 +5,6 @@
   "license": "MIT",
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/eslint-config-netherite",
-  "scripts": {
-    "clean": "rm -rf .turbo"
-  },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",

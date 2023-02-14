@@ -6,12 +6,10 @@
     "lib": ["es2018", "esnext.asynciterable"],
     "target": "es2018",
     "module": "commonjs",
-    "emitDeclarationOnly": true,
+    "emitDeclarationOnly": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
-    "rootDir": ".",
-    "outDir": "dist"
   },
   "exclude": ["node_modules"]
 }

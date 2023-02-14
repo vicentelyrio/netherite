@@ -1,2 +1,4 @@
-import { theme } from '@netherite/ds-tokens'
+/* import { theme } from '@netherite/ds-tokens' */
+
+export {}
 
