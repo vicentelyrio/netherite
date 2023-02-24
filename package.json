@@ -18,8 +18,11 @@
   ],
   "scripts": {
     "postinstall": "manypkg check",
-    "dev": "turbo run dev --no-cache --continue --filter=!./docs/*",
-    "dev:docs": "turbo run dev --no-cache --continue --filter=./docs/*",
+    "dev": "turbo run dev --no-cache --continue",
+    "dev:dsbase": "yarn dev --filter=@netherite/ds-tokens --filter=@netherite/ds-components",
+    "dev:ds": "yarn dev:dsbase --filter=@netherite/design-system",
+    "dev:core": "turbo run dev:local --no-cache --continue --filter=@netherite/ds-tokens --filter=@netherite/ds-components --filter=@netherite/core",
+    "dev:app": "yarn dev:core --filter=@netherite/desktop",
     "build": "turbo run build --filter=!./docs/*",
     "build:docs": "turbo run build --filter=./docs/*",
     "lint": "turbo run lint",

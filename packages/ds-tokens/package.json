@@ -10,6 +10,7 @@
   "scripts": {
     "build": "yarn clean:dist && tsc",
     "dev": "tsc -w",
+    "dev:local": "yarn dev",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
     "clean:dist": "rm -rf dist/",
     "clean:cache": "rm -rf .turbo",
