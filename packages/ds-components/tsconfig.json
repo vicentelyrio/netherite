@@ -3,7 +3,6 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@netherite/tsconfig/tsconfig.json",
   "compilerOptions": {
-    "noEmit": true,
     "jsx": "preserve",
     "jsxImportSource": "@emotion/react",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -11,7 +10,7 @@
     "paths": {
       "*": ["./src/*"]
     },
-    "rootDirs": ["./src/*", "./types/*"]
+    "outDir": "./dist"
   },
   "include": ["src/**/*", "types/**/*"],
   "exclude": ["node_modules"]

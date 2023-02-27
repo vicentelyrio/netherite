@@ -23,6 +23,7 @@
     "dev:ds": "yarn dev:dsbase --filter=@netherite/design-system",
     "dev:app": "yarn dev:dsbase --filter=@netherite/core --filter=@netherite/desktop",
     "dev:core": "turbo run dev:local --no-cache --continue --filter=@netherite/ds-tokens --filter=@netherite/ds-components --filter=@netherite/core",
+    "dev:services": "turbo run dev:local --no-cache --continue --filter=@netherite/api",
     "build": "turbo run build --filter=!./docs/*",
     "build:docs": "turbo run build --filter=./docs/*",
     "lint": "turbo run lint",

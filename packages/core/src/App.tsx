@@ -54,6 +54,7 @@ const GET_FILE = gql`
 
 const Content = () => {
   const { loading, error, data } = useQuery(GET_FILE)
+  console.log(loading, error, data)
 
   return (
     <div className="App">
