@@ -13,5 +13,6 @@
     "resolveJsonModule": true,
     "emitDeclarationOnly": false,
     "useDefineForClassFields": true
-  }
+  },
+  "include": ["src/**/*"]
 }

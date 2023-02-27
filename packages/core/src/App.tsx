@@ -8,11 +8,17 @@ import {
   gql,
 } from '@apollo/client'
 
-import { ClientProps } from '@netherite/core'
+import { Avatar } from '@netherite/ds-components'
 
 const URL = 'http://127.0.0.1'
 const PORT = 4000
 const PATH = 'graphql'
+
+type ClientProps = {
+  url?: string
+  path?: string
+  port?: number
+}
 
 export const buildClient = (props?: ClientProps) => {
   const { url = URL, port = PORT, path = PATH } = props || {}
@@ -49,10 +55,9 @@ const GET_FILE = gql`
 const Content = () => {
   const { loading, error, data } = useQuery(GET_FILE)
 
-  console.log(data, loading, error)
   return (
     <div className="App">
-      olar
+      <Avatar children="Olar" />
     </div>
   )
 }

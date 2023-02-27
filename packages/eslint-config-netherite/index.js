@@ -6,6 +6,8 @@ module.exports = {
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:import/recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
     "plugin:import/electron",
     "plugin:import/typescript",
   ],
@@ -13,5 +15,12 @@ module.exports = {
   "rules": {
     "semi": "off",
     "@typescript-eslint/semi": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
   }
 }

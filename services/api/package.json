@@ -6,7 +6,9 @@
   "source": "./src/index.ts",
   "main": "./dist/index.js",
   "typings": "./types/index.d.ts",
-  "files": ["dist/**"],
+  "files": [
+    "dist/**"
+  ],
   "scripts": {
     "build": "yarn clean:dist && tsc",
     "dev": "yarn clean:dist && tsc --watch",

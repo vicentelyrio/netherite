@@ -4,8 +4,8 @@
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/ds-tokens",
   "source": "./src/index.ts",
-  "main": "./dist/index.js",
-  "types": "./dist/types/main.d.ts",
+  "main": "./dist/index",
+  "types": "./dist/index.d.ts",
   "files": ["dist/**"],
   "scripts": {
     "build": "yarn clean:dist && tsc",
@@ -19,11 +19,14 @@
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@emotion/babel-plugin": "^11.10.5",
-    "@emotion/react": "^11.10.5",
+    "@emotion/react": "^11.10.6",
     "@netherite/tsconfig": "*",
     "eslint-config-netherite": "*",
     "react": "^18.2.0",
-    "theme-ui": "^0.15.4",
+    "theme-ui": "^0.15.5",
     "typescript": "^4.9.4"
+  },
+  "peerDependencies": {
+    "theme-ui": "^0.15.5"
   }
 }

@@ -1,4 +1,2 @@
-/* import { theme } from '@netherite/ds-tokens' */
-
-export {}
+export { Avatar } from './components/Avatar/Avatar'
 
