@@ -4,19 +4,15 @@
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/ds-components",
   "source": "./src/index.ts",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "main": "./src/index.ts",
+  "types": "./types",
+  "files": ["src/**", "types/**"],
   "scripts": {
-    "build": "yarn clean:dist && tsc",
-    "dev": "tsc -w",
+    "build": "tsc -b",
+    "dev": "tsc -b -w",
     "dev:local": "yarn dev",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
-    "clean:dist": "rm -rf dist/",
-    "clean:cache": "rm -rf .turbo",
-    "clean": "yarn clean:dist && yarn clean:cache"
+    "clean": "rm -rf .turbo"
   },
   "devDependencies": {
     "@emotion/react": "^11.10.6",
@@ -26,6 +22,9 @@
     "@types/react": "^18.0.27",
     "eslint-config-netherite": "*",
     "react": "^18.2.0",
+    "rollup": "^3.17.3",
+    "rollup-plugin-dts": "^5.2.0",
+    "rollup-plugin-esbuild": "^5.0.0",
     "theme-ui": "^0.15.5",
     "typescript": "^4.9.4"
   },

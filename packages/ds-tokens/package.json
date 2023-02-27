@@ -4,17 +4,15 @@
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/ds-tokens",
   "source": "./src/index.ts",
-  "main": "./dist/index",
-  "types": "./dist/index.d.ts",
-  "files": ["dist/**"],
+  "main": "./src/index.ts",
+  "types": "./types",
+  "files": ["src/**", "types/**"],
   "scripts": {
-    "build": "yarn clean:dist && tsc",
-    "dev": "tsc -w",
+    "build": "tsc -b",
+    "dev": "tsc -b -w",
     "dev:local": "yarn dev",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
-    "clean:dist": "rm -rf dist/",
-    "clean:cache": "rm -rf .turbo",
-    "clean": "yarn clean:dist && yarn clean:cache"
+    "clean": "rm -rf .turbo"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

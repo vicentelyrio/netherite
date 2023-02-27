@@ -1,5 +1,5 @@
 import '@emotion/react'
-import type { Theme as ThemeDS } from '@netherite/ds-tokens'
+import { Theme as ThemeDS } from '@netherite/ds-tokens'
 
 declare module '@emotion/react' {
   // eslint-disable-next-line
