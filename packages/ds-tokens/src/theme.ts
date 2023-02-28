@@ -1,6 +1,28 @@
 import type { Theme } from '@theme-ui/core'
 
-export const theme: Theme = {
+const colors = {
+  text: '#B4B8C4',
+  textHighlight: '#F6F9FA',
+  textMuted: '#8B8D9D',
+  accent: '#858DD1',
+  accentBlue: '#0092FE',
+  accentGreen: '#0BA75D',
+  accentYellow: '#FCBA06',
+  box: '#32364A',
+  boxLight: '#303548',
+  boxDark: '#1E202F',
+  background: '#2B2E44',
+  backgroundDark: '#26293E',
+  shadow: '#222436',
+  shadowDark: '#1E202F',
+  shadowDarkest: '#1A1B21',
+} as const
+
+interface ThemeDS extends Theme {
+  colors: typeof colors
+}
+
+export const theme: ThemeDS = {
   breakpoints: ['40em', '52em', '64em'],
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   fonts: {
