@@ -1,7 +1,7 @@
 {
   "name": "@netherite/desktop",
   "productName": "NetheriteApp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Netherite App",
   "main": ".webpack/main",
   "private": true,
