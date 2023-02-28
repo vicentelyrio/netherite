@@ -2,7 +2,7 @@
   "name": "@netherite/desktop",
   "productName": "NetheriteApp",
   "version": "0.0.1",
-  "description": "My Electron application description",
+  "description": "Netherite App",
   "main": ".webpack/main",
   "private": true,
   "keywords": [],

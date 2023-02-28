@@ -6,19 +6,19 @@
   "type": "module",
   "main": "./dist/App.umd.cjs",
   "module": "./dist/App.js",
-  "typings": "./types/index.d.ts",
+  "typings": "./dist/App.d.ts",
   "exports": {
     ".": {
       "import": "./dist/App.js",
       "require": [
         "./dist/App.umd.cjs",
-        "./dist/types/index.d.ts"
+        "./dist/App.d.ts"
       ]
     }
   },
   "scripts": {
-    "build": "yarn clean:dist && tsc && vite build",
-    "dev": "tsc && vite build -w",
+    "build": "yarn clean:dist && tsc -b && vite build",
+    "dev": "tsc -b && vite build -w",
     "dev:local": "vite dev",
     "preview": "vite preview",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",

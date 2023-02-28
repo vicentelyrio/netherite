@@ -1,13 +1,13 @@
-import * as Styled from './Avatar.styles'
-
 import type { ReactElement } from 'react'
 
+import * as Styled from './Avatar.styles'
+
 export type AvatarProps = {
-  children: ReactElement
+  label: string
 }
 
-export const Avatar = ({ children }: AvatarProps): ReactElement => {
+export const Avatar = ({ label }: AvatarProps): ReactElement => {
   return (
-    <Styled.Avatar children={children} />
+    <Styled.Avatar children={label} />
   )
 }

@@ -58,7 +58,7 @@ const Content = () => {
 
   return (
     <div className="App">
-      <Avatar children="Olar" />
+      <Avatar label="Olar" />
     </div>
   )
 }
