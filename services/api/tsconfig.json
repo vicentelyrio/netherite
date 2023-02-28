@@ -1,0 +1,10 @@
+{
+  "extends": "@netherite/tsconfig/api.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "typeRoots": ["node_modules/@types", "./types"]
+  },
+  "include": ["./src", "./types"]
+}
+

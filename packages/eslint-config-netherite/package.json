@@ -1,13 +1,10 @@
 {
   "name": "eslint-config-netherite",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "index.js",
   "license": "MIT",
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/eslint-config-netherite",
-  "scripts": {
-    "clean": "rm -rf .turbo"
-  },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",
@@ -20,6 +17,7 @@
     "eslint-utils": "^3.0.0"
   },
   "devDependencies": {
+    "eslint-import-resolver-typescript": "^3.5.3",
     "typescript": "^4.9.4"
   }
 }

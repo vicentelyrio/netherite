@@ -1,12 +1,12 @@
 {
   "name": "@netherite/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/core",
   "type": "module",
   "main": "./dist/App.umd.cjs",
   "module": "./dist/App.js",
-  "types": "./dist/App.d.ts",
+  "typings": "./dist/App.d.ts",
   "exports": {
     ".": {
       "import": "./dist/App.js",
@@ -17,12 +17,14 @@
     }
   },
   "scripts": {
-    "build": "tsc && vite build",
-    "dev": "yarn build --watch",
+    "build": "yarn clean:dist && tsc -b && vite build",
+    "dev": "tsc -b && vite build -w",
     "dev:local": "vite dev",
     "preview": "vite preview",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
-    "clean": "rm -rf .turbo"
+    "clean:dist": "rm -rf dist/",
+    "clean:cache": "rm -rf .turbo",
+    "clean": "yarn clean:dist && yarn clean:cache"
   },
   "devDependencies": {
     "@netherite/tsconfig": "*",
@@ -35,8 +37,11 @@
     "vite-plugin-dts": "^1.7.1"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.7",
     "@netherite/ds-components": "*",
+    "graphql": "^16.6.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "vite-tsconfig-paths": "^4.0.5"
   }
 }

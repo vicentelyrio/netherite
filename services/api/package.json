@@ -1,0 +1,34 @@
+{
+  "name": "@netherite/api",
+  "version": "0.0.1",
+  "private": true,
+  "repository": "https://github.com/vicentelyrio/netherite/tree/master/services/api",
+  "source": "./src/index.ts",
+  "main": "./dist/index.js",
+  "typings": "./types/index.d.ts",
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "yarn clean:dist && tsc",
+    "dev": "yarn clean:dist && tsc --watch",
+    "dev:local": "tsc && LOCALSERVER=true node ./dist/index.js",
+    "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
+    "clean:dist": "rm -rf dist/",
+    "clean:cache": "rm -rf .turbo",
+    "clean": "yarn clean:dist && yarn clean:cache"
+  },
+  "devDependencies": {
+    "@netherite/tsconfig": "*",
+    "@types/node": "^18.11.18",
+    "eslint-config-netherite": "*",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "@apollo/server": "^4.3.2",
+    "class-validator": "^0.14.0",
+    "graphql": "^16.6.0",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^2.0.0-beta.1"
+  }
+}

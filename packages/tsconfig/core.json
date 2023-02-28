@@ -3,8 +3,16 @@
   "display": "Core",
   "extends": "./base.json",
   "compilerOptions": {
-    "lib": ["ES2015"],
-    "module": "CommonJS"
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "module": "esnext",
+    "target": "esnext",
+    "resolveJsonModule": true,
+    "emitDeclarationOnly": false,
+    "useDefineForClassFields": true
   },
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"]
 }

@@ -1,9 +1,15 @@
 {
+  "display": "DS-Tokens",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@netherite/tsconfig/tsconfig.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "outDir": "./dist",
-    "rootDir": "./src"
+    "paths": {
+      "*": ["./src/*"]
+    },
   },
-  "extends": "@netherite/tsconfig/ds-tokens.json",
-  "include": ["src/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
 

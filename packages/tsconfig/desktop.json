@@ -3,9 +3,9 @@
   "display": "Desktop",
   "extends": "./base.json",
   "compilerOptions": {
-    "target": "ES6",
+    "target": "es2018",
+    "module": "nodenext",
     "allowJs": true,
-    "module": "commonjs",
     "noImplicitAny": true,
     "sourceMap": true,
     "isolatedModules": false,

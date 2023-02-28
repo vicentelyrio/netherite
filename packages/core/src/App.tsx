@@ -1,35 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useMemo } from 'react'
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  ApolloProvider,
+  useQuery,
+  gql,
+} from '@apollo/client'
 
-function App() {
-  const [count, setCount] = useState(0)
+import { Avatar } from '@netherite/ds-components'
+
+const URL = 'http://127.0.0.1'
+const PORT = 4000
+const PATH = 'graphql'
+
+type ClientProps = {
+  url?: string
+  path?: string
+  port?: number
+}
+
+export const buildClient = (props?: ClientProps) => {
+  const { url = URL, port = PORT, path = PATH } = props || {}
+
+  return new ApolloClient({
+    cache: new InMemoryCache(),
+    link: new HttpLink({
+      uri: `${url}:${port}/${path}`
+    })
+  })
+}
+
+export function App(props?: ClientProps) {
+  const client = useMemo(() => buildClient(props), [props])
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    <ApolloProvider client={client}>
+      <Content />
+    </ApolloProvider>
   )
 }
 
 export default App
+
+const GET_FILE = gql`
+  query Recipes {
+    recipes {
+      title
+      ratingsCount
+    }
+  }
+`
+
+const Content = () => {
+  const { loading, error, data } = useQuery(GET_FILE)
+  console.log(loading, error, data)
+
+  return (
+    <div className="App">
+      <Avatar label="Olar" />
+    </div>
+  )
+}

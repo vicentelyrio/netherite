@@ -1,8 +1,8 @@
 {
   "name": "@netherite/desktop",
   "productName": "NetheriteApp",
-  "version": "0.0.1",
-  "description": "My Electron application description",
+  "version": "0.0.2",
+  "description": "Netherite App",
   "main": ".webpack/main",
   "private": true,
   "keywords": [],
@@ -13,6 +13,7 @@
     "email": "vicentelyrio@gmail.com"
   },
   "scripts": {
+    "start": "electron-forge start",
     "lint": "TIMING=1 eslint --ext .ts,.tsx .",
     "dev": "electron-forge start",
     "build": "electron-forge package",
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@electron-forge/cli": "^6.0.4",
     "@electron-forge/maker-deb": "^6.0.4",
+    "@electron-forge/maker-dmg": "^6.0.5",
     "@electron-forge/maker-rpm": "^6.0.4",
     "@electron-forge/maker-squirrel": "^6.0.4",
     "@electron-forge/maker-zip": "^6.0.4",
@@ -48,6 +50,7 @@
     "webpack": "^5.75.0"
   },
   "dependencies": {
+    "@netherite/api": "*",
     "@netherite/core": "*",
     "electron-squirrel-startup": "^1.0.0",
     "react": "^18.2.0",

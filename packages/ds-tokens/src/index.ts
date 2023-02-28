@@ -1,2 +1,2 @@
+export type { Theme } from '@theme-ui/core'
 export { theme } from './theme'
-

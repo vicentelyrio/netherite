@@ -1,9 +1,17 @@
 {
+  "display": "DS-Components",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@netherite/tsconfig/tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src"
+    "jsx": "preserve",
+    "jsxImportSource": "@emotion/react",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "baseUrl": ".",
+    "paths": {
+      "*": ["./src/*"]
+    },
+    "outDir": "./dist"
   },
-  "extends": "@netherite/tsconfig/ds-components.json",
-  "include": ["src/*"]
+  "include": ["src/**/*", "types/**/*"],
+  "exclude": ["node_modules"]
 }
-

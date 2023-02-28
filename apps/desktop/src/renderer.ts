@@ -25,5 +25,12 @@
  *  });
  * ```
  */
+/* import { ApolloClient, InMemoryCache } from '@apollo/client' */
 
-import './App';
+/* const { ipcRenderer } = window */
+
+/* const client = new ApolloClient({ */
+/*   cache: new InMemoryCache(), */
+/* }) */
+
+import './App'

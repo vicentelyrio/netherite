@@ -1,19 +1,21 @@
 {
   "name": "@netherite/logger",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/logger",
-  "main": "./dist/index.js",
   "source": "./src/index.ts",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/types/main.d.ts",
   "files": [
     "dist/**"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "yarn clean:dist && tsc",
     "dev": "tsc -w",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
-    "clean": "rm -rf .turbo"
+    "clean:dist": "rm -rf dist/",
+    "clean:cache": "rm -rf .turbo",
+    "clean": "yarn clean:dist && yarn clean:cache"
   },
   "devDependencies": {
     "@netherite/tsconfig": "*",
