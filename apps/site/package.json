@@ -17,8 +17,8 @@
   "dependencies": {
     "@docusaurus/core": "2.3.1",
     "@docusaurus/preset-classic": "2.3.1",
-    "@netherite/ds-components": "*",
     "@mdx-js/react": "^1.6.22",
+    "@netherite/ds-components": "*",
     "clsx": "^1.2.1",
     "prism-react-renderer": "^1.3.5",
     "react": "^18.2.0",
