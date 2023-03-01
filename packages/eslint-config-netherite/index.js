@@ -19,7 +19,7 @@ module.exports = {
   "settings": {
     "import/resolver": {
       "typescript": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+        "extensions": [".ts", ".tsx"]
       }
     }
   }

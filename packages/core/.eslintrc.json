@@ -1,5 +1,8 @@
 {
   "root": true,
-  "extends": ["netherite"]
+  "extends": ["netherite"],
+  "env": {
+    "node": true
+  }
 }
 
