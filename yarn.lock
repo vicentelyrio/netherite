@@ -6258,12 +6258,12 @@ eslint-config-react@^1.1.7:
   resolved "https://registry.npmjs.org/eslint-config-react/-/eslint-config-react-1.1.7.tgz"
   integrity sha512-P4Z6u68wf0BvIvZNu+U8uQsk3DcZ1CcCI1XpUkJlG6vOa+iVcSQLgE01f2DB2kXlKRcT8/3dsH+wveLgvEgbkQ==
 
-eslint-config-turbo@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.npmjs.org/eslint-config-turbo/-/eslint-config-turbo-0.0.7.tgz"
-  integrity sha512-WbrGlyfs94rOXrhombi1wjIAYGdV2iosgJRndOZtmDQeq5GLTzYmBUCJQZWtLBEBUPCj96RxZ2OL7Cn+xv/Azg==
+eslint-config-turbo@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/eslint-config-turbo/-/eslint-config-turbo-0.0.9.tgz#7aaf6d57b8fa794f40b9a554511449a669e6447f"
+  integrity sha512-j1cTdx3tRmKo0csyfQKhpuT8dynK9oddbK5nmrShoMpXI2qMbxHLYH7MWAid4FmJN8rYympy3VKw5U63Yazycg==
   dependencies:
-    eslint-plugin-turbo "0.0.7"
+    eslint-plugin-turbo "0.0.9"
 
 eslint-import-resolver-node@^0.3.7:
   version "0.3.7"
@@ -6336,10 +6336,10 @@ eslint-plugin-react@^7.32.1:
     semver "^6.3.0"
     string.prototype.matchall "^4.0.8"
 
-eslint-plugin-turbo@0.0.7:
-  version "0.0.7"
-  resolved "https://registry.npmjs.org/eslint-plugin-turbo/-/eslint-plugin-turbo-0.0.7.tgz"
-  integrity sha512-iajOH8eD4jha3duztGVBD1BEmvNrQBaA/y3HFHf91vMDRYRwH7BpHSDFtxydDpk5ghlhRxG299SFxz7D6z4MBQ==
+eslint-plugin-turbo@0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-turbo/-/eslint-plugin-turbo-0.0.9.tgz#bdf2b7c98af43fb7cadae746ea9b395b3e6bf8dc"
+  integrity sha512-fEsuSnYU3GLtT+s66mUuzDL1LaSieIx5uk3tPO0ToGv7hI2XzOfP24aPkQItTBGl7kq2JaVkRzPwcnfz8hkp0w==
 
 eslint-scope@5.1.1, eslint-scope@^5.1.1:
   version "5.1.1"

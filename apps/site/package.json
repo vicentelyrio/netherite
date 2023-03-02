@@ -8,11 +8,15 @@
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
     "serve": "docusaurus serve",
+    "dev": "docusaurus start",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "clean:doc": "docusaurus clear",
+    "clean:dist": "rm -rf dist/",
+    "clean:cache": "rm -rf .turbo",
+    "clean": "yarn clean:dist && yarn clean:doc && yarn clean:cache"
   },
   "dependencies": {
     "@docusaurus/core": "2.3.1",

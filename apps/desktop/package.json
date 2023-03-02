@@ -19,10 +19,9 @@
     "build": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "clean:dist": "rm -rf out/",
+    "clean:dist": "rm -rf dist/ && rm -rf .webpack/ && rm -rf out",
     "clean:cache": "rm -rf .turbo",
-    "clean:deps": "rm -rf .webpack/",
-    "clean": "yarn clean:dist && yarn clean:cache && yarn clean:deps"
+    "clean": "yarn clean:dist && yarn clean:cache"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.4",
