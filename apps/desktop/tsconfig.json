@@ -1,6 +1,17 @@
 {
-  "extends": "@netherite/tsconfig/desktop.json",
+  "display": "Desktop",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@netherite/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "module": "nodenext",
+    "jsx": "react-jsx"
+  },
   "include": ["src/**/*"],
-  "exclude": ["dist", "build", "node_modules"]
+  "exclude": ["node_modules"]
 }
 

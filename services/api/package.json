@@ -5,14 +5,14 @@
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/services/api",
   "source": "./src/index.ts",
   "main": "./dist/index.js",
-  "typings": "./types/index.d.ts",
+  "typings": "./dist/index.d.ts",
   "files": [
     "dist/**"
   ],
   "scripts": {
-    "build": "yarn clean:dist && tsc",
-    "dev": "yarn clean:dist && tsc --watch",
-    "dev:local": "tsc && LOCALSERVER=true node ./dist/index.js",
+    "build": "yarn clean:dist && tsc -b",
+    "dev": "tsc -b -w",
+    "dev:local": "tsc -b -w && LOCALSERVER=true node ./dist/index.js",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
     "clean:dist": "rm -rf dist/",
     "clean:cache": "rm -rf .turbo",

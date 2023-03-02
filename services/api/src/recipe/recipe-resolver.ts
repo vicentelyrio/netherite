@@ -6,8 +6,9 @@ import {
   Root,
   Mutation,
   Int,
-  ResolverInterface,
 } from 'type-graphql'
+
+import type {  ResolverInterface } from 'type-graphql'
 
 import { Recipe } from './recipe-type'
 import { RecipeInput } from './recipe-input'
@@ -34,8 +35,8 @@ export class RecipeResolver implements ResolverInterface<Recipe> {
       ratings: [],
       creationDate: new Date(),
     })
-    this.items.push(recipe)
-    return recipe
+    this.items.push(recipe as Recipe)
+    return recipe as Recipe
   }
 
   @FieldResolver()
@@ -43,6 +44,6 @@ export class RecipeResolver implements ResolverInterface<Recipe> {
     @Root() recipe: Recipe,
     @Arg('minRate', () => Int, { defaultValue: 0.0 }) minRate: number,
   ): number {
-    return recipe.ratings.filter(rating => rating >= minRate).length
+    return recipe?.ratings?.filter(rating => rating >= minRate).length ?? 0
   }
 }

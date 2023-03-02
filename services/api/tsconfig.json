@@ -1,10 +1,17 @@
 {
-  "extends": "@netherite/tsconfig/api.json",
+  "display": "Api",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@netherite/tsconfig/tsconfig.json",
   "compilerOptions": {
-    "baseUrl": "./",
+    "lib": ["esnext", "esnext.asynciterable"],
+    "module": "nodenext",
+    "baseUrl": ".",
     "outDir": "./dist",
-    "typeRoots": ["node_modules/@types", "./types"]
+    "paths": {
+      "*": ["./src/*"]
+    },
   },
-  "include": ["./src", "./types"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
 

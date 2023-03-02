@@ -1,10 +1,10 @@
-import { Recipe } from './recipe-type'
+import type { Recipe } from './recipe-type'
 import { InputType, Field } from 'type-graphql'
 
 @InputType()
 export class RecipeInput implements Partial<Recipe> {
   @Field()
-  title: string
+  title?: string
 
   @Field({ nullable: true })
   description?: string

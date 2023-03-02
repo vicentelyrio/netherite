@@ -7,6 +7,9 @@
   "main": "./dist/App.umd.cjs",
   "module": "./dist/App.js",
   "typings": "./dist/App.d.ts",
+  "files": [
+    "./dist/**"
+  ],
   "exports": {
     ".": {
       "import": "./dist/App.js",
