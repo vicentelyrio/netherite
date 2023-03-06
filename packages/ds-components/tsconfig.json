@@ -3,7 +3,7 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@netherite/tsconfig/tsconfig.json",
   "compilerOptions": {
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
     "lib": ["dom", "dom.iterable", "esnext"],
     "baseUrl": ".",
