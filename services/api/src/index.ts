@@ -1,26 +1,39 @@
 import 'reflect-metadata'
+import path from 'path'
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
 import { buildSchema } from 'type-graphql'
+import type { GraphQLSchema } from 'graphql'
 
-import { RunServerReturnType, SchemaBuilderReturnType } from '@netherite/api'
+import { FileResolver } from './file/file.resolver'
 
-import { RecipeResolver } from './recipe/recipe-resolver'
+type ApiConfig = {
+  appRoot: string
+}
 
-export async function schemaBuilder(): SchemaBuilderReturnType {
+const defaultConfig: ApiConfig = {
+  appRoot: path.resolve(__dirname, `../src/contents`)
+}
+
+export async function schemaBuilder(): Promise<GraphQLSchema> {
   return await buildSchema({
-    resolvers: [RecipeResolver],
+    resolvers: [FileResolver],
   })
 }
 
-export async function runServer(): RunServerReturnType {
+export async function runServer(config: ApiConfig = defaultConfig): Promise<void> {
   const schema = await schemaBuilder()
 
   // Create GraphQL server
-  const server = new ApolloServer({ schema })
+  const server = new ApolloServer<ApiConfig>({ schema })
 
   // Start the server
-  const { url } = await startStandaloneServer(server)
+  const { url } = await startStandaloneServer(server, {
+    context: async () => ({
+      appRoot: config?.appRoot,
+    })
+  })
+
   console.log(`🚀 Server ready at ${url}`)
 }
 

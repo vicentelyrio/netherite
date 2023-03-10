@@ -10,8 +10,8 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "yarn clean:dist && tsc",
-    "dev": "tsc -w",
+    "build": "yarn clean:dist && tsc -b",
+    "dev": "tsc -b -w",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
     "clean:dist": "rm -rf dist/",
     "clean:cache": "rm -rf .turbo",

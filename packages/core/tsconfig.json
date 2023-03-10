@@ -1,10 +1,16 @@
 {
-  "extends": "@netherite/tsconfig/core.json",
+  "display": "Core",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@netherite/tsconfig/tsconfig.json",
   "references": [{ "path": "./tsconfig.node.json" }],
   "compilerOptions": {
+    "baseUrl": ".",
     "outDir": "./dist",
-    "rootDirs": ["./src/*", "./types/*"]
+    "paths": {
+      "*": ["./src/*"]
+    },
   },
-  "include": ["./src", "./types"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
 
