@@ -12,7 +12,7 @@ const REPO = `${ORG}/${NAME}`
 const config = {
   title: 'Netherite App',
   tagline: 'Organize your life',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/logo.svg',
 
   // Set the production url of your site here
   url: 'https://your-docusaurus-test-site.com',
