@@ -2,7 +2,6 @@
 // Note: type annotations allow type checking and IDEs autocompletion
 
 /* eslint @typescript-eslint/no-var-requires: "off" */
-const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 const ORG = 'https://github.com/vicentelyrio'
@@ -46,24 +45,26 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: `${REPO}/tree/main/apps/site/templates/shared/`,
         },
-        blog: {
-          showReadingTime: true,
-          editUrl: `${REPO}/tree/main/apps/site/templates/shared/`,
-        },
+        blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
       }),
     ],
   ],
-
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
-      navbar: {
-        title: NAME,
+    colorMode: {
+      defaultMode: 'dark',
+      disableSwitch: true,
+      respectPrefersColorScheme: false,
+    },
+
+    // Replace with your project's social card
+    image: 'img/docusaurus-social-card.jpg',
+    navbar: {
+      title: NAME,
         logo: {
           alt: NAME,
           src: 'img/logo.svg',
@@ -75,7 +76,6 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: REPO,
             label: 'GitHub',
@@ -116,10 +116,6 @@ const config = {
             title: 'More',
             items: [
               {
-                label: 'Blog',
-                to: '/blog',
-              },
-              {
                 label: 'GitHub',
                 href: REPO,
               },
@@ -129,7 +125,7 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} Netherite App`,
       },
       prism: {
-        theme: lightCodeTheme,
+        theme: darkCodeTheme,
         darkTheme: darkCodeTheme,
       },
     }),
