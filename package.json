@@ -19,7 +19,7 @@
     "postinstall": "manypkg check",
     "dev": "turbo run dev --no-cache --continue",
     "dev:dsbase": "yarn dev --filter=@netherite/ds-tokens --filter=@netherite/ds-components",
-    "dev:ds": "yarn dev:dsbase --filter=@netherite/",
+    "dev:site": "yarn dev:dsbase --filter=@netherite/site",
     "dev:app": "yarn dev:dsbase --filter=@netherite/core --filter=@netherite/desktop",
     "dev:core": "turbo run dev:local --no-cache --continue --filter=@netherite/ds-tokens --filter=@netherite/ds-components --filter=@netherite/core --filter=@netherite/api",
     "dev:api": "turbo run dev:local --no-cache --continue --filter=@netherite/api",

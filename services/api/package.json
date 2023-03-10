@@ -1,6 +1,6 @@
 {
   "name": "@netherite/api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/services/api",
   "source": "./src/index.ts",
@@ -20,8 +20,11 @@
   },
   "devDependencies": {
     "@netherite/tsconfig": "*",
+    "@types/find-in-files": "^0.5.1",
     "@types/node": "^18.11.18",
     "eslint-config-netherite": "*",
+    "find-in-files": "^0.5.0",
+    "tsc-watch": "^6.0.0",
     "typescript": "^4.9.4"
   },
   "dependencies": {
