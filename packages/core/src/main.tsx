@@ -1,9 +1,14 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+
+import { Providers } from 'Providers'
+
 import { App } from './App'
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <App />
+    <Providers>
+      <App />
+    </Providers>
   </StrictMode>,
 )

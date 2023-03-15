@@ -1,23 +1,30 @@
 import 'reflect-metadata'
-import path from 'path'
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
-import { buildSchema } from 'type-graphql'
+import { Container, ContainerInstance } from 'typedi'
+import { buildSchema, type ResolverData } from 'type-graphql'
 import type { GraphQLSchema } from 'graphql'
+import path from 'path'
 
-import { FileResolver } from './file/file.resolver'
+import { FileResolver } from './resolvers/file/file.resolver'
 
-type ApiConfig = {
+export type ApiConfig = {
   appRoot: string
 }
 
 const defaultConfig: ApiConfig = {
-  appRoot: path.resolve(__dirname, `../src/contents`)
+  appRoot: path.resolve(__dirname, `../data/contents`)
+}
+
+export interface Context {
+  appRoot: string
+  container: ContainerInstance
 }
 
 export async function schemaBuilder(): Promise<GraphQLSchema> {
   return await buildSchema({
     resolvers: [FileResolver],
+    container: ({ context }: ResolverData<Context>) => context.container,
   })
 }
 
@@ -29,9 +36,14 @@ export async function runServer(config: ApiConfig = defaultConfig): Promise<void
 
   // Start the server
   const { url } = await startStandaloneServer(server, {
-    context: async () => ({
-      appRoot: config?.appRoot,
-    })
+    context: async (): Promise<Context> => {
+      const { appRoot } = config
+      const container = Container.of(appRoot)
+      const context = { appRoot, container }
+
+      container.set('context', context)
+      return context
+    }
   })
 
   console.log(`🚀 Server ready at ${url}`)

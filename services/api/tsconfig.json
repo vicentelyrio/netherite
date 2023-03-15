@@ -3,12 +3,13 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@netherite/tsconfig/tsconfig.json",
   "compilerOptions": {
+    "incremental": false,
     "lib": ["esnext", "esnext.asynciterable"],
     "module": "nodenext",
     "baseUrl": ".",
     "outDir": "./dist",
     "paths": {
-      "*": ["./src/*"]
+      "@*": ["src/*"],
     },
   },
   "include": ["src/**/*"],
