@@ -10,9 +10,8 @@
     "dist/**"
   ],
   "scripts": {
-    "build": "yarn clean:dist && tsc -b",
-    "dev": "tsc -b -w",
-    "dev:local": "LOCALSERVER=true tsc-watch --noClear --onSuccess \"node --inspect -r tsconfig-paths/register ./dist/index.js\"",
+    "build": "yarn clean:dist && tsc -b && tsc-alias",
+    "dev:local": "tsc -b && concurrently \"tsc -b -w\" \"tsc-alias -w\" \"LOCALSERVER=true node ./dist/index.js\"",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
     "clean:dist": "rm -rf dist/",
     "clean:cache": "rm -rf .turbo",
@@ -22,16 +21,19 @@
     "@netherite/tsconfig": "*",
     "@types/find-in-files": "^0.5.1",
     "@types/fs-extra": "^11.0.1",
+    "@types/module-alias": "^2.0.1",
     "@types/node": "^18.11.18",
+    "concurrently": "^7.6.0",
     "eslint-config-netherite": "*",
+    "tsc-alias": "^1.8.3",
     "tsc-watch": "^6.0.0",
-    "tsconfig-paths": "^4.1.2",
     "typescript": "^4.9.4"
   },
   "dependencies": {
     "@apollo/server": "^4.3.2",
     "class-validator": "^0.14.0",
     "graphql": "^16.6.0",
+    "gray-matter": "^4.0.3",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^2.0.0-beta.1",
     "typedi": "^0.10.0"

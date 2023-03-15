@@ -1,14 +1,14 @@
 import { Service } from 'typedi'
 import { readdir, readFile } from 'node:fs/promises'
-
-import type { File } from '@resolvers/file/file.type'
 import path from 'node:path'
 import os from 'node:os'
+
+import type { File } from 'resolvers/file/file.type'
 
 export interface BaseFileFactory {
   getFileByName(name: string): Promise<File | undefined>
   getAllFiles(): Promise<File[] | undefined>
-  getFilesByTerm(term: string): Promise<File[] | undefined>
+  getFilesByTerms(terms: string[]): Promise<File[] | undefined>
 }
 
 @Service()
@@ -48,7 +48,7 @@ export class BaseFileService implements BaseFileFactory {
     }
   }
 
-  async getFilesByTerm(term: string) {
+  async getFilesByTerms(terms: string[]) {
     try {
       const fileNames = await this.readDir(this.root, { withFileTypes: true })
       const loadedFiles: File[] = []
@@ -56,7 +56,12 @@ export class BaseFileService implements BaseFileFactory {
       for (const file of fileNames) {
         if (file.isFile() && path.extname(file.name) === this.fileExtension) {
           const data = await this.getFileByName(file.name)
-          if (data && data?.contents?.includes(term)) loadedFiles.push(data)
+
+          if (!data) continue
+
+          const hasAllTermsPresent = terms.every((term) => data?.contents?.includes(term))
+
+          if (hasAllTermsPresent) loadedFiles.push(data)
         }
       }
 

@@ -1,4 +1,4 @@
-import { BaseFileService } from '../../common/BaseFile.service'
+import { BaseFileService } from 'services/BaseFile.service'
 import { Service, Inject } from 'typedi'
 
 @Service()
@@ -14,7 +14,7 @@ export class FileService {
     return await this.service.getAllFiles()
   }
 
-  async getFilesByTerm(term: string) {
-    return await this.service.getFilesByTerm(term)
+  async getFilesByTerms(terms: string[]) {
+    return await this.service.getFilesByTerms(terms)
   }
 }

@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
 import { Container, ContainerInstance } from 'typedi'
@@ -6,7 +7,8 @@ import { buildSchema, type ResolverData } from 'type-graphql'
 import type { GraphQLSchema } from 'graphql'
 import path from 'path'
 
-import { FileResolver } from './resolvers/file/file.resolver'
+import { FileResolver } from 'resolvers/file/file.resolver'
+import { GoalResolver } from 'resolvers/Goal/Goal.resolver'
 
 export type ApiConfig = {
   appRoot: string
@@ -23,7 +25,10 @@ export interface Context {
 
 export async function schemaBuilder(): Promise<GraphQLSchema> {
   return await buildSchema({
-    resolvers: [FileResolver],
+    resolvers: [
+      FileResolver,
+      GoalResolver,
+    ],
     container: ({ context }: ResolverData<Context>) => context.container,
   })
 }

@@ -1,6 +1,6 @@
 import { Field, ObjectType } from 'type-graphql'
 
-import { Person } from '@resolvers/Person/Person.type'
+import { Person } from 'resolvers/Person/Person.type'
 
 @ObjectType({ description: 'Object representing a Label' })
 export class Label {

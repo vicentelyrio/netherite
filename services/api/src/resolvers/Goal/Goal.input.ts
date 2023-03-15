@@ -1,6 +1,6 @@
 import { Field, InputType } from 'type-graphql'
 
-import { GoalType } from '@resolvers/GoalType/GoalType.type'
+import { GoalType } from 'resolvers/GoalType/GoalType.type'
 import type { Goal } from './Goal.type'
 
 @InputType()

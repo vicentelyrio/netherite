@@ -1,9 +1,9 @@
 import { Field, ObjectType, ID } from 'type-graphql'
 
-import { Person } from '@resolvers/Person/Person.type'
-import { Project } from '@resolvers/Project/Project.type'
-import { Label } from '@resolvers/Label/Label.type'
-import { State } from '@resolvers/State/State.type'
+import { Person } from 'resolvers/Person/Person.type'
+import { Project } from 'resolvers/Project/Project.type'
+import { Label } from 'resolvers/Label/Label.type'
+import { State } from 'resolvers/State/State.type'
 
 @ObjectType({ description: 'Object representing a Task' })
 export class Task {

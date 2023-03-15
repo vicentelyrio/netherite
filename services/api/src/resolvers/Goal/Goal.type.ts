@@ -1,8 +1,8 @@
 import { Field, ObjectType } from 'type-graphql'
 
-import { Project } from '@resolvers/Project/Project.type'
-import { GoalType } from '@resolvers/GoalType/GoalType.type'
-import { Person } from '@resolvers/Person/Person.type'
+import { Project } from 'resolvers/Project/Project.type'
+import { GoalType } from 'resolvers/GoalType/GoalType.type'
+import { Person } from 'resolvers/Person/Person.type'
 
 @ObjectType({ description: 'Object representing a Goal' })
 export class Goal {

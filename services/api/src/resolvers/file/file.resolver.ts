@@ -24,8 +24,8 @@ export class FileResolver {
     return await this.service.getAllFiles()
   }
 
-  @Query(() => [File], { description: 'Get all the files containing a specific term' })
-  async getFilesByTerm(@Arg('term') term: string): Promise<File[]> {
-    return await this.service.getFilesByTerm(term)
-  }
+  /* @Query(() => [File], { description: 'Get all the files containing a specific term' }) */
+  /* async getFilesByTerms(@Arg('terms') terms: string[]): Promise<File[]> { */
+  /*   return await this.service.getFilesByTerms(terms) */
+  /* } */
 }
