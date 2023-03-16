@@ -1,21 +1,14 @@
 import { Service, Inject } from 'typedi'
-import matter from 'gray-matter'
 
-import { BaseFileService } from 'services/BaseFile.service'
+import { BaseFileService, type File } from 'services/BaseFile.service'
 
 import type { Goal } from './Goal.type'
-import type { GoalType } from 'resolvers/GoalType/GoalType.type'
-import type { Person } from 'resolvers/Person/Person.type'
-import type { File } from 'resolvers/file/file.type'
 
 @Service()
 export class GoalService {
   @Inject(() => BaseFileService)
   private readonly service!: BaseFileService
-
-  private readonly goalPageDelimiters = [
-    'identifier: GOAL',
-  ]
+  private readonly matcher = /^GO__/
 
   async getGoalByName(name: string) {
     const file = await this.service.getFileByName(name)
@@ -26,8 +19,7 @@ export class GoalService {
   }
 
   async getAllGoals() {
-    const goals = await this.service.getFilesByTerms(this.goalPageDelimiters)
-    console.log(goals)
+    const goals = await this.service.getFilesByMatch(this.matcher)
 
     if (!goals.length) return []
 
@@ -36,52 +28,9 @@ export class GoalService {
 }
 
 const mapGoal = (file: File) => {
-  const { data } = matter(file?.contents as string)
-
-  console.log(data)
-
+  const { data, raw } = file
   return {
-    name: data['name'] ?? '',
-    description: data['description'] ?? '',
-    slug: '',
-    duration: new Date(),
-    type: {
-      name: file?.name,
-      description: 'aa',
-      slug: '',
-      createdAt: new Date(),
-      createdBy: {
-        name: '',
-        email: '',
-        slug: '',
-        initials: '',
-        color: ''
-      } as Person,
-      editedAt: new Date(),
-      editedBy: {
-        name: '',
-        email: '',
-        slug: '',
-        initials: '',
-        color: ''
-      } as Person,
-    } as GoalType,
-    projects: [],
-    createdAt: new Date(),
-    createdBy: {
-        name: '',
-        email: '',
-        slug: '',
-        initials: '',
-        color: ''
-      } as Person,
-    editedAt: new Date(),
-    editedBy: {
-        name: '',
-        email: '',
-        slug: '',
-        initials: '',
-        color: ''
-      } as Person,
+    ...data,
+    raw,
   } as Goal
 }

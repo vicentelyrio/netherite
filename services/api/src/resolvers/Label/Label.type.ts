@@ -1,6 +1,6 @@
 import { Field, ObjectType } from 'type-graphql'
 
-import { Person } from 'resolvers/Person/Person.type'
+import { User } from 'resolvers/User/User.type'
 
 @ObjectType({ description: 'Object representing a Label' })
 export class Label {
@@ -8,21 +8,21 @@ export class Label {
   name!: string
 
   @Field({ description: 'The Label slug' })
-  slug!: string
+  slug?: string
 
   @Field({ description: 'The Label color' })
-  color!: string
+  color?: string
 
   @Field({ description: 'The Label creation date' })
-  createdAt!: Date
+  createdAt?: Date
 
   @Field({ description: 'The Label last edition date' })
-  editedAt!: Date
+  editedAt?: Date
 
-  @Field(() => Person, { description: 'The Label author' })
-  createdBy!: Person
+  @Field(() => User, { description: 'The Label author' })
+  createdBy?: User
 
-  @Field(() => Person, { description: 'The Label last editor' })
-  editedBy!: Person
+  @Field(() => User, { description: 'The Label last editor' })
+  editedBy?: User
 }
 

@@ -1,6 +1,6 @@
 import { Field, ObjectType } from 'type-graphql'
 
-import { Person } from 'resolvers/Person/Person.type'
+import { User } from 'resolvers/User/User.type'
 
 @ObjectType({ description: 'Object representing a GoalType' })
 export class GoalType {
@@ -14,15 +14,15 @@ export class GoalType {
   slug!: string
 
   @Field({ description: 'The GoalType creation date' })
-  createdAt!: Date
+  createdAt?: Date
 
   @Field({ description: 'The GoalType last edition date' })
-  editedAt!: Date
+  editedAt?: Date
 
-  @Field(() => Person, { description: 'The GoalType author' })
-  createdBy!: Person
+  @Field(() => User, { description: 'The GoalType author' })
+  createdBy?: User
 
-  @Field(() => Person, { description: 'The GoalType last editor' })
-  editedBy!: Person
+  @Field(() => User, { description: 'The GoalType last editor' })
+  editedBy?: User
 }
 

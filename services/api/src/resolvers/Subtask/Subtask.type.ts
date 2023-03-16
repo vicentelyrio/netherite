@@ -6,6 +6,6 @@ export class Subtask {
   name!: string
 
   @Field({ description: 'The Subtask conpletion state' })
-  completed!: boolean
+  completed = false
 }
 

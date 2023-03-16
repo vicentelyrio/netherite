@@ -2,13 +2,16 @@ import { Service } from 'typedi'
 import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import os from 'node:os'
+import matter, { type GrayMatterFile } from 'gray-matter'
 
-import type { File } from 'resolvers/file/file.type'
+export interface File extends GrayMatterFile<string> {
+  raw: string
+}
 
 export interface BaseFileFactory {
   getFileByName(name: string): Promise<File | undefined>
   getAllFiles(): Promise<File[] | undefined>
-  getFilesByTerms(terms: string[]): Promise<File[] | undefined>
+  getFilesByMatch(matcher: RegExp): Promise<File[] | undefined>
 }
 
 @Service()
@@ -18,10 +21,17 @@ export class BaseFileService implements BaseFileFactory {
   private root: string = path.resolve(os.homedir(), `Documents/@netherite/data/contents`)
   private fileExtension = '.md'
 
+  /*
+  * - Get File by name
+  * - Parse front-matter data
+  * */
   async getFileByName(name: string) {
     try {
-      const contents = await this.readFile(`${this.root}/${name}`, 'utf8')
-      return { name, contents } as File
+      const raw = await this.readFile(`${this.root}/${name}`, 'utf8')
+      return {
+        ...matter(raw),
+        raw
+      }
     }
     catch(err) {
       console.error(err)
@@ -29,6 +39,10 @@ export class BaseFileService implements BaseFileFactory {
     }
   }
 
+  /*
+  * - Get All files
+  * - Parse front-matter data
+  * */
   async getAllFiles() {
     try {
       const fileNames = await this.readDir(this.root, { withFileTypes: true })
@@ -48,20 +62,21 @@ export class BaseFileService implements BaseFileFactory {
     }
   }
 
-  async getFilesByTerms(terms: string[]) {
+  /*
+  * - Get files by name part
+  * - Parse front-matter data
+  * */
+  async getFilesByMatch(matcher: RegExp) {
     try {
       const fileNames = await this.readDir(this.root, { withFileTypes: true })
       const loadedFiles: File[] = []
 
       for (const file of fileNames) {
-        if (file.isFile() && path.extname(file.name) === this.fileExtension) {
+        const fileIsValid = file.isFile() && path.extname(file.name) === this.fileExtension
+
+        if (fileIsValid && file.name.match(matcher)) {
           const data = await this.getFileByName(file.name)
-
-          if (!data) continue
-
-          const hasAllTermsPresent = terms.every((term) => data?.contents?.includes(term))
-
-          if (hasAllTermsPresent) loadedFiles.push(data)
+          if (data) loadedFiles.push(data)
         }
       }
 
@@ -71,4 +86,28 @@ export class BaseFileService implements BaseFileFactory {
       return []
     }
   }
+
+  /* async getFilesByTerms(terms: string[]) { */
+  /*   try { */
+  /*     const fileNames = await this.readDir(this.root, { withFileTypes: true }) */
+  /*     const loadedFiles: GrayMatterFile<string>[] = [] */
+  /**/
+  /*     for (const file of fileNames) { */
+  /*       if (file.isFile() && path.extname(file.name) === this.fileExtension) { */
+  /*         const data = await this.getFileByName(file.name) */
+  /**/
+  /*         if (!data) continue */
+  /**/
+  /*         const hasAllTermsPresent = terms.every((term) => data?.includes(term)) */
+  /**/
+  /*         if (hasAllTermsPresent) loadedFiles.push(data) */
+  /*       } */
+  /*     } */
+  /**/
+  /*     return loadedFiles */
+  /*   } catch (err) { */
+  /*     console.error(err) */
+  /*     return [] */
+  /*   } */
+  /* } */
 }

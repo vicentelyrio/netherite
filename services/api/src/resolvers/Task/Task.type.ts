@@ -1,6 +1,6 @@
 import { Field, ObjectType, ID } from 'type-graphql'
 
-import { Person } from 'resolvers/Person/Person.type'
+import { User } from 'resolvers/User/User.type'
 import { Project } from 'resolvers/Project/Project.type'
 import { Label } from 'resolvers/Label/Label.type'
 import { State } from 'resolvers/State/State.type'
@@ -14,33 +14,33 @@ export class Task {
   id!: string
 
   @Field({ description: 'The Task contents' })
-  contents!: string
+  contents?: string
 
   @Field({ description: 'The Task slug' })
-  slug!: string
+  slug?: string
 
   @Field(() => Label, { description: 'The Task label' })
-  labels!: Label[]
+  labels?: Label[]
 
   @Field(() => Project, { description: 'The Task Project' })
-  project!: Project
+  project?: Project
 
-  @Field(() => [Person], { description: 'The Task owners' })
-  owners!: Person[]
+  @Field(() => [User], { description: 'The Task owners' })
+  owners?: User[]
 
   @Field(() => State, { description: 'The Task state' })
-  state!: State
+  state?: State
 
   @Field({ description: 'The Task creation date' })
-  createdAt!: Date
+  createdAt?: Date
 
   @Field({ description: 'The Task last edition date' })
-  editedAt!: Date
+  editedAt?: Date
 
-  @Field(() => Person, { description: 'The Task author' })
-  createdBy!: Person
+  @Field(() => User, { description: 'The Task author' })
+  createdBy?: User
 
-  @Field(() => Person, { description: 'The Task last editor' })
-  editedBy!: Person
+  @Field(() => User, { description: 'The Task last editor' })
+  editedBy?: User
 }
 
