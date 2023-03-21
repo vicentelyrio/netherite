@@ -2,33 +2,33 @@ import { Service, Inject } from 'typedi'
 
 import { BaseFileService, type File } from 'services/BaseFile.service'
 
-import type { UI } from './UI.type'
+import type { Page } from './Page.type'
 
 @Service()
-export class UIService {
+export class PageService {
   @Inject(() => BaseFileService)
   private readonly service!: BaseFileService
-  private readonly prefix = 'UI__'
-  private readonly matcher = /^UI__/
+  private readonly prefix = 'PA__'
+  private readonly matcher = /^PA__/
 
-  async getUIByName(name: string) {
+  async getPageByName(name: string) {
     const file = await this.service.getFileByName(`${this.prefix}${name}.md`)
 
     if (!file) throw new Error('File not found')
 
-    return mapUI(file)
+    return mapPage(file)
   }
 
-  async getUIs() {
+  async getPages() {
     const goals = await this.service.getFilesByMatch(this.matcher)
 
     if (!goals.length) return []
 
-    return goals.map(mapUI)
+    return goals.map(mapPage)
   }
 }
 
-const mapUI = (file: File) => {
+const mapPage = (file: File) => {
   const { data, raw } = file
-  return { ...data, raw } as UI
+  return { ...data, raw } as Page
 }
