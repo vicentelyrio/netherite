@@ -1,5 +1,5 @@
 import { Service } from 'typedi'
-import { readdir, readFile } from 'node:fs/promises'
+import { readdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import os from 'node:os'
 import matter, { type GrayMatterFile } from 'gray-matter'
@@ -12,19 +12,23 @@ export interface BaseFileFactory {
   getFileByName(name: string): Promise<File | undefined>
   getAllFiles(): Promise<File[] | undefined>
   getFilesByMatch(matcher: RegExp): Promise<File[] | undefined>
+  createFile(raw: string, fileName: string): Promise<File>
+  slugify(str: string): string
 }
 
 @Service()
 export class BaseFileService implements BaseFileFactory {
   private readDir: typeof readdir = readdir
   private readFile: typeof readFile = readFile
+  private writeFile: typeof writeFile = writeFile
   private root: string = path.resolve(os.homedir(), `Documents/@netherite/data/contents`)
   private fileExtension = '.md'
 
-  /*
-  * - Get File by name
-  * - Parse front-matter data
-  * */
+  /**
+  * @memberof File Service
+  * @alias getFileByName
+  * @property {string} name
+  */
   async getFileByName(name: string) {
     try {
       const raw = await this.readFile(`${this.root}/${name}`, 'utf8')
@@ -39,10 +43,10 @@ export class BaseFileService implements BaseFileFactory {
     }
   }
 
-  /*
-  * - Get All files
-  * - Parse front-matter data
-  * */
+  /**
+  * @memberof File Service
+  * @alias getAllFiles
+  */
   async getAllFiles() {
     try {
       const fileNames = await this.readDir(this.root, { withFileTypes: true })
@@ -62,10 +66,11 @@ export class BaseFileService implements BaseFileFactory {
     }
   }
 
-  /*
-  * - Get files by name part
-  * - Parse front-matter data
-  * */
+  /**
+  * @memberof File Service
+  * @alias getFilesByMatch
+  * @property {string} matcher
+  */
   async getFilesByMatch(matcher: RegExp) {
     try {
       const fileNames = await this.readDir(this.root, { withFileTypes: true })
@@ -87,27 +92,26 @@ export class BaseFileService implements BaseFileFactory {
     }
   }
 
-  /* async getFilesByTerms(terms: string[]) { */
-  /*   try { */
-  /*     const fileNames = await this.readDir(this.root, { withFileTypes: true }) */
-  /*     const loadedFiles: GrayMatterFile<string>[] = [] */
-  /**/
-  /*     for (const file of fileNames) { */
-  /*       if (file.isFile() && path.extname(file.name) === this.fileExtension) { */
-  /*         const data = await this.getFileByName(file.name) */
-  /**/
-  /*         if (!data) continue */
-  /**/
-  /*         const hasAllTermsPresent = terms.every((term) => data?.includes(term)) */
-  /**/
-  /*         if (hasAllTermsPresent) loadedFiles.push(data) */
-  /*       } */
-  /*     } */
-  /**/
-  /*     return loadedFiles */
-  /*   } catch (err) { */
-  /*     console.error(err) */
-  /*     return [] */
-  /*   } */
-  /* } */
+  /**
+  * @memberof File Service
+  * @alias createFile
+  * @property {raw} markdown string
+  */
+  async createFile<T>(raw: string, fileName: string): Promise<T> {
+    try {
+      const savedFile = await this.writeFile(`${this.root}/${fileName}${this.fileExtension}`, raw, 'utf8')
+      return savedFile as T
+    } catch (err) {
+      throw new Error('Error creating file')
+    }
+  }
+
+  slugify (str: string) {
+    return str
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+  }
 }
