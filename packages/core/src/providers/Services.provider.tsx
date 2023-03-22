@@ -11,7 +11,7 @@ export type ClientProps = {
   port?: number
 }
 
-export type ProviderProps = {
+type ProviderProps = {
   children: ReactNode
 }
 
@@ -22,7 +22,7 @@ const client = new ApolloClient({
   })
 })
 
-export const Providers = ({ children }: ProviderProps) => (
+export const ServicesProviders = ({ children }: ProviderProps) => (
   <ApolloProvider client={client}>
     {children}
   </ApolloProvider>
