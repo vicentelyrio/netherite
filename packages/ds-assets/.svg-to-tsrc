@@ -1,0 +1,15 @@
+{
+  "srcFiles": ["./src/assets/**/*.svg"],
+  "outputDirectory": "./dist",
+  "delimiter": "SNAKE",
+  "tsx": true,
+  "interfaceName": "Icon",
+  "typeName": "Icons",
+  "prefix": "Icon",
+  "compilationOutput": "UMD",
+  "fileName": "index",
+  "svgoConfig": {
+    "plugins": ["cleanupAttrs"]
+  },
+  "compileSources": true
+}

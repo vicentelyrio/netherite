@@ -1,0 +1,14 @@
+{
+  "display": "DS-Assets",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@netherite/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "*": ["./src/*"]
+    },
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
