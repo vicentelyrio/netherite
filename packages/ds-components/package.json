@@ -10,7 +10,7 @@
     "./dist/**"
   ],
   "scripts": {
-    "build": "yarn clean:dist && tsc -b",
+    "build": "yarn clean:dist && tsc -b && tsc-alias",
     "dev:watch": "tsc -b -w",
     "dev:alias": "tsc-alias -w",
     "dev": "concurrently \"npm:dev:watch\" \"npm:dev:alias\"",
