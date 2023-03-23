@@ -1,15 +1,25 @@
 {
   "srcFiles": ["./src/assets/**/*.svg"],
   "outputDirectory": "./dist",
-  "delimiter": "SNAKE",
-  "tsx": true,
-  "interfaceName": "Icon",
-  "typeName": "Icons",
-  "prefix": "Icon",
-  "compilationOutput": "UMD",
-  "fileName": "index",
+  "delimiter": "CAMEL",
   "svgoConfig": {
     "plugins": ["cleanupAttrs"]
   },
-  "compileSources": true
+  "tsx": true,
+  "fileName": "index",
+  "modelFileName": "icons",
+  "prefix": "Icon",
+  "additionalModelOutputPath": "index.d.ts",
+  "generateType": true,
+  "generateTypeObject": true,
+  "typeName": "Icons",
+  "interfaceName": "Icon",
+  "compilationOutput": "ESM_AND_UMD",
+  "compile": false,
+  "compileSources": false,
+  "exportCompleteIconSet": true,
+  "completeIconSetName": "index",
+  "generateEnum": true,
+  "enumName": "Icons",
+  "verbose": true,
 }
