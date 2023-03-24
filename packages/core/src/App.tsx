@@ -11,6 +11,7 @@ import { Page } from 'pages/Page/Page'
 const location = new ReactLocation()
 
 type TemplateTypes = 'PAGE'
+| 'REDIRECT'
 | 'INBOX'
 | 'SEARCH'
 | 'GOALS'
@@ -25,6 +26,7 @@ type TemplateTypes = 'PAGE'
 | 'GRAPH'
 
 const Templates: Record<TemplateTypes, ReactElement> = {
+  REDIRECT: <Page />,
   PAGE: <Page />,
 
   INBOX: <h1>INBOX</h1>,
@@ -69,9 +71,11 @@ export const App = () => {
 }
 
 function mapRoutes ({ path, element, children }: RawRoute): Partial<Route> {
+  const Template = Templates[element]
+
   return {
     path,
-    element: Templates[element],
+    element: Template,
     children: children?.map(mapRoutes)
   }
 }

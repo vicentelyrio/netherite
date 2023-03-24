@@ -9,6 +9,7 @@ type PageLoaderProps = {
 export const PageLoader = ({ className }: PageLoaderProps): ReactElement => {
   return (
     <Styled.Page className={className}>
+      <Styled.PageLogo />
       <Styled.PageLoader />
     </Styled.Page>
   )
