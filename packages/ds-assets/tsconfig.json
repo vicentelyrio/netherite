@@ -5,11 +5,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "./dist",
-    "paths": {
-      "*": ["./src/*"]
-    },
     "noImplicitAny": false,
+    "jsx": "react-jsx"
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "generated/**/*"],
   "exclude": ["node_modules"]
 }

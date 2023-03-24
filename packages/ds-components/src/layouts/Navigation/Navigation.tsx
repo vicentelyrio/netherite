@@ -5,7 +5,7 @@ import type { ThemeUIStyleObject } from 'theme-ui'
 import * as Styled from './Navigation.styles'
 
 export type NavigationItem = {
-  icon: ReactElement
+  icon: any
   title?: string
   to?: string
   className?: string

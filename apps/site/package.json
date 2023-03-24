@@ -19,8 +19,8 @@
     "clean": "yarn clean:dist && yarn clean:doc && yarn clean:cache"
   },
   "dependencies": {
-    "@docusaurus/core": "2.3.1",
-    "@docusaurus/preset-classic": "2.3.1",
+    "@docusaurus/core": "^2.4.0",
+    "@docusaurus/preset-classic": "^2.4.0",
     "@mdx-js/react": "^1.6.22",
     "@netherite/ds-components": "*",
     "clsx": "^1.2.1",

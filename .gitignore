@@ -91,6 +91,7 @@ web_modules/
 build
 out
 dist
+generated
 
 # Gatsby files
 .cache/

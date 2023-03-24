@@ -3,19 +3,20 @@
   "version": "0.0.0",
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/ds-assets",
-  "main": "./dist/index.ts",
-  "types": "./dist/build/index.ts",
+  "source": "./generated/index.js",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
   "files": [
     "./dist/**"
   ],
   "scripts": {
-    "build:icons": "svgr -- src/assets/**/*.svg",
-    "build:lib": "svg-to-ts-files",
-    "build": "yarn clean:dist && yarn build:lib",
+    "build:icons": "svg-to-ts-files",
+    "build:ts": "tsc -b",
+    "build": "yarn clean:dist && yarn build:icons && yarn build:ts",
     "dev": "yarn build",
     "dev:local": "yarn build",
-    "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
-    "clean:dist": "rm -rf dist/",
+    "lint": "TIMING=1 eslint \"generated/**/*.ts*\"",
+    "clean:dist": "rm -rf dist/ && rm -rf generated/",
     "clean:cache": "rm -rf .turbo",
     "clean": "yarn clean:dist && yarn clean:cache"
   },

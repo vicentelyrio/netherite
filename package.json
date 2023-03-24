@@ -24,6 +24,7 @@
     "dev:core": "turbo run dev:local --no-cache --continue --filter=@netherite/ds-tokens --filter=@netherite/ds-components --filter=@netherite/core --filter=@netherite/api",
     "dev:api": "turbo run dev:local --no-cache --continue --filter=@netherite/api",
     "build": "turbo run build",
+    "build:core": "turbo run build --filter=!./apps/*",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint -- --fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
