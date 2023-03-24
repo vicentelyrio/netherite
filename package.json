@@ -45,6 +45,6 @@
     "@manypkg/cli": "^0.19.2",
     "eslint-config-netherite": "*",
     "prettier": "^2.8.3",
-    "turbo": "^1.8.3"
+    "turbo": "^1.8.5"
   }
 }
