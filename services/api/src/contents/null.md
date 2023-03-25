@@ -1,3 +1,0 @@
-# null
-
-some text example

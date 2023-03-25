@@ -18,12 +18,12 @@
   "scripts": {
     "postinstall": "manypkg check",
     "dev": "turbo run dev --no-cache --continue",
-    "dev:dsbase": "yarn dev --filter=@netherite/ds-tokens --filter=@netherite/ds-components",
-    "dev:site": "yarn dev:dsbase --filter=@netherite/site",
+    "dev:dsbase": "yarn dev --filter=@netherite/ds-assets --filter=@netherite/ds-tokens --filter=@netherite/ds-components",
     "dev:app": "yarn dev:dsbase --filter=@netherite/core --filter=@netherite/desktop",
-    "dev:core": "turbo run dev:local --no-cache --continue --filter=@netherite/ds-tokens --filter=@netherite/ds-components --filter=@netherite/core --filter=@netherite/api",
+    "dev:core": "turbo run dev:local --no-cache --continue --filter=@netherite/ds-assets --filter=@netherite/ds-tokens --filter=@netherite/ds-components --filter=@netherite/core --filter=@netherite/api",
     "dev:api": "turbo run dev:local --no-cache --continue --filter=@netherite/api",
     "build": "turbo run build",
+    "build:core": "turbo run build --filter=!./apps/*",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint -- --fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
@@ -45,6 +45,6 @@
     "@manypkg/cli": "^0.19.2",
     "eslint-config-netherite": "*",
     "prettier": "^2.8.3",
-    "turbo": "^1.8.3"
+    "turbo": "^1.8.5"
   }
 }

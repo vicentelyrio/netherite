@@ -1,0 +1,21 @@
+{
+  "srcFiles": ["./src/assets/**/*.svg"],
+  "outputDirectory": "./generated",
+  "iconsFolderName": "assets",
+  "delimiter": "CAMEL",
+  "svgoConfig": {
+    "plugins": ["cleanupAttrs"]
+  },
+  "tsx": true,
+  "fileName": "index",
+  "interfaceName": "Icon",
+  "prefix": "Icon",
+  "generateType": true,
+  "generateTypeObject": true,
+  "typeName": "IconsType",
+  "compile": false,
+  "compileSources": false,
+  "generateEnum": true,
+  "enumName": "Icons",
+  "verbose": true,
+}

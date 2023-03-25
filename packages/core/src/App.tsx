@@ -1,64 +1,81 @@
-import { useMemo } from 'react'
-import {
-  ApolloClient,
-  InMemoryCache,
-  HttpLink,
-  ApolloProvider,
-  useQuery,
-  gql,
-} from '@apollo/client'
+import { useMemo, type ReactElement } from 'react'
+import { Outlet, ReactLocation, Router, type Route } from '@tanstack/react-location'
+/* import { ReactLocationDevtools } from '@tanstack/react-location-devtools' */
 
-import { Avatar } from '@netherite/ds-components'
+import { useQuery } from '@apollo/client'
+import { GET_PAGE_BY_NAME } from 'api/Page/query'
+import { PageLoader } from '@netherite/ds-components'
 
-const URL = 'http://127.0.0.1'
-const PORT = 4000
-const PATH = 'graphql'
+import { Page } from 'pages/Page/Page'
 
-type ClientProps = {
-  url?: string
-  path?: string
-  port?: number
+const location = new ReactLocation()
+
+type TemplateTypes = 'PAGE'
+| 'REDIRECT'
+| 'INBOX'
+| 'SEARCH'
+| 'GOALS'
+| 'GOAL'
+| 'PROJECTS'
+| 'PROJECT'
+| 'TASK'
+| 'TOPICS'
+| 'TOPIC'
+| 'STATS'
+| 'LABELS'
+| 'GRAPH'
+
+const Templates: Record<TemplateTypes, ReactElement> = {
+  REDIRECT: <Page />,
+  PAGE: <Page />,
+
+  INBOX: <h1>INBOX</h1>,
+  SEARCH: <h1>SEARCH</h1>,
+
+  GOALS: <h1>GOALS</h1>,
+  GOAL: <h1>GOAL</h1>,
+
+  PROJECTS: <h1>PROJECTS</h1>,
+  PROJECT: <h1>PROJECT</h1>,
+  TASK: <h1>TASK</h1>,
+
+  TOPICS: <h1>TOPICS</h1>,
+  TOPIC: <h1>TOPIC</h1>,
+
+  STATS: <h1>STATS</h1>,
+  LABELS: <h1>LABELS</h1>,
+  GRAPH: <h1>GRAPH</h1>,
 }
 
-export const buildClient = (props?: ClientProps) => {
-  const { url = URL, port = PORT, path = PATH } = props || {}
+type RawRoute = Partial<Omit<Route, 'element' | 'children'>> & {
+  element: TemplateTypes,
+  children: RawRoute[],
+}
 
-  return new ApolloClient({
-    cache: new InMemoryCache(),
-    link: new HttpLink({
-      uri: `${url}:${port}/${path}`
-    })
+export const App = () => {
+  const { data, loading } = useQuery(GET_PAGE_BY_NAME, {
+    variables: { name: 'main' }
   })
-}
 
-export function App(props?: ClientProps) {
-  const client = useMemo(() => buildClient(props), [props])
+  const routes: Route[] = useMemo(() => {
+    const routesDefinition = data?.getPageByName?.routes
+    return routesDefinition?.map(mapRoutes)
+  }, [data])
 
-  return (
-    <ApolloProvider client={client}>
-      <Content />
-    </ApolloProvider>
+  return (loading || !routes) ? <PageLoader /> : (
+    <Router location={location} routes={routes}>
+      {/* <ReactLocationDevtools initialIsOpen={false} /> */}
+      <Outlet />
+    </Router>
   )
 }
 
-export default App
+function mapRoutes ({ path, element, children }: RawRoute): Partial<Route> {
+  const Template = Templates[element]
 
-const GET_FILE = gql`
-  query Recipes {
-    recipes {
-      title
-      ratingsCount
-    }
+  return {
+    path,
+    element: Template,
+    children: children?.map(mapRoutes)
   }
-`
-
-const Content = () => {
-  const { loading, error, data } = useQuery(GET_FILE)
-  console.log(loading, error, data)
-
-  return (
-    <div className="App">
-      <Avatar label="Olar" />
-    </div>
-  )
 }

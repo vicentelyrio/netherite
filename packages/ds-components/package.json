@@ -10,8 +10,10 @@
     "./dist/**"
   ],
   "scripts": {
-    "build": "yarn clean:dist && tsc -b",
-    "dev": "tsc -b -w",
+    "build": "yarn clean:dist && tsc -b && tsc-alias",
+    "dev:watch": "tsc -b -w",
+    "dev:alias": "tsc-alias -w",
+    "dev": "concurrently \"npm:dev:watch\" \"npm:dev:alias\"",
     "dev:local": "yarn dev",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
     "clean:dist": "rm -rf dist/",
@@ -21,15 +23,18 @@
   "devDependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@netherite/ds-assets": "*",
     "@netherite/ds-tokens": "*",
     "@netherite/tsconfig": "*",
     "@types/react": "^18.0.27",
+    "concurrently": "^7.6.0",
     "eslint-config-netherite": "*",
     "react": "^18.2.0",
     "rollup": "^3.17.3",
     "rollup-plugin-dts": "^5.2.0",
     "rollup-plugin-esbuild": "^5.0.0",
     "theme-ui": "^0.15.5",
+    "tsc-alias": "^1.8.4",
     "typescript": "^4.9.4"
   },
   "peerDependencies": {
