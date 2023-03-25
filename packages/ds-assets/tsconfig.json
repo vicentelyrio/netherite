@@ -6,7 +6,8 @@
     "baseUrl": ".",
     "outDir": "./dist",
     "noImplicitAny": false,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "typeRoots": ["./src/@types", "./node_modules/@types"]
   },
   "include": ["src/**/*", "generated/**/*"],
   "exclude": ["node_modules"]
