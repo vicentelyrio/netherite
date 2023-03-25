@@ -36,4 +36,4 @@ jobs:
           command: yarn test
       - run:
           name: Release
-          command: yarn release
+          command: yarn cs:release
