@@ -1,5 +1,11 @@
 # @netherite/api
 
+## 0.0.3
+
+### Patch Changes
+
+- bdf0b13: packages integration with core package
+
 ## 0.0.2
 
 ### Patch Changes

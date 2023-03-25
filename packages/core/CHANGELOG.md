@@ -1,5 +1,15 @@
 # @netherite/core
 
+## 0.0.3
+
+### Patch Changes
+
+- bdf0b13: packages integration with core package
+- Updated dependencies [bdf0b13]
+- Updated dependencies [bdf0b13]
+  - @netherite/ds-assets@0.0.1
+  - @netherite/ds-components@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes

@@ -38,7 +38,7 @@
     "cs:version": "changeset version",
     "cs:status": "changeset status",
     "cs:publish": "changeset publish",
-    "release": "yarn build && yarn cs:publish"
+    "cs:release": "yarn cs:version && yarn cs:publish"
   },
   "dependencies": {
     "@changesets/cli": "^2.26.0",
