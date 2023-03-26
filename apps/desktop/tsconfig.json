@@ -9,7 +9,7 @@
       "*": ["node_modules/*"]
     },
     "module": "nodenext",
-    "jsx": "react-jsx"
+    "jsx": "react"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

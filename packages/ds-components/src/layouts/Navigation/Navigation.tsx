@@ -5,7 +5,7 @@ import type { ThemeUIStyleObject } from 'theme-ui'
 import * as Styled from './Navigation.styles'
 
 export type NavigationItem = {
-  icon: any
+  icon: any // eslint-disable-line @typescript-eslint/no-explicit-any
   title?: string
   to?: string
   className?: string

@@ -8,7 +8,7 @@ import type { GraphQLSchema } from 'graphql'
 import path from 'path'
 
 import { GoalResolver } from 'resolvers/Goal/Goal.resolver'
-import { PageResolver } from 'resolvers/Page/Page.resolver'
+import { AppSettingsResolver } from 'resolvers/AppSettings/AppSettings.resolver'
 
 export type ApiConfig = {
   appRoot: string
@@ -27,7 +27,7 @@ export async function schemaBuilder(): Promise<GraphQLSchema> {
   return await buildSchema({
     resolvers: [
       GoalResolver,
-      PageResolver,
+      AppSettingsResolver,
     ],
     container: ({ context }: ResolverData<Context>) => context.container,
   })

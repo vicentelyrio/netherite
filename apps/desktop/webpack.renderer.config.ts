@@ -12,7 +12,7 @@ export const rendererConfig: WebpackConfiguration = {
   module: {
     rules,
   },
-  plugins: plugins as any,
+  plugins: plugins as any,  // eslint-disable-line
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
   },
