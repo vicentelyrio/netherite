@@ -10,6 +10,8 @@ import path from 'path'
 import { GoalResolver } from 'resolvers/Goal/Goal.resolver'
 import { AppSettingsResolver } from 'resolvers/AppSettings/AppSettings.resolver'
 
+export { AppSettings } from 'resolvers/AppSettings/AppSettings.type'
+
 export type ApiConfig = {
   appRoot: string
 }

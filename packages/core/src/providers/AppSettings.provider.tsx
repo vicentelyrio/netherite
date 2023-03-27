@@ -1,6 +1,7 @@
 import { createContext, useContext, type ReactNode } from 'react'
 import { useQuery } from '@apollo/client'
 import { PageLoader } from '@netherite/ds-components'
+import type { AppSettings } from '@netherite/api'
 
 import { GET_APP_SETTINGS } from 'api/AppSettings/query'
 
@@ -8,18 +9,24 @@ export type ProviderProps = {
   children: ReactNode
 }
 
-export const AppContext = createContext(null)
+export type AppSettingsType = AppSettings
 
-export const useAppSettings = () => useContext(AppContext)
+export const AppContext = createContext<AppSettingsType | null>(null)
+
+export const useAppSettings = ():AppSettingsType => {
+  const appSettings = useContext<AppSettingsType | null>(AppContext)
+
+  if (!appSettings) return {} as AppSettingsType
+
+  return appSettings
+}
 
 export const AppSettingsProvider = ({ children }: ProviderProps) => {
   const { data, loading } = useQuery(GET_APP_SETTINGS)
 
-  if (loading) return <PageLoader />
-
   return (
     <AppContext.Provider value={data?.getAppSettings}>
-      {children}
+      {loading ? <PageLoader /> : children}
     </AppContext.Provider>
   )
 }

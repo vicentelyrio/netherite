@@ -2,22 +2,22 @@ import { useMemo, type ReactElement, type ReactPropTypes } from 'react'
 import { Link, Outlet } from '@tanstack/react-location'
 import { Navigation, Page as PageLayout } from '@netherite/ds-components'
 
-import * as ICONS from '@netherite/ds-assets'
+import { Icons, type IconsType } from '@netherite/ds-assets'
 
-import { useAppSettings } from 'providers/AppSettings.provider'
-
-console.log(ICONS)
+import { useAppSettings, type AppSettingsType } from 'providers/AppSettings.provider'
 
 const Nav = () => {
-  const { navbar } = useAppSettings()
+  const { navbar }: AppSettingsType = useAppSettings()
 
   const navigation = useMemo(() => {
+    const { brand, search, inbox, primaryOptions, secondaryOptions } = navbar ?? {}
+
     return {
-      brand: mapLink(navbar?.brand),
-      search: mapLink(navbar?.search),
-      inbox: mapLink(navbar?.inbox),
-      primaryOptions: navbar?.primaryOptions?.map(mapLink),
-      secondaryOptions: navbar?.secondaryOptions?.map(mapLink),
+      brand: mapLink(brand),
+      search: mapLink(search),
+      inbox: mapLink(inbox),
+      primaryOptions: primaryOptions?.map(mapLink),
+      secondaryOptions: secondaryOptions?.map(mapLink),
     }
   }, [navbar])
 
@@ -40,5 +40,5 @@ const mapLink = ({ to, icon }: { to: string, icon: string }) => ({
     <Link {...props} getActiveProps={() => ({ style: { color: 'green' }, })} />
   ),
   to,
-  icon: ICONS[icon] as ReactElement
+  icon: Icons[icon as IconsType]
 })

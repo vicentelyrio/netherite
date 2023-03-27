@@ -57,7 +57,7 @@ export class NavLink {
 @ObjectType({ description: 'Object representing the Navbar' })
 export class Navbar {
   @Field(() => NavLink, { description: 'The Brand logo', nullable: true })
-  brand?: NavLink
+  brand!: NavLink
 
   @Field(() => NavLink, { description: 'The Search link' })
   search!: NavLink
