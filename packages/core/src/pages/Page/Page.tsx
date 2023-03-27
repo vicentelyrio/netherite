@@ -1,8 +1,8 @@
 import { useMemo, type ReactElement, type ReactPropTypes } from 'react'
 import { Link, Outlet } from '@tanstack/react-location'
-import { Navigation, Page as PageLayout } from '@netherite/ds-components'
-
+import { theme } from '@netherite/ds-tokens'
 import { Icons, type IconsType } from '@netherite/ds-assets'
+import { Navigation, Page as PageLayout } from '@netherite/ds-components'
 
 import { useAppSettings, type AppSettingsType } from 'providers/AppSettings.provider'
 
@@ -37,8 +37,14 @@ export const Page = (): ReactElement => {
 
 const mapLink = ({ to, icon }: { to: string, icon: string }) => ({
   as: (props: ReactPropTypes) => (
-    <Link {...props} getActiveProps={() => ({ style: { color: 'green' }, })} />
+    <Link {...props} getActiveProps={getActiveProps} />
   ),
   to,
   icon: Icons[icon as IconsType]
 })
+
+const getActiveProps = () => ({
+  style: { color: theme?.colors?.accentGreen },
+  cursor: 'default'
+})
+

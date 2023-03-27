@@ -57,8 +57,8 @@ export const Navigation = ({
   )
 }
 
-const Item = ({ icon, ...rest }: NavigationItem, index: number): ReactElement => (
+const Item = ({ icon: Icon, ...rest }: NavigationItem, index: number): ReactElement => (
   <Styled.Item {...rest} key={index} sx={{ my: 1, color: 'accent' }}>
-    {icon}
+    {Icon && <Icon />}
   </Styled.Item>
 )

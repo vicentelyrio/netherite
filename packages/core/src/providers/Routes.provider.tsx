@@ -1,4 +1,4 @@
-import { useContext, useMemo, type ReactElement } from 'react'
+import { useMemo, type ReactElement } from 'react'
 import { Outlet, ReactLocation, Router, type Route } from '@tanstack/react-location'
 
 import { Page } from 'pages/Page/Page'
@@ -45,14 +45,15 @@ const Templates: Record<TemplateTypes, ReactElement> = {
 
 type RawRoute = Partial<Omit<Route, 'element' | 'children'>> & {
   element: TemplateTypes,
-  children: RawRoute[],
+  children?: RawRoute[],
 }
 
 export const RoutesProvider = () => {
   const data = useAppSettings()
   const routes: Route[] = useMemo(() => {
-    const routesDefinition = data ? data['routes'] : []
-    return routesDefinition?.map(mapRoutes)
+    const routesDefinition = (data?.routes ?? []) as RawRoute[]
+
+    return routesDefinition?.map((route: RawRoute) => mapRoutes(route))
   }, [data])
 
   return (
@@ -68,6 +69,6 @@ function mapRoutes ({ path, element, children }: RawRoute): Partial<Route> {
   return {
     path,
     element: Template,
-    children: children?.map(mapRoutes)
+    children: children?.map((route: RawRoute) => mapRoutes(route))
   }
 }

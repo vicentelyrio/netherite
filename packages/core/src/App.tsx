@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react'
+import type { ReactElement } from 'react'
 
-export const App = (): ReactNode => {
-  return ''
+export const App = (): ReactElement | null => {
+  return null
 }
 

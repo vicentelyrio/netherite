@@ -17,6 +17,11 @@ export const Item = styled(IconButton)`
   flex: 0 0 auto;
 `
 
+export const Icon = styled('div', {
+  shouldForwardProp: (props) => props !== 'isActive',
+})`
+`
+
 const Nav = styled.nav`
   border-radius: ${NAV_WIDTH}px;
   flex: '0 0 auto';
