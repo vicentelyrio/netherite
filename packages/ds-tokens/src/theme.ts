@@ -25,6 +25,7 @@ interface ThemeDS extends Theme {
 export const theme: ThemeDS = {
   breakpoints: ['40em', '52em', '64em'],
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
+  sizes: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   fonts: {
     body: '"Source Sans Pro", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
     heading: 'inherit',

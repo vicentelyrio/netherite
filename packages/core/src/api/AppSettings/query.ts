@@ -17,22 +17,32 @@ export const GET_APP_SETTINGS = gql`
         brand {
           icon
           to
+          color
+          colorActive
         }
         inbox {
           to
           icon
+          color
+          colorActive
         }
         search {
           to
           icon
+          color
+          colorActive
         }
         primaryOptions {
           to
           icon
+          color
+          colorActive
         }
         secondaryOptions {
           to
           icon
+          color
+          colorActive
         }
       }
     }

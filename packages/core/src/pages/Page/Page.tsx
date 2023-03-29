@@ -2,7 +2,7 @@ import { useMemo, type ReactElement, type ReactPropTypes } from 'react'
 import { Link, Outlet } from '@tanstack/react-location'
 import { theme } from '@netherite/ds-tokens'
 import { Icons, type IconsType } from '@netherite/ds-assets'
-import { Navigation, Page as PageLayout } from '@netherite/ds-components'
+import { Navigation, Page as PageLayout, type NavigationItem } from '@netherite/ds-components'
 
 import { useAppSettings, type AppSettingsType } from 'providers/AppSettings.provider'
 
@@ -13,11 +13,16 @@ const Nav = () => {
     const { brand, search, inbox, primaryOptions, secondaryOptions } = navbar ?? {}
 
     return {
-      brand: mapLink(brand),
-      search: mapLink(search),
-      inbox: mapLink(inbox),
-      primaryOptions: primaryOptions?.map(mapLink),
-      secondaryOptions: secondaryOptions?.map(mapLink),
+      brand: mapLink(brand as NavigationItem),
+      search: mapLink(search as NavigationItem),
+      inbox: mapLink(inbox as NavigationItem),
+      primaryOptions: primaryOptions?.map((value: NavigationItem) => mapLink(value)),
+      secondaryOptions: secondaryOptions?.map((value: NavigationItem) => mapLink(value)),
+      user: {
+        initials: 'vl',
+        title: 'Vicente Lyrio',
+        to: '/settings'
+      }
     }
   }, [navbar])
 
@@ -35,16 +40,18 @@ export const Page = (): ReactElement => {
   )
 }
 
-const mapLink = ({ to, icon }: { to: string, icon: string }) => ({
+
+const mapLink = ({ to, icon, color, colorActive = 'accent' }: NavigationItem) => ({
   as: (props: ReactPropTypes) => (
-    <Link {...props} getActiveProps={getActiveProps} />
+    <Link {...props} getActiveProps={getActiveProps(colorActive)} />
   ),
   to,
+  color,
   icon: Icons[icon as IconsType]
 })
 
-const getActiveProps = () => ({
-  style: { color: theme?.colors?.accentGreen },
+const getActiveProps = (color: keyof typeof theme.colors) => () => ({
+  style: { color: theme?.colors[color] },
   cursor: 'default'
 })
 

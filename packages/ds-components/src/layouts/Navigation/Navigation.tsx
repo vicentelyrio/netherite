@@ -1,4 +1,5 @@
 /** @jsxImportSource theme-ui */
+import type { theme } from '@netherite/ds-tokens'
 import type { ReactElement } from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 
@@ -10,6 +11,12 @@ export type NavigationItem = {
   to?: string
   className?: string
   sx?: ThemeUIStyleObject
+  color?: keyof typeof theme.colors
+  colorActive?: keyof typeof theme.colors
+}
+
+export type NavigationAvatar = Omit<NavigationItem, 'icon'> & {
+  initials: string
 }
 
 export type NavigationProps = {
@@ -17,6 +24,7 @@ export type NavigationProps = {
   brand?: NavigationItem
   search?: NavigationItem
   inbox?: NavigationItem
+  user?: NavigationAvatar
   primaryOptions?: NavigationItem[]
   secondaryOptions?: NavigationItem[]
 }
@@ -26,39 +34,45 @@ export const Navigation = ({
   brand,
   search,
   inbox,
+  /* user, */
   primaryOptions = [],
-  secondaryOptions = []
+  secondaryOptions = [],
 }: NavigationProps): ReactElement => {
   return (
     <Styled.Navigation className={className} sx={{ bg: 'backgroundDark' }}>
-      {brand && <Item {...brand} sx={{ my: 2 }} />}
-      {search && <Item {...search} sx={{ mt: 3 }} />}
+      {brand && <Item {...brand} sx={{ mt: 3 }} />}
+      {search && <Item {...search} sx={{ mt: 4 }} />}
 
-      <Styled.NavigationSecondary sx={{
+      <Styled.NavSecondary sx={{
           bg: 'shadow',
           py: 3
         }}>
 
         {inbox && <Item {...inbox} />}
 
-        <Styled.NavigationPrimary sx={{
+        <Styled.NavPrimary sx={{
           bg: 'shadowDark',
           py: 3,
           my: 3,
         }}>
           {primaryOptions.length > 0 && primaryOptions.map(Item)}
-        </Styled.NavigationPrimary>
+        </Styled.NavPrimary>
 
         {secondaryOptions.length > 0 && secondaryOptions.map(Item)}
-      </Styled.NavigationSecondary>
+      </Styled.NavSecondary>
 
-      {search && <Item {...search} />}
+      {/* {user && <Item {...user} />} */}
     </Styled.Navigation>
   )
 }
 
-const Item = ({ icon: Icon, ...rest }: NavigationItem, index: number): ReactElement => (
-  <Styled.Item {...rest} key={index} sx={{ my: 1, color: 'accent' }}>
+const Item = ({ icon: Icon, sx, color, ...rest }: NavigationItem, index: number): ReactElement => (
+  <Styled.NavItem
+    sx={{
+      color,
+      ...sx
+    }}
+    {...rest} key={index}>
     {Icon && <Icon />}
-  </Styled.Item>
+  </Styled.NavItem>
 )

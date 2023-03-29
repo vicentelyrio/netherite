@@ -1,5 +1,6 @@
 /** @jsxImportSource theme-ui */
 import styled from '@emotion/styled'
+import { Avatar } from 'components/Avatar/Avatar'
 import { IconButton } from 'theme-ui'
 
 export const NAV_WIDTH = 40
@@ -13,16 +14,11 @@ export const Navigation = styled.div`
   align-items: center;
 `
 
-export const Item = styled(IconButton)`
+export const NavItem = styled(IconButton)`
   flex: 0 0 auto;
 `
 
-export const Icon = styled('div', {
-  shouldForwardProp: (props) => props !== 'isActive',
-})`
-`
-
-const Nav = styled.nav`
+const NavBase = styled.nav`
   border-radius: ${NAV_WIDTH}px;
   flex: '0 0 auto';
   display: 'flex';
@@ -31,6 +27,9 @@ const Nav = styled.nav`
   text-align: center;
 `
 
-export const NavigationPrimary = styled(Nav)``
+export const NavPrimary = styled(NavBase)``
 
-export const NavigationSecondary = styled(Nav)``
+export const NavSecondary = styled(NavBase)``
+
+export const NavAvatar = styled(Avatar)``
+

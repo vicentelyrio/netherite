@@ -48,6 +48,12 @@ export class NavLink {
 
   @Field({ description: 'The path' })
   to!: string
+
+  @Field({ description: 'The icon color', nullable: true })
+  color?: string
+
+  @Field({ description: 'The icon active color', nullable: true })
+  colorActive?: string
 }
 
 /**
