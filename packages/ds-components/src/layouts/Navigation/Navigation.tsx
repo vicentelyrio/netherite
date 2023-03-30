@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
-import type { theme } from '@netherite/ds-tokens'
-import type { ReactElement } from 'react'
+import type { Theme } from '@netherite/ds-tokens'
+import type { ReactElement, ReactNode } from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 
 import * as Styled from './Navigation.styles'
@@ -11,12 +11,12 @@ export type NavigationItem = {
   to?: string
   className?: string
   sx?: ThemeUIStyleObject
-  color?: keyof typeof theme.colors
-  colorActive?: keyof typeof theme.colors
+  color?: keyof Theme['colors']
+  colorActive?: keyof Theme['colors']
 }
 
 export type NavigationAvatar = Omit<NavigationItem, 'icon'> & {
-  initials: string
+  children: ReactNode
 }
 
 export type NavigationProps = {
@@ -34,13 +34,13 @@ export const Navigation = ({
   brand,
   search,
   inbox,
-  /* user, */
+  user,
   primaryOptions = [],
   secondaryOptions = [],
 }: NavigationProps): ReactElement => {
   return (
-    <Styled.Navigation className={className} sx={{ bg: 'backgroundDark' }}>
-      {brand && <Item {...brand} sx={{ mt: 3 }} />}
+    <Styled.Navigation className={className} sx={{ bg: 'backgroundDark', py: 3 }}>
+      {brand && <Item {...brand} sx={{ mt: 1 }} />}
       {search && <Item {...search} sx={{ mt: 4 }} />}
 
       <Styled.NavSecondary sx={{
@@ -61,15 +61,17 @@ export const Navigation = ({
         {secondaryOptions.length > 0 && secondaryOptions.map(Item)}
       </Styled.NavSecondary>
 
-      {/* {user && <Item {...user} />} */}
+      {user && <Styled.NavAvatar {...user} color={user.color} />}
     </Styled.Navigation>
   )
 }
 
-const Item = ({ icon: Icon, sx, color, ...rest }: NavigationItem, index: number): ReactElement => (
+const Item = ({ icon: Icon, sx, colorActive, color, ...rest }: NavigationItem, index?: number): ReactElement => (
   <Styled.NavItem
     sx={{
       color,
+      my: 1,
+      '&.active': { color: colorActive },
       ...sx
     }}
     {...rest} key={index}>

@@ -1,30 +1,32 @@
 /** @jsxImportSource theme-ui */
-import type { theme } from '@netherite/ds-tokens'
-import type { ReactElement } from 'react'
+import type { ComponentPropsWithoutRef, ReactElement } from 'react'
+import type { Theme } from '@netherite/ds-tokens'
 
 import * as Styled from './Avatar.styles'
 
 export enum AvatarSizes {
-  'small',
-  'medium',
-  'large'
+  'small' = 3,
+  'medium' = 4,
+  'large' = 5,
 }
 
-export type AvatarProps = {
-  className?: string
-  color: keyof typeof theme.colors
-  children?: ReactElement
+export type AvatarProps = Omit<ComponentPropsWithoutRef<'div'>, 'color'> & {
+  color?: keyof Theme['colors']
   size: AvatarSizes
 }
 
-export const Avatar = ({ className, children, size }: AvatarProps): ReactElement => {
+export const Avatar = ({ children, size, color, ...rest }: AvatarProps): ReactElement => {
   return (
     <Styled.Avatar
-      className={className}
       children={children}
       sx={{
-        size
+        size,
+        bg: color,
+        color: 'background',
+        fontSize: 2,
+        fontWeight: 600
       }}
+      {...rest}
     />
   )
 }

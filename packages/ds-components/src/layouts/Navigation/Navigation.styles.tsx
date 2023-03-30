@@ -31,5 +31,8 @@ export const NavPrimary = styled(NavBase)``
 
 export const NavSecondary = styled(NavBase)``
 
-export const NavAvatar = styled(Avatar)``
+export const NavAvatar = styled(Avatar)`
+  cursor: pointer;
+  text-decoration: none;
+`
 

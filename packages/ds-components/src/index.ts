@@ -9,5 +9,6 @@ export {
   Navigation,
   type NavigationItem,
   type NavigationProps,
+  type NavigationAvatar,
 } from 'layouts/Navigation/Navigation'
 

@@ -18,7 +18,7 @@ const colors = {
   shadowDarkest: '#1A1B21',
 } as const
 
-interface ThemeDS extends Theme {
+export interface ThemeDS extends Theme {
   colors: typeof colors
 }
 
@@ -35,8 +35,8 @@ export const theme: ThemeDS = {
   fontWeights: {
     body: 400,
     heading: 700,
-    bold: 700,
-    avatar: 900,
+    bold: 600,
+    avatar: 600,
   },
   lineHeights: {
     body: 1.4,
