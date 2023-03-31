@@ -24,7 +24,7 @@ export const Avatar = ({ children, size, color, ...rest }: AvatarProps): ReactEl
         bg: color,
         color: 'background',
         fontSize: 2,
-        fontWeight: 600
+        fontWeight: 700
       }}
       {...rest}
     />

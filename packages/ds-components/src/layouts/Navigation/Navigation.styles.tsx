@@ -34,5 +34,6 @@ export const NavSecondary = styled(NavBase)``
 export const NavAvatar = styled(Avatar)`
   cursor: pointer;
   text-decoration: none;
+  flex: 0 0 auto;
 `
 
