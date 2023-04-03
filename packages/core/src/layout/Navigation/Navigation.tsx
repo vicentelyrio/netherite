@@ -1,16 +1,15 @@
-import { useMemo, type ReactElement, type ReactPropTypes } from 'react'
-import { Link, Outlet } from '@tanstack/react-location'
+import { useMemo, type ReactPropTypes } from 'react'
+import { Link } from '@tanstack/react-location'
 import { Icons, type IconsType } from '@netherite/ds-assets'
 import {
-  Navigation,
+  Navigation as NavigationLayout,
   type NavigationItem,
   type NavigationAvatar,
-  Page as PageLayout,
 } from '@netherite/ds-components'
 
 import { useAppSettings, type AppSettingsType } from 'providers/AppSettings.provider'
 
-const Nav = () => {
+export const Navigation = () => {
   const { navbar }: AppSettingsType = useAppSettings()
 
   const navigation = useMemo(() => {
@@ -33,19 +32,9 @@ const Nav = () => {
   }, [navbar])
 
   return (
-    <Navigation {...navigation} />
+    <NavigationLayout {...navigation} />
   )
 }
-
-export const Page = (): ReactElement => {
-  return (
-    <PageLayout
-      navigation={<Nav />}
-      workspace={<Outlet />}
-    />
-  )
-}
-
 
 const mapLink = ({ to, icon, color, colorActive }: NavigationItem) => ({
   as: (props: ReactPropTypes) => (

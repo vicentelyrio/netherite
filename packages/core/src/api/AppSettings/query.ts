@@ -6,10 +6,12 @@ export const GET_APP_SETTINGS = gql`
       identifier
       raw
       routes {
-        element
         path
+        templateType
+        workspaceType
         children {
-          element
+          templateType
+          workspaceType
           path
         }
       }

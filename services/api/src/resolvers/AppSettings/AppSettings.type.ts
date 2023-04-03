@@ -1,25 +1,6 @@
-import { Field, ObjectType, registerEnumType } from 'type-graphql'
+import { Field, ObjectType } from 'type-graphql'
 
 import type { Identifier } from 'resolvers/Identifier/Identifier'
-
-/**
-* @memberof AppSettings Type
-* @alias TemplateType
-*/
-enum TemplateType {
-  GOALS = 'GOALS',
-  GOAL = 'GOAL',
-  PROJECT = 'PROJECT',
-  TASK = 'TASK',
-  TOPIC = 'TOPIC',
-  GRAPH = 'GRAPH',
-  SETTINGS = 'SETTINGS',
-}
-
-registerEnumType(TemplateType, {
-  name: 'TemplateType',
-  description: 'The AppSettings Template'
-})
 
 /**
 * @memberof AppSettings Type
@@ -30,8 +11,11 @@ export class Route {
   @Field({ description: 'The Route path' })
   path!: string
 
-  @Field({ description: 'The Route path', nullable: true })
-  element?: string
+  @Field({ description: 'The Route template type', nullable: true })
+  templateType?: string
+
+  @Field({ description: 'The Route workspace type', nullable: true })
+  workspaceType?: string
 
   @Field(() => [Route], { description: 'The Route childrens', nullable: true })
   children?: Route[]

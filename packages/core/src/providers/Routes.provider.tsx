@@ -1,50 +1,26 @@
-import { useMemo, type ReactElement } from 'react'
+import { useMemo } from 'react'
 import { Outlet, ReactLocation, Router, type Route } from '@tanstack/react-location'
 
-import { Page } from 'pages/Page/Page'
 import { useAppSettings } from 'providers/AppSettings.provider'
+
+import { Page } from 'layout/Page/Page'
+import { Workspace } from 'layout/Workspace/Workspace'
 
 const location = new ReactLocation()
 
-type TemplateTypes = 'PAGE'
-| 'REDIRECT'
-| 'INBOX'
-| 'SEARCH'
-| 'GOALS'
-| 'GOAL'
-| 'PROJECTS'
-| 'PROJECT'
-| 'TASK'
-| 'TOPICS'
-| 'TOPIC'
-| 'STATS'
-| 'LABELS'
-| 'GRAPH'
+type TemplateTypesNames = 'DASHBOARD' | 'PAGE' | 'WORKSPACE'
 
-const Templates: Record<TemplateTypes, ReactElement> = {
-  REDIRECT: <Page />,
-  PAGE: <Page />,
+type TemplateTypes = typeof Page | typeof Workspace
 
-  INBOX: <h1>INBOX</h1>,
-  SEARCH: <h1>SEARCH</h1>,
-
-  GOALS: <h1>GOALS</h1>,
-  GOAL: <h1>GOAL</h1>,
-
-  PROJECTS: <h1>PROJECTS</h1>,
-  PROJECT: <h1>PROJECT</h1>,
-  TASK: <h1>TASK</h1>,
-
-  TOPICS: <h1>TOPICS</h1>,
-  TOPIC: <h1>TOPIC</h1>,
-
-  STATS: <h1>STATS</h1>,
-  LABELS: <h1>LABELS</h1>,
-  GRAPH: <h1>GRAPH</h1>,
+const Templates: Record<TemplateTypesNames, TemplateTypes> = {
+  DASHBOARD: Page,
+  PAGE: Page,
+  WORKSPACE: Workspace,
 }
 
-type RawRoute = Partial<Omit<Route, 'element' | 'children'>> & {
-  element: TemplateTypes,
+type RawRoute = Partial<Omit<Route, 'children'>> & {
+  templateType: TemplateTypesNames,
+  workspaceType: string,
   children?: RawRoute[],
 }
 
@@ -63,12 +39,13 @@ export const RoutesProvider = () => {
   )
 }
 
-function mapRoutes ({ path, element, children }: RawRoute): Partial<Route> {
-  const Template = Templates[element]
+function mapRoutes ({ path, templateType, workspaceType, children }: RawRoute): Partial<Route> {
+  const Template = Templates[templateType] ?? Page
 
   return {
     path,
-    element: Template,
+    element: <Template type={workspaceType} />,
     children: children?.map((route: RawRoute) => mapRoutes(route))
   }
 }
+
