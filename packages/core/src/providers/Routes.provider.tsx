@@ -4,7 +4,7 @@ import { Outlet, ReactLocation, Router, type Route } from '@tanstack/react-locat
 import { useAppSettings } from 'providers/AppSettings.provider'
 
 import { Page } from 'layout/Page/Page'
-import { Workspace } from 'layout/Workspace/Workspace'
+import { Workspace, type WorkspaceNames } from 'layout/Workspace/Workspace'
 
 const location = new ReactLocation()
 
@@ -28,7 +28,6 @@ export const RoutesProvider = () => {
   const data = useAppSettings()
   const routes: Route[] = useMemo(() => {
     const routesDefinition = (data?.routes ?? []) as RawRoute[]
-
     return routesDefinition?.map((route: RawRoute) => mapRoutes(route))
   }, [data])
 
@@ -44,7 +43,7 @@ function mapRoutes ({ path, templateType, workspaceType, children }: RawRoute): 
 
   return {
     path,
-    element: <Template type={workspaceType} />,
+    element: <Template type={workspaceType as WorkspaceNames} />,
     children: children?.map((route: RawRoute) => mapRoutes(route))
   }
 }

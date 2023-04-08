@@ -16,7 +16,14 @@ type ProviderProps = {
 }
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Goal: { keyFields: ['slug'] },
+      Project: { keyFields: ['slug'] },
+      Task: { keyFields: ['slug'] },
+      Topic: { keyFields: ['slug'] },
+    }
+  }),
   link: new HttpLink({
     uri: `${URL}:${PORT}/${PATH}`
   })
