@@ -10,7 +10,7 @@ export class AppSettingsService {
   private readonly service!: BaseFileService
 
   async getAppSettings() {
-    const file = await this.service.getFileByName('.config.md')
+    const file = await this.service.getFileByName('.config')
 
     if (!file) throw new Error('File not found')
 

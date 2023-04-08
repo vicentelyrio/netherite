@@ -1,6 +1,6 @@
 import { Field, ObjectType } from 'type-graphql'
 
-import type { Identifier } from 'resolvers/Identifier/Identifier'
+import { BaseFile } from 'resolvers/BaseFile/BaseFile'
 
 /**
 * @memberof AppSettings Type
@@ -67,13 +67,7 @@ export class Navbar {
 * @alias AppSettings
 */
 @ObjectType({ description: 'Object representing a AppSettings' })
-export class AppSettings {
-  @Field({ description: 'The AppSettings identifier' })
-  identifier!: Identifier
-
-  @Field({ description: 'The AppSettings raw markdown' })
-  raw!: string
-
+export class AppSettings extends BaseFile {
   @Field(() => [Route], { description: 'The AppSettings routes' })
   routes!: Route[]
 

@@ -1,17 +1,28 @@
 import { Field, ObjectType } from 'type-graphql'
-import { Contains, IsDate, IsString, MinLength } from 'class-validator'
+import { IsDate, IsString, MinLength } from 'class-validator'
 
+import { BaseFile } from 'resolvers/BaseFile/BaseFile'
 import { Project } from 'resolvers/Project/Project.type'
-import { GoalType } from 'resolvers/GoalType/GoalType.type'
-import { Identifier } from 'resolvers/Identifier/Identifier'
 
+/**
+* @memberof Goal Type
+* @alias GoalType
+*/
+@ObjectType({ description: 'Object representing a GoalType' })
+export class GoalType extends BaseFile {
+  @Field({ description: 'The GoalType name' })
+  name!: string
+
+  @Field({ description: 'The GoalType slug' })
+  slug!: string
+}
+
+/**
+* @memberof Goal Type
+* @alias Goal
+*/
 @ObjectType({ description: 'Object representing a Goal' })
-export class Goal {
-  @IsString()
-  @Contains(Identifier.goal)
-  @Field({ description: 'The Goal identifier' })
-  identifier!: Identifier
-
+export class Goal extends BaseFile {
   @IsString()
   @MinLength(2)
   @Field({ description: 'The Goal name' })
@@ -38,9 +49,17 @@ export class Goal {
 
   @Field(() => [Project], { description: 'The Goal projects', nullable: true })
   projects?: Project[]
-
-  @IsString()
-  @Field({ description: 'The Goal raw markdown' })
-  raw!: string
 }
 
+/**
+* @memberof Goal Type
+* @alias GoalsByType
+*/
+@ObjectType({ description: 'Object representing Goals grouped by type' })
+export class GoalsByType {
+  @Field(() => [Goal], { description: 'List of Goals for the given type', nullable: true })
+  goals?: Goal[]
+
+  @Field({ description: 'The type of Goals in the list' })
+  typeSlug!: string
+}

@@ -1,16 +1,17 @@
 import 'reflect-metadata'
+import path from 'path'
 
+import type { GraphQLSchema } from 'graphql'
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
 import { Container, ContainerInstance } from 'typedi'
 import { buildSchema, type ResolverData } from 'type-graphql'
-import type { GraphQLSchema } from 'graphql'
-import path from 'path'
 
-import { GoalResolver } from 'resolvers/Goal/Goal.resolver'
 import { AppSettingsResolver } from 'resolvers/AppSettings/AppSettings.resolver'
+import { GoalResolver } from 'resolvers/Goal/Goal.resolver'
 
 export { AppSettings } from 'resolvers/AppSettings/AppSettings.type'
+export { Goal, GoalsByType } from 'resolvers/Goal/Goal.type'
 
 export type ApiConfig = {
   appRoot: string

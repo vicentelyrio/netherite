@@ -1,14 +1,12 @@
 import { useMemo } from 'react'
 import { useQuery } from '@apollo/client'
-import { Link, useMatch } from '@tanstack/react-location'
+import { Link } from '@tanstack/react-location'
 
 import { GET_GOALS_BY_TYPE } from 'api/Goals/query'
 import type { Goal } from '@netherite/api'
 
 export const Goals = () => {
-  const { goals, loading } = useGoals()
-  const { params } = useMatch()
-  console.log(params)
+  const { goals } = useGoals()
 
   return (
     <div>
@@ -16,7 +14,7 @@ export const Goals = () => {
         <div key={key}>
           <h4>{key}</h4>
           <div>
-            {value?.map(({ name, description, slug, typeSlug }: Goal) => (
+            {value.map(({ name, description, slug, typeSlug }: Goal) => (
               <Link key={name} to={`/goals/${typeSlug}/${slug}`}>
                 <h5>{name}</h5>
                 <p>{description}</p>
@@ -33,7 +31,7 @@ const useGoals = () => {
   const { data, loading } = useQuery(GET_GOALS_BY_TYPE)
   const { goalsByType } = data ?? {}
 
-  const goals = useMemo(() => (
+  const goals: { [key: string]: Goal[] } = useMemo(() => (
     goalsByType?.reduce((acc, cur) => {
       const { goals = [], typeSlug = 'nd' } = cur ?? {}
       return {
