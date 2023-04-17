@@ -57,9 +57,8 @@ export class GoalService {
   * @alias getGoalTypeBySlug
   */
   async getGoalProjects(slug: string) {
-    const files = await this.service.getFilesByMatchContent(this.matcherProjects, slug)
+    const files = await this.service.getFilesByMatchContent(this.matcherProjects, `goalSlug: ${slug}`)
 
-    console.log(slug)
     if (!files) return []
 
     return files.map(mapGoalProjects)

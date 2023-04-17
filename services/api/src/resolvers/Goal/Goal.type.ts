@@ -15,6 +15,9 @@ export class GoalType extends BaseFile {
 
   @Field({ description: 'The GoalType slug' })
   slug!: string
+
+  @Field({ description: 'The GoalType description' })
+  description!: string
 }
 
 /**
@@ -60,6 +63,9 @@ export class GoalsByType {
   @Field(() => [Goal], { description: 'List of Goals for the given type', nullable: true })
   goals?: Goal[]
 
-  @Field({ description: 'The type of Goals in the list' })
+  @Field({ description: 'The type slug of Goals in the list' })
   typeSlug!: string
+
+  @Field({ description: 'The type of Goals in the list' })
+  type!: GoalType
 }

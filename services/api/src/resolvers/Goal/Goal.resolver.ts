@@ -9,7 +9,7 @@ import {
   Root,
 } from 'type-graphql'
 
-import { Goal, GoalsByType } from './Goal.type'
+import { Goal, GoalsByType, GoalType } from './Goal.type'
 import { GoalService } from './Goal.service'
 
 @Service()
@@ -43,18 +43,26 @@ export class GoalResolver {
   async goalsByType(): Promise<GoalsByType[]> {
     const goals = await this.service.getGoals()
 
-    const goalsByType = goals.reduce((acc: Record<string, Goal[]>, cur) => {
+    const goalsByType =  goals.reduce((acc: Record<string, Goal[]>, cur) => {
       const { typeSlug } = cur
+
       if (!acc[typeSlug]) {
         acc[typeSlug] = []
       }
+
       (acc[typeSlug] as Goal[]).push(cur)
+
       return acc
     }, {})
 
-    return Object.keys(goalsByType).map((typeSlug: string): GoalsByType => ({
-      typeSlug,
-      goals: goalsByType[typeSlug],
+    return await Promise.all(Object.keys(goalsByType).map(async (typeSlug: string): Promise<GoalsByType> => {
+      const type = await this.service.getGoalTypeBySlug(typeSlug) as GoalType
+
+      return {
+        typeSlug,
+        type,
+        goals: goalsByType[typeSlug],
+      }
     }))
   }
 

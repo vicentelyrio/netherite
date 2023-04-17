@@ -11,6 +11,7 @@
   ],
   "scripts": {
     "build": "yarn clean:dist && tsc -b && tsc-alias",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
     "dev:watch": "tsc -b -w",
     "dev:alias": "tsc-alias -w",
     "dev:run": "LOCALSERVER=true nodemon ./dist/index.js",
