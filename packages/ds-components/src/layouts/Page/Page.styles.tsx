@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/react'
+import { Box, Grid } from 'theme-ui'
 
 const NAV_WIDTH = 60
 
@@ -13,25 +14,30 @@ const slideIn = keyframes({
   to:   { opacity: 1, transform: `translateX(0)` }
 })
 
-export const Page = styled.div`
-  background: ${({ theme }) => theme?.colors?.background};
+export const Page = styled(Grid)`
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  display: grid;
   grid-template-areas: "navigation workspace";
   grid-template-columns: ${NAV_WIDTH}px 1fr;
 `
+Page.defaultProps = { gap: 0 }
 
-export const Navigation = styled.nav`
+export const Navigation = styled(Box)`
   grid-area: navigation;
   transform: translateX(-${NAV_WIDTH}px);
   opacity: 0;
   animation: ${slideIn} 256ms ease-out forwards;
 `
 
-export const Workspace = styled.section`
+export const Workspace = styled(Grid)`
   grid-area: workspace;
   opacity: 0;
   animation: ${fadeIn} 256ms ease-out forwards;
 `
+
+Workspace.defaultProps = {
+  gap: 4,
+  columns: 22,
+}
+

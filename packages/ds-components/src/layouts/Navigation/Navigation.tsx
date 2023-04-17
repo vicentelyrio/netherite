@@ -1,6 +1,6 @@
 /** @jsxImportSource theme-ui */
 import type { Theme } from '@netherite/ds-tokens'
-import type { ReactElement, ReactNode } from 'react'
+import type { ReactElement } from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
 
 import * as Styled from './Navigation.styles'
@@ -16,7 +16,7 @@ export type NavigationItem = {
 }
 
 export type NavigationAvatar = Omit<NavigationItem, 'icon'> & {
-  children: ReactNode
+  children: ReactElement
 }
 
 export type NavigationProps = {
