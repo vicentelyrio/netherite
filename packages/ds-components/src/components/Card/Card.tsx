@@ -1,4 +1,4 @@
-import type { ComponentType, ReactElement } from 'react'
+import type { ReactElement } from 'react'
 
 import * as Styled from './Card.styles'
 
@@ -18,7 +18,7 @@ export type CardType = {
   subtitle?: string
   labels?: LabelType[]
   to?: string
-  link?: ComponentType<ReactElement>
+  link?: any
 }
 
 export const Card = ({ title, subtitle, labels, link: Link, to }: CardType): ReactElement => {
@@ -42,5 +42,5 @@ export const Card = ({ title, subtitle, labels, link: Link, to }: CardType): Rea
 }
 
 Card.defaultProps = {
-  link: <a />
+  link: 'a'
 }
