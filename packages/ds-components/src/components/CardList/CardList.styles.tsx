@@ -1,21 +1,19 @@
 /** @jsxImportSource theme-ui */
 import styled from '@emotion/styled'
-import { Box, Grid, Text } from 'theme-ui'
+import { Box, Grid, Heading, Text } from 'theme-ui'
 
-export const CardList = styled(Grid)()
+export const CardList = styled(Grid)({
+  columns: 'auto',
+  alignContent: 'start',
+})
 
 CardList.defaultProps = {
-  columns: 'auto',
-  sx: {
-    gap: 4,
-    gridColumn: 'span 5',
-    alignContent: 'start'
-  }
+  variant: 'cardList',
 }
 
 export const Header = styled(Box)()
 
-export const Title = styled(Text)()
+export const Title = styled(Heading)()
 
 Title.defaultProps = {
   variant: 'h3',
@@ -26,7 +24,6 @@ export const Description = styled(Text)()
 
 Description.defaultProps = {
   variant: 'bodyMedium',
-  as: 'p',
   sx: {
     color: 'textMuted'
   }

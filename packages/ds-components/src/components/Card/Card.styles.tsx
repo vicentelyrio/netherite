@@ -1,12 +1,14 @@
 /** @jsxImportSource theme-ui */
 import styled from '@emotion/styled'
-import { Card as CardComponent, Badge, Text } from 'theme-ui'
+import { Card as CardComponent, Badge, Heading } from 'theme-ui'
 
-export const Card = styled(CardComponent)({
+export const Card = styled(CardComponent)()
+
+Card.defaultProps = {
   variant: 'primary'
-})
+}
 
-export const CardTitle = styled(Text)`
+export const CardTitle = styled(Heading)`
 `
 
 CardTitle.defaultProps = {
@@ -14,7 +16,7 @@ CardTitle.defaultProps = {
   as: 'h4'
 }
 
-export const CardSubTitle = styled(Text)({
+export const CardSubTitle = styled(Heading)({
   variant: 'bodyMedium'
 })
 

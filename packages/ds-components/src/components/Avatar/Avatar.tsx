@@ -1,6 +1,5 @@
 /** @jsxImportSource theme-ui */
 import type { ComponentPropsWithoutRef, ReactElement } from 'react'
-import type { StylePropertyValue } from 'theme-ui'
 import type { Theme } from '@netherite/ds-tokens'
 
 import * as Styled from './Avatar.styles'
@@ -20,13 +19,7 @@ export const Avatar = ({ children, size, color, ...rest }: AvatarType): ReactEle
   return (
     <Styled.Avatar
       children={children}
-      sx={{
-        size,
-        bg: color as StylePropertyValue<keyof Theme['colors']>,
-        color: 'background',
-        fontSize: 2,
-        fontWeight: 700
-      }}
+      sx={{ size, bg: color }}
       {...rest}
     />
   )

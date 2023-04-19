@@ -39,26 +39,22 @@ export const Navigation = ({
   secondaryOptions = [],
 }: NavigationProps): ReactElement => {
   return (
-    <Styled.Navigation className={className} sx={{ bg: 'backgroundDark', py: 3 }}>
-      {brand && <Item {...brand} sx={{ mt: 1 }} />}
-      {search && <Item {...search} sx={{ mt: 4 }} />}
+    <Styled.Navigation className={className}>
+      <Styled.NavHeader>
+        {brand && <Item {...brand} />}
+        {search && <Item {...search} />}
+      </Styled.NavHeader>
 
-      <Styled.NavSecondary sx={{
-          bg: 'shadow',
-          py: 3
-        }}>
+      <Styled.NavSecondary>
 
         {inbox && <Item {...inbox} />}
 
-        <Styled.NavPrimary sx={{
-          bg: 'shadowDark',
-          py: 3,
-          my: 3,
-        }}>
+        <Styled.NavPrimary>
           {primaryOptions.length > 0 && primaryOptions.map(Item)}
         </Styled.NavPrimary>
 
         {secondaryOptions.length > 0 && secondaryOptions.map(Item)}
+
       </Styled.NavSecondary>
 
       {user && <Styled.NavAvatar {...user} color={user.color} />}
@@ -68,13 +64,9 @@ export const Navigation = ({
 
 const Item = ({ icon: Icon, sx, colorActive, color, ...rest }: NavigationItem, index?: number): ReactElement => (
   <Styled.NavItem
-    sx={{
-      color,
-      my: 1,
-      '&.active': { color: colorActive },
-      ...sx
-    }}
-    {...rest} key={index}>
+    key={index}
+    sx={{ color, '&.active': { color: colorActive }, ...sx }}
+    {...rest}>
     {Icon && <Icon />}
   </Styled.NavItem>
 )
