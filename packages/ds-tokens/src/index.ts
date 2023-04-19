@@ -1,1 +1,1 @@
-export { theme, type ThemeDS as Theme } from './theme'
+export { theme, type Theme } from './theme'

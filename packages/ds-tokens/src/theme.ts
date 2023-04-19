@@ -1,5 +1,11 @@
-import type { Theme } from '@theme-ui/core'
+import type { Theme as ThemeUI } from '@theme-ui/core'
 
+const makeTheme = <T extends ThemeUI>(t: T) => t
+
+/*
+*
+* Colors
+* */
 const colors = {
   text: '#B4B8C4',
   textHighlight: '#F6F9FA',
@@ -18,14 +24,30 @@ const colors = {
   shadowDarkest: '#1A1B21',
 } as const
 
-export interface ThemeDS extends Theme {
-  colors: typeof colors
-}
+/* Breakpoints (max values)
+*  - 576px mobile
+*  - 992px tablet
+*  - 1920px desktop 2k
+*  - 2800px desktop 4k
+* */
+const breakpoints = [36, 64, 120, 175].map((n) => n + 'em')
 
-export const theme: ThemeDS = {
-  breakpoints: ['40em', '52em', '64em'],
-  space: [0, 4, 8, 16, 20, 32, 64, 128, 256, 512],
-  sizes: [0, 4, 8, 16, 20, 32, 64, 128, 256, 512],
+/*
+*
+* Sizes
+* */
+const sizes = [0, 4, 8, 16, 20, 32, 64, 96, 128, 256, 512]
+
+/*
+*
+* Theme
+* */
+export const theme = makeTheme({
+  breakpoints,
+  sizes,
+  space: sizes,
+  radii: sizes,
+  colors,
   fonts: {
     body: '"Source Sans Pro", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
     heading: 'inherit',
@@ -42,7 +64,6 @@ export const theme: ThemeDS = {
     heading: 1.2,
     caption: 1,
   },
-  colors,
   text: {
     heading: {
       fontFamily: 'heading',
@@ -143,6 +164,39 @@ export const theme: ThemeDS = {
       fontWeight: 'body',
     },
   },
+  grids: {
+    page: {
+      gridTemplateAreas: '"navigation workspace"',
+      gridTemplateColumns: `${sizes[6]}px 1fr`,
+      gridTemplateRows: 'auto',
+      gap: 0,
+    },
+    pageWorkspace: {
+      gap: [2, 3, 3, 4],
+      gridTemplateColumns: [
+        'repeat(8, 1fr)',
+        'repeat(12, 1fr)',
+        'repeat(18, 1fr)',
+        'repeat(22, 1fr)',
+      ],
+    },
+    workspace: {
+      gap: [2, 3, 3, 4],
+      gridTemplateColumns: [
+        'repeat(6, 1fr)',
+        'repeat(10, 1fr)',
+        'repeat(16, 1fr)',
+        'repeat(20, 1fr)',
+      ],
+      gridTemplateRows: 'repeat(12, 1fr)',
+      my: [6, 6, 0, 0]
+    },
+    cardList: {
+      gap: [2, 3, 3, 4],
+      gridColumn: ['1/-1', null, 'span 5', null],
+      gridRow: ['auto', null, '2/-2', null],
+    }
+  },
   cards: {
     primary: {
       borderRadius: 14,
@@ -151,6 +205,7 @@ export const theme: ThemeDS = {
       display: 'flex',
       flexFlow: 'column',
     }
-  }
-}
+  },
+})
 
+export type Theme = typeof theme
