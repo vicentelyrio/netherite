@@ -1,10 +1,20 @@
+/** @jsxImportSource theme-ui */
 import styled from '@emotion/styled'
+import { Box } from 'theme-ui'
 
-import { theme } from '@netherite/ds-tokens'
+export const Avatar = styled(Box)(
+  ({ theme } ) => ({
+    borderRadius: '50%',
+    textTransform: 'uppercase',
+    textAlign: 'center',
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    alignContent: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    color: theme.colors.background,
+    fontSize: theme.fontSizes[2],
+    fontWeight: theme.fontWeights.bold
+  })
+)
 
-export const Avatar = styled.div`
-  background: ${theme.colors.accentBlue};
-  border-radius: 50%;
-  width: 64px;
-  height: 64px;
-`

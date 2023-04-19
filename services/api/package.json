@@ -1,16 +1,17 @@
 {
   "name": "@netherite/api",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/services/api",
   "source": "./src/index.ts",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "files": [
-    "dist/**"
+    "./dist/**"
   ],
   "scripts": {
     "build": "yarn clean:dist && tsc -b && tsc-alias",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
     "dev:watch": "tsc -b -w",
     "dev:alias": "tsc-alias -w",
     "dev:run": "LOCALSERVER=true nodemon ./dist/index.js",

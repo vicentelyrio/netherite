@@ -1,5 +1,11 @@
 # @netherite/ds-assets
 
+## 0.0.2
+
+### Patch Changes
+
+- improving icon build routine
+
 ## 0.0.1
 
 ### Patch Changes

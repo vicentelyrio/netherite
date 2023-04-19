@@ -1,31 +1,74 @@
 /** @jsxImportSource theme-ui */
 import styled from '@emotion/styled'
-import { IconButton } from 'theme-ui'
+import { Avatar } from 'components/Avatar/Avatar'
+import { Flex, IconButton } from 'theme-ui'
 
-export const NAV_WIDTH = 40
+export const Navigation = styled(Flex)({
+  width: '100%',
+  height: '100svh',
+  overflow: 'hidden',
+  flexFlow: 'column nowrap',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+})
 
-export const Navigation = styled.div`
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
-`
+Navigation.defaultProps = {
+  as: 'nav',
+  sx: {
+    bg: 'backgroundDark',
+    py: 3
+  }
+}
 
-export const Item = styled(IconButton)`
-  flex: 0 0 auto;
-`
+export const NavItem = styled(IconButton)({
+  flex: '0 0 auto',
+})
 
-const Nav = styled.nav`
-  border-radius: ${NAV_WIDTH}px;
-  flex: '0 0 auto';
-  display: 'flex';
-  flex-flow: 'column nowrap';
-  margin: auto;
-  text-align: center;
-`
+NavItem.defaultProps = {
+ sx: { my: 1 }
+}
 
-export const NavigationPrimary = styled(Nav)``
+export const NavBase = styled(Flex)({
+  width: '100%',
+  flex: '0 0 auto',
+  flexFlow: 'column nowrap',
+  alignItems: 'center',
+})
 
-export const NavigationSecondary = styled(Nav)``
+export const NavHeader = styled(NavBase)()
+
+NavHeader.defaultProps = {
+  sx:{
+    '& > a': {
+      mb: 5
+    }
+  }
+}
+
+export const NavPrimary = styled(NavBase)()
+
+NavPrimary.defaultProps = {
+  sx: {
+    bg: 'shadowDark',
+    py: 3,
+    my: 3,
+    borderRadius: 6,
+  }
+}
+
+export const NavSecondary = styled(NavBase)()
+
+NavSecondary.defaultProps = {
+  sx: {
+    bg: 'shadow',
+    py: 3,
+    borderRadius: 6,
+  }
+}
+
+export const NavAvatar = styled(Avatar)({
+  cursor: 'pointer',
+  textDecoration: 'none',
+  flex: '0 0 auto',
+})
+

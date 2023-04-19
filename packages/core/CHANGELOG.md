@@ -1,5 +1,21 @@
 # @netherite/core
 
+## 0.0.4
+
+### Patch Changes
+
+- creating base Goals page
+  improving navigation
+  improving page build
+- Updated dependencies
+- Updated dependencies
+- Updated dependencies
+- Updated dependencies
+  - @netherite/ds-assets@0.0.2
+  - @netherite/api@0.0.4
+  - @netherite/ds-components@0.0.4
+  - @netherite/ds-tokens@0.0.3
+
 ## 0.0.3
 
 ### Patch Changes

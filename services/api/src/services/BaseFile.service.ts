@@ -26,25 +26,6 @@ export class BaseFileService implements BaseFileFactory {
 
   /**
   * @memberof File Service
-  * @alias getFileByName
-  * @property {string} name
-  */
-  async getFileByName(name: string) {
-    try {
-      const raw = await this.readFile(`${this.root}/${name}`, 'utf8')
-      return {
-        ...matter(raw),
-        raw
-      }
-    }
-    catch(err) {
-      console.error(err)
-      return
-    }
-  }
-
-  /**
-  * @memberof File Service
   * @alias getAllFiles
   */
   async getAllFiles() {
@@ -54,7 +35,7 @@ export class BaseFileService implements BaseFileFactory {
 
       for (const file of fileNames) {
         if (file.isFile() && path.extname(file.name) === this.fileExtension) {
-          const data = await this.getFileByName(file.name)
+          const data = await this.getFileByName(path.parse(file.name).name)
           if (data) loadedFiles.push(data)
         }
       }
@@ -68,8 +49,27 @@ export class BaseFileService implements BaseFileFactory {
 
   /**
   * @memberof File Service
+  * @alias getFileByName
+  * @property {string} name
+  */
+  async getFileByName(name: string) {
+    try {
+      const raw = await this.readFile(`${this.root}/${name}${this.fileExtension}`, 'utf8')
+      return {
+        ...matter(raw),
+        raw
+      }
+    }
+    catch(err) {
+      console.error(err)
+      return
+    }
+  }
+
+  /**
+  * @memberof File Service
   * @alias getFilesByMatch
-  * @property {string} matcher
+  * @property {RegExp} matcher
   */
   async getFilesByMatch(matcher: RegExp) {
     try {
@@ -80,8 +80,62 @@ export class BaseFileService implements BaseFileFactory {
         const fileIsValid = file.isFile() && path.extname(file.name) === this.fileExtension
 
         if (fileIsValid && file.name.match(matcher)) {
-          const data = await this.getFileByName(file.name)
+          const data = await this.getFileByName(path.parse(file.name).name)
           if (data) loadedFiles.push(data)
+        }
+      }
+
+      return loadedFiles
+    } catch (err) {
+      console.error(err)
+      return []
+    }
+  }
+
+  /**
+  * @memberof File Service
+  * @alias getFilesByMatchContent
+  * @property {RegExp} matcher
+  * @property {string} content
+  */
+  async getFilesByMatchContent(matcher: RegExp, content: string) {
+    console.log(content)
+    try {
+      const fileNames = await this.readDir(this.root, { withFileTypes: true })
+      const loadedFiles: File[] = []
+
+      for (const file of fileNames) {
+        const fileIsValid = file.isFile() && path.extname(file.name) === this.fileExtension
+
+        if (fileIsValid && file.name.match(matcher)) {
+          const data = await this.getFileByName(path.parse(file.name).name)
+          if (data && data.raw.includes(content)) loadedFiles.push(data)
+        }
+      }
+
+      return loadedFiles
+    } catch (err) {
+      console.error(err)
+      return []
+    }
+  }
+
+  /**
+  * @memberof File Service
+  * @alias getFilesByContent
+  * @property {string} matcher
+  */
+  async getFilesByContent(content: string) {
+    try {
+      const fileNames = await this.readDir(this.root, { withFileTypes: true })
+      const loadedFiles: File[] = []
+
+      for (const file of fileNames) {
+        const fileIsValid = file.isFile() && path.extname(file.name) === this.fileExtension
+
+        if (fileIsValid) {
+          const data = await this.getFileByName(path.parse(file.name).name)
+          if (data && data.raw.includes(content)) loadedFiles.push(data)
         }
       }
 
@@ -106,6 +160,11 @@ export class BaseFileService implements BaseFileFactory {
     }
   }
 
+  /**
+  * @memberof File Service
+  * @alias slugify
+  * @property {string} str
+  */
   slugify (str: string) {
     return str
       .toLowerCase()

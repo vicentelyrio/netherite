@@ -1,14 +1,17 @@
 import 'reflect-metadata'
+import path from 'path'
 
+import type { GraphQLSchema } from 'graphql'
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
 import { Container, ContainerInstance } from 'typedi'
 import { buildSchema, type ResolverData } from 'type-graphql'
-import type { GraphQLSchema } from 'graphql'
-import path from 'path'
 
+import { AppSettingsResolver } from 'resolvers/AppSettings/AppSettings.resolver'
 import { GoalResolver } from 'resolvers/Goal/Goal.resolver'
-import { PageResolver } from 'resolvers/Page/Page.resolver'
+
+export { AppSettings, NavLink, Navbar } from 'resolvers/AppSettings/AppSettings.type'
+export { Goal, GoalsByType } from 'resolvers/Goal/Goal.type'
 
 export type ApiConfig = {
   appRoot: string
@@ -27,7 +30,7 @@ export async function schemaBuilder(): Promise<GraphQLSchema> {
   return await buildSchema({
     resolvers: [
       GoalResolver,
-      PageResolver,
+      AppSettingsResolver,
     ],
     container: ({ context }: ResolverData<Context>) => context.container,
   })

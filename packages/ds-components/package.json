@@ -1,11 +1,11 @@
 {
   "name": "@netherite/ds-components",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/packages/ds-components",
   "source": "./src/index.ts",
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "typings": "./dist/index.d.ts",
   "files": [
     "./dist/**"
   ],
@@ -15,6 +15,7 @@
     "dev:alias": "tsc-alias -w",
     "dev": "concurrently \"npm:dev:watch\" \"npm:dev:alias\"",
     "dev:local": "yarn dev",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
     "clean:dist": "rm -rf dist/",
     "clean:cache": "rm -rf .turbo",
@@ -43,5 +44,6 @@
     "@netherite/ds-tokens": "*",
     "react": "^18.2.0",
     "theme-ui": "^0.15.5"
-  }
+  },
+  "dependencies": {}
 }

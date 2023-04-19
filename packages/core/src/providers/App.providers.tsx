@@ -1,16 +1,14 @@
-import type { ReactNode } from 'react'
-
 import { ServicesProviders } from './Services.provider'
 import { ThemeProvider } from './Theme.provider'
+import { RoutesProvider } from './Routes.provider'
+import { AppSettingsProvider } from './AppSettings.provider'
 
-export type ProviderProps = {
-  children: ReactNode
-}
-
-export const Providers = ({ children }: ProviderProps) => (
+export const Providers = () => (
   <ServicesProviders>
     <ThemeProvider>
-      {children}
+      <AppSettingsProvider>
+        <RoutesProvider />
+      </AppSettingsProvider>
     </ThemeProvider>
   </ServicesProviders>
 )

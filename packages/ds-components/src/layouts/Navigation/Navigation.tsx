@@ -1,15 +1,23 @@
 /** @jsxImportSource theme-ui */
-import type { ReactElement } from 'react'
+import type { ComponentType, ReactElement, SVGProps } from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
+import type { Theme } from '@netherite/ds-tokens'
 
 import * as Styled from './Navigation.styles'
 
 export type NavigationItem = {
-  icon: any
-  title?: string
+  icon: ComponentType<SVGProps<SVGSVGElement>>,
+  title?: string,
   to?: string
+  as?: ComponentType<JSX.Element>
   className?: string
   sx?: ThemeUIStyleObject
+  color?: keyof Theme['colors']
+  colorActive?: keyof Theme['colors']
+}
+
+export type NavigationAvatar = Omit<NavigationItem, 'icon'> & {
+  children: ReactElement
 }
 
 export type NavigationProps = {
@@ -17,6 +25,7 @@ export type NavigationProps = {
   brand?: NavigationItem
   search?: NavigationItem
   inbox?: NavigationItem
+  user?: NavigationAvatar
   primaryOptions?: NavigationItem[]
   secondaryOptions?: NavigationItem[]
 }
@@ -26,39 +35,35 @@ export const Navigation = ({
   brand,
   search,
   inbox,
+  user,
   primaryOptions = [],
-  secondaryOptions = []
+  secondaryOptions = [],
 }: NavigationProps): ReactElement => {
   return (
-    <Styled.Navigation className={className} sx={{ bg: 'backgroundDark' }}>
-      {brand && <Item {...brand} sx={{ my: 2 }} />}
-      {search && <Item {...search} sx={{ mt: 3 }} />}
+    <Styled.Navigation className={className}>
+      <Styled.NavHeader>
+        {brand && <Item {...brand} />}
+        {search && <Item {...search} />}
+      </Styled.NavHeader>
 
-      <Styled.NavigationSecondary sx={{
-          bg: 'shadow',
-          py: 3
-        }}>
-
+      <Styled.NavSecondary>
         {inbox && <Item {...inbox} />}
-
-        <Styled.NavigationPrimary sx={{
-          bg: 'shadowDark',
-          py: 3,
-          my: 3,
-        }}>
+        <Styled.NavPrimary>
           {primaryOptions.length > 0 && primaryOptions.map(Item)}
-        </Styled.NavigationPrimary>
-
+        </Styled.NavPrimary>
         {secondaryOptions.length > 0 && secondaryOptions.map(Item)}
-      </Styled.NavigationSecondary>
+      </Styled.NavSecondary>
 
-      {search && <Item {...search} />}
+      {user && <Styled.NavAvatar {...user} color={user.color} />}
     </Styled.Navigation>
   )
 }
 
-const Item = ({ icon, ...rest }: NavigationItem, index: number): ReactElement => (
-  <Styled.Item {...rest} key={index} sx={{ my: 1, color: 'accent' }}>
-    {icon}
-  </Styled.Item>
+const Item = ({ icon: Icon, sx, colorActive, color, ...rest }: NavigationItem, index?: number): ReactElement => (
+  <Styled.NavItem
+    key={index}
+    sx={{ color, '&.active': { color: colorActive }, ...sx }}
+    {...rest}>
+    {Icon && <Icon />}
+  </Styled.NavItem>
 )

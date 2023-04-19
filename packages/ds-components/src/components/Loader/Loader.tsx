@@ -2,11 +2,11 @@ import type { ReactElement } from 'react'
 
 import * as Styled from './Loader.styles'
 
-type LoaderProps = {
+export type LoaderType = {
   className?: string
 }
 
-export const Loader = ({ className }: LoaderProps): ReactElement => {
+export const Loader = ({ className }: LoaderType): ReactElement => {
   return (
     <Styled.Loader className={className} />
   )

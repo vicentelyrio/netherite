@@ -1,5 +1,16 @@
 # @netherite/ds-components
 
+## 0.0.4
+
+### Patch Changes
+
+- creating Workspace layout
+  creating CardList component
+  improving usage of ThemeUI
+  creating responsive layouts
+- Updated dependencies
+  - @netherite/ds-tokens@0.0.3
+
 ## 0.0.3
 
 ### Patch Changes
