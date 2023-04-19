@@ -1,14 +1,15 @@
 /** @jsxImportSource theme-ui */
-import type { Theme } from '@netherite/ds-tokens'
-import type { ReactElement } from 'react'
+import type { ComponentType, ReactElement, SVGProps } from 'react'
 import type { ThemeUIStyleObject } from 'theme-ui'
+import type { Theme } from '@netherite/ds-tokens'
 
 import * as Styled from './Navigation.styles'
 
 export type NavigationItem = {
-  icon: any // eslint-disable-line @typescript-eslint/no-explicit-any
-  title?: string
+  icon: ComponentType<SVGProps<SVGSVGElement>>,
+  title?: string,
   to?: string
+  as?: ComponentType<JSX.Element>
   className?: string
   sx?: ThemeUIStyleObject
   color?: keyof Theme['colors']
@@ -46,15 +47,11 @@ export const Navigation = ({
       </Styled.NavHeader>
 
       <Styled.NavSecondary>
-
         {inbox && <Item {...inbox} />}
-
         <Styled.NavPrimary>
           {primaryOptions.length > 0 && primaryOptions.map(Item)}
         </Styled.NavPrimary>
-
         {secondaryOptions.length > 0 && secondaryOptions.map(Item)}
-
       </Styled.NavSecondary>
 
       {user && <Styled.NavAvatar {...user} color={user.color} />}

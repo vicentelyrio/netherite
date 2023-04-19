@@ -10,7 +10,7 @@ import { buildSchema, type ResolverData } from 'type-graphql'
 import { AppSettingsResolver } from 'resolvers/AppSettings/AppSettings.resolver'
 import { GoalResolver } from 'resolvers/Goal/Goal.resolver'
 
-export { AppSettings } from 'resolvers/AppSettings/AppSettings.type'
+export { AppSettings, NavLink, Navbar } from 'resolvers/AppSettings/AppSettings.type'
 export { Goal, GoalsByType } from 'resolvers/Goal/Goal.type'
 
 export type ApiConfig = {

@@ -1,12 +1,13 @@
 import { gql, type TypedDocumentNode } from '@apollo/client'
 import type { Goal, GoalsByType } from '@netherite/api'
 
-export const GOAL_COMPLETE = gql`
+export const GOAL_COMPLETE_FRAG = gql`
   fragment GoalComplete on Goal {
     type {
       identifier
       name
       slug
+      description
     }
     typeSlug
     slug
@@ -23,7 +24,7 @@ export const GOAL_COMPLETE = gql`
   }
 `
 
-export const GOAL_BASE = gql`
+export const GOAL_BASE_FRAG = gql`
   fragment GoalBase on Goal {
     typeSlug
     slug
@@ -35,7 +36,7 @@ export const GOAL_BASE = gql`
 `
 
 export const GET_GOAL_BY_NAME: TypedDocumentNode<Goal, string> = gql`
-  ${GOAL_COMPLETE}
+  ${GOAL_COMPLETE_FRAG}
   query GetGoalByName($name: String!) {
     goalByName(name: $name) {
       ...GoalComplete
@@ -44,7 +45,7 @@ export const GET_GOAL_BY_NAME: TypedDocumentNode<Goal, string> = gql`
 `
 
 export const GET_GOALS: TypedDocumentNode<Goal[]> = gql`
-  ${GOAL_COMPLETE}
+  ${GOAL_COMPLETE_FRAG}
   query GetGoals {
     goals {
       ...GoalComplete
@@ -53,10 +54,16 @@ export const GET_GOALS: TypedDocumentNode<Goal[]> = gql`
 `
 
 export const GET_GOALS_BY_TYPE: TypedDocumentNode<{ goalsByType: GoalsByType[] }> = gql`
-  ${GOAL_COMPLETE}
+  ${GOAL_COMPLETE_FRAG}
   query GetGoalsByType {
     goalsByType {
       typeSlug
+      type {
+        identifier
+        name
+        slug
+        description
+      }
       goals {
         ...GoalComplete
       }

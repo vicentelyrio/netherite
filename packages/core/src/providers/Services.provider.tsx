@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { ReactElement } from 'react'
 import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink } from '@apollo/client'
 
 export const URL = 'http://127.0.0.1'
@@ -12,13 +12,14 @@ export type ClientProps = {
 }
 
 type ProviderProps = {
-  children: ReactNode
+  children: ReactElement
 }
 
 const client = new ApolloClient({
   cache: new InMemoryCache({
     typePolicies: {
       Goal: { keyFields: ['slug'] },
+      GoalType: { keyFields: ['slug'] },
       Project: { keyFields: ['slug'] },
       Task: { keyFields: ['slug'] },
       Topic: { keyFields: ['slug'] },

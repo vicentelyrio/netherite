@@ -1,4 +1,4 @@
-import { createContext, useContext, type ReactNode } from 'react'
+import { createContext, useContext, type ReactElement } from 'react'
 import { useQuery } from '@apollo/client'
 import { PageLoader } from '@netherite/ds-components'
 import type { AppSettings } from '@netherite/api'
@@ -6,7 +6,7 @@ import type { AppSettings } from '@netherite/api'
 import { GET_APP_SETTINGS } from 'api/AppSettings/query'
 
 export type ProviderProps = {
-  children: ReactNode
+  children: ReactElement
 }
 
 export type AppSettingsType = AppSettings

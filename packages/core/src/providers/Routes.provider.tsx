@@ -1,5 +1,10 @@
 import { useMemo } from 'react'
-import { Outlet, ReactLocation, Router, type Route } from '@tanstack/react-location'
+import {
+  Outlet,
+  ReactLocation,
+  Router,
+  type Route
+} from '@tanstack/react-location'
 
 import { useAppSettings } from 'providers/AppSettings.provider'
 
@@ -38,7 +43,8 @@ export const RoutesProvider = () => {
   )
 }
 
-function mapRoutes ({ path, templateType, workspaceType, children }: RawRoute): Partial<Route> {
+function mapRoutes (route: RawRoute): Partial<Route> {
+  const { path, templateType, workspaceType, children } = route
   const Template = Templates[templateType] ?? Page
 
   return {
