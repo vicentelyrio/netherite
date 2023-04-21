@@ -17,6 +17,7 @@ export type ApiConfig = {
   appRoot: string
 }
 
+/* TODO: review config and implementation of default root folder */
 const defaultConfig: ApiConfig = {
   appRoot: path.resolve(__dirname, `../data/contents`)
 }
@@ -36,7 +37,7 @@ export async function schemaBuilder(): Promise<GraphQLSchema> {
   })
 }
 
-export async function runServer(config: ApiConfig = defaultConfig): Promise<void> {
+export async function runServer(config: ApiConfig = defaultConfig): Promise<ApolloServer<ApiConfig>> {
   const schema = await schemaBuilder()
 
   // Create GraphQL server
@@ -55,6 +56,8 @@ export async function runServer(config: ApiConfig = defaultConfig): Promise<void
   })
 
   console.log(`🚀 Server ready at ${url}`)
+
+  return server
 }
 
 if (process.env['LOCALSERVER'] === 'true') {
