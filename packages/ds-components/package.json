@@ -41,6 +41,7 @@
   "peerDependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@netherite/ds-assets": "*",
     "@netherite/ds-tokens": "*",
     "react": "^18.2.0",
     "theme-ui": "^0.15.5"

@@ -18,9 +18,6 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        '@apollo/client',
-        '@netherite/ds-components',
-        'graphql',
         'react',
         'react-dom',
       ],
