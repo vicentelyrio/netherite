@@ -8,7 +8,7 @@ export const mainConfig: WebpackConfiguration = {
    * that runs in the main process.
    */
   target: 'electron-main',
-  entry: './src/index.ts',
+  entry: './src/main.ts',
   // Put your normal webpack config below here
   module: {
     rules,
@@ -18,5 +18,5 @@ export const mainConfig: WebpackConfiguration = {
   },
   experiments: {
     topLevelAwait: true
-  }
+  },
 }

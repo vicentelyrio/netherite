@@ -12,7 +12,7 @@
   "scripts": {
     "build": "yarn clean:dist && tsc -b",
     "dev": "yarn build",
-    "dev:local": "yarn build",
+    "dev:standalone": "yarn build",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
     "clean:dist": "rm -rf dist/",

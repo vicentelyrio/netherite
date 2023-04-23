@@ -1,5 +1,4 @@
 import 'reflect-metadata'
-import path from 'path'
 
 import type { GraphQLSchema } from 'graphql'
 import { ApolloServer } from '@apollo/server'
@@ -18,26 +17,36 @@ export type ApiConfig = {
 }
 
 /* TODO: review config and implementation of default root folder */
-const defaultConfig: ApiConfig = {
-  appRoot: path.resolve(__dirname, `../data/contents`)
-}
+const buildDefaultConfig = (): ApiConfig => ({
+  appRoot: '' //path.resolve(__dirname, `../data/contents`)
+})
 
 export interface Context {
   appRoot: string
   container: ContainerInstance
 }
 
+/*
+* Resolvers
+* */
+export const resolvers = [
+  GoalResolver,
+  AppSettingsResolver,
+] as const
+
+/*
+* Build Graphql Schema
+* */
 export async function schemaBuilder(): Promise<GraphQLSchema> {
   return await buildSchema({
-    resolvers: [
-      GoalResolver,
-      AppSettingsResolver,
-    ],
+    resolvers,
     container: ({ context }: ResolverData<Context>) => context.container,
   })
 }
 
-export async function runServer(config: ApiConfig = defaultConfig): Promise<ApolloServer<ApiConfig>> {
+export async function runServer(
+  config: ApiConfig = buildDefaultConfig()
+): Promise<ApolloServer<ApiConfig>> {
   const schema = await schemaBuilder()
 
   // Create GraphQL server
@@ -60,6 +69,7 @@ export async function runServer(config: ApiConfig = defaultConfig): Promise<Apol
   return server
 }
 
-if (process.env['LOCALSERVER'] === 'true') {
+if (process.env['STANDALONE'] === 'true') {
   runServer()
 }
+

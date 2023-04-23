@@ -14,7 +14,7 @@
     "dev:watch": "tsc -b -w",
     "dev:alias": "tsc-alias -w",
     "dev": "concurrently \"npm:dev:watch\" \"npm:dev:alias\"",
-    "dev:local": "yarn dev",
+    "dev:standalone": "yarn dev",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",
     "clean:dist": "rm -rf dist/",

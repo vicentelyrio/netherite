@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 import {
+  createMemoryHistory,
+  createBrowserHistory,
   Outlet,
   ReactLocation,
   Router,
@@ -11,7 +13,13 @@ import { useAppSettings } from 'providers/AppSettings.provider'
 import { Page } from 'layout/Page/Page'
 import { Workspace, type WorkspaceNames } from 'layout/Workspace/Workspace'
 
-const location = new ReactLocation()
+const standalone = import.meta.env.DEV
+
+const history = (standalone: boolean) => (
+  standalone ? createBrowserHistory() : createMemoryHistory()
+)
+
+const location = new ReactLocation({ history: history(standalone) })
 
 type TemplateTypesNames = 'DASHBOARD' | 'PAGE' | 'WORKSPACE'
 
@@ -31,6 +39,7 @@ type RawRoute = Partial<Omit<Route, 'children'>> & {
 
 export const RoutesProvider = () => {
   const data = useAppSettings()
+
   const routes: Route[] = useMemo(() => {
     const routesDefinition = (data?.routes ?? []) as RawRoute[]
     return routesDefinition?.map((route: RawRoute) => mapRoutes(route))

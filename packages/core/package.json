@@ -22,7 +22,7 @@
   "scripts": {
     "build": "yarn clean:dist && tsc -b && vite build",
     "dev": "tsc -b && vite build -w",
-    "dev:local": "vite dev",
+    "dev:standalone": "vite dev",
     "preview": "vite preview",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "lint": "TIMING=1 eslint \"src/**/*.ts*\"",

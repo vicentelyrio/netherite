@@ -1,36 +1,47 @@
 import type { ReactElement } from 'react'
-import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink } from '@apollo/client'
+
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  HttpLink,
+  type ApolloLink,
+  type NormalizedCacheObject
+} from '@apollo/client'
 
 export const URL = 'http://127.0.0.1'
 export const PORT = 4000
 export const PATH = 'graphql'
 
-export type ClientProps = {
-  url?: string
-  path?: string
-  port?: number
-}
-
-type ProviderProps = {
+type ProviderType = {
   children: ReactElement
+  link?: ApolloLink
 }
 
-const client = new ApolloClient({
-  cache: new InMemoryCache({
-    typePolicies: {
-      Goal: { keyFields: ['slug'] },
-      GoalType: { keyFields: ['slug'] },
-      Project: { keyFields: ['slug'] },
-      Task: { keyFields: ['slug'] },
-      Topic: { keyFields: ['slug'] },
-    }
-  }),
-  link: new HttpLink({
+const createHTTPLink = () => (
+  new HttpLink({
     uri: `${URL}:${PORT}/${PATH}`
   })
-})
+)
 
-export const ServicesProviders = ({ children }: ProviderProps) => (
+const buildClient = (link: ApolloLink): ApolloClient<NormalizedCacheObject> => (
+  new ApolloClient({
+    cache: new InMemoryCache({
+      typePolicies: {
+        Goal: { keyFields: ['slug'] },
+        GoalType: { keyFields: ['slug'] },
+        Project: { keyFields: ['slug'] },
+        Task: { keyFields: ['slug'] },
+        Topic: { keyFields: ['slug'] },
+      }
+    }),
+    link
+  })
+)
+
+const client = buildClient(createHTTPLink())
+
+export const ServicesProviders = ({ children }: ProviderType) => (
   <ApolloProvider client={client}>
     {children}
   </ApolloProvider>

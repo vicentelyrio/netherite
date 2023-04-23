@@ -57,10 +57,12 @@
     "@netherite/ds-assets": "*",
     "@netherite/ds-components": "*",
     "@netherite/ds-tokens": "*",
+    "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
-    "graphql-transport-electron": "^2.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "theme-ui": "^0.15.5"
+    "the-new-css-reset": "^1.8.4",
+    "theme-ui": "^0.15.5",
+    "uuid": "^9.0.0"
   }
 }
