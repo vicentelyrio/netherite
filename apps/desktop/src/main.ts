@@ -33,10 +33,8 @@ const createWindow = (): void => {
 * */
 const createBackgroundWindow = (): void => {
   const win = new BrowserWindow({
-    x: 500,
-    y: 300,
     width: 700,
-    height: 500,
+    height: 200,
     show: true,
     webPreferences: {
       nodeIntegration: true,
@@ -44,7 +42,7 @@ const createBackgroundWindow = (): void => {
     },
   })
 
-  win.loadURL(`file://${__dirname}/server/server.html`)
+  win.loadURL(`file://${__dirname}/server/index.html`)
   win.webContents.openDevTools()
 }
 

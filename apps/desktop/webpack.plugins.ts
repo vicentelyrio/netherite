@@ -7,18 +7,20 @@ const ForkTsCheckerWebpackPlugin: typeof IForkTsCheckerWebpackPlugin = require('
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const CopyWebPackPlugin = require('copy-webpack-plugin')
 
-const assets = ['server/']
-
 export const plugins = [
   new ForkTsCheckerWebpackPlugin({
     logger: 'webpack-infrastructure',
   }),
-  ...assets.map((asset) => (
-    new CopyWebPackPlugin({
-      patterns: [{
-        from: path.resolve(__dirname, 'src', asset),
-        to: path.resolve(__dirname, '.webpack/main', asset)
-      }]
-    })
-  ))
+  new CopyWebPackPlugin({
+    patterns: [
+      {
+        from: path.resolve(__dirname, 'dist/server'),
+        to: path.resolve(__dirname, '.webpack/main/server')
+      },
+      {
+        from: path.resolve(__dirname, 'src/server/index.html'),
+        to: path.resolve(__dirname, '.webpack/main/server/index.html')
+      },
+    ]
+  })
 ]

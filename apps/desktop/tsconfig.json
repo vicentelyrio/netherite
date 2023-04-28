@@ -4,13 +4,11 @@
   "extends": "@netherite/tsconfig/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "outDir": "./dist",
     "paths": {
       "*": ["node_modules/*"]
     },
     "module": "nodenext",
-    "jsx": "react-jsx",
-    "isolatedModules": true
+    "jsx": "react-jsx"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
