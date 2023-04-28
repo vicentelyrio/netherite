@@ -25,4 +25,4 @@
  *  });
  * ```
  */
-import './App'
+import './client/App'

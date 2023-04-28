@@ -1,30 +1,15 @@
 import 'reflect-metadata'
 
 import type { GraphQLSchema } from 'graphql'
-import { ApolloServer } from '@apollo/server'
+import { ApolloServer, type BaseContext } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
-import { Container, ContainerInstance } from 'typedi'
-import { buildSchema, type ResolverData } from 'type-graphql'
+import { buildSchema } from 'type-graphql'
 
 import { AppSettingsResolver } from 'resolvers/AppSettings/AppSettings.resolver'
 import { GoalResolver } from 'resolvers/Goal/Goal.resolver'
 
 export { AppSettings, NavLink, Navbar } from 'resolvers/AppSettings/AppSettings.type'
 export { Goal, GoalsByType } from 'resolvers/Goal/Goal.type'
-
-export type ApiConfig = {
-  appRoot: string
-}
-
-/* TODO: review config and implementation of default root folder */
-const buildDefaultConfig = (): ApiConfig => ({
-  appRoot: '' //path.resolve(__dirname, `../data/contents`)
-})
-
-export interface Context {
-  appRoot: string
-  container: ContainerInstance
-}
 
 /*
 * Resolvers
@@ -40,29 +25,21 @@ export const resolvers = [
 export async function schemaBuilder(): Promise<GraphQLSchema> {
   return await buildSchema({
     resolvers,
-    container: ({ context }: ResolverData<Context>) => context.container,
   })
 }
 
-export async function runServer(
-  config: ApiConfig = buildDefaultConfig()
-): Promise<ApolloServer<ApiConfig>> {
+export async function BuildApolloServer() {
   const schema = await schemaBuilder()
 
   // Create GraphQL server
-  const server = new ApolloServer<ApiConfig>({ schema })
+  return new ApolloServer<BaseContext>({ schema })
+}
+
+export async function runServer(): Promise<ApolloServer<BaseContext>> {
+  const server = await BuildApolloServer()
 
   // Start the server
-  const { url } = await startStandaloneServer(server, {
-    context: async (): Promise<Context> => {
-      const { appRoot } = config
-      const container = Container.of(appRoot)
-      const context = { appRoot, container }
-
-      container.set('context', context)
-      return context
-    }
-  })
+  const { url } = await startStandaloneServer(server)
 
   console.log(`🚀 Server ready at ${url}`)
 

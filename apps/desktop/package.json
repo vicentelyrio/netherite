@@ -38,6 +38,7 @@
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.11",
     "@vercel/webpack-asset-relocator-loader": "1.7.3",
+    "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.0.0",
     "electron": "22.0.2",
     "eslint-config-netherite": "*",
