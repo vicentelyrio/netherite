@@ -12,6 +12,7 @@ export class AppSettingsResolver {
 
   @Query(() => AppSettings, { description: 'Get the App Settings' })
   async getAppSettings(): Promise<AppSettings> {
+    console.log(this.service)
     return await this.service.getAppSettings()
   }
 }

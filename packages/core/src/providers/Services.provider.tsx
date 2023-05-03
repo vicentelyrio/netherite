@@ -39,10 +39,8 @@ const buildClient = (link: ApolloLink): ApolloClient<NormalizedCacheObject> => (
   })
 )
 
-const client = buildClient(createHTTPLink())
-
-export const ServicesProviders = ({ children }: ProviderType) => (
-  <ApolloProvider client={client}>
+export const ServicesProviders = ({ children, link = createHTTPLink() }: ProviderType) => (
+  <ApolloProvider client={buildClient(link)}>
     {children}
   </ApolloProvider>
 )
