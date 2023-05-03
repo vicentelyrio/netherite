@@ -40,7 +40,6 @@
     "@netherite/ds-components": "*",
     "@netherite/ds-tokens": "*",
     "electron-updater": "^5.3.0",
-    "graphql-transport-electron": "^2.0.2",
     "theme-ui": "^0.15.5"
   },
   "devDependencies": {

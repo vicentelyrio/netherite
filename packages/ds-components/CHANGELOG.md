@@ -5,9 +5,9 @@
 ### Patch Changes
 
 - creating Workspace layout
-  creating CardList component
-  improving usage of ThemeUI
-  creating responsive layouts
+- creating CardList component
+- improving usage of ThemeUI
+- creating responsive layouts
 - Updated dependencies
   - @netherite/ds-tokens@0.0.3
 
@@ -22,9 +22,9 @@
 ### Patch Changes
 
 - 39b55e4: Creating Api package
-  Integration with Desktop package
-  Integration with Core package
-  Design System packages distribution
+- Integration with Desktop package
+- Integration with Core package
+- Design System packages distribution
 - Updated dependencies [39b55e4]
   - @netherite/ds-tokens@0.0.2
 

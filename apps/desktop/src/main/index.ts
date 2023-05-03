@@ -1,7 +1,11 @@
-import { app, shell, BrowserWindow } from 'electron'
-import { join } from 'path'
+import { app, shell, BrowserWindow, ipcMain, IpcMainEvent } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+
+import { fork } from 'child_process'
+import { join } from 'path'
+
 import icon from '../../resources/icon.png?asset'
+import server from '../../resources/server.js?asset'
 
 function createWindow(): void {
   // Create the browser window.
@@ -15,6 +19,20 @@ function createWindow(): void {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
+  })
+
+  // Start Apollo
+  // Fork a child process to handle IPC communication
+  const child = fork(server)
+
+  // Listen for messages from the child process
+  ipcMain.on('graphql-request', (event: IpcMainEvent, query: any) => {
+    // Send the GraphQL query to the Apollo Server process
+    const { data } = child.send({ query }) as any
+    console.log(data, query)
+
+    // Return the data to the renderer process
+    event.reply('graphql-response', data);
   })
 
   mainWindow.on('ready-to-show', () => {
