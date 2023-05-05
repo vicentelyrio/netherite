@@ -1,5 +1,12 @@
 # @netherite/core
 
+## 0.0.5
+
+### Patch Changes
+
+- - using electron-vite instead of electron-forge
+  - electron apollo integration
+
 ## 0.0.4
 
 ### Patch Changes
