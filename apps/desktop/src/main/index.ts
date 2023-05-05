@@ -1,11 +1,34 @@
-import { app, shell, BrowserWindow, ipcMain, IpcMainEvent } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, session } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { createBusLinkBackend, createSchemaExecutor } from 'apollo-bus-link/core'
+import { electronBus } from 'apollo-bus-link/electron'
+import { schemaBuilder } from '@netherite/api'
+/* import os from 'node:os' */
 
-import { fork } from 'child_process'
 import { join } from 'path'
 
 import icon from '../../resources/icon.png?asset'
-import server from '../../resources/server.js?asset'
+
+/* const { schema, container } = schemaBuilderExec() */
+
+schemaBuilder().then(({ schema, container }) => {
+  const backend = createBusLinkBackend({
+    registerBus: electronBus(ipcMain),
+    createExecutor: () => (
+      createSchemaExecutor({
+        schema,
+        context: () => {
+          const context = { container }
+          container.set('context', context)
+          return context
+        }
+      })
+    )
+  })
+
+  backend.listen()
+})
+
 
 function createWindow(): void {
   // Create the browser window.
@@ -19,20 +42,6 @@ function createWindow(): void {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
-  })
-
-  // Start Apollo
-  // Fork a child process to handle IPC communication
-  const child = fork(server)
-
-  // Listen for messages from the child process
-  ipcMain.on('graphql-request', (event: IpcMainEvent, query: any) => {
-    // Send the GraphQL query to the Apollo Server process
-    const { data } = child.send({ query }) as any
-    console.log(data, query)
-
-    // Return the data to the renderer process
-    event.reply('graphql-response', data);
   })
 
   mainWindow.on('ready-to-show', () => {
@@ -56,7 +65,12 @@ function createWindow(): void {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  /* await session.defaultSession.loadExtension( */
+  /*   join(os.homedir(), '/Library/Application Support/BraveSoftware/Brave-Browser/Default/Extensions/jdkknkkbebbapilgoeccciglkfbmbnfm/4.1.4_0'), */
+  /*   { allowFileAccess: true } */
+  /* ) */
+
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 

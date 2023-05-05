@@ -39,6 +39,7 @@
     "@netherite/ds-assets": "*",
     "@netherite/ds-components": "*",
     "@netherite/ds-tokens": "*",
+    "apollo-bus-link": "^0.4.5",
     "electron-updater": "^5.3.0",
     "theme-ui": "^0.15.5"
   },

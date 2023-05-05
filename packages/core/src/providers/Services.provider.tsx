@@ -5,8 +5,9 @@ import {
   ApolloProvider,
   InMemoryCache,
   HttpLink,
-  type ApolloLink,
-  type NormalizedCacheObject
+  ApolloLink,
+  from,
+  type NormalizedCacheObject,
 } from '@apollo/client'
 
 export const URL = 'http://127.0.0.1'
@@ -17,6 +18,14 @@ type ProviderType = {
   children: ReactElement
   link?: ApolloLink
 }
+
+const logLink = new ApolloLink((operation, forward) => {
+  console.time(operation.operationName)
+  return forward(operation).map(result => {
+    console.timeEnd(operation.operationName)
+    return result
+  })
+})
 
 const createHTTPLink = () => (
   new HttpLink({
@@ -35,13 +44,19 @@ const buildClient = (link: ApolloLink): ApolloClient<NormalizedCacheObject> => (
         Topic: { keyFields: ['slug'] },
       }
     }),
-    link
+    link: from([logLink, link])
   })
 )
 
-export const ServicesProviders = ({ children, link = createHTTPLink() }: ProviderType) => (
-  <ApolloProvider client={buildClient(link)}>
-    {children}
-  </ApolloProvider>
-)
+export const ServicesProviders = ({ children, link = createHTTPLink() }: ProviderType) => {
+  const client = buildClient(link) as any
+
+  (window as any).apolloClient = client
+
+  return (
+    <ApolloProvider client={client}>
+      {children}
+    </ApolloProvider>
+  )
+}
 

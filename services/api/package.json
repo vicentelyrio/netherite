@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@apollo/server": "^4.3.2",
+    "@graphql-tools/schema": "^9.0.19",
     "class-validator": "^0.14.0",
     "graphql": "^16.6.0",
     "gray-matter": "^4.0.3",

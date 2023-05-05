@@ -1,11 +1,11 @@
 import 'reflect-metadata'
-import path from 'path'
 
 import type { GraphQLSchema } from 'graphql'
-import { ApolloServer } from '@apollo/server'
+import { makeExecutableSchema } from '@graphql-tools/schema'
+import { ApolloServer, type BaseContext } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
 import { Container, ContainerInstance } from 'typedi'
-import { buildSchema, type ResolverData } from 'type-graphql'
+import { buildSchema, buildTypeDefsAndResolversSync } from 'type-graphql'
 
 import { AppSettingsResolver } from 'resolvers/AppSettings/AppSettings.resolver'
 import { GoalResolver } from 'resolvers/Goal/Goal.resolver'
@@ -13,23 +13,14 @@ import { GoalResolver } from 'resolvers/Goal/Goal.resolver'
 export { AppSettings, NavLink, Navbar } from 'resolvers/AppSettings/AppSettings.type'
 export { Goal, GoalsByType } from 'resolvers/Goal/Goal.type'
 
-export type ApiConfig = {
-  appRoot: string
-}
-
-const defaultConfig: ApiConfig = {
-  appRoot: path.resolve(__dirname, `../data/contents`)
-}
-
 export interface Context {
-  appRoot: string
   container: ContainerInstance
 }
 
 /*
 * Resolvers
 * */
-export const resolvers = [
+export const resolversList = [
   GoalResolver,
   AppSettingsResolver,
 ] as const
@@ -37,41 +28,49 @@ export const resolvers = [
 /*
 * Schema
 * */
-export async function schemaBuilder(): Promise<GraphQLSchema> {
-  return await buildSchema({
-    resolvers: [
-      GoalResolver,
-      AppSettingsResolver,
-    ],
-    container: ({ context }: ResolverData<Context>) => context.container,
+export async function schemaBuilder(): Promise<{ schema: GraphQLSchema, container: typeof Container }> {
+  const schema = await buildSchema({
+    resolvers: resolversList,
+    container: Container
   })
+
+  return {
+    schema,
+    container: Container
+  }
+}
+
+/*
+* Schema Exec
+* */
+export function schemaBuilderExec() {
+  const { typeDefs, resolvers } = buildTypeDefsAndResolversSync({
+    resolvers: resolversList,
+    container: Container,
+  })
+
+  return {
+    schema: makeExecutableSchema({ typeDefs, resolvers }),
+    container: Container
+  }
 }
 
 /*
 * Server
 * */
 export async function BuildApolloServer() {
-  const schema = await schemaBuilder()
-  return new ApolloServer<ApiConfig>({ schema })
+  const { schema } = await schemaBuilder()
+  return new ApolloServer<BaseContext>({ schema })
 }
 
 /*
 * Run Server
 * */
-export async function runServer(config: ApiConfig = defaultConfig): Promise<void> {
+export async function runServer(): Promise<void> {
   const server = await BuildApolloServer()
 
   // Start the server
-  const { url } = await startStandaloneServer(server, {
-    context: async (): Promise<Context> => {
-      const { appRoot } = config
-      const container = Container.of(appRoot)
-      const context = { appRoot, container }
-
-      container.set('context', context)
-      return context
-    }
-  })
+  const { url } = await startStandaloneServer(server)
 
   console.log(`🚀 Server ready at ${url}`)
 }
