@@ -42,7 +42,7 @@
     "vite-plugin-dts": "^1.7.1"
   },
   "dependencies": {
-    "@apollo/client": "^3.7.7",
+    "@apollo/client": "^3.7.14",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@netherite/ds-assets": "*",

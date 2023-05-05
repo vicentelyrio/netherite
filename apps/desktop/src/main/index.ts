@@ -1,34 +1,29 @@
+import 'reflect-metadata'
+
 import { app, shell, BrowserWindow, ipcMain, session } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { createBusLinkBackend, createSchemaExecutor } from 'apollo-bus-link/core'
 import { electronBus } from 'apollo-bus-link/electron'
-import { schemaBuilder } from '@netherite/api'
-/* import os from 'node:os' */
-
+import { schemaBuilderExec } from '@netherite/api'
+import os from 'os'
 import { join } from 'path'
 
 import icon from '../../resources/icon.png?asset'
+import { APOLLO_DEVTOOLS_PATH } from './constants'
 
-/* const { schema, container } = schemaBuilderExec() */
-
-schemaBuilder().then(({ schema, container }) => {
-  const backend = createBusLinkBackend({
-    registerBus: electronBus(ipcMain),
-    createExecutor: () => (
-      createSchemaExecutor({
-        schema,
-        context: () => {
-          const context = { container }
-          container.set('context', context)
-          return context
-        }
-      })
-    )
-  })
-
-  backend.listen()
+const backend = createBusLinkBackend({
+  registerBus: electronBus(ipcMain),
+  createExecutor: async () => {
+    return createSchemaExecutor({
+      schema: await schemaBuilderExec(),
+      context: () => {
+        return {}
+      }
+    })
+  }
 })
 
+backend.listen()
 
 function createWindow(): void {
   // Create the browser window.
@@ -66,10 +61,10 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
-  /* await session.defaultSession.loadExtension( */
-  /*   join(os.homedir(), '/Library/Application Support/BraveSoftware/Brave-Browser/Default/Extensions/jdkknkkbebbapilgoeccciglkfbmbnfm/4.1.4_0'), */
-  /*   { allowFileAccess: true } */
-  /* ) */
+  await session.defaultSession.loadExtension(
+    join(os.homedir(), APOLLO_DEVTOOLS_PATH),
+    { allowFileAccess: true }
+  )
 
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')

@@ -17,6 +17,7 @@ export const PATH = 'graphql'
 type ProviderType = {
   children: ReactElement
   link?: ApolloLink
+  client?: ApolloClient<NormalizedCacheObject>
 }
 
 const logLink = new ApolloLink((operation, forward) => {
@@ -33,8 +34,9 @@ const createHTTPLink = () => (
   })
 )
 
-const buildClient = (link: ApolloLink): ApolloClient<NormalizedCacheObject> => (
+export const buildClient = (link: ApolloLink): ApolloClient<NormalizedCacheObject> => (
   new ApolloClient({
+    ssrMode: true,
     cache: new InMemoryCache({
       typePolicies: {
         Goal: { keyFields: ['slug'] },
@@ -48,13 +50,13 @@ const buildClient = (link: ApolloLink): ApolloClient<NormalizedCacheObject> => (
   })
 )
 
-export const ServicesProviders = ({ children, link = createHTTPLink() }: ProviderType) => {
-  const client = buildClient(link) as any
-
-  (window as any).apolloClient = client
-
+export const ServicesProviders = ({
+  children,
+  link = createHTTPLink(),
+  client
+}: ProviderType) => {
   return (
-    <ApolloProvider client={client}>
+    <ApolloProvider client={client ?? buildClient(link)}>
       {children}
     </ApolloProvider>
   )

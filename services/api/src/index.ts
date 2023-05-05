@@ -5,7 +5,7 @@ import { makeExecutableSchema } from '@graphql-tools/schema'
 import { ApolloServer, type BaseContext } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
 import { Container, ContainerInstance } from 'typedi'
-import { buildSchema, buildTypeDefsAndResolversSync } from 'type-graphql'
+import { buildSchema, buildTypeDefsAndResolvers } from 'type-graphql'
 
 import { AppSettingsResolver } from 'resolvers/AppSettings/AppSettings.resolver'
 import { GoalResolver } from 'resolvers/Goal/Goal.resolver'
@@ -28,39 +28,30 @@ export const resolversList = [
 /*
 * Schema
 * */
-export async function schemaBuilder(): Promise<{ schema: GraphQLSchema, container: typeof Container }> {
-  const schema = await buildSchema({
+export async function schemaBuilder(): Promise<GraphQLSchema> {
+  return await buildSchema({
     resolvers: resolversList,
     container: Container
   })
-
-  return {
-    schema,
-    container: Container
-  }
 }
 
 /*
 * Schema Exec
 * */
-export function schemaBuilderExec() {
-  const { typeDefs, resolvers } = buildTypeDefsAndResolversSync({
+export async function schemaBuilderExec(): Promise<GraphQLSchema> {
+  const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
     resolvers: resolversList,
     container: Container,
   })
 
-  return {
-    schema: makeExecutableSchema({ typeDefs, resolvers }),
-    container: Container
-  }
+  return makeExecutableSchema({ typeDefs, resolvers })
 }
 
 /*
 * Server
 * */
 export async function BuildApolloServer() {
-  const { schema } = await schemaBuilder()
-  return new ApolloServer<BaseContext>({ schema })
+  return new ApolloServer<BaseContext>({ schema: await schemaBuilder() })
 }
 
 /*
