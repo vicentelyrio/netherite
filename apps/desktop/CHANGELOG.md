@@ -1,5 +1,15 @@
 # @netherite/desktop
 
+## 0.0.3
+
+### Patch Changes
+
+- - using electron-vite instead of electron-forge
+  - electron apollo integration
+- Updated dependencies
+  - @netherite/core@0.0.5
+  - @netherite/api@0.0.5
+
 ## 0.0.2
 
 ### Patch Changes

@@ -1,12 +1,19 @@
 # @netherite/core
 
+## 0.0.5
+
+### Patch Changes
+
+- - using electron-vite instead of electron-forge
+  - electron apollo integration
+
 ## 0.0.4
 
 ### Patch Changes
 
 - creating base Goals page
-  improving navigation
-  improving page build
+- improving navigation
+- improving page build
 - Updated dependencies
 - Updated dependencies
 - Updated dependencies
@@ -31,9 +38,9 @@
 ### Patch Changes
 
 - 39b55e4: Creating Api package
-  Integration with Desktop package
-  Integration with Core package
-  Design System packages distribution
+- Integration with Desktop package
+- Integration with Core package
+- Design System packages distribution
 - Updated dependencies [39b55e4]
   - @netherite/ds-components@0.0.2
 

@@ -99,7 +99,6 @@ export class BaseFileService implements BaseFileFactory {
   * @property {string} content
   */
   async getFilesByMatchContent(matcher: RegExp, content: string) {
-    console.log(content)
     try {
       const fileNames = await this.readDir(this.root, { withFileTypes: true })
       const loadedFiles: File[] = []

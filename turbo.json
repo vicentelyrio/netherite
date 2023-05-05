@@ -16,11 +16,11 @@
     "deploy": {
       "dependsOn": ["build", "test", "lint"]
     },
-    "dev": {
+    "dev:standalone": {
       "cache": false,
       "persistent": true
     },
-    "dev:local": {
+    "dev": {
       "cache": false,
       "persistent": true
     },
