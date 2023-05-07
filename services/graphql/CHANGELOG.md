@@ -1,4 +1,4 @@
-# @netherite/api
+# @netherite/service-graphql
 
 ## 0.0.5
 

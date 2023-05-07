@@ -1,8 +1,8 @@
 {
-  "name": "@netherite/api",
+  "name": "@netherite/service-graphql",
   "version": "0.0.5",
   "private": true,
-  "repository": "https://github.com/vicentelyrio/netherite/tree/master/services/api",
+  "repository": "https://github.com/vicentelyrio/netherite/tree/master/services/graphql",
   "source": "./src/index.ts",
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
@@ -23,21 +23,31 @@
     "clean": "yarn clean:dist && yarn clean:cache"
   },
   "devDependencies": {
+    "@apollo/server": "^4.7.1",
+    "@graphql-tools/schema": "^9.0.19",
+    "@netherite/service-fs": "*",
     "@netherite/tsconfig": "*",
     "@types/find-in-files": "^0.5.1",
     "@types/fs-extra": "^11.0.1",
     "@types/module-alias": "^2.0.1",
     "@types/node": "^18.11.18",
+    "class-validator": "^0.14.0",
     "concurrently": "^7.6.0",
     "eslint-config-netherite": "*",
+    "graphql": "^16.6.0",
+    "gray-matter": "^4.0.3",
     "nodemon": "^2.0.21",
+    "reflect-metadata": "^0.1.13",
     "tsc-alias": "^1.8.4",
     "tsc-watch": "^6.0.0",
+    "type-graphql": "^2.0.0-beta.1",
+    "typedi": "^0.10.0",
     "typescript": "^4.9.4"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@apollo/server": "^4.7.1",
     "@graphql-tools/schema": "^9.0.19",
+    "@netherite/service-fs": "*",
     "class-validator": "^0.14.0",
     "graphql": "^16.6.0",
     "gray-matter": "^4.0.3",
