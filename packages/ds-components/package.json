@@ -45,6 +45,5 @@
     "@netherite/ds-tokens": "*",
     "react": "^18.2.0",
     "theme-ui": "^0.15.5"
-  },
-  "dependencies": {}
+  }
 }

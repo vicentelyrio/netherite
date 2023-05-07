@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client'
 import { Link } from '@tanstack/react-location'
 
 import { CardList, Workspace, type CardType } from '@netherite/ds-components'
-import type { Goal } from '@netherite/api'
+import type { Goal } from '@netherite/service-graphql'
 import { GET_GOALS_BY_TYPE } from 'api/Goals/query'
 
 export const Goals = () => {

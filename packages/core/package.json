@@ -42,16 +42,9 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.14",
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
-    "@netherite/ds-assets": "*",
-    "@netherite/ds-components": "*",
-    "@netherite/ds-tokens": "*",
     "@netherite/service-graphql": "*",
     "@tanstack/react-location": "^3.7.4",
     "graphql": "^16.6.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "rehype-stringify": "^9.0.3",
     "remark-frontmatter": "^4.0.1",
     "remark-parse": "^10.0.1",
@@ -59,8 +52,17 @@
     "remark-rehype": "^10.1.0",
     "remark-stringify": "^10.0.2",
     "the-new-css-reset": "^1.8.4",
-    "theme-ui": "^0.15.5",
     "unified": "^10.1.2",
     "vite-tsconfig-paths": "^4.0.5"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@netherite/ds-assets": "*",
+    "@netherite/ds-components": "*",
+    "@netherite/ds-tokens": "*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "theme-ui": "^0.15.5"
   }
 }
