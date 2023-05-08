@@ -1,7 +1,7 @@
 import matter from 'gray-matter'
 import { Service, Inject } from 'typedi'
 
-import { BaseFileService, type File } from 'services/BaseFile.service'
+import { BaseFileService, type File } from '@netherite/service-fs'
 import { Identifier } from 'resolvers/Identifier/Identifier'
 
 import { Goal, GoalType } from './Goal.type'

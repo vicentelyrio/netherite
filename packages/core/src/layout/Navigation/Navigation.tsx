@@ -3,14 +3,14 @@ import { Link } from '@tanstack/react-location'
 
 import type { Theme } from '@netherite/ds-tokens'
 import { Icons, type IconsType } from '@netherite/ds-assets'
-import type { NavLink } from '@netherite/api'
+import type { NavLink } from '@netherite/service-graphql'
 import {
   Navigation as NavigationLayout,
   type NavigationAvatar,
   type NavigationItem,
 } from '@netherite/ds-components'
 
-import { useAppSettings, type AppSettingsType } from 'providers/AppSettings.provider'
+import { useAppSettings, type AppSettingsType } from 'providers/AppSettings/useAppSettings'
 
 export const Navigation = () => {
   const { navbar }: AppSettingsType = useAppSettings()

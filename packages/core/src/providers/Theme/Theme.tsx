@@ -7,7 +7,7 @@ type ProviderProps = {
   children: ReactElement
 }
 
-export const ThemeProvider = ({ children }: ProviderProps) => (
+export const Theme = ({ children }: ProviderProps) => (
   <Provider theme={theme}>
     {children}
   </Provider>

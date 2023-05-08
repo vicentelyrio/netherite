@@ -4,7 +4,7 @@ import { app, shell, BrowserWindow, ipcMain, session } from 'electron'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { createBusLinkBackend, createSchemaExecutor } from 'apollo-bus-link/core'
 import { electronBus } from 'apollo-bus-link/electron'
-import { schemaBuilderExec } from '@netherite/api'
+import { schemaBuilderExec } from '@netherite/service-graphql'
 import os from 'os'
 import { join } from 'path'
 

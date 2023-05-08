@@ -2,8 +2,6 @@ import 'reflect-metadata'
 
 import type { GraphQLSchema } from 'graphql'
 import { makeExecutableSchema } from '@graphql-tools/schema'
-import { ApolloServer, type BaseContext } from '@apollo/server'
-import { startStandaloneServer } from '@apollo/server/standalone'
 import { Container, ContainerInstance } from 'typedi'
 import { buildSchema, buildTypeDefsAndResolvers } from 'type-graphql'
 
@@ -47,25 +45,3 @@ export async function schemaBuilderExec(): Promise<GraphQLSchema> {
   return makeExecutableSchema({ typeDefs, resolvers })
 }
 
-/*
-* Server
-* */
-export async function BuildApolloServer() {
-  return new ApolloServer<BaseContext>({ schema: await schemaBuilder() })
-}
-
-/*
-* Run Server
-* */
-export async function runServer(): Promise<void> {
-  const server = await BuildApolloServer()
-
-  // Start the server
-  const { url } = await startStandaloneServer(server)
-
-  console.log(`🚀 Server ready at ${url}`)
-}
-
-if (process.env['STANDALONE'] === 'true') {
-  runServer()
-}

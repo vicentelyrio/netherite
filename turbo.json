@@ -6,11 +6,9 @@
       "outputs": ["dist/**"]
     },
     "test": {
-      "dependsOn": ["build"],
-      "inputs": ["src/**/*.tsx", "src/**/*.ts"]
+      "dependsOn": ["build"]
     },
-    "typecheck": {
-    },
+    "typecheck": {},
     "lint": {
     },
     "deploy": {
@@ -18,14 +16,24 @@
     },
     "dev:standalone": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": ["build"]
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": ["build"]
     },
     "clean": {
       "cache": false
     }
-  }
+  },
+  "globalDependencies": [
+    ".env"
+  ],
+  "globalEnv": [
+    "VITE_API_PATHNAME",
+    "VITE_API_PORT",
+    "VITE_API_NAMESPACE"
+  ]
 }

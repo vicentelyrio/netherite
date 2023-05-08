@@ -1,5 +1,14 @@
 # @netherite/core
 
+## 0.0.6
+
+### Patch Changes
+
+- - creating graphql service without server
+  - creating fs service
+  - creating web app with core and api together
+  - adapting packages to new structure
+
 ## 0.0.5
 
 ### Patch Changes
@@ -14,9 +23,6 @@
 - creating base Goals page
 - improving navigation
 - improving page build
-- Updated dependencies
-- Updated dependencies
-- Updated dependencies
 - Updated dependencies
   - @netherite/ds-assets@0.0.2
   - @netherite/api@0.0.4

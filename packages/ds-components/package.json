@@ -27,7 +27,7 @@
     "@netherite/ds-assets": "*",
     "@netherite/ds-tokens": "*",
     "@netherite/tsconfig": "*",
-    "@types/react": "^18.0.27",
+    "@types/react": "^18.0.28",
     "concurrently": "^7.6.0",
     "eslint-config-netherite": "*",
     "react": "^18.2.0",
@@ -46,5 +46,7 @@
     "react": "^18.2.0",
     "theme-ui": "^0.15.5"
   },
-  "dependencies": {}
+  "dependencies": {
+    "esbuild": "^0.17.18"
+  }
 }

@@ -1,6 +1,6 @@
 import { Service, Inject } from 'typedi'
 
-import { BaseFileService, type File } from 'services/BaseFile.service'
+import { BaseFileService, type File } from '@netherite/service-fs'
 
 import type { AppSettings } from './AppSettings.type'
 

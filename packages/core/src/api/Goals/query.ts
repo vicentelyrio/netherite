@@ -1,5 +1,5 @@
 import { gql, type TypedDocumentNode } from '@apollo/client'
-import type { Goal, GoalsByType } from '@netherite/api'
+import type { Goal, GoalsByType } from '@netherite/service-graphql'
 
 export const GOAL_COMPLETE_FRAG = gql`
   fragment GoalComplete on Goal {
