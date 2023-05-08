@@ -10,7 +10,7 @@ import {
   type NavigationItem,
 } from '@netherite/ds-components'
 
-import { useAppSettings, type AppSettingsType } from 'providers/AppSettings.provider'
+import { useAppSettings, type AppSettingsType } from 'providers/AppSettings/useAppSettings'
 
 export const Navigation = () => {
   const { navbar }: AppSettingsType = useAppSettings()

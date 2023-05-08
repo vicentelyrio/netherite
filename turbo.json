@@ -27,5 +27,13 @@
     "clean": {
       "cache": false
     }
-  }
+  },
+  "globalDependencies": [
+    ".env"
+  ],
+  "globalEnv": [
+    "VITE_API_PATHNAME",
+    "VITE_API_PORT",
+    "VITE_API_NAMESPACE"
+  ]
 }

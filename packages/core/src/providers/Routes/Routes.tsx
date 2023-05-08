@@ -8,7 +8,7 @@ import {
   type Route
 } from '@tanstack/react-location'
 
-import { useAppSettings } from 'providers/AppSettings.provider'
+import { useAppSettings } from 'providers/AppSettings/useAppSettings'
 
 import { Page } from 'layout/Page/Page'
 import { Workspace, type WorkspaceNames } from 'layout/Workspace/Workspace'
@@ -37,7 +37,19 @@ type RawRoute = Partial<Omit<Route, 'children'>> & {
   children?: RawRoute[],
 }
 
-export const RoutesProvider = () => {
+
+function mapRoutes (route: RawRoute): Partial<Route> {
+  const { path, templateType, workspaceType, children } = route
+  const Template = Templates[templateType] ?? Page
+
+  return {
+    path,
+    element: <Template type={workspaceType as WorkspaceNames} />,
+    children: children?.map((route: RawRoute) => mapRoutes(route))
+  }
+}
+
+export const Routes = () => {
   const data = useAppSettings()
 
   const routes: Route[] = useMemo(() => {
@@ -51,15 +63,3 @@ export const RoutesProvider = () => {
     </Router>
   )
 }
-
-function mapRoutes (route: RawRoute): Partial<Route> {
-  const { path, templateType, workspaceType, children } = route
-  const Template = Templates[templateType] ?? Page
-
-  return {
-    path,
-    element: <Template type={workspaceType as WorkspaceNames} />,
-    children: children?.map((route: RawRoute) => mapRoutes(route))
-  }
-}
-
