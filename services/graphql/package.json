@@ -1,6 +1,6 @@
 {
   "name": "@netherite/service-graphql",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": true,
   "repository": "https://github.com/vicentelyrio/netherite/tree/master/services/graphql",
   "source": "./src/index.ts",

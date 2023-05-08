@@ -1,5 +1,14 @@
 # eslint-config-netherite
 
+## 0.0.3
+
+### Patch Changes
+
+- - creating graphql service without server
+  - creating fs service
+  - creating web app with core and api together
+  - adapting packages to new structure
+
 ## 0.0.2
 
 ### Patch Changes
