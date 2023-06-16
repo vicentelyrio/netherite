@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.14",
-    "@apollo/server": "^4.7.1",
+    "@apollo/server": "^4.7.4",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@graphql-tools/schema": "^9.0.19",
