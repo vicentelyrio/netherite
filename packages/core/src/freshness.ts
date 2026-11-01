@@ -1,7 +1,8 @@
 import type { CommitInfo, GitError, GitRepository } from '@netherite/git'
 import type { Config } from '@netherite/schema'
-import { Effect, FileSystem, Path } from 'effect'
+import { Effect, type FileSystem, type Path } from 'effect'
 import picomatch from 'picomatch'
+import { pathMap } from './gitpaths'
 import type { ScannedItem } from './scanned-item'
 import type { WorkspaceIndex } from './workspace-index'
 
@@ -87,8 +88,6 @@ interface Tracked {
   readonly item: ScannedItem
   readonly covers: ReadonlyArray<string>
   readonly test: (path: string) => boolean
-  /** The item's path as git reports it. */
-  readonly gitPath: string
   readonly baseline: Freshness['baseline']
 }
 
@@ -138,16 +137,8 @@ export const computeFreshness = (input: FreshnessInput) =>
     }
 
     // 2. Where git's paths and the workspace's paths line up.
-    const fs = yield* FileSystem.FileSystem
-    const path = yield* Path.Path
-    const real = yield* fs.realPath(input.root).pipe(Effect.orElseSucceed(() => input.root))
-    const prefix = path.relative(git.root, real).split(path.sep).join('/')
-    const inWorkspace = (gitPath: string) =>
-      prefix === ''
-        ? gitPath
-        : gitPath.startsWith(`${prefix}/`)
-          ? gitPath.slice(prefix.length + 1)
-          : undefined
+    const map = yield* pathMap(git, input.root)
+    const inWorkspace = map.fromGit
 
     const boundary = new Set(yield* git.shallowBoundary)
 
@@ -159,7 +150,7 @@ export const computeFreshness = (input: FreshnessInput) =>
       if (typeof reviewed === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(reviewed)) {
         baseline = { source: 'reviewed_at', date: reviewed }
       } else {
-        const gitPath = prefix === '' ? item.path : `${prefix}/${item.path}`
+        const gitPath = map.toGit(item.path)
         const [last] = yield* git.log({ paths: [gitPath], limit: 1 })
         if (last !== undefined) {
           baseline = {
@@ -173,7 +164,6 @@ export const computeFreshness = (input: FreshnessInput) =>
         item,
         covers,
         test: compileCovers(covers),
-        gitPath: prefix === '' ? item.path : `${prefix}/${item.path}`,
         baseline,
       })
     }

@@ -228,6 +228,34 @@ describe('log', () => {
     })
   })
 
+  test('readCommits returns whole commits, in the order asked', async () => {
+    await withRepo(async (repo) => {
+      const git = await open(repo.root)
+      const [refactor, greeting] = [
+        repo.git('rev-parse', 'HEAD~1'),
+        repo.git('rev-parse', 'HEAD~3'),
+      ]
+      const found = await run(git.readCommits([greeting, refactor], { files: 'names' }))
+      expect(found.map((c) => c.subject)).toEqual([
+        'feat: add greeting',
+        'refactor: split utilities',
+      ])
+      expect(found[1]?.files.map((f) => f.path).sort()).toEqual(['src/app.ts', 'src/util.ts'])
+      expect(await run(git.readCommits([]))).toEqual([])
+    })
+  })
+
+  test('readCommits refuses anything that is not a commit id', async () => {
+    await withRepo(async (repo) => {
+      const git = await open(repo.root)
+      for (const bad of ['--output=/tmp/x', 'HEAD', 'main', 'abc def', '']) {
+        expect(await fail(git.readCommits([bad])), bad).toMatchObject({
+          _tag: 'InvalidGitArgument',
+        })
+      }
+    })
+  })
+
   test('firstCommit is the commit that added the path', async () => {
     await withRepo(async (repo) => {
       const git = await open(repo.root)

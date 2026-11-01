@@ -51,6 +51,14 @@ export interface GitRepository {
   readonly status: (options?: StatusOptions) => Effect.Effect<GitStatus, GitError>
   /** Commits, newest first. Cached per HEAD. */
   readonly log: (options?: LogOptions) => Effect.Effect<ReadonlyArray<CommitInfo>, GitError>
+  /**
+   * Specific commits, in the order given, with every file each one changed. (`log` with `paths`
+   * lists only the files matching those paths, so this is how to see a commit whole.)
+   */
+  readonly readCommits: (
+    hashes: ReadonlyArray<string>,
+    options?: { readonly files?: 'none' | 'names' | 'numstat' },
+  ) => Effect.Effect<ReadonlyArray<CommitInfo>, GitError>
   /** The commit that added a path, or `undefined` if it was never committed. */
   readonly firstCommit: (path: string) => Effect.Effect<CommitInfo | undefined, GitError>
   /** `user.name`, `user.email` and `github.user` from git config. Missing values are `undefined`. */
@@ -230,6 +238,31 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
         )
       })
 
+    const readCommits: GitRepository['readCommits'] = (hashes, commitOptions = {}) =>
+      Effect.gen(function* () {
+        for (const hash of hashes) {
+          if (!/^[0-9a-f]{4,64}$/i.test(hash)) {
+            return yield* Effect.fail(new InvalidGitArgument({ name: 'commit', value: hash }))
+          }
+        }
+        if (hashes.length === 0) return [] as CommitInfo[]
+        const files = commitOptions.files ?? 'none'
+        const args = [
+          'log',
+          '--no-walk=unsorted',
+          `--format=${logFormat}`,
+          '--no-renames',
+          ...(files === 'names' ? ['--name-only'] : files === 'numstat' ? ['--numstat'] : []),
+          ...hashes,
+          '--',
+        ]
+        // Commits never change, so no HEAD is needed in the key.
+        return yield* memo(
+          `commits|${JSON.stringify(args)}`,
+          Effect.map(run(args), (out) => parseLog(out.stdout, files)),
+        )
+      })
+
     const firstCommit: GitRepository['firstCommit'] = (path) =>
       Effect.gen(function* () {
         const current = yield* head
@@ -275,6 +308,7 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
       head,
       status,
       log,
+      readCommits,
       firstCommit,
       identity,
       shallowBoundary,

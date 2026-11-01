@@ -1,3 +1,12 @@
+export {
+  type CoChange,
+  type CoChanged,
+  type CoChangeOptions,
+  type CoverSuggestion,
+  coChanged,
+  type SuggestOptions,
+  suggestCovers,
+} from './cochange'
 export * from './edit'
 export {
   AlreadyExists,
@@ -25,6 +34,7 @@ export {
   stateFor,
   type Thresholds,
 } from './freshness'
+export { type PathMap, pathMap } from './gitpaths'
 export { nextId, nextIds } from './ids'
 export {
   type Diagnostic,
