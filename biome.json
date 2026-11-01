@@ -29,6 +29,7 @@
                       "@netherite/tokens",
                       "@netherite/ui",
                       "@netherite/web",
+                      "@netherite/markdown",
                       "@netherite/git/*",
                       "@netherite/core/*",
                       "@netherite/server/*",
@@ -36,13 +37,61 @@
                       "@netherite/cli/*",
                       "@netherite/tokens/*",
                       "@netherite/ui/*",
-                      "@netherite/web/*"
+                      "@netherite/web/*",
+                      "@netherite/markdown/*"
                     ],
                     "message": "@netherite/schema must not depend on this package (ADR-00006)."
                   },
                   {
                     "group": ["@mantine/*"],
                     "message": "Only @netherite/ui may import Mantine (ADR-00011)."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/schema/src/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@netherite/git",
+                      "@netherite/core",
+                      "@netherite/server",
+                      "@netherite/mcp",
+                      "@netherite/cli",
+                      "@netherite/tokens",
+                      "@netherite/ui",
+                      "@netherite/web",
+                      "@netherite/markdown",
+                      "@netherite/git/*",
+                      "@netherite/core/*",
+                      "@netherite/server/*",
+                      "@netherite/mcp/*",
+                      "@netherite/cli/*",
+                      "@netherite/tokens/*",
+                      "@netherite/ui/*",
+                      "@netherite/web/*",
+                      "@netherite/markdown/*"
+                    ],
+                    "message": "@netherite/schema must not depend on this package (ADR-00006)."
+                  },
+                  {
+                    "group": ["@mantine/*"],
+                    "message": "Only @netherite/ui may import Mantine (ADR-00011)."
+                  },
+                  {
+                    "group": ["node:*", "@effect/platform-node", "@effect/platform-node/*"],
+                    "message": "This code also runs in the browser; no Node-only imports."
                   }
                 ]
               }
@@ -70,6 +119,7 @@
                       "@netherite/tokens",
                       "@netherite/ui",
                       "@netherite/web",
+                      "@netherite/markdown",
                       "@netherite/schema/*",
                       "@netherite/core/*",
                       "@netherite/server/*",
@@ -77,7 +127,8 @@
                       "@netherite/cli/*",
                       "@netherite/tokens/*",
                       "@netherite/ui/*",
-                      "@netherite/web/*"
+                      "@netherite/web/*",
+                      "@netherite/markdown/*"
                     ],
                     "message": "@netherite/git must not depend on this package (ADR-00006)."
                   },
@@ -147,13 +198,15 @@
                       "@netherite/tokens",
                       "@netherite/ui",
                       "@netherite/web",
+                      "@netherite/markdown",
                       "@netherite/schema/*",
                       "@netherite/git/*",
                       "@netherite/mcp/*",
                       "@netherite/cli/*",
                       "@netherite/tokens/*",
                       "@netherite/ui/*",
-                      "@netherite/web/*"
+                      "@netherite/web/*",
+                      "@netherite/markdown/*"
                     ],
                     "message": "@netherite/server must not depend on this package (ADR-00006)."
                   },
@@ -186,13 +239,15 @@
                       "@netherite/tokens",
                       "@netherite/ui",
                       "@netherite/web",
+                      "@netherite/markdown",
                       "@netherite/schema/*",
                       "@netherite/git/*",
                       "@netherite/server/*",
                       "@netherite/cli/*",
                       "@netherite/tokens/*",
                       "@netherite/ui/*",
-                      "@netherite/web/*"
+                      "@netherite/web/*",
+                      "@netherite/markdown/*"
                     ],
                     "message": "@netherite/mcp must not depend on this package (ADR-00006)."
                   },
@@ -223,11 +278,13 @@
                       "@netherite/tokens",
                       "@netherite/ui",
                       "@netherite/web",
+                      "@netherite/markdown",
                       "@netherite/schema/*",
                       "@netherite/git/*",
                       "@netherite/tokens/*",
                       "@netherite/ui/*",
-                      "@netherite/web/*"
+                      "@netherite/web/*",
+                      "@netherite/markdown/*"
                     ],
                     "message": "@netherite/cli must not depend on this package (ADR-00006)."
                   },
@@ -261,6 +318,7 @@
                       "@netherite/cli",
                       "@netherite/ui",
                       "@netherite/web",
+                      "@netherite/markdown",
                       "@netherite/schema/*",
                       "@netherite/git/*",
                       "@netherite/core/*",
@@ -268,13 +326,61 @@
                       "@netherite/mcp/*",
                       "@netherite/cli/*",
                       "@netherite/ui/*",
-                      "@netherite/web/*"
+                      "@netherite/web/*",
+                      "@netherite/markdown/*"
                     ],
                     "message": "@netherite/tokens must not depend on this package (ADR-00006)."
                   },
                   {
                     "group": ["@mantine/*"],
                     "message": "Only @netherite/ui may import Mantine (ADR-00011)."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/tokens/src/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@netherite/schema",
+                      "@netherite/git",
+                      "@netherite/core",
+                      "@netherite/server",
+                      "@netherite/mcp",
+                      "@netherite/cli",
+                      "@netherite/ui",
+                      "@netherite/web",
+                      "@netherite/markdown",
+                      "@netherite/schema/*",
+                      "@netherite/git/*",
+                      "@netherite/core/*",
+                      "@netherite/server/*",
+                      "@netherite/mcp/*",
+                      "@netherite/cli/*",
+                      "@netherite/ui/*",
+                      "@netherite/web/*",
+                      "@netherite/markdown/*"
+                    ],
+                    "message": "@netherite/tokens must not depend on this package (ADR-00006)."
+                  },
+                  {
+                    "group": ["@mantine/*"],
+                    "message": "Only @netherite/ui may import Mantine (ADR-00011)."
+                  },
+                  {
+                    "group": ["node:*", "@effect/platform-node", "@effect/platform-node/*"],
+                    "message": "This code also runs in the browser; no Node-only imports."
                   }
                 ]
               }
@@ -301,15 +407,58 @@
                       "@netherite/mcp",
                       "@netherite/cli",
                       "@netherite/web",
+                      "@netherite/markdown",
                       "@netherite/schema/*",
                       "@netherite/git/*",
                       "@netherite/core/*",
                       "@netherite/server/*",
                       "@netherite/mcp/*",
                       "@netherite/cli/*",
-                      "@netherite/web/*"
+                      "@netherite/web/*",
+                      "@netherite/markdown/*"
                     ],
                     "message": "@netherite/ui must not depend on this package (ADR-00006)."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/ui/src/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@netherite/schema",
+                      "@netherite/git",
+                      "@netherite/core",
+                      "@netherite/server",
+                      "@netherite/mcp",
+                      "@netherite/cli",
+                      "@netherite/web",
+                      "@netherite/markdown",
+                      "@netherite/schema/*",
+                      "@netherite/git/*",
+                      "@netherite/core/*",
+                      "@netherite/server/*",
+                      "@netherite/mcp/*",
+                      "@netherite/cli/*",
+                      "@netherite/web/*",
+                      "@netherite/markdown/*"
+                    ],
+                    "message": "@netherite/ui must not depend on this package (ADR-00006)."
+                  },
+                  {
+                    "group": ["node:*", "@effect/platform-node", "@effect/platform-node/*"],
+                    "message": "This code also runs in the browser; no Node-only imports."
                   }
                 ]
               }
@@ -356,135 +505,6 @@
       }
     },
     {
-      "includes": ["packages/schema/src/**"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": [
-                      "@netherite/git",
-                      "@netherite/core",
-                      "@netherite/server",
-                      "@netherite/mcp",
-                      "@netherite/cli",
-                      "@netherite/tokens",
-                      "@netherite/ui",
-                      "@netherite/web",
-                      "@netherite/git/*",
-                      "@netherite/core/*",
-                      "@netherite/server/*",
-                      "@netherite/mcp/*",
-                      "@netherite/cli/*",
-                      "@netherite/tokens/*",
-                      "@netherite/ui/*",
-                      "@netherite/web/*"
-                    ],
-                    "message": "@netherite/schema must not depend on this package (ADR-00006)."
-                  },
-                  {
-                    "group": ["@mantine/*"],
-                    "message": "Only @netherite/ui may import Mantine (ADR-00011)."
-                  },
-                  {
-                    "group": ["node:*", "@effect/platform-node", "@effect/platform-node/*"],
-                    "message": "This code also runs in the browser; no Node-only imports."
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": ["packages/tokens/src/**"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": [
-                      "@netherite/schema",
-                      "@netherite/git",
-                      "@netherite/core",
-                      "@netherite/server",
-                      "@netherite/mcp",
-                      "@netherite/cli",
-                      "@netherite/ui",
-                      "@netherite/web",
-                      "@netherite/schema/*",
-                      "@netherite/git/*",
-                      "@netherite/core/*",
-                      "@netherite/server/*",
-                      "@netherite/mcp/*",
-                      "@netherite/cli/*",
-                      "@netherite/ui/*",
-                      "@netherite/web/*"
-                    ],
-                    "message": "@netherite/tokens must not depend on this package (ADR-00006)."
-                  },
-                  {
-                    "group": ["@mantine/*"],
-                    "message": "Only @netherite/ui may import Mantine (ADR-00011)."
-                  },
-                  {
-                    "group": ["node:*", "@effect/platform-node", "@effect/platform-node/*"],
-                    "message": "This code also runs in the browser; no Node-only imports."
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
-      "includes": ["packages/ui/src/**"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": [
-                      "@netherite/schema",
-                      "@netherite/git",
-                      "@netherite/core",
-                      "@netherite/server",
-                      "@netherite/mcp",
-                      "@netherite/cli",
-                      "@netherite/web",
-                      "@netherite/schema/*",
-                      "@netherite/git/*",
-                      "@netherite/core/*",
-                      "@netherite/server/*",
-                      "@netherite/mcp/*",
-                      "@netherite/cli/*",
-                      "@netherite/web/*"
-                    ],
-                    "message": "@netherite/ui must not depend on this package (ADR-00006)."
-                  },
-                  {
-                    "group": ["node:*", "@effect/platform-node", "@effect/platform-node/*"],
-                    "message": "This code also runs in the browser; no Node-only imports."
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    {
       "includes": ["apps/web/src/**"],
       "linter": {
         "rules": {
@@ -509,6 +529,96 @@
                       "@netherite/tokens/*"
                     ],
                     "message": "@netherite/web must not depend on this package (ADR-00006)."
+                  },
+                  {
+                    "group": ["@mantine/*"],
+                    "message": "Only @netherite/ui may import Mantine (ADR-00011)."
+                  },
+                  {
+                    "group": ["node:*", "@effect/platform-node", "@effect/platform-node/*"],
+                    "message": "This code also runs in the browser; no Node-only imports."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/markdown/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@netherite/schema",
+                      "@netherite/git",
+                      "@netherite/core",
+                      "@netherite/server",
+                      "@netherite/mcp",
+                      "@netherite/cli",
+                      "@netherite/tokens",
+                      "@netherite/ui",
+                      "@netherite/web",
+                      "@netherite/schema/*",
+                      "@netherite/git/*",
+                      "@netherite/core/*",
+                      "@netherite/server/*",
+                      "@netherite/mcp/*",
+                      "@netherite/cli/*",
+                      "@netherite/tokens/*",
+                      "@netherite/ui/*",
+                      "@netherite/web/*"
+                    ],
+                    "message": "@netherite/markdown must not depend on this package (ADR-00006)."
+                  },
+                  {
+                    "group": ["@mantine/*"],
+                    "message": "Only @netherite/ui may import Mantine (ADR-00011)."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["packages/markdown/src/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@netherite/schema",
+                      "@netherite/git",
+                      "@netherite/core",
+                      "@netherite/server",
+                      "@netherite/mcp",
+                      "@netherite/cli",
+                      "@netherite/tokens",
+                      "@netherite/ui",
+                      "@netherite/web",
+                      "@netherite/schema/*",
+                      "@netherite/git/*",
+                      "@netherite/core/*",
+                      "@netherite/server/*",
+                      "@netherite/mcp/*",
+                      "@netherite/cli/*",
+                      "@netherite/tokens/*",
+                      "@netherite/ui/*",
+                      "@netherite/web/*"
+                    ],
+                    "message": "@netherite/markdown must not depend on this package (ADR-00006)."
                   },
                   {
                     "group": ["@mantine/*"],

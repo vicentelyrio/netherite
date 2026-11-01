@@ -11,3 +11,10 @@ catalog:
   "@effect/platform-node": 4.1.1
   "@effect/vitest": 4.1.1
   yaml: ^2.9.1
+  unified: ^11.0.5
+  remark-parse: ^11.0.0
+  remark-gfm: ^4.0.1
+  remark-frontmatter: ^5.0.0
+  unist-util-visit: ^5.2.0
+  "@types/mdast": ^4.0.4
+  "@types/unist": ^3.0.3

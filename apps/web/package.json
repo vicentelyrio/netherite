@@ -10,7 +10,8 @@
   "dependencies": {
     "@netherite/ui": "workspace:*",
     "@netherite/schema": "workspace:*",
-    "effect": "catalog:"
+    "effect": "catalog:",
+    "@netherite/markdown": "workspace:*"
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",

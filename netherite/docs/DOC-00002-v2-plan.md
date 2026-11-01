@@ -13,7 +13,7 @@ explains: [DOC-00001]
 
 # Netherite v2 — Implementation plan
 
-Plan for [[DOC-00001]], following [[ADR-00001]] to [[ADR-00017]].
+Plan for [[DOC-00001]], following [[ADR-00001]] to [[ADR-00018]].
 
 This is a single draft document. Once milestone 1 ships, it is split into real `GOAL`, `PRJ` and `TASK` files **using Netherite's own MCP server**, which is the first dogfooding test. The IDs below are reserved for that split.
 

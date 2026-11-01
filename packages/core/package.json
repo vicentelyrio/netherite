@@ -21,7 +21,8 @@
     "@netherite/schema": "workspace:*",
     "@netherite/git": "workspace:*",
     "effect": "catalog:",
-    "yaml": "catalog:"
+    "yaml": "catalog:",
+    "@netherite/markdown": "workspace:*"
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",
