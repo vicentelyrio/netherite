@@ -1,0 +1,5 @@
+{
+  "op": "removeFromList",
+  "name": "tags",
+  "value": "c"
+}

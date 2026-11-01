@@ -1,0 +1,9 @@
+{
+  "op": "replaceSection",
+  "which": {
+    "text": "Details",
+    "depth": 3
+  },
+  "content": "x",
+  "expectError": "ambiguous-section"
+}

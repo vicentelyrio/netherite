@@ -1,0 +1,5 @@
+{
+  "op": "setField",
+  "name": "tags",
+  "value": ["a", "c", "d"]
+}

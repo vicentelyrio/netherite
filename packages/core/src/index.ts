@@ -1,7 +1,10 @@
+export * from './edit'
 export {
   ConfigInvalid,
   type ConfigIssue,
   ConfigReadError,
+  EditError,
+  type EditFailure,
   formatConfigIssue,
   ItemReadError,
   WorkspaceNotFound,

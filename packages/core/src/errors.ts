@@ -53,3 +53,22 @@ export class ItemReadError extends Data.TaggedError('ItemReadError')<{
     return `Cannot read ${this.path}: ${this.cause.message}`
   }
 }
+
+export type EditFailure =
+  | 'invalid-yaml'
+  | 'not-a-mapping'
+  | 'not-a-list'
+  | 'no-such-section'
+  | 'ambiguous-section'
+  | 'section-exists'
+  | 'no-such-check'
+
+/** An edit could not be applied. The text it was given is left unchanged. */
+export class EditError extends Data.TaggedError('EditError')<{
+  readonly reason: EditFailure
+  readonly detail: string
+}> {
+  override get message() {
+    return this.detail
+  }
+}

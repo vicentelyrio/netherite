@@ -1,0 +1,6 @@
+{
+  "op": "appendToList",
+  "name": "title",
+  "value": "x",
+  "expectError": "not-a-list"
+}

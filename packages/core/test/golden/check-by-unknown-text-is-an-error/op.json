@@ -1,0 +1,7 @@
+{
+  "op": "toggleCheck",
+  "which": {
+    "text": "nope"
+  },
+  "expectError": "no-such-check"
+}

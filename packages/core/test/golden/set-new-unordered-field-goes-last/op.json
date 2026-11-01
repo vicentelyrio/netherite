@@ -1,0 +1,21 @@
+{
+  "op": "setField",
+  "name": "custom",
+  "value": "x",
+  "options": {
+    "order": [
+      "id",
+      "aliases",
+      "type",
+      "title",
+      "tags",
+      "created",
+      "created_by",
+      "owner",
+      "project",
+      "explains",
+      "covers",
+      "reviewed_at"
+    ]
+  }
+}
