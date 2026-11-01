@@ -1,0 +1,21 @@
+{
+  "name": "@netherite/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@netherite/ui": "workspace:*",
+    "@netherite/schema": "workspace:*",
+    "effect": "catalog:"
+  },
+  "devDependencies": {
+    "@netherite/config": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
