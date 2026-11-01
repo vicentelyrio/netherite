@@ -1,6 +1,7 @@
 import { configFile } from '@netherite/core'
 import { Effect, FileSystem, Path } from 'effect'
 import { type Env, type ExitCode, exitCodes, json } from '../output'
+import { installSkills, type SkillsReport } from './skills-install'
 
 const folders = [
   'goals',
@@ -39,12 +40,18 @@ export interface InitOptions {
   readonly dir: string
   readonly content: string
   readonly json: boolean
+  /** Refresh the installed skills and the AGENTS.md section to this version. */
+  readonly update?: boolean
+  /** Do not install the agent skills or the AGENTS.md section. */
+  readonly noSkills?: boolean
 }
 
 export interface InitReport {
   readonly root: string
   readonly created: ReadonlyArray<string>
   readonly existed: ReadonlyArray<string>
+  /** What happened to the agent skills and AGENTS.md section. Absent with `--no-skills`. */
+  readonly skills?: SkillsReport
 }
 
 /**
@@ -115,13 +122,42 @@ export const init = (env: Env, options: InitOptions) =>
       created.push('.gitignore')
     }
 
+    const installed =
+      options.noSkills === true
+        ? undefined
+        : yield* installSkills(root, { update: options.update === true })
+
     if (options.json) {
-      json(env.out, { root, created, existed } satisfies InitReport)
+      json(env.out, {
+        root,
+        created,
+        existed,
+        ...(installed === undefined ? {} : { skills: installed }),
+      } satisfies InitReport)
     } else {
       for (const item of created) env.out.line(`created  ${item}`)
       for (const item of existed) env.out.line(`exists   ${item}`)
+      const changed = installed?.skills.filter((s) => s.status !== 'unchanged') ?? []
+      for (const s of changed) env.out.line(`${s.status.padEnd(8)} ${s.path}`)
+      if (installed !== undefined && installed.agents !== 'unchanged') {
+        env.out.line(
+          installed.agents === 'damaged'
+            ? 'skipped  AGENTS.md (its netherite markers are damaged; fix them by hand)'
+            : `${installed.agents.padEnd(8)} AGENTS.md`,
+        )
+      }
+      if (changed.some((s) => s.status === 'outdated')) {
+        env.out.line('Some skills are older than this version. Run `netherite init --update`.')
+      }
+      if (changed.some((s) => s.status === 'edited')) {
+        env.out.error('Skills you edited were left alone.')
+      }
+      const nothingNew =
+        created.length === 0 &&
+        !changed.some((s) => s.status === 'created' || s.status === 'updated') &&
+        (installed === undefined || ['unchanged', 'damaged'].includes(installed.agents))
       env.out.line(
-        created.length === 0
+        nothingNew
           ? 'Already set up.'
           : `Set up Netherite in ${root}. Next: netherite new task "My first task" --set project=PRJ-00001`,
       )

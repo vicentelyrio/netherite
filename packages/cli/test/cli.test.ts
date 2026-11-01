@@ -55,7 +55,8 @@ describe('init', () => {
         expect(existsSync(join(dir, 'netherite', folder, '.gitkeep')), folder).toBe(true)
       }
       expect(read(dir, '.gitignore')).toBe('.netherite/local/\n')
-      expect(result.stdout.filter((l) => l.startsWith('created'))).toHaveLength(10)
+      // Config, 8 folders and .gitignore, then 5 skills and AGENTS.md.
+      expect(result.stdout.filter((l) => l.startsWith('created'))).toHaveLength(16)
     })
   })
 

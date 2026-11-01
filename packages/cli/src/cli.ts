@@ -37,11 +37,23 @@ export const makeCli = (env: Env, state: { code: ExitCode }, version = '0.0.0') 
         Flag.withDefault('netherite'),
         Flag.withDescription('Folder for the items.'),
       ),
+      update: Flag.Boolean('update').pipe(
+        Flag.withDefault(false),
+        Flag.withDescription(
+          'Refresh the installed agent skills and AGENTS.md section. Skills you edited are kept.',
+        ),
+      ),
+      noSkills: Flag.Boolean('no-skills').pipe(
+        Flag.withDefault(false),
+        Flag.withDescription('Do not install agent skills or the AGENTS.md section.'),
+      ),
       json: jsonFlag,
     },
     (c) => Effect.flatMap(init(env, c), finish),
   ).pipe(
-    Command.withDescription('Set up Netherite in a repository: config, folders and .gitignore.'),
+    Command.withDescription(
+      'Set up Netherite in a repository: config, folders, .gitignore and agent skills.',
+    ),
   )
 
   const newCmd = Command.make(

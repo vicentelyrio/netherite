@@ -55,7 +55,8 @@ describe('context sync', () => {
       const result = await cli(dir, 'context', 'sync')
       expect(result.code).toBe(0)
       expect(result.stdout[0]).toMatch(/^CLAUDE\.md\s+created\s+≈\d+ of 8,000 tokens, 2 items$/)
-      expect(result.stdout[1]).toMatch(/^AGENTS\.md\s+created/)
+      // init already put its section in AGENTS.md, so sync adds to the file.
+      expect(result.stdout[1]).toMatch(/^AGENTS\.md\s+updated/)
       expect(read(dir, 'CLAUDE.md')).toContain('Use tabs.')
       expect(read(dir, 'AGENTS.md')).toContain('A term list.')
     })
@@ -129,7 +130,7 @@ describe('context sync', () => {
       )
       expect(report.targets.map((t) => [t.path, t.status])).toEqual([
         ['CLAUDE.md', 'created'],
-        ['AGENTS.md', 'created'],
+        ['AGENTS.md', 'updated'],
       ])
     })
   })
