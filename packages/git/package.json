@@ -25,6 +25,8 @@
     "@types/node": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
-    "tsdown": "catalog:"
+    "tsdown": "catalog:",
+    "@effect/platform-node": "catalog:",
+    "@netherite/testing": "workspace:*"
   }
 }
