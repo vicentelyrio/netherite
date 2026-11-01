@@ -88,12 +88,14 @@ export const memoryFileSystem = (
             size: entry.kind === 'file' ? entry.content.length : 0,
           }) as never,
       ),
-    readDirectory: (path) =>
+    readDirectory: (path, options) =>
       Effect.flatMap(get('readDirectory', path), () => {
         const dir = normalize(path)
+        const prefix = dir === '/' ? '/' : `${dir}/`
         const names = [...entries.keys()]
-          .filter((key) => key !== dir && parentOf(key) === dir)
-          .map((key) => key.slice(key === '/' ? 1 : dir.length + (dir === '/' ? 0 : 1)))
+          .filter((key) => key !== dir && key.startsWith(prefix))
+          .map((key) => key.slice(prefix.length))
+          .filter((name) => options?.recursive || !name.includes('/'))
         return Effect.succeed(names.sort())
       }),
     realPath: (path) => Effect.succeed(normalize(path)),

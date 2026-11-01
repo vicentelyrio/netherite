@@ -43,3 +43,13 @@ export class ConfigInvalid extends Data.TaggedError('ConfigInvalid')<{
     return this.issues.map((issue) => formatConfigIssue(this.path, issue)).join('\n')
   }
 }
+
+/** An item file could not be read while scanning the workspace. */
+export class ItemReadError extends Data.TaggedError('ItemReadError')<{
+  readonly path: string
+  readonly cause: PlatformError.PlatformError
+}> {
+  override get message() {
+    return `Cannot read ${this.path}: ${this.cause.message}`
+  }
+}
