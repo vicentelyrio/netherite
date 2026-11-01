@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process'
 import { cp, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
+import { devNull, tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fixturePath } from './fixtures'
 
@@ -42,8 +42,8 @@ const isolatedEnv = (
   date?: string,
 ): NodeJS.ProcessEnv => ({
   ...process.env,
-  GIT_CONFIG_GLOBAL: '/dev/null',
-  GIT_CONFIG_SYSTEM: '/dev/null',
+  GIT_CONFIG_GLOBAL: devNull,
+  GIT_CONFIG_SYSTEM: devNull,
   GIT_CONFIG_NOSYSTEM: '1',
   GIT_AUTHOR_NAME: author.name,
   GIT_AUTHOR_EMAIL: author.email,
