@@ -1,39 +1,21 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "test": {
-      "dependsOn": ["build"]
-    },
-    "typecheck": {},
-    "lint": {
-    },
-    "deploy": {
-      "dependsOn": ["build", "test", "lint"]
-    },
-    "dev:standalone": {
-      "cache": false,
-      "persistent": true,
-      "dependsOn": ["build"]
-    },
     "dev": {
       "cache": false,
       "persistent": true,
-      "dependsOn": ["build"]
+      "dependsOn": ["^build"]
     },
-    "clean": {
-      "cache": false
+    "typecheck": {
+      "dependsOn": ["^build"]
+    },
+    "lint": {},
+    "test": {
+      "dependsOn": ["^build"]
     }
-  },
-  "globalDependencies": [
-    ".env"
-  ],
-  "globalEnv": [
-    "VITE_API_PATHNAME",
-    "VITE_API_PORT",
-    "VITE_API_NAMESPACE"
-  ]
+  }
 }
