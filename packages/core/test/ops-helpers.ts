@@ -84,6 +84,9 @@ export interface World {
   readonly files: () => Record<string, string>
   readonly read: (path: string) => string | undefined
   readonly layer: Layer.Layer<never>
+  /** Changes files behind the repo's back, as another program would. */
+  readonly write: (path: string, content: string) => void
+  readonly remove: (path: string) => void
   /** Runs an operation against the in-memory files, at a fixed time. */
   readonly run: <A, E>(
     effect: Effect.Effect<A, E, never | import('effect').FileSystem.FileSystem | Path.Path>,
@@ -113,6 +116,8 @@ export const world = async (
     files: () => Object.fromEntries(fs.files().map((f) => [f, fs.read(f) as string])),
     read: (path) => fs.read(path.startsWith('/') ? path : `/repo/${path}`),
     layer,
+    write: (path, content) => fs.write(path.startsWith('/') ? path : `/repo/${path}`, content),
+    remove: (path) => fs.remove(path.startsWith('/') ? path : `/repo/${path}`),
     run: (effect) => Effect.runPromise(provide(effect as never)) as never,
     fail: (effect) => Effect.runPromise(provide(Effect.flip(effect as never))) as never,
   }

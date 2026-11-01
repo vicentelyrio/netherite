@@ -92,7 +92,15 @@ const data = (source: string): Record<string, unknown> | undefined => {
 const isoDate = (ms: number) => new Date(ms).toISOString().slice(0, 10)
 const isoDateTime = (ms: number) => new Date(ms).toISOString().replace(/\.\d{3}Z$/, 'Z')
 
-const key = (issue: FieldIssue) => `${issue.path.join('.')}\u0000${issue.message}`
+/**
+ * Identifies a problem by its field, its message and the value in the field. The value matters:
+ * a field that was invalid and is set to another invalid value has a new problem.
+ */
+const key = (issue: FieldIssue, source: string) => {
+  const field = issue.path[0]
+  const value = typeof field === 'string' ? data(source)?.[field] : undefined
+  return `${issue.path.join('.')}\u0000${issue.message}\u0000${JSON.stringify(value)}`
+}
 
 /** Everything wrong with an item's frontmatter: schema problems, aliases, broken references. */
 const problems = (repo: Repo, path: string, source: string): FieldIssue[] => {
@@ -125,8 +133,10 @@ const validate = (
   before: string | null,
   after: string,
 ): Effect.Effect<void, ValidationError> => {
-  const existing = new Set((before === null ? [] : problems(repo, path, before)).map(key))
-  const added = problems(repo, path, after).filter((issue) => !existing.has(key(issue)))
+  const existing = new Set(
+    (before === null ? [] : problems(repo, path, before)).map((issue) => key(issue, before ?? '')),
+  )
+  const added = problems(repo, path, after).filter((issue) => !existing.has(key(issue, after)))
   return added.length === 0 ? Effect.void : Effect.fail(new ValidationError({ issues: added }))
 }
 

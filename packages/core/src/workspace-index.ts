@@ -195,9 +195,11 @@ export const createIndex = (options: IndexOptions) => {
     searchReady = true
   }
 
-  const doneStates = new Set(
-    options.config.states.filter((s) => s.category === 'done').map((s) => s.name),
-  )
+  let doneStates = new Set<string>()
+  const setConfig = (config: Pick<Config, 'states'>) => {
+    doneStates = new Set(config.states.filter((s) => s.category === 'done').map((s) => s.name))
+  }
+  setConfig(options.config)
 
   const addReferrers = (entry: Entry) => {
     for (const ref of entry.refs) {
@@ -372,6 +374,9 @@ export const createIndex = (options: IndexOptions) => {
     resolver,
     upsert,
     remove,
+
+    /** Applies a changed configuration: which states count as done. */
+    setConfig,
 
     /** Adds many items at once. Faster than `upsert` in a loop because links resolve once. */
     build: (items: Iterable<ScannedItem>) => {

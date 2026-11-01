@@ -42,6 +42,16 @@ export {
 export { scanItems } from './scan'
 export { type ScannedItem, scannedItemFrom, toScannedItem } from './scanned-item'
 export {
+  type ChangeEvent,
+  parcelBackend,
+  type RawEvent,
+  type WatchBackend,
+  WatchError,
+  type Watcher,
+  type WatchOptions,
+  watchRepo,
+} from './watch'
+export {
   configFile,
   findWorkspaceRoot,
   loadWorkspace,

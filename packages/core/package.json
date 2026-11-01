@@ -25,7 +25,8 @@
     "yaml": "catalog:",
     "@netherite/markdown": "workspace:*",
     "graphology": "catalog:",
-    "minisearch": "catalog:"
+    "minisearch": "catalog:",
+    "@parcel/watcher": "catalog:"
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",

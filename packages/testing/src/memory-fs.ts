@@ -32,6 +32,10 @@ export interface MemoryFileSystem {
   readonly read: (path: string) => string | undefined
   /** Paths of all files, sorted. */
   readonly files: () => ReadonlyArray<string>
+  /** Writes a file directly, as if another program had. */
+  readonly write: (path: string, content: string) => void
+  /** Deletes a file or folder directly, as if another program had. */
+  readonly remove: (path: string) => void
 }
 
 /**
@@ -156,6 +160,13 @@ export const memoryFileSystem = (
   ) as Partial<FileSystem.FileSystem>
 
   return {
+    write: (path, content) => setFile(path, encoder.encode(content)),
+    remove: (path) => {
+      const target = normalize(path)
+      for (const key of [...entries.keys()]) {
+        if (key === target || key.startsWith(`${target}/`)) entries.delete(key)
+      }
+    },
     layer: FileSystem.layerNoop(guarded),
     read: (path) => {
       const entry = entries.get(normalize(path))
