@@ -1,0 +1,14 @@
+version: 1
+content: netherite
+id_padding: 5
+states:
+  - { name: backlog, category: todo }
+  - { name: doing, category: active }
+  - { name: blocked, category: blocked }
+  - { name: done, category: done }
+freshness:
+  drifting: 1
+  stale: 10
+context:
+  budget: 8000
+  targets: [claude, agents]

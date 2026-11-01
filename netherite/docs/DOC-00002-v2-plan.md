@@ -13,7 +13,7 @@ explains: [DOC-00001]
 
 # Netherite v2 — Implementation plan
 
-Plan for [[DOC-00001]], following [[ADR-00001]] to [[ADR-00016]].
+Plan for [[DOC-00001]], following [[ADR-00001]] to [[ADR-00017]].
 
 This is a single draft document. Once milestone 1 ships, it is split into real `GOAL`, `PRJ` and `TASK` files **using Netherite's own MCP server**, which is the first dogfooding test. The IDs below are reserved for that split.
 
@@ -90,7 +90,7 @@ ADRs: [[ADR-00002]], [[ADR-00003]], [[ADR-00004]], [[ADR-00006]], [[ADR-00008]],
 - [ ] Effect Schema definitions: common fields plus goal, project, task, adr, doc, context, runbook
 - [ ] ID format, prefixes and padding; branded `ItemId` per prefix and `Handle` types
 - [ ] Config schema (`.netherite/config.yml`), including task states and their categories
-- [ ] JSON Schema export for each type (`JSONSchema.make`)
+- [ ] JSON Schema export for each type (`Schema.toJsonSchemaDocument`)
 - [ ] Unknown fields allowed and preserved (`onExcessProperty: "preserve"`)
 - [ ] Decode errors mapped to field-level messages (path, expected, received)
 - Done when: every fixture item validates, and each invalid fixture gives the expected field-level error.
@@ -148,7 +148,7 @@ ADRs: [[ADR-00002]], [[ADR-00003]], [[ADR-00004]], [[ADR-00006]], [[ADR-00008]],
 ADRs: [[ADR-00007]], [[ADR-00009]]
 
 **TASK-00015 · `packages/git` read-only adapter** (after TASK-00004)
-- [ ] `Git` service over `@effect/platform` `Command`: no shell, argument arrays, timeouts; tagged errors
+- [ ] `Git` service over `effect/process` `ChildProcess`: no shell, argument arrays, timeouts; tagged errors
 - [ ] `status --porcelain=v2`, `log` with name-only and numstat, `rev-parse`, `config user.*`
 - [ ] Cache keyed by `HEAD` and index modification time
 - [ ] Graceful degrade without git, outside a repo, or in a shallow clone
@@ -174,7 +174,7 @@ ADRs: [[ADR-00007]], [[ADR-00009]]
 ADRs: [[ADR-00012]], [[ADR-00013]]
 
 **TASK-00019 · CLI skeleton** (after TASK-00013)
-- [ ] `netherite` binary built with `@effect/cli`, with commands `init`, `new <type>`, `lint`, `renumber`
+- [ ] `netherite` binary built with `effect/cli`, with commands `init`, `new <type>`, `lint`, `renumber`
 - [ ] `init` creates the config, folders and `.gitignore` entry for `.netherite/local/`
 - [ ] `lint` output: human-readable and `--json`; exit codes for CI
 - [ ] `lint --fix` applies the fixable rules through core operations (never commits); `--fix --dry-run` prints the diff
@@ -239,7 +239,7 @@ ADRs: [[ADR-00010]]
 **TASK-00030 · `serve` command** (after TASK-00027, TASK-00019)
 - [ ] Serve the built SPA from the package; default port 4747, falls back to the next free one
 - [ ] Open the browser; `--no-open`, `--port`
-- [ ] MCP over streamable HTTP at `/mcp`, mounted as a raw route using the Node request and response from `@effect/platform-node`
+- [ ] MCP over streamable HTTP at `/mcp`, mounted as a raw route using the Node request and response from `@effect/platform-node` (`NodeHttpServerRequest`)
 
 ### PRJ-00006 · Design system
 
@@ -355,7 +355,7 @@ ADRs: [[ADR-00011]], [[ADR-00014]]
 
 | Risk | Mitigation |
 |---|---|
-| Effect adds bundle size and a learning curve; `HttpApi` and `@effect/cli` are younger than Hono and commander | Pin exact versions; size budget in CI (TASK-00005); build the server vertical slice (TASK-00027) early and fall back to Hono only for the transport if blocked |
+| Effect adds bundle size and a learning curve; Effect 4 (`HttpApi`, `effect/cli`) is younger than Hono and commander | Pin exact versions; size budget in CI (TASK-00005); build the server vertical slice (TASK-00027) early and fall back to Hono only for the transport if blocked |
 | Mantine defaults fight the custom design | Theme and `classNames` in TASK-00033 first; only `packages/ui` imports Mantine so a swap stays contained |
 | Format-preserving edits are harder than expected (YAML edge cases) | TASK-00012 comes early with golden tests; fall back to rewriting only the frontmatter block, never the body |
 | Git history queries are slow on large repos | Cache per `HEAD`; limit history depth for stats; measure in TASK-00018 |

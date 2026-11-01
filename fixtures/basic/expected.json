@@ -1,0 +1,36 @@
+{
+  "orphans": ["DOC-00002"],
+  "supersession": [["ADR-00001", "ADR-00002"]],
+  "lint": [
+    {
+      "path": "netherite/tasks/TASK-00090-broken-link.md",
+      "rule": "broken-link",
+      "severity": "error"
+    },
+    {
+      "path": "netherite/tasks/TASK-00091-bad-state.md",
+      "rule": "schema",
+      "severity": "error"
+    },
+    {
+      "path": "netherite/tasks/TASK-00001-duplicate-id.md",
+      "rule": "duplicate-id",
+      "severity": "error"
+    },
+    {
+      "path": "netherite/tasks/TASK-00001-build-the-core.md",
+      "rule": "duplicate-id",
+      "severity": "error"
+    },
+    {
+      "path": "netherite/tasks/TASK-00092-missing-alias.md",
+      "rule": "missing-alias",
+      "severity": "error"
+    },
+    {
+      "path": "netherite/tasks/DOC-00003-wrong-folder.md",
+      "rule": "outside-type-folder",
+      "severity": "warning"
+    }
+  ]
+}

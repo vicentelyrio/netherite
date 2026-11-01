@@ -1,0 +1,20 @@
+{
+  "name": "@netherite/testing",
+  "version": "0.0.0",
+  "description": "Test helpers: fixture workspaces and scripted git repositories",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@netherite/config": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
