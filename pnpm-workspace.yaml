@@ -29,3 +29,5 @@ catalog:
   mdast-util-gfm-strikethrough: ^2.0.1
   mdast-util-gfm-footnote: ^2.1.0
   "@parcel/watcher": ^2.6.0
+  picomatch: ^4.0.7
+  "@types/picomatch": ^4.0.3

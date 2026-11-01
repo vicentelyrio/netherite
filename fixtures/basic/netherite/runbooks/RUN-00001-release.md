@@ -5,7 +5,7 @@ type: runbook
 title: Release procedure
 owner: "@grace"
 covers: ["src/util.ts"]
-reviewed_at: 2026-01-12
+reviewed_at: 2026-01-15
 created: 2026-01-12T09:00:00Z
 created_by: "@grace"
 ---

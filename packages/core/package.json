@@ -26,7 +26,8 @@
     "@netherite/markdown": "workspace:*",
     "graphology": "catalog:",
     "minisearch": "catalog:",
-    "@parcel/watcher": "catalog:"
+    "@parcel/watcher": "catalog:",
+    "picomatch": "catalog:"
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",
@@ -35,6 +36,7 @@
     "vitest": "catalog:",
     "tsdown": "catalog:",
     "@netherite/testing": "workspace:*",
-    "@effect/platform-node": "catalog:"
+    "@effect/platform-node": "catalog:",
+    "@types/picomatch": "catalog:"
   }
 }

@@ -4,7 +4,8 @@ import type { Commit } from './git-repo'
  * Scripted history for `fixtures/basic`, on top of its initial commit (2026-01-01).
  * DOC-00001 and CTX-00001 cover `src/**` and were reviewed on 2026-01-10, so the three
  * commits after that date that touch `src/` make them drifting. RUN-00001 covers only
- * `src/util.ts` and was reviewed on 2026-01-12, so it stays fresh.
+ * `src/util.ts` and was reviewed on 2026-01-15, after the last commit that touched that file
+ * (2026-01-14), so it stays fresh.
  */
 export const basicHistory: readonly Commit[] = [
   {

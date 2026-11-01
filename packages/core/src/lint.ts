@@ -1,3 +1,4 @@
+import type { GitRepository } from '@netherite/git'
 import {
   type Config,
   checkItem,
@@ -8,6 +9,7 @@ import {
 } from '@netherite/schema'
 import { Effect } from 'effect'
 import { fileSlug, typeFolders } from './filenames'
+import { computeFreshness, type Freshness } from './freshness'
 import type { ParseOptions } from './parse-pool'
 import { scanItems } from './scan'
 import type { ScannedItem } from './scanned-item'
@@ -26,6 +28,8 @@ export type RuleId =
   | 'broken-link'
   | 'ambiguous-link'
   | 'broken-heading'
+  | 'drifting'
+  | 'stale'
   | 'orphan'
   | 'unknown-field'
 
@@ -56,6 +60,10 @@ export interface LintOptions {
   readonly contentRoot: string
   /** Report only diagnostics for these paths. Rules still look at the whole workspace. */
   readonly only?: ReadonlyArray<string>
+  /** Freshness of each item (from `computeFreshness`). Without it, freshness is not checked. */
+  readonly freshness?: ReadonlyMap<string, Freshness>
+  /** How serious drifting and stale items are. Both default to `warning`; CI can use `error`. */
+  readonly freshnessSeverity?: { readonly drifting?: Severity; readonly stale?: Severity }
 }
 
 type Position = { line: number; column: number }
@@ -234,7 +242,32 @@ export const lint = (index: WorkspaceIndex, options: LintOptions): Diagnostic[] 
     }
   }
 
-  // 7. Orphans.
+  // 7. Freshness.
+  if (options.freshness !== undefined) {
+    for (const [path, fresh] of options.freshness) {
+      if (fresh.state !== 'drifting' && fresh.state !== 'stale') continue
+      const item = index.get(path)
+      if (item === undefined) continue
+      const since =
+        fresh.baseline?.source === 'reviewed_at'
+          ? `it was reviewed on ${fresh.baseline.date}`
+          : `its last commit on ${fresh.baseline?.date ?? '?'}`
+      const count = `${fresh.atLeast ? 'at least ' : ''}${fresh.commits} commit${fresh.commits === 1 ? '' : 's'}`
+      const where = fieldPosition(
+        item,
+        item.parsed.frontmatter?.fields.reviewed_at ? 'reviewed_at' : 'covers',
+      )
+      report(
+        item,
+        where,
+        fresh.state,
+        options.freshnessSeverity?.[fresh.state] ?? 'warning',
+        `${fresh.state === 'stale' ? 'Stale' : 'Drifting'}: ${count} touched ${fresh.covers.join(', ')} since ${since}${fresh.uncommitted ? ' (including uncommitted changes)' : ''}. Review it, then mark it reviewed.`,
+      )
+    }
+  }
+
+  // 8. Orphans.
   for (const path of index.orphans()) {
     const item = index.get(path)
     if (item !== undefined) report(item, top, 'orphan', 'info', 'Nothing links to this item')
@@ -268,7 +301,13 @@ export const summarize = (diagnostics: ReadonlyArray<Diagnostic>): LintSummary =
 /** Scans the workspace from disk, indexes it and lints it. */
 export const lintWorkspace = (
   workspace: Workspace,
-  options: { readonly only?: ReadonlyArray<string>; readonly parse?: ParseOptions } = {},
+  options: {
+    readonly only?: ReadonlyArray<string>
+    readonly parse?: ParseOptions
+    /** Pass the repository to check freshness; `undefined` skips it (no git). */
+    readonly git?: GitRepository | undefined
+    readonly freshnessSeverity?: LintOptions['freshnessSeverity']
+  } = {},
 ) =>
   Effect.gen(function* () {
     const items = yield* scanItems(workspace, options.parse)
@@ -278,9 +317,22 @@ export const lintWorkspace = (
       .slice(workspace.root.length + 1)
       .split('\\')
       .join('/')
+    const freshness =
+      options.git === undefined
+        ? undefined
+        : yield* computeFreshness({
+            index,
+            git: options.git,
+            thresholds: workspace.config.freshness,
+            root: workspace.root,
+          })
     return lint(index, {
       config: workspace.config,
       contentRoot,
       ...(options.only === undefined ? {} : { only: options.only }),
+      ...(freshness === undefined ? {} : { freshness }),
+      ...(options.freshnessSeverity === undefined
+        ? {}
+        : { freshnessSeverity: options.freshnessSeverity }),
     })
   })

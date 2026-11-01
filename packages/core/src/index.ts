@@ -16,6 +16,15 @@ export {
   WorkspaceNotFound,
 } from './errors'
 export { fileSlug, itemFileName, itemRelativePath, typeFolders } from './filenames'
+export {
+  compileCovers,
+  computeFreshness,
+  type Freshness,
+  type FreshnessInput,
+  type FreshnessState,
+  stateFor,
+  type Thresholds,
+} from './freshness'
 export { nextId, nextIds } from './ids'
 export {
   type Diagnostic,
