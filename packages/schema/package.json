@@ -25,6 +25,8 @@
     "@types/node": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
-    "tsdown": "catalog:"
+    "tsdown": "catalog:",
+    "yaml": "catalog:",
+    "@netherite/testing": "workspace:*"
   }
 }
