@@ -18,6 +18,11 @@ export interface Env {
   readonly out: Output
   /** The folder the command was started from. */
   readonly cwd: string
+  /** Streams for commands that speak a protocol (`mcp`). Default: the process's own. */
+  readonly stdio?: {
+    readonly input?: import('node:stream').Readable
+    readonly output?: import('node:stream').Writable
+  }
 }
 
 export const json = (out: Output, value: unknown) => out.line(JSON.stringify(value, null, 2))

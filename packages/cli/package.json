@@ -31,7 +31,8 @@
     "typescript": "catalog:",
     "vitest": "catalog:",
     "tsdown": "catalog:",
-    "@netherite/testing": "workspace:*"
+    "@netherite/testing": "workspace:*",
+    "@modelcontextprotocol/sdk": "catalog:"
   },
   "bin": {
     "netherite": "./dist/bin.mjs"

@@ -2,6 +2,7 @@ import { Effect, Option } from 'effect'
 import { Argument, Command, Flag } from 'effect/cli'
 import { init } from './commands/init'
 import { type FailOn, lintCommand } from './commands/lint'
+import { mcpCommand } from './commands/mcp'
 import { newItem } from './commands/new'
 import { renumberCommand } from './commands/renumber'
 import { type Env, type ExitCode, exitCodes } from './output'
@@ -21,7 +22,7 @@ const jsonFlag = Flag.Boolean('json').pipe(
 const failOnChoices: ReadonlyArray<FailOn> = ['error', 'warning', 'info', 'never']
 
 /** The command tree. Each handler stores its exit code in `state`, which `runCli` returns. */
-export const makeCli = (env: Env, state: { code: ExitCode }) => {
+export const makeCli = (env: Env, state: { code: ExitCode }, version = '0.0.0') => {
   const finish = (code: ExitCode) =>
     Effect.sync(() => {
       state.code = code
@@ -165,9 +166,25 @@ export const makeCli = (env: Env, state: { code: ExitCode }) => {
     ),
   )
 
+  const mcpCmd = Command.make(
+    'mcp',
+    {
+      dir,
+      noWatch: Flag.Boolean('no-watch').pipe(
+        Flag.withDefault(false),
+        Flag.withDescription('Do not watch for changes made outside the server.'),
+      ),
+    },
+    (c) => Effect.flatMap(mcpCommand(env, { ...c, version }), finish),
+  ).pipe(
+    Command.withDescription(
+      "Serve this workspace to an AI agent over MCP (stdio). Add it to your agent's MCP config.",
+    ),
+  )
+
   return Command.make('netherite').pipe(
     Command.withDescription('Typed, linked knowledge in your git repository.'),
-    Command.withSubcommands([initCmd, newCmd, lintCmd, renumberCmd]),
+    Command.withSubcommands([initCmd, newCmd, lintCmd, renumberCmd, mcpCmd]),
   )
 }
 
@@ -177,7 +194,7 @@ export const makeCli = (env: Env, state: { code: ExitCode }) => {
  */
 export const runCli = (argv: ReadonlyArray<string>, env: Env, version = '0.0.0') => {
   const state = { code: exitCodes.ok as ExitCode }
-  const root = makeCli(env, state)
+  const root = makeCli(env, state, version)
   return Command.runWith(root, { version })(argv).pipe(
     Effect.map(() => state.code),
     // A usage error (unknown flag, missing argument): effect/cli has printed the reason.

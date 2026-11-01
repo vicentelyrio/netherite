@@ -634,6 +634,16 @@
           }
         }
       }
+    },
+    {
+      "includes": ["packages/mcp/test/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
     }
   ]
 }

@@ -1,3 +1,4 @@
+export { cleanWorkspaceFiles } from './clean-workspace'
 export { fixedClock } from './clock'
 export { fixturePath, fixturesRoot, withTempDir } from './fixtures'
 export { type GenerateOptions, generateWorkspaceFiles } from './generate'

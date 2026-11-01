@@ -1,1 +1,5 @@
-export {}
+export { ArgReader } from './args'
+export { describeError, type ToolResult } from './errors'
+export { createMcpServer, type McpHandle, type McpOptions } from './server'
+export { type StdioOptions, serveStdio } from './stdio'
+export { toolDefinitions } from './tools'

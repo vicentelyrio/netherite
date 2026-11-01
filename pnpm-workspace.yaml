@@ -35,3 +35,4 @@ catalog:
   "@parcel/watcher": ^2.6.0
   picomatch: ^4.0.7
   "@types/picomatch": ^4.0.3
+  "@modelcontextprotocol/sdk": ^1.32.2

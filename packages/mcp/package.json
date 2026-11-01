@@ -19,13 +19,16 @@
   },
   "dependencies": {
     "@netherite/core": "workspace:*",
-    "effect": "catalog:"
+    "effect": "catalog:",
+    "@modelcontextprotocol/sdk": "catalog:"
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",
     "@types/node": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
-    "tsdown": "catalog:"
+    "tsdown": "catalog:",
+    "@netherite/testing": "workspace:*",
+    "@effect/platform-node": "catalog:"
   }
 }

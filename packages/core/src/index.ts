@@ -1,4 +1,10 @@
-export { type ItemType, itemTypes } from '@netherite/schema'
+export {
+  type FieldIssue,
+  type ItemType,
+  itemJsonSchemas,
+  itemTypes,
+  ValidationError,
+} from '@netherite/schema'
 export {
   type CoChange,
   type CoChanged,
@@ -8,6 +14,14 @@ export {
   type SuggestOptions,
   suggestCovers,
 } from './cochange'
+export {
+  buildContext,
+  type ContextBundle,
+  type ContextItem,
+  type ContextOptions,
+  type ContextTarget,
+  estimateTokens,
+} from './context-bundle'
 export * from './edit'
 export {
   AlreadyExists,
