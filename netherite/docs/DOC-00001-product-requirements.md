@@ -108,6 +108,7 @@ Agents can search, read, create, update, link and delete every item type, fetch 
 
 ## Non-goals (v2)
 
+- A v1 data importer. v1 was an early prototype with no users; its data can be recreated with the MCP server. An importer can be added after 2.0 if needed.
 - Committing, branching, pushing or any other git write.
 - Accounts, authentication, permissions or multi-tenant hosting.
 - Cloud sync or real-time collaborative editing.
@@ -124,9 +125,10 @@ Agents can search, read, create, update, link and delete every item type, fetch 
 ## Open questions
 
 - The exact content of the project **Design** view needs a design pass.
-- Whether to provide an importer for v1 data (`~/Documents/@netherite`).
-- Windows support level for the git integration.
+- Windows is best-effort in 2.0: the git adapter is tested on a Windows CI runner, and the app has a smoke test. Full parity is out of scope until reported.
 
 ## Decisions
 
-[[ADR-00001]] ADRs in this repo · [[ADR-00002]] workspace and layout · [[ADR-00003]] data model · [[ADR-00004]] IDs and links · [[ADR-00005]] tooling · [[ADR-00006]] architecture · [[ADR-00007]] git · [[ADR-00008]] format-preserving edits · [[ADR-00009]] freshness · [[ADR-00010]] local server · [[ADR-00011]] frontend · [[ADR-00012]] MCP · [[ADR-00013]] skills and context sync · [[ADR-00014]] search and graph · [[ADR-00015]] desktop deferred · [[ADR-00016]] retire v1
+All ADRs are `accepted`. From now on a change of meaning needs a new ADR that supersedes the old one.
+
+[[ADR-00001]] ADRs in this repo · [[ADR-00002]] workspace and layout · [[ADR-00003]] data model with Effect Schema · [[ADR-00004]] IDs and links · [[ADR-00005]] tooling · [[ADR-00006]] architecture · [[ADR-00007]] git · [[ADR-00008]] format-preserving edits · [[ADR-00009]] freshness · [[ADR-00010]] local server · [[ADR-00011]] frontend with Mantine · [[ADR-00012]] MCP · [[ADR-00013]] skills and context sync · [[ADR-00014]] search and graph · [[ADR-00015]] desktop deferred · [[ADR-00016]] retire v1

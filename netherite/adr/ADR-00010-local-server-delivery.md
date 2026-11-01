@@ -17,11 +17,13 @@ The app needs filesystem and git access and must work in any repo without an ins
 
 ## Decision
 
-- `npx netherite` (alias for `netherite serve`) finds the workspace, builds the index and starts a **Hono** server on `127.0.0.1` (default port 4747, next free if taken), then opens the browser.
-- The server serves the prebuilt SPA bundled in the `netherite` package, a JSON API with a typed client (`hono/client`), and a **server-sent events** stream of index changes.
-- `@parcel/watcher` watches the content root, `.netherite/config.yml` and `.git/HEAD` / `.git/index`. Changes update the index incrementally and are pushed over SSE.
-- **Security:** it binds to loopback only. It rejects requests whose `Host` or `Origin` is not the local server (DNS-rebinding protection). Write endpoints require a random per-session token handed to the SPA at startup.
-- The same server can expose MCP over streamable HTTP at `/mcp` ([[ADR-00012]]).
+- `npx netherite` (alias for `netherite serve`) finds the workspace, builds the index and starts an **Effect `HttpApi`** server (`@effect/platform`, `@effect/platform-node`) on `127.0.0.1` (default port 4747, next free if taken), then opens the browser.
+- The API is defined once with Effect Schema ([[ADR-00003]]). The server implementation, the typed `HttpApiClient` used by the SPA and the API documentation all derive from that definition. Failures are tagged errors mapped to statuses (validation 422, conflict 409, not found 404).
+- The server serves the prebuilt SPA bundled in the `netherite` package and a **server-sent events** stream of index changes (an Effect `Stream`).
+- `@parcel/watcher` watches the content root, `.netherite/config.yml` and `.git/HEAD` / `.git/index`, wrapped as a `Stream`. Changes update the index incrementally and are pushed over SSE.
+- **Security:** it binds to loopback only. Middleware rejects requests whose `Host` or `Origin` is not the local server (DNS-rebinding protection). Write endpoints require a random per-session token handed to the SPA at startup.
+- The same server exposes MCP over streamable HTTP at `/mcp` ([[ADR-00012]]). The MCP SDK transport expects Node request and response objects, which `@effect/platform-node` can provide for a raw route.
+- Hono was considered: smaller and more common, but it would add a second error model and a second validation path next to Effect ([[ADR-00006]]).
 
 ## Consequences
 

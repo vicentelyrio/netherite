@@ -20,8 +20,8 @@ People (in the app, in their editor, in Obsidian) and agents (over MCP) edit the
 - **Frontmatter** is edited with the `yaml` package's Document API, which keeps comments, key order, quoting and flow style. New keys are appended in schema order.
 - **Body** edits (toggling a checklist item, appending a section) are made by splicing the original string at positions taken from the mdast, never by stringifying the whole tree.
 - Line endings, trailing newline and indentation style of each file are detected and kept.
-- **Optimistic concurrency:** every operation carries the content hash it was based on. If the file changed on disk since then, the write is rejected with a conflict and the caller reloads. The app editor shows this as "changed on disk".
-- Writes are atomic: write a temp file in the same directory, then rename.
+- **Optimistic concurrency:** every operation carries the content hash it was based on. If the file changed on disk since then, the write fails with a tagged `ConflictError` (HTTP 409, an MCP error result) and the caller reloads. The app editor shows this as "changed on disk".
+- Writes are atomic through the `FileSystem` service: write a temp file in the same directory, then rename.
 - Golden-file tests cover each operation: input file + operation → exact expected output.
 
 ## Consequences

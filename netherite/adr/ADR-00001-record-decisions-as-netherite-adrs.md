@@ -20,7 +20,8 @@ v2 is a rewrite with many architectural choices. Netherite's own purpose is to k
 - Architecture decisions for Netherite are recorded as ADRs in `netherite/adr/`, using the format defined in [[ADR-00003]] and [[ADR-00004]].
 - The product requirements live in [[DOC-00001]].
 - The v2 plan (goals, projects, tasks) will also be written in this format, so this repository is the first workspace the app opens.
-- An ADR is never edited to change its meaning once accepted. A new ADR supersedes it (`supersedes` / `superseded_by`).
+- While an ADR is `proposed` it is edited in place. All ADRs stay `proposed` until the author accepts them.
+- Once an ADR is `accepted`, it is never edited to change its meaning. A new ADR supersedes it (`supersedes` / `superseded_by`).
 
 ## Consequences
 

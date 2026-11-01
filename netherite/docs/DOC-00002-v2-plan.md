@@ -33,11 +33,12 @@ M1 comes first on purpose: the core rules, IDs and edits get proven by agents an
 PRJ-01 reset ─► PRJ-02 schema+core ─┬─► PRJ-03 git ─────────┐
                                     └─► PRJ-04 cli+mcp ◄────┘  ═► M1
 PRJ-02 ─► PRJ-05 server ─┐
-PRJ-06 design system ────┴─► PRJ-07 app screens               ═► M2
+PRJ-03 ─(TASK-18)────────┼─► PRJ-07 app screens               ═► M2
+PRJ-06 design system ────┘
 PRJ-04 + PRJ-07 ─► PRJ-08 release                             ═► M3
 ```
 
-PRJ-06 (design system) depends only on PRJ-01, so it can run in parallel with M1.
+PRJ-06 (design system) depends only on PRJ-01, so it can run in parallel with M1. PRJ-05 needs only PRJ-02. PRJ-07 also needs the history queries from PRJ-03 (TASK-00018) for the decision log and stats, and the activity log from PRJ-04 (TASK-00021) for the Inbox.
 
 ---
 
@@ -64,14 +65,21 @@ ADRs: [[ADR-00005]], [[ADR-00016]]
 - [ ] tsdown setup for library packages
 - [ ] Package template: `src/`, `test/`, exports map, `build`/`test` scripts
 
+**TASK-00052 · Scaffold the packages** (after TASK-00003)
+- [ ] Empty `packages/schema`, `git`, `core`, `server`, `mcp`, `cli`, `tokens`, `ui` and `apps/web` from the package template, with the dependency directions in [[ADR-00006]]
+- [ ] Lint rule that fails on forbidden imports (for example `core` importing `server`, anything but `ui` importing Mantine)
+- Done when: `pnpm build` and `pnpm typecheck` pass across all empty packages.
+
 **TASK-00004 · Test setup and fixture workspace** (after TASK-00003)
-- [ ] Vitest workspace config
+- [ ] Vitest workspace config with `@effect/vitest`
 - [ ] `fixtures/basic`: a small workspace with every item type, links, a supersession chain, an orphan and lint errors
 - [ ] Helper that creates a temporary git repo from a fixture with a scripted commit history
 
 **TASK-00005 · GitHub Actions CI** (after TASK-00004)
 - [ ] Jobs: install, lint, typecheck, test, build
 - [ ] Cache the pnpm store and turbo
+- [ ] Matrix: Linux and macOS for everything; Windows for `packages/git` and `core` tests (best-effort support, see [[DOC-00001]])
+- [ ] Bundle check: the browser build imports only `Schema` and the HTTP client from `effect` (size budget)
 - [ ] Placeholder step for `netherite lint` on this repo (enabled in TASK-00026)
 
 ### PRJ-00002 · Schema and core
@@ -79,17 +87,18 @@ ADRs: [[ADR-00005]], [[ADR-00016]]
 ADRs: [[ADR-00002]], [[ADR-00003]], [[ADR-00004]], [[ADR-00006]], [[ADR-00008]], [[ADR-00014]]
 
 **TASK-00006 · `packages/schema`** (after TASK-00003)
-- [ ] zod schemas: common fields plus goal, project, task, adr, doc, context, runbook
-- [ ] ID format, prefixes and padding; the `@handle` type
+- [ ] Effect Schema definitions: common fields plus goal, project, task, adr, doc, context, runbook
+- [ ] ID format, prefixes and padding; branded `ItemId` per prefix and `Handle` types
 - [ ] Config schema (`.netherite/config.yml`), including task states and their categories
-- [ ] JSON Schema export for each type
-- [ ] Unknown fields allowed and preserved
+- [ ] JSON Schema export for each type (`JSONSchema.make`)
+- [ ] Unknown fields allowed and preserved (`onExcessProperty: "preserve"`)
+- [ ] Decode errors mapped to field-level messages (path, expected, received)
 - Done when: every fixture item validates, and each invalid fixture gives the expected field-level error.
 
 **TASK-00007 · Workspace discovery and config loading** (after TASK-00006)
 - [ ] Walk up from the current directory to `.netherite/config.yml`
 - [ ] Defaults, merging, validation errors with file and line
-- [ ] Filesystem interface (real filesystem and in-memory)
+- [ ] Use the platform `FileSystem` service, with an in-memory layer for tests
 
 **TASK-00008 · Parser and shared remark plugins** (after TASK-00006)
 - [ ] Frontmatter plus mdast, keeping source positions
@@ -114,6 +123,7 @@ ADRs: [[ADR-00002]], [[ADR-00003]], [[ADR-00004]], [[ADR-00006]], [[ADR-00008]],
 - [ ] Missing ID in `aliases`; file outside its type folder; file name not matching the ID
 - [ ] Orphans (info); unknown fields (info)
 - [ ] Machine-readable result: path, line, column, rule, severity, message
+- [ ] Fixable rules (missing ID in `aliases`, file name not matching the ID, renamed fields after a schema change) return a fix as a core operation; applying it is covered by TASK-00019 `--fix`
 
 **TASK-00012 · Format-preserving edit engine** (after TASK-00008)
 - [ ] Frontmatter edits through the `yaml` Document API (set, unset, append to a list)
@@ -124,21 +134,21 @@ ADRs: [[ADR-00002]], [[ADR-00003]], [[ADR-00004]], [[ADR-00006]], [[ADR-00008]],
 
 **TASK-00013 · Operations API** (after TASK-00009, TASK-00012)
 - [ ] `createItem`, `updateFields`, `setState`, `toggleCheck`, `link`/`unlink`, `deleteItem`, `markReviewed`, `renumber`
-- [ ] Validate before every write; structured errors
+- [ ] Validate before every write; failures are tagged errors (`ValidationError`, `ConflictError`, `NotFound`)
 - [ ] Optimistic concurrency with content hashes; atomic temp-file-and-rename writes
 - [ ] Supersession updates both ADRs; `deleteItem` refuses while linked unless forced
 - [ ] `renumber` rewrites links in frontmatter and bodies
 
 **TASK-00014 · Watcher integration** (after TASK-00010)
 - [ ] `@parcel/watcher` on the content root and config
-- [ ] Debounced incremental re-index; typed change events for consumers
+- [ ] Debounced incremental re-index; changes exposed as an Effect `Stream` of typed events
 
 ### PRJ-00003 · Git integration and freshness
 
 ADRs: [[ADR-00007]], [[ADR-00009]]
 
 **TASK-00015 · `packages/git` read-only adapter** (after TASK-00004)
-- [ ] Spawn wrapper with no shell, argument arrays, timeouts
+- [ ] `Git` service over `@effect/platform` `Command`: no shell, argument arrays, timeouts; tagged errors
 - [ ] `status --porcelain=v2`, `log` with name-only and numstat, `rev-parse`, `config user.*`
 - [ ] Cache keyed by `HEAD` and index modification time
 - [ ] Graceful degrade without git, outside a repo, or in a shallow clone
@@ -164,14 +174,15 @@ ADRs: [[ADR-00007]], [[ADR-00009]]
 ADRs: [[ADR-00012]], [[ADR-00013]]
 
 **TASK-00019 · CLI skeleton** (after TASK-00013)
-- [ ] `netherite` binary with commands `init`, `new <type>`, `lint`, `renumber`
+- [ ] `netherite` binary built with `@effect/cli`, with commands `init`, `new <type>`, `lint`, `renumber`
 - [ ] `init` creates the config, folders and `.gitignore` entry for `.netherite/local/`
 - [ ] `lint` output: human-readable and `--json`; exit codes for CI
+- [ ] `lint --fix` applies the fixable rules through core operations (never commits); `--fix --dry-run` prints the diff
 
 **TASK-00020 · MCP server (stdio)** (after TASK-00013, TASK-00016)
 - [ ] Resources: `netherite://item/{ID}`, `netherite://context`, `netherite://schema/{type}`
 - [ ] Tools: `search`, `get`, `list`, `create`, `update`, `set_state`, `toggle_check`, `link`, `unlink`, `delete`, `mark_reviewed`, `lint`, `context`
-- [ ] Input schemas generated from `packages/schema`
+- [ ] Input schemas generated from `packages/schema` as JSON Schema, served through the SDK's low-level `Server` (no zod dependency, see [[ADR-00003]])
 - [ ] Field-level validation errors returned to the agent
 - [ ] `netherite mcp` command
 
@@ -210,10 +221,11 @@ ADRs: [[ADR-00012]], [[ADR-00013]]
 
 ADRs: [[ADR-00010]]
 
-**TASK-00027 · Hono API** (after TASK-00013)
+**TASK-00027 · Effect HttpApi server** (after TASK-00013)
 - [ ] Read endpoints: items, item, search, graph, lint, inbox data, history and stats
 - [ ] Write endpoints mapped to core operations, with hash-based conflicts returned as 409
-- [ ] Typed client exported for the app (`hono/client`)
+- [ ] API defined once with Effect Schema; typed `HttpApiClient` exported for the app
+- [ ] Tagged errors mapped to statuses (422 validation, 409 conflict, 404 not found)
 
 **TASK-00028 · Live updates over SSE** (after TASK-00027, TASK-00014)
 - [ ] Event stream for item changes, git status changes and lint changes
@@ -227,7 +239,7 @@ ADRs: [[ADR-00010]]
 **TASK-00030 · `serve` command** (after TASK-00027, TASK-00019)
 - [ ] Serve the built SPA from the package; default port 4747, falls back to the next free one
 - [ ] Open the browser; `--no-open`, `--port`
-- [ ] MCP over streamable HTTP at `/mcp`
+- [ ] MCP over streamable HTTP at `/mcp`, mounted as a raw route using the Node request and response from `@effect/platform-node`
 
 ### PRJ-00006 · Design system
 
@@ -236,16 +248,17 @@ ADRs: [[ADR-00011]]. Can run in parallel with M1.
 **TASK-00031 · `packages/tokens`** (after TASK-00003)
 - [ ] Colour, type, spacing and radius tokens from the "Netherite Refined" token sheets (T1, T2)
 - [ ] Type colours and glyph shapes, ADR status, freshness, graph node and edge styles, syntax colours
-- [ ] Output as CSS variables and TS constants
+- [ ] Output as CSS variables, TS constants and a Mantine theme (`createTheme`)
 
 **TASK-00032 · Fonts and icons** (after TASK-00031)
 - [ ] Self-hosted Source Sans 3, Source Code Pro and Material Symbols Rounded
 
 **TASK-00033 · `packages/ui` components** (after TASK-00032)
-- [ ] Button, IconButton, Chip, TypeBadge, StatusPill, FreshnessLabel, Avatar
-- [ ] Card (default, hover, selected, drop target), ProgressBar, ProgressRing
-- [ ] Segmented control, Tabs, Switch, Tooltip, Menu, Dialog, Drawer, Banner, EmptyState
+- [ ] Mantine provider with the generated theme; `classNames` overrides to match the design; dark theme
+- [ ] Wrappers over Mantine: Button, ActionIcon, Chip, Avatar, Card, Progress, RingProgress, SegmentedControl, Tabs, Switch, Tooltip, Menu, Modal, Drawer
+- [ ] Domain components: TypeBadge, StatusPill, FreshnessLabel, Banner, EmptyState, Card states (hover, selected, drop target)
 - [ ] Rail with keyboard shortcuts
+- [ ] Only `packages/ui` imports Mantine (enforced by the TASK-00052 lint rule)
 - [ ] Component preview page (`/dev/ui` route in the app)
 
 ### PRJ-00007 · App screens
@@ -253,7 +266,7 @@ ADRs: [[ADR-00011]]. Can run in parallel with M1.
 ADRs: [[ADR-00011]], [[ADR-00014]]
 
 **TASK-00034 · App shell** (after TASK-00027, TASK-00033)
-- [ ] Vite + React 19 app, TanStack Router and Query
+- [ ] Vite + React 19 single-page app (Next.js static export considered and rejected, see [[ADR-00011]]), TanStack Router and Query
 - [ ] SSE invalidates queries; conflict handling
 - [ ] Rail navigation and global shortcuts (⌘K, ⌘I, ⌘G, ⌘P, ⌘L, ⌘D, ⌘T, ⇧⌘G)
 - [ ] Markdown renderer using the shared remark plugins
@@ -302,7 +315,7 @@ ADRs: [[ADR-00011]], [[ADR-00014]]
 - [ ] Reusable embedded variant for goal and project pages
 
 **TASK-00044 · Search palette** (after TASK-00034)
-- [ ] ⌘K over ids, titles, paths and bodies; grouped by type; type chips
+- [ ] Mantine Spotlight (⌘K) over ids, titles, paths and bodies; grouped by type; type chips
 - [ ] Keyboard navigation; ↵ open, ⌘↵ open as split
 
 **TASK-00045 · Inbox** (after TASK-00021, TASK-00035)
@@ -342,6 +355,8 @@ ADRs: [[ADR-00011]], [[ADR-00014]]
 
 | Risk | Mitigation |
 |---|---|
+| Effect adds bundle size and a learning curve; `HttpApi` and `@effect/cli` are younger than Hono and commander | Pin exact versions; size budget in CI (TASK-00005); build the server vertical slice (TASK-00027) early and fall back to Hono only for the transport if blocked |
+| Mantine defaults fight the custom design | Theme and `classNames` in TASK-00033 first; only `packages/ui` imports Mantine so a swap stays contained |
 | Format-preserving edits are harder than expected (YAML edge cases) | TASK-00012 comes early with golden tests; fall back to rewriting only the frontmatter block, never the body |
 | Git history queries are slow on large repos | Cache per `HEAD`; limit history depth for stats; measure in TASK-00018 |
 | MCP tool surface is awkward for agents | TASK-00025 dogfoods it before the UI exists; adjust tools then |
