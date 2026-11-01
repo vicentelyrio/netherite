@@ -1,6 +1,11 @@
+export { fixedClock } from './clock'
 export { fixturePath, fixturesRoot, withTempDir } from './fixtures'
 export { type GenerateOptions, generateWorkspaceFiles } from './generate'
 export type { Commit, GitRepo, GitRepoOptions } from './git-repo'
 export { createGitRepo } from './git-repo'
 export { basicHistory } from './histories'
-export { type MemoryFileSystem, memoryFileSystem } from './memory-fs'
+export {
+  type MemoryFileSystem,
+  type MemoryFileSystemOptions,
+  memoryFileSystem,
+} from './memory-fs'

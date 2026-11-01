@@ -10,8 +10,11 @@ export {
 export {
   appendToList,
   type FieldEditOptions,
+  type Json,
   type ListEditOptions,
   removeFromList,
+  renderFrontmatter,
+  replaceInList,
   setField,
   unsetField,
 } from './frontmatter'

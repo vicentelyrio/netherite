@@ -29,7 +29,7 @@ export interface ListEditOptions extends FieldEditOptions {
   readonly style?: 'flow' | 'block'
 }
 
-type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -379,3 +379,33 @@ export const removeFromList = (
       ),
     )
   })
+
+/**
+ * Replaces a value in a list field with another, in place. If the list already has the new
+ * value, the old one is simply removed. Nothing changes if the old value is not there.
+ */
+export const replaceInList = (
+  source: string,
+  name: string,
+  from: string,
+  to: string,
+): Effect.Effect<string, EditError> =>
+  Effect.flatMap(parseBlock(source), (parsed) => {
+    if (parsed === undefined) return Effect.succeed(source)
+    const pair = findPair(parsed.map, name)
+    if (pair === undefined || isEmptyValue(pair)) return Effect.succeed(source)
+    const list = pair.value
+    if (!isSeq(list)) return Effect.fail(notAList(name))
+    const item = list.items.find((candidate) => equal(candidate, from))
+    if (item === undefined) return Effect.succeed(source)
+    if (list.items.some((candidate) => equal(candidate, to)))
+      return removeFromList(source, name, from)
+    if (!isScalar(item) || !item.range) return Effect.succeed(source)
+    return Effect.succeed(splice(parsed, item.range[0], item.range[1], scalarText(to, item)))
+  })
+
+/** Frontmatter text, fences included, for fields in the given order. */
+export const renderFrontmatter = (fields: ReadonlyArray<readonly [string, Json]>, eol = '\n') => {
+  const lines = fields.map(([key, value]) => pairText(key, value, 'flow', eol))
+  return `---${eol}${lines.map((line) => `${line}${eol}`).join('')}---${eol}`
+}

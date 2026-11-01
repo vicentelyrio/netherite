@@ -39,8 +39,17 @@ export interface MemoryFileSystem {
  * Parent directories are created implicitly. Only the operations Netherite uses are implemented;
  * the rest fail with an error.
  */
+export interface MemoryFileSystemOptions {
+  /**
+   * Called before each operation (`rename`, `writeFileString`, ...) with the path it works on.
+   * Return an error message to make that call fail, to test rollback.
+   */
+  readonly failWhen?: (method: string, path: string) => string | undefined
+}
+
 export const memoryFileSystem = (
   initial: Readonly<Record<string, string>> = {},
+  options: MemoryFileSystemOptions = {},
 ): MemoryFileSystem => {
   const entries = new Map<string, Entry>([['/', { kind: 'directory' }]])
 
@@ -124,8 +133,30 @@ export const memoryFileSystem = (
       ),
   }
 
+  // Wrap each operation so a test can make a chosen call fail.
+  const guarded = Object.fromEntries(
+    Object.entries(impl).map(([method, fn]) => [
+      method,
+      (...args: unknown[]) => {
+        const path = typeof args[0] === 'string' ? args[0] : ''
+        const message = options.failWhen?.(method, path)
+        return message === undefined
+          ? (fn as (...a: unknown[]) => unknown)(...args)
+          : Effect.fail(
+              PlatformError.systemError({
+                _tag: 'PermissionDenied',
+                module: 'FileSystem',
+                method,
+                pathOrDescriptor: path,
+                description: message,
+              }),
+            )
+      },
+    ]),
+  ) as Partial<FileSystem.FileSystem>
+
   return {
-    layer: FileSystem.layerNoop(impl),
+    layer: FileSystem.layerNoop(guarded),
     read: (path) => {
       const entry = entries.get(normalize(path))
       return entry?.kind === 'file' ? decoder.decode(entry.content) : undefined

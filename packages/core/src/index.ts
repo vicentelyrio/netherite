@@ -1,12 +1,18 @@
 export * from './edit'
 export {
+  AlreadyExists,
+  AmbiguousId,
   ConfigInvalid,
   type ConfigIssue,
   ConfigReadError,
+  ConflictError,
   EditError,
   type EditFailure,
   formatConfigIssue,
+  IoError,
   ItemReadError,
+  NotFound,
+  StillLinked,
   WorkspaceNotFound,
 } from './errors'
 export { fileSlug, itemFileName, itemRelativePath, typeFolders } from './filenames'
@@ -22,6 +28,7 @@ export {
   type Severity,
   summarize,
 } from './lint'
+export * from './ops'
 export { type ParseOptions, parseFiles, type SourceFile } from './parse-pool'
 export {
   createResolver,
