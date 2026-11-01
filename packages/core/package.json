@@ -20,13 +20,16 @@
   "dependencies": {
     "@netherite/schema": "workspace:*",
     "@netherite/git": "workspace:*",
-    "effect": "catalog:"
+    "effect": "catalog:",
+    "yaml": "catalog:"
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",
     "@types/node": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
-    "tsdown": "catalog:"
+    "tsdown": "catalog:",
+    "@netherite/testing": "workspace:*",
+    "@effect/platform-node": "catalog:"
   }
 }
