@@ -9,6 +9,7 @@ import {
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js'
 import {
+  appendActivity,
   buildContext,
   computeFreshness,
   contentHash,
@@ -45,6 +46,8 @@ export interface McpOptions {
   /** A `@handle` recorded as `created_by` on items created through this server. */
   readonly createdBy?: string | undefined
   readonly version?: string
+  /** Record each write in `.netherite/local/activity.jsonl`. Default `true`. */
+  readonly activity?: boolean
 }
 
 export interface McpHandle {
@@ -173,6 +176,34 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
     const withHash = (r: ArgReader) => r.string('base_hash')
 
     type Handler = (r: ArgReader) => Promise<ToolResult> | ToolResult
+
+    // A write that changed something is noted in the activity log, which the Inbox reads. The
+    // handler leaves a note of what it did; the dispatcher writes it once the call has succeeded.
+    // Calls run one at a time, so there is only ever one note.
+    type Written = { id: string; path: string; hash: string | null; changed: ReadonlyArray<string> }
+    let written: Written | undefined
+    const noteWrite = (value: unknown) => {
+      const v = value as
+        | { id?: unknown; path?: unknown; hash?: unknown; changed?: unknown; unchanged?: unknown }
+        | undefined
+      if (typeof v?.id !== 'string' || typeof v.path !== 'string' || v.unchanged === true) return
+      written = {
+        id: v.id,
+        path: v.path,
+        hash: typeof v.hash === 'string' ? v.hash : null,
+        changed: Array.isArray(v.changed) ? (v.changed as string[]) : [v.path],
+      }
+    }
+    const record = async (tool: string, entry: Written) => {
+      if (options.activity === false) return
+      const outcome = await run(
+        Effect.result(appendActivity(repo.workspace, { tool, actor: 'mcp', ...entry })),
+      )
+      if (outcome._tag === 'Failure') {
+        console.error('[netherite mcp] could not write the activity log:', outcome.failure.message)
+      }
+    }
+
     const effectTool =
       <A>(
         build: (r: ArgReader) => Effect.Effect<A, unknown, OpEnv> | undefined,
@@ -187,6 +218,7 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
         const outcome = await run(Effect.result(effect))
         if (outcome._tag === 'Failure') return describeError(outcome.failure)
         generation++
+        noteWrite(outcome.success)
         return ok(format(outcome.success))
       }
 
@@ -377,6 +409,7 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           const outcome = await run(Effect.result(steps))
           if (outcome._tag === 'Failure') return describeError(outcome.failure)
           generation++
+          noteWrite(outcome.success)
           return ok(outcome.success)
         },
       },
@@ -525,7 +558,15 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           throw new McpError(ErrorCode.InvalidParams, `Unknown tool: ${request.params.name}`)
         }
         try {
-          return await entry.handle(new ArgReader((request.params.arguments ?? {}) as Fields))
+          written = undefined
+          const result = await entry.handle(
+            new ArgReader((request.params.arguments ?? {}) as Fields),
+          )
+          if (entry.write && result.isError !== true && written !== undefined) {
+            await record(request.params.name, written)
+          }
+          written = undefined
+          return result
         } catch (error) {
           // Never let a bug close the connection; say so, log it for the person running the server.
           console.error('[netherite mcp] unexpected error in', request.params.name, error)

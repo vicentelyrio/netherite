@@ -6,6 +6,17 @@ export {
   ValidationError,
 } from '@netherite/schema'
 export {
+  type ActivityEntry,
+  type ActivityLog,
+  activityFile,
+  appendActivity,
+  groupActivity,
+  type ItemActivity,
+  type NewActivity,
+  type ReadActivityOptions,
+  readActivity,
+} from './activity'
+export {
   type CoChange,
   type CoChanged,
   type CoChangeOptions,
@@ -22,10 +33,24 @@ export {
   type ContextTarget,
   estimateTokens,
 } from './context-bundle'
+export {
+  applyBlock,
+  endMarker,
+  renderBlock,
+  type SyncOptions,
+  type SyncReport,
+  type SyncStatus,
+  type SyncTarget,
+  startMarker,
+  syncContext,
+  type TargetReport,
+  targetFiles,
+} from './context-sync'
 export * from './edit'
 export {
   AlreadyExists,
   AmbiguousId,
+  BadMarkers,
   ConfigInvalid,
   type ConfigIssue,
   ConfigReadError,

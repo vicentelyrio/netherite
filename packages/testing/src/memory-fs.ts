@@ -119,7 +119,14 @@ export const memoryFileSystem = (
         if (!entries.has(target)) entries.set(target, { kind: 'directory' })
       }),
     writeFile: (path, data) => Effect.sync(() => setFile(path, data)),
-    writeFileString: (path, data) => Effect.sync(() => setFile(path, encoder.encode(data))),
+    writeFileString: (path, data, writeOptions) =>
+      Effect.sync(() => {
+        const appending = writeOptions?.flag === 'a' || writeOptions?.flag === 'a+'
+        const existing = entries.get(normalize(path))
+        const previous =
+          appending && existing?.kind === 'file' ? decoder.decode(existing.content) : ''
+        setFile(path, encoder.encode(previous + data))
+      }),
     remove: (path) =>
       Effect.sync(() => {
         const target = normalize(path)

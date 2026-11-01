@@ -1,5 +1,6 @@
 import { Effect, Option } from 'effect'
 import { Argument, Command, Flag } from 'effect/cli'
+import { contextSync } from './commands/context'
 import { init } from './commands/init'
 import { type FailOn, lintCommand } from './commands/lint'
 import { mcpCommand } from './commands/mcp'
@@ -182,9 +183,31 @@ export const makeCli = (env: Env, state: { code: ExitCode }, version = '0.0.0') 
     ),
   )
 
+  const contextSyncCmd = Command.make(
+    'sync',
+    {
+      dir,
+      check: Flag.Boolean('check').pipe(
+        Flag.withDefault(false),
+        Flag.withDescription('Change nothing; exit 1 if CLAUDE.md or AGENTS.md is out of date.'),
+      ),
+      json: jsonFlag,
+    },
+    (c) => Effect.flatMap(contextSync(env, c), finish),
+  ).pipe(
+    Command.withDescription(
+      'Write the context items into CLAUDE.md and AGENTS.md, between markers. Never commits.',
+    ),
+  )
+
+  const contextCmd = Command.make('context').pipe(
+    Command.withDescription('Work with the context given to agents.'),
+    Command.withSubcommands([contextSyncCmd]),
+  )
+
   return Command.make('netherite').pipe(
     Command.withDescription('Typed, linked knowledge in your git repository.'),
-    Command.withSubcommands([initCmd, newCmd, lintCmd, renumberCmd, mcpCmd]),
+    Command.withSubcommands([initCmd, newCmd, lintCmd, renumberCmd, mcpCmd, contextCmd]),
   )
 }
 

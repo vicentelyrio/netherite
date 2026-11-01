@@ -64,6 +64,23 @@ describe.skipIf(!built)('netherite mcp (the built program)', () => {
         expect(bad.isError).toBe(true)
         expect(JSON.parse(bad.content[0]?.text ?? '{}').error.issues[0].field).toBe('project')
 
+        // The write is in the activity log, and git does not see the log.
+        const logged = readFileSync(join(dir, '.netherite/local/activity.jsonl'), 'utf8')
+          .trim()
+          .split('\n')
+        expect(logged).toHaveLength(1)
+        expect(JSON.parse(logged[0] ?? '{}')).toMatchObject({
+          tool: 'create',
+          id: 'GOAL-00001',
+          actor: 'mcp',
+        })
+        expect(
+          execFileSync('git', ['check-ignore', '.netherite/local/activity.jsonl'], {
+            cwd: dir,
+            encoding: 'utf8',
+          }).trim(),
+        ).toBe('.netherite/local/activity.jsonl')
+
         // Only protocol messages were on stdout: the client parsed everything without complaint.
         expect(errors).toEqual([])
         // What a person should see went to stderr.

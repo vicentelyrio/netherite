@@ -134,3 +134,19 @@ export class IoError extends Data.TaggedError('IoError')<{
     return `Cannot ${this.operation} ${this.path}: ${this.cause.message}`
   }
 }
+
+/** The generated-block markers in an instruction file are damaged, so sync cannot tell what is generated. */
+export class BadMarkers extends Data.TaggedError('BadMarkers')<{
+  readonly path: string
+  readonly problem: 'unclosed' | 'unopened' | 'out-of-order' | 'repeated'
+}> {
+  override get message() {
+    const what = {
+      unclosed: 'has a start marker with no end marker',
+      unopened: 'has an end marker with no start marker',
+      'out-of-order': 'has its end marker before its start marker',
+      repeated: 'has more than one generated block',
+    }[this.problem]
+    return `${this.path} ${what}; fix the markers by hand and run the sync again`
+  }
+}
