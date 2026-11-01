@@ -9,7 +9,15 @@ import {
   NotARepository,
 } from './errors'
 import type { GitIdentity } from './identity'
-import { type CommitInfo, type GitStatus, logFormat, parseLog, parseStatus } from './parse'
+import {
+  type CommitInfo,
+  type CommitPatch,
+  type GitStatus,
+  logFormat,
+  parseLog,
+  parsePatchLog,
+  parseStatus,
+} from './parse'
 import { assertReadOnly } from './readonly'
 
 export interface GitOptions {
@@ -33,6 +41,16 @@ export interface LogOptions {
   readonly files?: 'none' | 'names' | 'numstat'
 }
 
+export interface PatchLogOptions {
+  /** Only changes to these paths (git pathspecs). */
+  readonly paths: ReadonlyArray<string>
+  /** Only commits made after this date (ISO 8601). */
+  readonly after?: string
+  readonly limit?: number
+  /** Lines of context around each change. Enough context shows a file's frontmatter whole. Default 60. */
+  readonly context?: number
+}
+
 export interface StatusOptions {
   /** `all` lists every untracked file; `normal` lists untracked folders. Default `all`. */
   readonly untracked?: 'all' | 'normal' | 'no'
@@ -51,6 +69,13 @@ export interface GitRepository {
   readonly status: (options?: StatusOptions) => Effect.Effect<GitStatus, GitError>
   /** Commits, newest first. Cached per HEAD. */
   readonly log: (options?: LogOptions) => Effect.Effect<ReadonlyArray<CommitInfo>, GitError>
+  /**
+   * Commits that changed some paths, newest first, each with the new side of its diff. With enough
+   * context this shows what a file's frontmatter looked like after the commit.
+   */
+  readonly patchLog: (
+    options: PatchLogOptions,
+  ) => Effect.Effect<ReadonlyArray<CommitPatch>, GitError>
   /**
    * Specific commits, in the order given, with every file each one changed. (`log` with `paths`
    * lists only the files matching those paths, so this is how to see a commit whole.)
@@ -238,6 +263,39 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
         )
       })
 
+    const patchLog: GitRepository['patchLog'] = (patchOptions) =>
+      Effect.gen(function* () {
+        if (patchOptions.after !== undefined && !datePattern.test(patchOptions.after)) {
+          return yield* Effect.fail(
+            new InvalidGitArgument({ name: 'date', value: patchOptions.after }),
+          )
+        }
+        const current = yield* head
+        if (current === undefined) return [] as CommitPatch[]
+        const context = Math.max(0, Math.min(5000, Math.floor(patchOptions.context ?? 60)))
+        const args = [
+          'log',
+          '-p',
+          '--no-ext-diff',
+          '--no-textconv',
+          '--no-color',
+          `-U${context}`,
+          `--format=${logFormat}`,
+          '--no-renames',
+          ...(patchOptions.limit === undefined
+            ? []
+            : [`--max-count=${Math.max(1, Math.floor(patchOptions.limit))}`]),
+          ...(patchOptions.after === undefined ? [] : [`--since=${patchOptions.after}`]),
+          'HEAD',
+          '--',
+          ...patchOptions.paths,
+        ]
+        return yield* memo(
+          `patch|${current}|${JSON.stringify(args)}`,
+          Effect.map(run(args), (out) => parsePatchLog(out.stdout)),
+        )
+      })
+
     const readCommits: GitRepository['readCommits'] = (hashes, commitOptions = {}) =>
       Effect.gen(function* () {
         for (const hash of hashes) {
@@ -308,6 +366,7 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
       head,
       status,
       log,
+      patchLog,
       readCommits,
       firstCommit,
       identity,

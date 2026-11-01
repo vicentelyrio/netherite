@@ -237,3 +237,140 @@ describe('assertReadOnly', () => {
     }
   })
 })
+
+import { parsePatchLog } from '../src/index'
+
+describe('parsePatchLog', () => {
+  const rs = '\x1e'
+  const us = '\x1f'
+  const head = (hash: string, subject: string) =>
+    `${rs}${hash}${us}Ada${us}ada@example.com${us}2026-01-01T09:00:00Z${us}2026-01-01T09:00:00Z${us}${subject}`
+
+  test('keeps the new side of each hunk with its starting line', () => {
+    const out = [
+      head('aaa', 'edit'),
+      '',
+      'diff --git a/docs/a.md b/docs/a.md',
+      'index 111..222 100644',
+      '--- a/docs/a.md',
+      '+++ b/docs/a.md',
+      '@@ -1,4 +1,4 @@',
+      ' ---',
+      '-status: proposed',
+      '+status: accepted',
+      ' title: T',
+      ' ---',
+      '',
+    ].join('\n')
+    const [commit] = parsePatchLog(out)
+    expect(commit?.patches).toEqual([
+      {
+        path: 'docs/a.md',
+        added: false,
+        deleted: false,
+        hunks: [{ newStart: 1, lines: ['---', 'status: accepted', 'title: T', '---'] }],
+      },
+    ])
+    expect(commit?.files).toEqual([{ path: 'docs/a.md' }])
+    expect(commit?.subject).toBe('edit')
+  })
+
+  test('a new file is one hunk of added lines', () => {
+    const out = [
+      head('aaa', 'add'),
+      '',
+      'diff --git a/n.md b/n.md',
+      'new file mode 100644',
+      'index 0000000..111 100644',
+      '--- /dev/null',
+      '+++ b/n.md',
+      '@@ -0,0 +1,2 @@',
+      '+---',
+      '+id: X-1',
+      '',
+    ].join('\n')
+    expect(parsePatchLog(out)[0]?.patches[0]).toEqual({
+      path: 'n.md',
+      added: true,
+      deleted: false,
+      hunks: [{ newStart: 1, lines: ['---', 'id: X-1'] }],
+    })
+  })
+
+  test('a deleted file takes its path from the old side', () => {
+    const out = [
+      head('aaa', 'rm'),
+      '',
+      'diff --git a/old.md b/old.md',
+      'deleted file mode 100644',
+      'index 111..0000000',
+      '--- a/old.md',
+      '+++ /dev/null',
+      '@@ -1,2 +0,0 @@',
+      '-line',
+      '-line',
+      '',
+    ].join('\n')
+    expect(parsePatchLog(out)[0]?.patches[0]).toMatchObject({
+      path: 'old.md',
+      deleted: true,
+      hunks: [{ newStart: 0, lines: [] }],
+    })
+  })
+
+  test('paths with spaces end with a tab on the ---/+++ lines', () => {
+    const out = [
+      head('aaa', 'x'),
+      '',
+      'diff --git a/my file.md b/my file.md',
+      '--- a/my file.md\t',
+      '+++ b/my file.md\t',
+      '@@ -1 +1 @@',
+      '-a',
+      '+b',
+      '',
+    ].join('\n')
+    expect(parsePatchLog(out)[0]?.patches[0]?.path).toBe('my file.md')
+  })
+
+  test('several hunks, several files, binary files and "no newline" markers', () => {
+    const out = [
+      head('aaa', 'many'),
+      '',
+      'diff --git a/a.md b/a.md',
+      '--- a/a.md',
+      '+++ b/a.md',
+      '@@ -1,2 +1,2 @@',
+      ' keep',
+      '-old',
+      '+new',
+      '@@ -10,2 +10,2 @@',
+      ' keep2',
+      '-old2',
+      '\\ No newline at end of file',
+      '+new2',
+      '\\ No newline at end of file',
+      'diff --git a/img.png b/img.png',
+      'index 111..222 100644',
+      'Binary files a/img.png and b/img.png differ',
+      'diff --git a/b.md b/b.md',
+      '--- a/b.md',
+      '+++ b/b.md',
+      '@@ -1 +1 @@',
+      '-x',
+      '+y',
+      '',
+    ].join('\n')
+    const patches = parsePatchLog(out)[0]?.patches ?? []
+    expect(patches.map((p) => p.path)).toEqual(['a.md', 'b.md'])
+    expect(patches[0]?.hunks).toEqual([
+      { newStart: 1, lines: ['keep', 'new'] },
+      { newStart: 10, lines: ['keep2', 'new2'] },
+    ])
+  })
+
+  test('a commit that changed nothing in the paths has no patches; empty output has no commits', () => {
+    expect(parsePatchLog(`${head('aaa', 'merge')}\n`)[0]?.patches).toEqual([])
+    expect(parsePatchLog('')).toEqual([])
+  })
+})

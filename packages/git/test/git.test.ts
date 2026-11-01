@@ -584,3 +584,97 @@ describe('read-only', () => {
     }
   })
 })
+
+describe('patchLog', () => {
+  test('shows each commit with the new side of its changes', async () => {
+    await withRepo(async (repo) => {
+      const git = await open(repo.root)
+      const commits = await run(git.patchLog({ paths: ['src'] }))
+      expect(commits.map((c) => c.subject)).toEqual([
+        'fix: trim output',
+        'refactor: split utilities',
+        'feat: add farewell',
+        'feat: add greeting',
+        'chore: initial commit',
+      ])
+      const refactor = commits[1]
+      expect(refactor?.patches.map((p) => p.path).sort()).toEqual(['src/app.ts', 'src/util.ts'])
+      expect(refactor?.patches.find((p) => p.path === 'src/util.ts')?.hunks[0]?.lines).toEqual([
+        'export const util = () => "hello and bye"',
+      ])
+      expect(commits.at(-1)?.patches.every((p) => p.added)).toBe(true)
+    })
+  })
+
+  test('with enough context a hunk covers the whole top of a file', async () => {
+    await withRepo(async (repo) => {
+      const git = await open(repo.root)
+      const file = join(repo.root, 'notes.md')
+      const lines = [
+        '---',
+        'status: proposed',
+        'title: T',
+        '---',
+        ...Array.from({ length: 30 }, (_, i) => `line ${i}`),
+      ]
+      writeFileSync(file, `${lines.join('\n')}\n`)
+      sh(repo.root, 'add', 'notes.md')
+      sh(repo.root, 'commit', '-q', '-m', 'add notes', '--author=A <a@b.c>')
+      writeFileSync(file, `${lines.join('\n').replace('proposed', 'accepted')}\n`)
+      sh(repo.root, 'commit', '-q', '-am', 'accept', '--author=A <a@b.c>')
+      const [accept] = await run(git.patchLog({ paths: ['notes.md'], limit: 1 }))
+      const hunk = accept?.patches[0]?.hunks[0]
+      expect(hunk?.newStart).toBe(1)
+      expect(hunk?.lines.slice(0, 4)).toEqual(['---', 'status: accepted', 'title: T', '---'])
+    })
+  })
+
+  test('a deleted file is reported as deleted', async () => {
+    await withRepo(async (repo) => {
+      sh(repo.root, 'rm', '-q', 'src/util.ts')
+      sh(repo.root, 'commit', '-q', '-m', 'remove util', '--author=A <a@b.c>')
+      const git = await open(repo.root)
+      const [latest] = await run(git.patchLog({ paths: ['src'], limit: 1 }))
+      expect(latest?.patches).toMatchObject([{ path: 'src/util.ts', deleted: true }])
+    })
+  })
+
+  test('honours after and limit, is cached per HEAD, and runs only a read-only command', async () => {
+    await withRepo(async (repo) => {
+      const spy = recorder()
+      const git = await Effect.runPromise(
+        openGit(repo.root).pipe(Effect.provide(spy.layer), Effect.provide(services)),
+      )
+      expect(
+        (await run(git.patchLog({ paths: ['src'], after: '2026-01-12' }))).map((c) => c.subject),
+      ).toEqual(['fix: trim output', 'refactor: split utilities'])
+      await run(git.patchLog({ paths: ['src'], limit: 1 }))
+      await run(git.patchLog({ paths: ['src'], limit: 1 }))
+      expect(spy.commands.filter((c) => c[0] === 'log').length).toBe(2)
+    })
+  })
+
+  test('is not fooled by an external diff driver or textconv from the user config', async () => {
+    await withRepo(async (repo) => {
+      sh(repo.root, 'config', 'diff.external', '/bin/false')
+      const git = await open(repo.root)
+      expect((await run(git.patchLog({ paths: ['src'], limit: 1 }))).length).toBe(1)
+    })
+  })
+
+  test('refuses a bad date, and an empty repository has no patches', async () => {
+    await withRepo(async (repo) => {
+      const git = await open(repo.root)
+      expect(await fail(git.patchLog({ paths: ['src'], after: '--output=x' }))).toMatchObject({
+        _tag: 'InvalidGitArgument',
+      })
+    })
+    const empty = await createGitRepo({ initial: undefined as never })
+    try {
+      sh(empty.root, 'update-ref', '-d', 'HEAD')
+      expect(await run((await open(empty.root)).patchLog({ paths: ['x'] }))).toEqual([])
+    } finally {
+      await empty.cleanup()
+    }
+  })
+})

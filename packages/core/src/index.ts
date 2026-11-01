@@ -35,6 +35,29 @@ export {
   type Thresholds,
 } from './freshness'
 export { type PathMap, pathMap } from './gitpaths'
+export {
+  type AdrWeek,
+  type Author,
+  type AuthorSummary,
+  adrActivityByWeek,
+  authorsOf,
+  completionsByWeek,
+  decisionLog,
+  defaultTrackedFields,
+  type FieldValue,
+  type History,
+  type HistoryOptions,
+  type ItemHistory,
+  type ProgressPoint,
+  type ProgressSeries,
+  progressSeries,
+  readHistory,
+  type Transition,
+  taskTransitions,
+  type WeekCount,
+  type WeekRange,
+  weekStart,
+} from './history'
 export { nextId, nextIds } from './ids'
 export {
   type Diagnostic,
