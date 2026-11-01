@@ -1,0 +1,27 @@
+{
+  "name": "@netherite/config",
+  "version": "0.0.0",
+  "description": "Shared TypeScript, Biome and tsdown configuration for Netherite packages",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    "./tsconfig.node.json": "./tsconfig.node.json",
+    "./tsconfig.browser.json": "./tsconfig.browser.json",
+    "./biome.base.json": "./biome.base.json",
+    "./tsdown": {
+      "types": "./tsdown.d.ts",
+      "default": "./tsdown.js"
+    }
+  },
+  "files": [
+    "*.json",
+    "tsdown.js",
+    "tsdown.d.ts",
+    "template"
+  ],
+  "peerDependencies": {
+    "tsdown": "*"
+  }
+}
