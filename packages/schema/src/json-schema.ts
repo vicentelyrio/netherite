@@ -11,3 +11,14 @@ export const itemJsonSchemas = (schemas: ItemSchemas) =>
 /** JSON Schema for the workspace config file. */
 export const configJsonSchema = (config: Schema.Constraint) =>
   Schema.toJsonSchemaDocument(config).schema
+
+/** The field names each item type defines. Any other frontmatter key is an unknown field. */
+export const knownFields = (schemas: ItemSchemas) =>
+  Object.fromEntries(
+    itemTypes.map((type) => {
+      const schema = Schema.toJsonSchemaDocument(schemas[type]).schema as {
+        properties?: Record<string, unknown>
+      }
+      return [type, Object.keys(schema.properties ?? {})]
+    }),
+  ) as unknown as Record<ItemType, ReadonlyArray<string>>

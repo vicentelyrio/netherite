@@ -8,6 +8,17 @@ export {
 } from './errors'
 export { fileSlug, itemFileName, itemRelativePath, typeFolders } from './filenames'
 export { nextId, nextIds } from './ids'
+export {
+  type Diagnostic,
+  type Fix,
+  type LintOptions,
+  type LintSummary,
+  lint,
+  lintWorkspace,
+  type RuleId,
+  type Severity,
+  summarize,
+} from './lint'
 export { type ParseOptions, parseFiles, type SourceFile } from './parse-pool'
 export {
   createResolver,

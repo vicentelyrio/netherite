@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm'
 import remarkParse from 'remark-parse'
 import { unified } from 'unified'
 import type { Position } from 'unist'
-import { LineCounter, parseDocument } from 'yaml'
+import { isMap, isScalar, LineCounter, parseDocument } from 'yaml'
 import { remarkGfmLite } from './gfm-lite'
 import { uniqueSlugs } from './slug'
 import { remarkWikiLinks, type WikiLink } from './wikilink'
@@ -35,6 +35,8 @@ export interface Frontmatter {
   /** Parsed value. `undefined` when the YAML has errors. */
   readonly data: unknown
   readonly errors: ReadonlyArray<FrontmatterError>
+  /** Where each top-level key is written, 1-based, in the whole file. */
+  readonly fields: Readonly<Record<string, { readonly line: number; readonly column: number }>>
   /** Offset of the opening `---` and just past the closing one. */
   readonly start: number
   readonly end: number
@@ -142,7 +144,15 @@ const readFrontmatter = (tree: Root): Frontmatter | undefined => {
     line: (error.linePos?.[0].line ?? 1) + firstLine - 1,
     column: error.linePos?.[0].col ?? 1,
   }))
-  return { raw, data: errors.length === 0 ? doc.toJS() : undefined, errors, start, end }
+  const fields: Record<string, { line: number; column: number }> = {}
+  if (isMap(doc.contents)) {
+    for (const pair of doc.contents.items) {
+      if (!isScalar(pair.key) || !pair.key.range) continue
+      const { line, col } = lineCounter.linePos(pair.key.range[0])
+      fields[String(pair.key.value)] = { line: line + firstLine - 1, column: col }
+    }
+  }
+  return { raw, data: errors.length === 0 ? doc.toJS() : undefined, errors, fields, start, end }
 }
 
 const markerPattern = /^[ \t]*(?:[-*+]|\d+[.)])[ \t]+\[( |x|X)\]/

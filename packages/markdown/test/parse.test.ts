@@ -18,6 +18,15 @@ describe('frontmatter', () => {
     expect(source.slice(bodyStart).trim()).toBe('# Title')
   })
 
+  test('records where each top-level key is written, in the whole file', () => {
+    const { frontmatter } = parseMarkdown('---\nid: A-1\nlist:\n  - x\ntitle: T\n---\nBody\n')
+    expect(frontmatter?.fields).toEqual({
+      id: { line: 2, column: 1 },
+      list: { line: 3, column: 1 },
+      title: { line: 5, column: 1 },
+    })
+  })
+
   test('a file without frontmatter has none', () => {
     const parsed = parseMarkdown('# Just a heading\n')
     expect(parsed.frontmatter).toBeUndefined()

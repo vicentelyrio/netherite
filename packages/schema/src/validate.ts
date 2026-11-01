@@ -71,3 +71,19 @@ export const validateItem = (schemas: ItemSchemas) => {
     >
   }
 }
+
+/**
+ * A synchronous check of a parsed frontmatter object. Returns every field problem, or an empty
+ * list when the item is valid. Uses the `type` field to choose the schema.
+ */
+export const checkItem = (schemas: ItemSchemas) => {
+  const validator = validateItem(schemas)
+  return (input: unknown): ReadonlyArray<FieldIssue> => {
+    const exit = Effect.runSyncExit(validator(input))
+    if (Exit.isSuccess(exit)) return []
+    const failure = exit.cause.reasons.find((r) => r._tag === 'Fail')
+    return failure
+      ? failure.error.issues
+      : [{ path: [], message: 'Unexpected failure while validating' }]
+  }
+}
