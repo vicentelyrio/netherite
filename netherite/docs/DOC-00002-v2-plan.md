@@ -4,11 +4,11 @@ aliases: [DOC-00002]
 type: doc
 title: Netherite v2 — Implementation plan
 owner: "@vicentelyrio"
-tags: [plan, v2]
-created: 2026-10-31
+tags: [plan, v2, superseded]
+created: 2026-10-31T00:00:00Z
 reviewed_at: 2026-10-31
 covers: []
-explains: [DOC-00001]
+explains: [DOC-00001, GOAL-00001, GOAL-00002, GOAL-00003]
 ---
 
 # Netherite v2 — Implementation plan
@@ -361,3 +361,7 @@ ADRs: [[ADR-00011]], [[ADR-00014]]
 | Git history queries are slow on large repos | Cache per `HEAD`; limit history depth for stats; measure in TASK-00018 |
 | MCP tool surface is awkward for agents | TASK-00025 dogfoods it before the UI exists; adjust tools then |
 | Undesigned screens block M2 | TASK-00035 has no dependencies and can start now |
+
+## Superseded
+
+This plan was split into [[GOAL-00001]], [[GOAL-00002]] and [[GOAL-00003]], their projects ([[PRJ-00001]] to [[PRJ-00008]]) and [[TASK-00001]] to [[TASK-00052]], using only the Netherite MCP server ([[TASK-00025]]). The items are the source of truth from now on; this text is kept as history and no longer updated.

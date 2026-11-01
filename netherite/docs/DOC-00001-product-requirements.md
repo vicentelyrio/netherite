@@ -5,7 +5,7 @@ type: doc
 title: Netherite v2 — Product requirements
 owner: "@vicentelyrio"
 tags: [prd, v2]
-created: 2026-10-31
+created: 2026-10-31T00:00:00Z
 reviewed_at: 2026-10-31
 covers: []
 ---

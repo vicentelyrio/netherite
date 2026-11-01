@@ -1,0 +1,16 @@
+---
+id: TASK-00037
+aliases: [TASK-00037]
+type: task
+title: Goals overview and goal detail
+created: 2026-11-01T23:50:43Z
+created_by: "@vicentelyrio"
+project: PRJ-00007
+state: backlog
+depends_on: [TASK-00034]
+---
+
+# Goals overview and goal detail
+
+- [ ] Goals grouped by `area` with progress rings; new goal
+- [ ] Goal detail: horizon/due, progress, projects, focused graph
