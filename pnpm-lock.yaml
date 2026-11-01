@@ -314,10 +314,16 @@ importers:
       effect:
         specifier: 'catalog:'
         version: 4.1.1
+      yaml:
+        specifier: 'catalog:'
+        version: 2.9.1
     devDependencies:
       '@netherite/config':
         specifier: workspace:*
         version: link:../config
+      '@netherite/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@types/node':
         specifier: 'catalog:'
         version: 24.19.2

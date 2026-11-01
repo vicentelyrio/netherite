@@ -1,3 +1,4 @@
+export { type ItemType, itemTypes } from '@netherite/schema'
 export {
   type CoChange,
   type CoChanged,
@@ -34,6 +35,7 @@ export {
   stateFor,
   type Thresholds,
 } from './freshness'
+export { type GitRepository, gitHandle, workspaceGit } from './git-access'
 export { type PathMap, pathMap } from './gitpaths'
 export {
   type AdrWeek,

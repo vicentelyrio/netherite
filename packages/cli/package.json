@@ -22,13 +22,18 @@
     "@netherite/server": "workspace:*",
     "@netherite/mcp": "workspace:*",
     "effect": "catalog:",
-    "@effect/platform-node": "catalog:"
+    "@effect/platform-node": "catalog:",
+    "yaml": "catalog:"
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",
     "@types/node": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
-    "tsdown": "catalog:"
+    "tsdown": "catalog:",
+    "@netherite/testing": "workspace:*"
+  },
+  "bin": {
+    "netherite": "./dist/bin.mjs"
   }
 }

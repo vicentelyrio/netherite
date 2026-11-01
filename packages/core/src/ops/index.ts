@@ -1,3 +1,4 @@
+export { applyFixes, type FixChange, type FixReport } from './fix'
 export { contentHash } from './hash'
 export { applyChanges, type Change } from './io'
 export {
@@ -20,5 +21,7 @@ export {
   updateFields,
   updateSection,
 } from './operations'
+export { type Overlay, overlayFileSystem } from './overlay'
+export { renameFile } from './rename'
 export { type RenumberOptions, type RenumberResult, renumber } from './renumber'
 export { makeRepo, openRepo, type Repo } from './repo'
