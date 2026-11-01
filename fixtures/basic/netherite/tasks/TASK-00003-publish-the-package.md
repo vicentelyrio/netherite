@@ -13,3 +13,5 @@ created_by: "@ada"
 # Publish the package
 
 - [ ] Choose a package name
+
+Notes live in [[DOC-00003]].

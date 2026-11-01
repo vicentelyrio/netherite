@@ -1,5 +1,5 @@
 import { defaultIdPadding, formatId, type ItemType, parseId, prefixes } from '@netherite/schema'
-import type { ScannedItem } from './scan'
+import type { ScannedItem } from './scanned-item'
 
 /** The number in a file name that starts with an ID, such as `TASK-00042-do-it`. */
 const fileNameId = (fileName: string) => /^([A-Z]+-\d+)(?:-|$)/.exec(fileName)?.[1]

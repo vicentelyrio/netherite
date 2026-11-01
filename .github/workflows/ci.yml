@@ -78,6 +78,7 @@ jobs:
           restore-keys: turbo-${{ runner.os }}-
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
+      - run: pnpm test:scale
 
   test-windows:
     # Windows support is best-effort (DOC-00001): only the git-facing packages are tested.

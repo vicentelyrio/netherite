@@ -179,6 +179,36 @@ catalogs:
     effect:
       specifier: 4.1.1
       version: 4.1.1
+    graphology:
+      specifier: ^0.26.0
+      version: 0.26.0
+    mdast-util-gfm-footnote:
+      specifier: ^2.1.0
+      version: 2.1.0
+    mdast-util-gfm-strikethrough:
+      specifier: ^2.0.1
+      version: 2.0.1
+    mdast-util-gfm-table:
+      specifier: ^2.0.0
+      version: 2.0.0
+    mdast-util-gfm-task-list-item:
+      specifier: ^2.0.0
+      version: 2.0.0
+    micromark-extension-gfm-footnote:
+      specifier: ^2.1.0
+      version: 2.1.0
+    micromark-extension-gfm-strikethrough:
+      specifier: ^2.1.0
+      version: 2.1.0
+    micromark-extension-gfm-table:
+      specifier: ^2.1.2
+      version: 2.1.2
+    micromark-extension-gfm-task-list-item:
+      specifier: ^2.1.0
+      version: 2.1.0
+    minisearch:
+      specifier: ^7.2.0
+      version: 7.2.0
     remark-frontmatter:
       specifier: ^5.0.0
       version: 5.0.0
@@ -312,6 +342,12 @@ importers:
       effect:
         specifier: 'catalog:'
         version: 4.1.1
+      graphology:
+        specifier: 'catalog:'
+        version: 0.26.0(graphology-types@0.24.8)
+      minisearch:
+        specifier: 'catalog:'
+        version: 7.2.0
       yaml:
         specifier: 'catalog:'
         version: 2.9.1
@@ -368,6 +404,30 @@ importers:
       '@types/unist':
         specifier: 'catalog:'
         version: 3.0.3
+      mdast-util-gfm-footnote:
+        specifier: 'catalog:'
+        version: 2.1.0
+      mdast-util-gfm-strikethrough:
+        specifier: 'catalog:'
+        version: 2.0.1
+      mdast-util-gfm-table:
+        specifier: 'catalog:'
+        version: 2.0.0
+      mdast-util-gfm-task-list-item:
+        specifier: 'catalog:'
+        version: 2.0.0
+      micromark-extension-gfm-footnote:
+        specifier: 'catalog:'
+        version: 2.1.0
+      micromark-extension-gfm-strikethrough:
+        specifier: 'catalog:'
+        version: 2.1.0
+      micromark-extension-gfm-table:
+        specifier: 'catalog:'
+        version: 2.1.2
+      micromark-extension-gfm-task-list-item:
+        specifier: 'catalog:'
+        version: 2.1.0
       remark-frontmatter:
         specifier: 'catalog:'
         version: 5.0.0
@@ -1190,6 +1250,10 @@ packages:
   estree-walker@3.0.3:
     resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
 
+  events@3.3.0:
+    resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
+    engines: {node: '>=0.8.x'}
+
   expect-type@1.4.0:
     resolution: {integrity: sha512-KfYbmpRm0VbLjEvVa9yGwCi9GI34xvi7A/HXYWQO65CSD2u3MczUJSuwXKFIxlGsgBQizV9q5J9NHj4VG0n+pA==}
     engines: {node: '>=12.0.0'}
@@ -1230,6 +1294,14 @@ packages:
   get-tsconfig@5.0.0-beta.6:
     resolution: {integrity: sha512-X6fBC0pmImC70gvX2zm56go9hx0MyoGVdG0tUCkg/D+Xnh5TJsOZ7iDbOdI3PvmtrDxnu1YdDufpK2QJX1Meqw==}
     engines: {node: '>=20.20.0'}
+
+  graphology-types@0.24.8:
+    resolution: {integrity: sha512-hDRKYXa8TsoZHjgEaysSRyPdT6uB78Ci8WnjgbStlQysz7xR52PInxNsmnB7IBOM1BhikxkNyCVEFgmPKnpx3Q==}
+
+  graphology@0.26.0:
+    resolution: {integrity: sha512-8SSImzgUUYC89Z042s+0r/vMibY7GX/Emz4LDO5e7jYXhuoWfHISPFJYjpRLUSJGq6UQ6xlenvX1p/hJdfXuXg==}
+    peerDependencies:
+      graphology-types: '>=0.24.0'
 
   hookable@6.1.2:
     resolution: {integrity: sha512-+abwxtiEA52GCVIsQqut3S/uKTbUwYIp4Pe/vv+6py5XiXBCqMZHg6pA6Y5qhgLSEys0/cYuPbO0z1QFj5ZCmg==}
@@ -1525,6 +1597,9 @@ packages:
 
   micromark@4.0.3:
     resolution: {integrity: sha512-oGYfQzHSG5dOMovQcJ3fyTmZlWAWpi0XA0sJwJs+i6OT88o1+Jtw/8z0CmdowSLxGhhFK89rQ/oXph/wN02PNw==}
+
+  minisearch@7.2.0:
+    resolution: {integrity: sha512-dqT2XBYUOZOiC5t2HRnwADjhNS2cecp9u+TJRiJ1Qp/f5qjkeT5APcGPjHw+bz89Ms8Jp+cG4AlE+QZ/QnDglg==}
 
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
@@ -2318,6 +2393,8 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.10
 
+  events@3.3.0: {}
+
   expect-type@1.4.0: {}
 
   extend@3.0.2: {}
@@ -2348,6 +2425,13 @@ snapshots:
   get-tsconfig@5.0.0-beta.6:
     dependencies:
       resolve-pkg-maps: 1.0.0
+
+  graphology-types@0.24.8: {}
+
+  graphology@0.26.0(graphology-types@0.24.8):
+    dependencies:
+      events: 3.3.0
+      graphology-types: 0.24.8
 
   hookable@6.1.2: {}
 
@@ -2790,6 +2874,8 @@ snapshots:
       micromark-util-types: 2.0.3
     transitivePeerDependencies:
       - supports-color
+
+  minisearch@7.2.0: {}
 
   ms@2.1.3: {}
 

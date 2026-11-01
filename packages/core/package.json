@@ -15,14 +15,17 @@
   "scripts": {
     "build": "tsdown",
     "typecheck": "tsc",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run",
+    "test:scale": "vitest run --config vitest.scale.config.ts"
   },
   "dependencies": {
     "@netherite/schema": "workspace:*",
     "@netherite/git": "workspace:*",
     "effect": "catalog:",
     "yaml": "catalog:",
-    "@netherite/markdown": "workspace:*"
+    "@netherite/markdown": "workspace:*",
+    "graphology": "catalog:",
+    "minisearch": "catalog:"
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",

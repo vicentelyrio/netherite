@@ -5,12 +5,21 @@ import remarkParse from 'remark-parse'
 import { unified } from 'unified'
 import type { Position } from 'unist'
 import { LineCounter, parseDocument } from 'yaml'
+import { remarkGfmLite } from './gfm-lite'
 import { uniqueSlugs } from './slug'
 import { remarkWikiLinks, type WikiLink } from './wikilink'
 
-/** The unified processor Netherite uses. The app renders with the same plugins (ADR-00011). */
-export const createProcessor = () =>
-  unified().use(remarkParse).use(remarkFrontmatter, ['yaml']).use(remarkGfm).use(remarkWikiLinks)
+/**
+ * The unified processor Netherite uses. The app renders with the same plugins (ADR-00011).
+ * By default it supports full GFM; `autolinks: false` leaves out bare-URL detection, which is
+ * not needed to index a file and costs about a third of the parse time.
+ */
+export const createProcessor = ({ autolinks = true }: { autolinks?: boolean } = {}) =>
+  unified()
+    .use(remarkParse)
+    .use(remarkFrontmatter, ['yaml'])
+    .use(autolinks ? remarkGfm : remarkGfmLite)
+    .use(remarkWikiLinks)
 
 export interface FrontmatterError {
   readonly message: string
@@ -62,11 +71,13 @@ export interface ChecklistItem {
   readonly section: string | undefined
 }
 
-export interface ParsedMarkdown {
+/**
+ * Everything extracted from a file, without the syntax tree. Small and plain data, so it can be
+ * kept for thousands of files and passed between threads.
+ */
+export interface Outline {
   readonly source: string
   readonly frontmatter: Frontmatter | undefined
-  /** The mdast tree, including the frontmatter node and `wikiLink` nodes. Positions are absolute. */
-  readonly tree: Root
   /** Offset where the content after the frontmatter begins. */
   readonly bodyStart: number
   readonly headings: ReadonlyArray<HeadingInfo>
@@ -76,7 +87,12 @@ export interface ParsedMarkdown {
   readonly text: string
 }
 
-const processor = createProcessor()
+export interface ParsedMarkdown extends Outline {
+  /** The mdast tree, including the frontmatter node and `wikiLink` nodes. Positions are absolute. */
+  readonly tree: Root
+}
+
+const processor = createProcessor({ autolinks: false })
 
 const inlineText = (node: RootContent | Root): string => {
   if ('value' in node && node.type !== 'yaml') {
@@ -201,4 +217,10 @@ export const parseMarkdown = (source: string): ParsedMarkdown => {
     checklist,
     text: plainText(tree),
   }
+}
+
+/** Like `parseMarkdown`, but drops the tree. Use it to index many files. */
+export const outlineMarkdown = (source: string): Outline => {
+  const { tree: _tree, ...outline } = parseMarkdown(source)
+  return outline
 }

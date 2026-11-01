@@ -8,8 +8,18 @@ export {
 } from './errors'
 export { fileSlug, itemFileName, itemRelativePath, typeFolders } from './filenames'
 export { nextId, nextIds } from './ids'
-export { makeResolver, type Resolution, type ResolvedVia, type Resolver } from './resolve'
-export { type ScannedItem, scanItems, toScannedItem } from './scan'
+export { type ParseOptions, parseFiles, type SourceFile } from './parse-pool'
+export {
+  createResolver,
+  lookupKeys,
+  type MutableResolver,
+  makeResolver,
+  type Resolution,
+  type ResolvedVia,
+  type Resolver,
+} from './resolve'
+export { scanItems } from './scan'
+export { type ScannedItem, scannedItemFrom, toScannedItem } from './scanned-item'
 export {
   configFile,
   findWorkspaceRoot,
@@ -18,3 +28,17 @@ export {
   parseConfig,
   type Workspace,
 } from './workspace'
+export {
+  createIndex,
+  type Edge,
+  type EdgeKind,
+  extractRefs,
+  type IndexChange,
+  type IndexOptions,
+  type Progress,
+  type Ref,
+  type ResolvedRef,
+  type SearchHit,
+  type SearchOptions,
+  type WorkspaceIndex,
+} from './workspace-index'

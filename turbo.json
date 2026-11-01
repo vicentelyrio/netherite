@@ -16,6 +16,9 @@
     "lint": {},
     "test": {
       "dependsOn": ["^build"]
+    },
+    "test:scale": {
+      "dependsOn": ["^build"]
     }
   }
 }

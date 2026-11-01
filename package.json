@@ -26,7 +26,8 @@
     "cs": "changeset",
     "cs:version": "changeset version",
     "cs:status": "changeset status",
-    "cs:publish": "changeset publish"
+    "cs:publish": "changeset publish",
+    "test:scale": "turbo run test:scale"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.4",
