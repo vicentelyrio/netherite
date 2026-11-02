@@ -5,7 +5,7 @@ type: adr
 title: "Web app is layered: infrastructure, components, templates, features, pages"
 created: 2026-11-02T20:29:59Z
 created_by: "@vicentelyrio"
-status: proposed
+status: accepted
 date: 2026-11-02
 deciders: ["@vicentelyrio"]
 project: PRJ-00013

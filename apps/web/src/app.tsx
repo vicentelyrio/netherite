@@ -5,6 +5,7 @@ import { useMemo } from 'react'
 import { ApiProvider, createApi } from '@/infrastructure/api'
 import type { AppConfig } from '@/infrastructure/config'
 import { NoticeProvider } from '@/infrastructure/notices'
+import { SettingsProvider } from '@/infrastructure/settings'
 import { createAppRouter } from './router'
 
 export interface AppProps {
@@ -31,9 +32,11 @@ export function App({ config, history, env }: AppProps) {
     <NetheriteProvider {...(env === undefined ? {} : { env })}>
       <ApiProvider value={api}>
         <QueryClientProvider client={client}>
-          <NoticeProvider>
-            <RouterProvider router={router} />
-          </NoticeProvider>
+          <SettingsProvider>
+            <NoticeProvider>
+              <RouterProvider router={router} />
+            </NoticeProvider>
+          </SettingsProvider>
         </QueryClientProvider>
       </ApiProvider>
     </NetheriteProvider>

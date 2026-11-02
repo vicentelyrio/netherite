@@ -6,19 +6,21 @@ import { useApi } from '@/infrastructure/api'
 import { type Connection, useLiveUpdates } from '@/infrastructure/live'
 import { useNotices } from '@/infrastructure/notices'
 import { useHealth, useInbox } from '@/infrastructure/query'
+import { type ActionId, useResolvedShortcuts } from '@/infrastructure/shortcuts'
 import { AppShell } from '@/templates'
 import { waitingCount } from './pages/inbox'
 import { SearchPalette } from './search'
 
 /** The rail's items and where each goes (Rail.dc.html). Command-K opens search instead of a page. */
-export const railItems: ReadonlyArray<RailItem & { readonly to?: string }> = [
-  { id: 'search', label: 'Search', icon: 'search', shortcut: 'mod+k' },
-  { id: 'inbox', label: 'Inbox', icon: 'inbox', shortcut: 'mod+i', group: 'inbox', to: '/inbox' },
+export const railItems: ReadonlyArray<
+  Omit<RailItem, 'shortcut' | 'aliases'> & { readonly to?: string }
+> = [
+  { id: 'search', label: 'Search', icon: 'search' },
+  { id: 'inbox', label: 'Inbox', icon: 'inbox', group: 'inbox', to: '/inbox' },
   {
     id: 'goals',
     label: 'Goals',
     icon: 'track_changes',
-    shortcut: 'mod+g',
     group: 'work',
     to: '/goals',
   },
@@ -26,8 +28,6 @@ export const railItems: ReadonlyArray<RailItem & { readonly to?: string }> = [
     id: 'projects',
     label: 'Projects',
     icon: 'task_alt',
-    shortcut: 'mod+p',
-    aliases: ['mod+alt+p'],
     group: 'work',
     to: '/projects',
   },
@@ -35,8 +35,6 @@ export const railItems: ReadonlyArray<RailItem & { readonly to?: string }> = [
     id: 'knowledge',
     label: 'Knowledge',
     icon: 'stacks',
-    shortcut: 'mod+l',
-    aliases: ['mod+alt+l'],
     group: 'work',
     to: '/knowledge',
   },
@@ -44,8 +42,6 @@ export const railItems: ReadonlyArray<RailItem & { readonly to?: string }> = [
     id: 'stats',
     label: 'Stats',
     icon: 'bar_chart',
-    shortcut: 'mod+d',
-    aliases: ['mod+alt+d'],
     group: 'insight',
     to: '/stats',
   },
@@ -53,8 +49,6 @@ export const railItems: ReadonlyArray<RailItem & { readonly to?: string }> = [
     id: 'tags',
     label: 'Tags',
     icon: 'sell',
-    shortcut: 'mod+t',
-    aliases: ['mod+alt+t'],
     group: 'insight',
     to: '/tags',
   },
@@ -62,11 +56,14 @@ export const railItems: ReadonlyArray<RailItem & { readonly to?: string }> = [
     id: 'graph',
     label: 'Graph',
     icon: 'hub',
-    shortcut: 'mod+shift+g',
     group: 'insight',
     to: '/graph',
   },
 ]
+
+/** The keyboard action behind a rail item: search opens the palette, the rest go to a page. */
+const actionOf = (id: string): ActionId =>
+  id === 'search' ? 'search.open' : (`go.${id}` as ActionId)
 
 /** Which rail item a path belongs to. An item page belongs to Knowledge. */
 export const activeFor = (pathname: string) => {
@@ -118,9 +115,12 @@ export function Shell() {
   // What waits for a person: decisions to make, docs gone stale, problems to fix, blocked work.
   const waiting = inbox.data ? waitingCount(inbox.data) : 0
 
-  const items = railItems.map(({ to: _to, ...item }) =>
-    item.id === 'inbox' ? { ...item, badge: waiting } : item,
-  )
+  const keys = useResolvedShortcuts()
+  const items: RailItem[] = railItems.map(({ to: _to, ...item }) => {
+    const { keys: shortcut, aliases } = keys[actionOf(item.id)]
+    const withKeys = { ...item, shortcut, ...(aliases.length > 0 ? { aliases } : {}) }
+    return item.id === 'inbox' ? { ...withKeys, badge: waiting } : withKeys
+  })
 
   const select = (id: string) => {
     if (id === 'search') return setSearchOpen(true)
