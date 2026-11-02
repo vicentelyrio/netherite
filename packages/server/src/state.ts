@@ -1,3 +1,4 @@
+import type { ServerEvent } from '@netherite/api'
 import {
   type FreshnessCache,
   freshnessCache,
@@ -6,7 +7,7 @@ import {
   type Repo,
   readHistory,
 } from '@netherite/core'
-import { Effect, Semaphore } from 'effect'
+import { Effect, PubSub, Semaphore } from 'effect'
 
 export interface ServerOptions {
   /** The repository's git, for freshness, history and stats. Leave out when there is none. */
@@ -31,6 +32,10 @@ export interface ServerState {
     import('@netherite/core').GitError,
     import('effect').FileSystem.FileSystem | import('effect').Path.Path
   >
+  /** Events for connected clients (`GET /api/events`). Subscribers see events published after they join. */
+  readonly events: PubSub.PubSub<ServerEvent>
+  /** Sends an event to every connected client. */
+  readonly publish: (event: ServerEvent) => Effect.Effect<void>
   /** Call when files changed outside the server, so cached data is recomputed. */
   readonly invalidate: () => void
 }
@@ -39,6 +44,7 @@ export const makeState = (repo: Repo, options: ServerOptions = {}) =>
   Effect.gen(function* () {
     const freshness = freshnessCache(repo, options.git)
     const writes = yield* Semaphore.make(1)
+    const events = yield* PubSub.unbounded<ServerEvent>()
     let cached: { head: string | undefined; history: History } | undefined
 
     const history: ServerState['history'] = Effect.gen(function* () {
@@ -60,6 +66,8 @@ export const makeState = (repo: Repo, options: ServerOptions = {}) =>
       version: options.version ?? '0.0.0',
       freshness,
       writes,
+      events,
+      publish: (event) => PubSub.publish(events, event).pipe(Effect.asVoid),
       history,
       invalidate: () => {
         freshness.invalidate()

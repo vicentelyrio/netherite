@@ -36,7 +36,7 @@ import {
   unlink,
   updateItem,
 } from '@netherite/core'
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, PubSub, Stream } from 'effect'
 import { HttpApiBuilder } from 'effect/http-api'
 import { toApiError } from './errors'
 import type { ServerState } from './state'
@@ -52,6 +52,30 @@ const written = (r: OpResult): WriteResult => ({
 const invalid = (path: ReadonlyArray<string | number>, message: string) =>
   new Invalid({ message, issues: [{ path: [...path], message }] })
 
+/**
+ * Something this server changed: refresh what is cached and tell connected clients. Changes made
+ * by an editor or `git` reach clients through the watcher instead (see `live.ts`).
+ */
+export const changed = (
+  state: ServerState,
+  upserted: ReadonlyArray<string>,
+  removed: ReadonlyArray<string>,
+) =>
+  Effect.gen(function* () {
+    state.invalidate()
+    const affected = [...new Set([...upserted, ...removed])].sort()
+    yield* state.publish({
+      type: 'items',
+      upserted: [...upserted],
+      removed: [...removed],
+      affected,
+      ids: affected.flatMap((p) => {
+        const id = state.repo.index.get(p)?.id
+        return id === undefined ? [] : [id]
+      }),
+    })
+  })
+
 /** A write: runs alone, maps core failures to API errors, and refreshes what was cached. */
 const write =
   (state: ServerState) =>
@@ -59,7 +83,7 @@ const write =
     state.writes.withPermits(1)(
       effect.pipe(
         Effect.mapError(toApiError),
-        Effect.tap(() => Effect.sync(() => state.freshness.invalidate())),
+        Effect.tap((r) => changed(state, r.changed, [])),
         Effect.map(written),
       ),
     )
@@ -230,7 +254,7 @@ const items = (state: ServerState) =>
             ...(query.baseHash ? { baseHash: query.baseHash } : {}),
           }).pipe(
             Effect.mapError(toApiError),
-            Effect.tap(() => Effect.sync(() => state.freshness.invalidate())),
+            Effect.tap((d) => changed(state, [], [d.path])),
             Effect.map((d) => ({ deleted: d.id, path: d.path })),
           ),
         ),
@@ -459,6 +483,27 @@ const stats = (state: ServerState) =>
     ),
   )
 
+const events = (state: ServerState) =>
+  HttpApiBuilder.group(NetheriteApi, 'events', (handlers) =>
+    handlers.handle('events', () =>
+      // Subscribe before saying `ready`, so nothing published after the client sees it is lost.
+      Effect.succeed(
+        Stream.unwrap(
+          Effect.gen(function* () {
+            const subscription = yield* PubSub.subscribe(state.events)
+            const ping = Stream.tick('25 seconds').pipe(
+              Stream.drop(1),
+              Stream.map(() => ({ type: 'ping' as const })),
+            )
+            return Stream.make({ type: 'ready' as const, version: state.version }).pipe(
+              Stream.concat(Stream.merge(Stream.fromSubscription(subscription), ping)),
+            )
+          }),
+        ),
+      ),
+    ),
+  )
+
 const meta = (state: ServerState) =>
   HttpApiBuilder.group(NetheriteApi, 'meta', (handlers) =>
     handlers
@@ -492,6 +537,7 @@ export const handlersLayer = (state: ServerState) =>
     inbox(state),
     history(state),
     stats(state),
+    events(state),
     meta(state),
   )
 

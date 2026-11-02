@@ -1,4 +1,5 @@
 export {
+  EventsGroup,
   GraphGroup,
   HistoryGroup,
   InboxGroup,

@@ -5,11 +5,11 @@ import { devNull, tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { NodeHttpServer, NodeServices } from '@effect/platform-node'
 import { makeClient } from '@netherite/api'
-import { gitHandle, openRepo, workspaceGit } from '@netherite/core'
+import { gitHandle, openRepo, type WatchBackend, workspaceGit } from '@netherite/core'
 import { cleanWorkspaceFiles } from '@netherite/testing'
 import { Effect, Layer, type Scope } from 'effect'
 import { FetchHttpClient, HttpRouter, HttpServer } from 'effect/http'
-import { apiLayer, makeState, type ServerState } from '../src/index'
+import { apiLayer, makeState, type ServerState, startLive } from '../src/index'
 
 export const isolateGit = () => {
   process.env.GIT_CONFIG_GLOBAL = devNull
@@ -21,11 +21,38 @@ export interface Running {
   readonly url: string
   readonly state: ServerState
   readonly client: Effect.Success<ReturnType<typeof makeClient>>
+  /** Reports file changes to the watcher, as the operating system would. Absolute paths. */
+  readonly emit: (...paths: string[]) => void
 }
 
 export interface StartOptions {
   readonly files?: (dir: string) => Record<string, string>
   readonly git?: boolean
+  /** Start the live updates (watcher and lint events). `false` leaves only the API. */
+  readonly live?: boolean
+}
+
+/** A watch backend the test drives by hand, routed by folder like the real one. */
+const fakeBackend = () => {
+  const subs: Array<{ dir: string; onEvents: (events: Array<{ path: string }>) => void }> = []
+  const backend: WatchBackend = {
+    subscribe: async (dir, onEvents) => {
+      const sub = { dir, onEvents }
+      subs.push(sub)
+      return {
+        unsubscribe: async () => {
+          subs.splice(subs.indexOf(sub), 1)
+        },
+      }
+    },
+  }
+  const emit = (...paths: string[]) => {
+    for (const sub of subs) {
+      const mine = paths.filter((p) => p.startsWith(`${sub.dir}/`))
+      if (mine.length > 0) sub.onEvents(mine.map((path) => ({ path })))
+    }
+  }
+  return { backend, emit }
 }
 
 /**
@@ -48,6 +75,11 @@ export const start = (options: StartOptions = {}): Effect.Effect<Running, unknow
     const createdBy = repoGit ? yield* gitHandle(repoGit) : undefined
     const state = yield* makeState(repo, { git: repoGit, createdBy, version: '9.9.9' })
 
+    const fake = fakeBackend()
+    if (options.live) {
+      yield* startLive(state, { backend: fake.backend, debounceMs: 5, lintDebounceMs: 5 })
+    }
+
     const http = NodeHttpServer.layer(() => createServer(), { port: 0, host: '127.0.0.1' })
     const served = HttpRouter.serve(apiLayer(state)).pipe(Layer.provideMerge(http))
     const context = yield* Layer.build(served)
@@ -58,12 +90,12 @@ export const start = (options: StartOptions = {}): Effect.Effect<Running, unknow
     if (address._tag === 'UnixPathAddress') throw new Error('expected a TCP address')
     const url = `http://127.0.0.1:${address.port}`
     const client = yield* makeClient({ baseUrl: url }).pipe(Effect.provide(FetchHttpClient.layer))
-    return { dir, url, state, client }
+    return { dir, url, state, client, emit: fake.emit }
   }).pipe(Effect.provide(NodeServices.layer))
 
 /** Runs a test body against a running server, then shuts it down. */
 export const withServer = <A>(
-  use: (running: Running) => Effect.Effect<A, unknown, never>,
+  use: (running: Running) => Effect.Effect<A, unknown, Scope.Scope>,
   options: StartOptions = {},
 ) =>
   Effect.runPromise(

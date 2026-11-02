@@ -30,6 +30,10 @@ export type ChangeEvent =
       readonly affected: ReadonlyArray<string>
     }
   | {
+      /** The current commit, the branch, the index or a ref changed: `git status` may differ. */
+      readonly _tag: 'GitChanged'
+    }
+  | {
       readonly _tag: 'ConfigChanged'
       /** The `content` folder moved, which needs a restart. Nothing was applied. */
       readonly requiresRestart: boolean
@@ -85,6 +89,11 @@ export interface WatchOptions {
   readonly backend?: WatchBackend
   /** Passed to the parser when a big batch (for example a branch switch) arrives. */
   readonly parse?: ParseOptions
+  /**
+   * The repository's `.git` folder. When given, changes to `HEAD`, `index` and the refs are
+   * reported as `GitChanged`, so views of uncommitted changes and history can refresh.
+   */
+  readonly gitDir?: string
 }
 
 export interface Watcher {
@@ -98,6 +107,23 @@ export interface Watcher {
 
 const contentIgnore = ['**/.*/**', '**/.*', 'assets/**', '**/node_modules/**']
 const configIgnore = ['local/**', '**/*.tmp']
+// Inside `.git` only HEAD, the index and the refs matter; objects and logs change on every commit.
+const gitIgnore = [
+  'objects/**',
+  'logs/**',
+  'hooks/**',
+  'info/**',
+  'modules/**',
+  '**/*.lock',
+  '**/*.tmp',
+]
+
+/** Does a path inside the git folder show a change of commit, branch or staged content? */
+const gitRelevant = (relative: string) =>
+  relative === 'HEAD' ||
+  relative === 'index' ||
+  relative === 'packed-refs' ||
+  relative.startsWith('refs/')
 
 const asPosix = (p: string) => p.split('\\').join('/')
 
@@ -120,6 +146,7 @@ export const watchRepo = (repo: Repo, options: WatchOptions = {}) =>
     const debounce = options.debounceMs ?? 100
 
     const root = repo.workspace.root
+    const gitDir = options.gitDir === undefined ? undefined : path.resolve(options.gitDir)
     const contentDir = repo.workspace.contentRoot
     const configDir = path.dirname(repo.workspace.configPath)
     const configRelative = asPosix(path.relative(root, repo.workspace.configPath))
@@ -177,10 +204,15 @@ export const watchRepo = (repo: Repo, options: WatchOptions = {}) =>
     const processBatch = (paths: ReadonlyArray<string>) =>
       Effect.gen(function* () {
         let configChanged = false
+        let gitChanged = false
         const candidates = new Set<string>()
         const gone = new Set<string>()
 
         for (const absolute of paths) {
+          if (gitDir !== undefined && absolute.startsWith(`${gitDir}${path.sep}`)) {
+            if (gitRelevant(asPosix(path.relative(gitDir, absolute)))) gitChanged = true
+            continue
+          }
           const relative = relativeOf(absolute)
           if (relative === configRelative) {
             configChanged = true
@@ -236,6 +268,7 @@ export const watchRepo = (repo: Repo, options: WatchOptions = {}) =>
         }
 
         if (configChanged) yield* reloadConfig
+        if (gitChanged) yield* publish({ _tag: 'GitChanged' })
       })
 
     // --- collecting events ----------------------------------------------------------------
@@ -275,6 +308,12 @@ export const watchRepo = (repo: Repo, options: WatchOptions = {}) =>
 
     yield* subscribe(contentDir, contentIgnore)
     yield* subscribe(configDir, configIgnore)
+    if (
+      gitDir !== undefined &&
+      (yield* fs.exists(gitDir).pipe(Effect.orElseSucceed(() => false)))
+    ) {
+      yield* subscribe(gitDir, gitIgnore)
+    }
     yield* Effect.addFinalizer(() =>
       Effect.sync(() => {
         if (timer !== undefined) clearTimeout(timer)

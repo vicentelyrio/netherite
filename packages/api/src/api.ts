@@ -22,6 +22,7 @@ import {
   ReviewPayload,
   SearchQuery,
   SearchResult,
+  ServerEvent,
   StatePayload,
   Stats,
   StatsQuery,
@@ -143,6 +144,13 @@ export class StatsGroup extends HttpApiGroup.make('stats').add(
   }),
 ) {}
 
+/** Server-sent events: connect with `EventSource` or the typed client. */
+export class EventsGroup extends HttpApiGroup.make('events').add(
+  HttpApiEndpoint.get('events', '/events', {
+    success: HttpApiSchema.StreamSse({ data: ServerEvent }),
+  }),
+) {}
+
 export class MetaGroup extends HttpApiGroup.make('meta').add(
   HttpApiEndpoint.get('health', '/health', { success: Health }),
   HttpApiEndpoint.get('schema', '/schemas/:type', {
@@ -165,6 +173,7 @@ export class NetheriteApi extends HttpApi.make('netherite')
     InboxGroup,
     HistoryGroup,
     StatsGroup,
+    EventsGroup,
     MetaGroup,
   )
   .prefix('/api') {}

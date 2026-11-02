@@ -287,3 +287,37 @@ export const Health = Schema.Struct({
   items: N,
   git: Schema.Boolean,
 })
+
+// ---- live events ---------------------------------------------------------------------
+
+const Tagged = <const T extends string, F extends Schema.Struct.Fields>(type: T, fields: F) =>
+  Schema.Struct({ type: Schema.Literal(type), ...fields })
+
+/**
+ * What the server pushes over `GET /api/events`. The app uses these to refresh what it shows;
+ * each says what changed, not the new content.
+ */
+export const ServerEvent = Schema.Union([
+  /** Sent first, so a client knows the stream is open and which server it is talking to. */
+  Tagged('ready', { version: S }),
+  /** Items were added, changed or removed (by an editor, a branch switch, an agent or the API). */
+  Tagged('items', {
+    upserted: Schema.Array(S),
+    removed: Schema.Array(S),
+    /** Every item that is different now, including ones whose links resolve differently. */
+    affected: Schema.Array(S),
+    /** The IDs of the affected items that still exist. */
+    ids: Schema.Array(S),
+  }),
+  /** The commit, branch or index changed, so uncommitted changes and history may differ. */
+  Tagged('git', { head: opt(S), branch: opt(S), changes: N }),
+  /** The lint result is different from the last one sent. */
+  Tagged('lint', { error: N, warning: N, info: N }),
+  /** `.netherite/config.yml` changed. `requiresRestart` when the content folder moved. */
+  Tagged('config', { requiresRestart: Schema.Boolean }),
+  /** The config file is invalid; the previous one stays in use. */
+  Tagged('config-invalid', { message: S }),
+  /** Keeps idle connections open. */
+  Tagged('ping', {}),
+])
+export type ServerEvent = typeof ServerEvent.Type

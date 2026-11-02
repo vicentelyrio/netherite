@@ -45,7 +45,11 @@ const fakeBackend = () => {
 const tasks = '/repo/netherite/tasks'
 const t1 = `${tasks}/TASK-00001-core.md`
 
-const watching = async (debounceMs = 60_000, files: Record<string, string> = cleanFiles()) => {
+const watching = async (
+  debounceMs = 60_000,
+  files: Record<string, string> = cleanFiles(),
+  gitDir?: string,
+) => {
   const w = await world(files)
   const fake = fakeBackend()
   const session = <A>(
@@ -58,7 +62,11 @@ const watching = async (debounceMs = 60_000, files: Record<string, string> = cle
     w.run(
       Effect.scoped(
         Effect.gen(function* () {
-          const watcher = yield* watchRepo(w.repo, { backend: fake.backend, debounceMs })
+          const watcher = yield* watchRepo(w.repo, {
+            backend: fake.backend,
+            debounceMs,
+            ...(gitDir === undefined ? {} : { gitDir }),
+          })
           const events: ChangeEvent[] = []
           watcher.listen((e) => events.push(e))
           return yield* use(watcher, events, w)
@@ -464,5 +472,61 @@ describe('lifecycle', () => {
       }),
     )
     expect(got).toBeDefined()
+  })
+})
+
+describe('git', () => {
+  const gitFiles = () => ({ ...cleanFiles(), '/repo/.git/HEAD': 'ref: refs/heads/main\n' })
+
+  test('watches the git folder when it is given and exists', async () => {
+    const { fake, session } = await watching(60_000, gitFiles(), '/repo/.git')
+    await session(() =>
+      Effect.sync(() => expect(fake.subs.map((s) => s.dir)).toContain('/repo/.git')),
+    )
+    const without = await watching()
+    await without.session(() =>
+      Effect.sync(() => expect(without.fake.subs.map((s) => s.dir)).not.toContain('/repo/.git')),
+    )
+  })
+
+  test('a change to HEAD, the index or a ref is one GitChanged event', async () => {
+    const { fake, session } = await watching(60_000, gitFiles(), '/repo/.git')
+    const events = await session((watcher, list) =>
+      Effect.gen(function* () {
+        fake.emit('/repo/.git/HEAD', '/repo/.git/index', '/repo/.git/refs/heads/main')
+        yield* watcher.flush
+        return list
+      }),
+    )
+    expect(events).toEqual([{ _tag: 'GitChanged' }])
+  })
+
+  test('other files in the git folder, and lock files, are not reported', async () => {
+    const { fake, session } = await watching(60_000, gitFiles(), '/repo/.git')
+    const events = await session((watcher, list) =>
+      Effect.gen(function* () {
+        fake.emit(
+          '/repo/.git/COMMIT_EDITMSG',
+          '/repo/.git/FETCH_HEAD',
+          '/repo/.git/objects/ab/cdef',
+        )
+        yield* watcher.flush
+        return list
+      }),
+    )
+    expect(events).toEqual([])
+  })
+
+  test('git changes and item changes in one batch give both events', async () => {
+    const { w, fake, session } = await watching(60_000, gitFiles(), '/repo/.git')
+    const events = await session((watcher, list) =>
+      Effect.gen(function* () {
+        w.write(t1, (w.read(t1) as string).replace('title: Core', 'title: Core 2'))
+        fake.emit(t1, '/repo/.git/index')
+        yield* watcher.flush
+        return list
+      }),
+    )
+    expect(events.map((e) => e._tag)).toEqual(['ItemsChanged', 'GitChanged'])
   })
 })
