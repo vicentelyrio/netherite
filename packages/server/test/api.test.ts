@@ -232,7 +232,7 @@ describe('writing items', () => {
         const status = yield* Effect.promise(() =>
           raw(s.url, '/api/items', {
             method: 'POST',
-            headers: { 'content-type': 'application/json' },
+            headers: { 'content-type': 'application/json', 'x-netherite-token': s.token },
             body: JSON.stringify({ type: 'doc', title: 'Raw' }),
           }),
         )
@@ -256,7 +256,7 @@ describe('writing items', () => {
         const malformed = yield* Effect.promise(() =>
           raw(s.url, '/api/items', {
             method: 'POST',
-            headers: { 'content-type': 'application/json' },
+            headers: { 'content-type': 'application/json', 'x-netherite-token': s.token },
             body: JSON.stringify({ type: 'banana', title: 'x' }),
           }),
         )
@@ -311,7 +311,7 @@ describe('writing items', () => {
         const status = yield* Effect.promise(() =>
           raw(s.url, '/api/items/TASK-00001', {
             method: 'PATCH',
-            headers: { 'content-type': 'application/json' },
+            headers: { 'content-type': 'application/json', 'x-netherite-token': s.token },
             body: JSON.stringify({ set: { labels: ['z'] }, baseHash: item.hash }),
           }),
         )

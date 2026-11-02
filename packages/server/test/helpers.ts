@@ -1,15 +1,14 @@
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
-import { createServer } from 'node:http'
 import { devNull, tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
-import { NodeHttpServer, NodeServices } from '@effect/platform-node'
+import { NodeServices } from '@effect/platform-node'
 import { makeClient } from '@netherite/api'
 import { gitHandle, openRepo, type WatchBackend, workspaceGit } from '@netherite/core'
 import { cleanWorkspaceFiles } from '@netherite/testing'
-import { Effect, Layer, type Scope } from 'effect'
-import { FetchHttpClient, HttpRouter, HttpServer } from 'effect/http'
-import { apiLayer, makeState, type ServerState, startLive } from '../src/index'
+import { Effect, type Scope } from 'effect'
+import { FetchHttpClient } from 'effect/http'
+import { listen, makeState, type ServerState, startLive } from '../src/index'
 
 export const isolateGit = () => {
   process.env.GIT_CONFIG_GLOBAL = devNull
@@ -19,6 +18,8 @@ export const isolateGit = () => {
 export interface Running {
   readonly dir: string
   readonly url: string
+  /** The session token writes must carry. */
+  readonly token: string
   readonly state: ServerState
   readonly client: Effect.Success<ReturnType<typeof makeClient>>
   /** Reports file changes to the watcher, as the operating system would. Absolute paths. */
@@ -30,6 +31,8 @@ export interface StartOptions {
   readonly git?: boolean
   /** Start the live updates (watcher and lint events). `false` leaves only the API. */
   readonly live?: boolean
+  /** Extra origins the server accepts. */
+  readonly origins?: ReadonlyArray<string>
 }
 
 /** A watch backend the test drives by hand, routed by folder like the real one. */
@@ -73,24 +76,24 @@ export const start = (options: StartOptions = {}): Effect.Effect<Running, unknow
     const repo = yield* openRepo(dir)
     const repoGit = options.git ? yield* workspaceGit(repo.workspace) : undefined
     const createdBy = repoGit ? yield* gitHandle(repoGit) : undefined
-    const state = yield* makeState(repo, { git: repoGit, createdBy, version: '9.9.9' })
+    const state = yield* makeState(repo, {
+      git: repoGit,
+      createdBy,
+      version: '9.9.9',
+      ...(options.origins ? { origins: options.origins } : {}),
+    })
 
     const fake = fakeBackend()
     if (options.live) {
       yield* startLive(state, { backend: fake.backend, debounceMs: 5, lintDebounceMs: 5 })
     }
 
-    const http = NodeHttpServer.layer(() => createServer(), { port: 0, host: '127.0.0.1' })
-    const served = HttpRouter.serve(apiLayer(state)).pipe(Layer.provideMerge(http))
-    const context = yield* Layer.build(served)
-    const server = Effect.runSync(
-      Effect.service(HttpServer.HttpServer).pipe(Effect.provideContext(context)),
+    const running = yield* listen(state, { port: 0 })
+    const url = running.url
+    const client = yield* makeClient({ baseUrl: url, token: running.token }).pipe(
+      Effect.provide(FetchHttpClient.layer),
     )
-    const address = server.address
-    if (address._tag === 'UnixPathAddress') throw new Error('expected a TCP address')
-    const url = `http://127.0.0.1:${address.port}`
-    const client = yield* makeClient({ baseUrl: url }).pipe(Effect.provide(FetchHttpClient.layer))
-    return { dir, url, state, client, emit: fake.emit }
+    return { dir, url, token: running.token, state, client, emit: fake.emit }
   }).pipe(Effect.provide(NodeServices.layer))
 
 /** Runs a test body against a running server, then shuts it down. */
@@ -124,4 +127,19 @@ export const raw = async (url: string, path: string, init?: RequestInit) => {
   const response = await fetch(`${url}${path}`, init)
   const text = await response.text()
   return { status: response.status, body: text === '' ? undefined : (JSON.parse(text) as any) }
+}
+
+/** A server state over a temporary workspace, without listening. */
+export const makeTempState = async () => {
+  const dir = realpathSync(mkdtempSync(join(tmpdir(), 'netherite-server-')))
+  for (const [path, text] of Object.entries(cleanWorkspaceFiles(dir))) {
+    mkdirSync(dirname(path), { recursive: true })
+    writeFileSync(path, text)
+  }
+  return Effect.runPromise(
+    Effect.gen(function* () {
+      const repo = yield* openRepo(dir)
+      return yield* makeState(repo)
+    }).pipe(Effect.provide(NodeServices.layer)),
+  )
 }

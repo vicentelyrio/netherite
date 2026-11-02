@@ -8,6 +8,7 @@ import {
   readHistory,
 } from '@netherite/core'
 import { Effect, PubSub, Semaphore } from 'effect'
+import { newToken } from './security'
 
 export interface ServerOptions {
   /** The repository's git, for freshness, history and stats. Leave out when there is none. */
@@ -15,6 +16,10 @@ export interface ServerOptions {
   /** A `@handle` recorded as `created_by` on items created through the API. */
   readonly createdBy?: string | undefined
   readonly version?: string
+  /** The session token writes must carry. Default: a fresh random one. */
+  readonly token?: string
+  /** Extra origins allowed to call the API, such as `http://localhost:5173` while developing the app. */
+  readonly origins?: ReadonlyArray<string>
 }
 
 /** Everything the handlers share. One per repository. */
@@ -23,6 +28,9 @@ export interface ServerState {
   readonly git: GitRepository | undefined
   readonly createdBy: string | undefined
   readonly version: string
+  /** The secret for this session: writes without it get 401. */
+  readonly token: string
+  readonly origins: ReadonlyArray<string>
   readonly freshness: FreshnessCache
   /** Writes run one at a time, so two requests cannot interleave their read-check-rename steps. */
   readonly writes: Semaphore.Semaphore
@@ -64,6 +72,8 @@ export const makeState = (repo: Repo, options: ServerOptions = {}) =>
       git: options.git,
       createdBy: options.createdBy,
       version: options.version ?? '0.0.0',
+      token: options.token ?? newToken(),
+      origins: options.origins ?? [],
       freshness,
       writes,
       events,
