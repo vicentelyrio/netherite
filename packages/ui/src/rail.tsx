@@ -9,8 +9,13 @@ export interface RailItem {
   readonly label: string
   /** A Material Symbols name. */
   readonly icon: string
-  /** For example `mod+k`. Pressing it anywhere selects the item. */
+  /** For example `mod+k`. Pressing it anywhere selects the item. Shown in the tooltip. */
   readonly shortcut?: string
+  /**
+   * More keys that do the same. For shortcuts a browser keeps for itself (such as Command-L),
+   * which a page cannot take.
+   */
+  readonly aliases?: ReadonlyArray<string>
   /** A count to show on the item, such as items waiting in the Inbox. Hidden at 0. */
   readonly badge?: number
   /**
@@ -67,7 +72,9 @@ export function Rail({
   useShortcuts(
     Object.fromEntries(
       items.flatMap((item) =>
-        item.shortcut === undefined ? [] : [[item.shortcut, () => onSelect(item.id)]],
+        [item.shortcut, ...(item.aliases ?? [])].flatMap((key) =>
+          key === undefined ? [] : [[key, () => onSelect(item.id)]],
+        ),
       ),
     ),
     { enabled: shortcuts, ...(mac === undefined ? {} : { mac }) },

@@ -33,4 +33,10 @@
   -webkit-font-smoothing: antialiased;
   user-select: none;
   flex-shrink: 0;
+  /* Shown by NetheriteProvider once the icon font has loaded, so names never flash as text. */
+  visibility: hidden;
+}
+
+:root[data-nt-icons="ready"] .nt-icon {
+  visibility: visible;
 }

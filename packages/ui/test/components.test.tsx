@@ -1,5 +1,5 @@
 import { adrStatuses, itemTypeNames } from '@netherite/tokens'
-import { fireEvent, screen, within } from '@testing-library/react'
+import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, test, vi } from 'vitest'
 import {
@@ -433,5 +433,13 @@ describe('library components with the theme applied', () => {
       </Modal>,
     )
     expect(screen.queryByText('hidden')).toBeNull()
+  })
+})
+
+describe('icons before the font arrives', () => {
+  test('the provider marks the page when icons can be shown, so names never flash as text', async () => {
+    document.documentElement.removeAttribute('data-nt-icons')
+    renderUi(<Icon name="check" />)
+    await waitFor(() => expect(document.documentElement).toHaveAttribute('data-nt-icons', 'ready'))
   })
 })

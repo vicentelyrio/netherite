@@ -1,0 +1,60 @@
+import { queryOptions, useQuery } from '@tanstack/react-query'
+import type { Api } from './api'
+
+/**
+ * Query keys, grouped so one invalidation can cover a family: `['items']` is every list and
+ * every item, `['item', id]` is one.
+ */
+export const keys = {
+  health: ['health'] as const,
+  items: (params: object = {}) => ['items', 'list', params] as const,
+  item: (id: string) => ['items', 'item', id] as const,
+  search: (q: string) => ['search', q] as const,
+  graph: ['graph'] as const,
+  lint: ['lint'] as const,
+  inbox: ['inbox'] as const,
+  history: ['history'] as const,
+  stats: ['stats'] as const,
+}
+
+export const healthQuery = (api: Api) =>
+  queryOptions({ queryKey: keys.health, queryFn: () => api.call((c) => c.meta.health()) })
+
+export interface ListParams {
+  readonly type?: 'goal' | 'project' | 'task' | 'adr' | 'doc' | 'context' | 'runbook'
+  readonly status?: string
+  readonly project?: string
+  readonly limit?: number
+}
+
+export const itemsQuery = (api: Api, params: ListParams = {}) =>
+  queryOptions({
+    queryKey: keys.items(params),
+    queryFn: () =>
+      api.call((c) =>
+        c.items.list({
+          query: {
+            ...(params.type ? { type: params.type } : {}),
+            ...(params.status ? { status: params.status } : {}),
+            ...(params.project ? { project: params.project } : {}),
+            limit: params.limit ?? 200,
+          },
+        }),
+      ),
+  })
+
+export const itemQuery = (api: Api, id: string) =>
+  queryOptions({
+    queryKey: keys.item(id),
+    queryFn: () => api.call((c) => c.items.get({ params: { id } })),
+    retry: false,
+  })
+
+export const inboxQuery = (api: Api) =>
+  queryOptions({
+    queryKey: keys.inbox,
+    queryFn: () => api.call((c) => c.inbox.inbox({ query: {} })),
+  })
+
+export const useHealth = (api: Api) => useQuery(healthQuery(api))
+export const useInbox = (api: Api) => useQuery(inboxQuery(api))

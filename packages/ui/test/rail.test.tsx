@@ -170,3 +170,32 @@ describe('Rail', () => {
     expect(container.querySelector('.nt-rail-footer')).toHaveTextContent('VL')
   })
 })
+
+describe('Rail aliases', () => {
+  test('extra keys select the same item, and the tooltip shows only the main one', () => {
+    const onSelect = vi.fn()
+    renderUi(
+      <Rail
+        items={[
+          {
+            id: 'knowledge',
+            label: 'Knowledge',
+            icon: 'stacks',
+            shortcut: 'mod+l',
+            aliases: ['mod+alt+l'],
+          },
+        ]}
+        active="x"
+        onSelect={onSelect}
+        mac
+      />,
+    )
+    fireEvent.keyDown(window, { key: 'l', metaKey: true })
+    fireEvent.keyDown(window, { key: 'l', metaKey: true, altKey: true })
+    expect(onSelect.mock.calls).toEqual([['knowledge'], ['knowledge']])
+    expect(screen.getByRole('button', { name: 'Knowledge' })).toHaveAttribute(
+      'aria-keyshortcuts',
+      '⌘L',
+    )
+  })
+})
