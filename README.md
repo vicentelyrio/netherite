@@ -72,3 +72,7 @@ pnpm docs:gen        # regenerate docs/reference from the program
 ```
 
 This repository tracks its own work in `netherite/`; the plan is in `netherite/docs/`.
+
+## Licence
+
+[MIT](LICENSE).

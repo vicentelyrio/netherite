@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
 
@@ -25,6 +26,7 @@ const sessionToken = (): Plugin => ({
 
 export default defineConfig({
   plugins: [react(), sessionToken()],
+  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   server: {
     host: '127.0.0.1',
     port: 5173,

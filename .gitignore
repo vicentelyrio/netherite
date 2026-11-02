@@ -150,3 +150,7 @@ generated
 # Playwright
 test-results
 playwright-report
+
+# Copied from the root README at build
+packages/netherite/README.md
+packages/netherite/LICENSE
