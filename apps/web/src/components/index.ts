@@ -1,4 +1,5 @@
 export { Breadcrumbs, type BreadcrumbsProps } from './Breadcrumbs'
+export { CardColumn } from './CardColumn'
 export { type FilterOption, FilterTabs, type FilterTabsProps } from './FilterTabs'
 export { GroupCard, type GroupCardProps } from './GroupCard'
 export * from './Markdown'

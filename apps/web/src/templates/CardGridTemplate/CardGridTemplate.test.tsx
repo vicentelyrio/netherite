@@ -1,19 +1,20 @@
 import { NetheriteProvider } from '@netherite/ui'
-import { render as plain } from '@testing-library/react'
-import type { ReactElement } from 'react'
+import { render, screen } from '@testing-library/react'
 import { describe, expect, test } from 'vitest'
 import { CardGridTemplate } from './CardGridTemplate'
 
-const render = (ui: ReactElement) => plain(<NetheriteProvider env="test">{ui}</NetheriteProvider>)
-
 describe('CardGridTemplate', () => {
-  test('CardGridTemplate gives each column node its own column', () => {
+  test('renders its header and the columns it is given', () => {
     render(
-      <CardGridTemplate
-        header="h"
-        columns={[<p key="a">a</p>, <p key="b">b</p>, <p key="c">c</p>]}
-      />,
+      <NetheriteProvider env="test">
+        <CardGridTemplate header="h">
+          <p>a</p>
+          <p>b</p>
+        </CardGridTemplate>
+      </NetheriteProvider>,
     )
-    expect(document.querySelectorAll('.tpl-cards-column')).toHaveLength(3)
+    expect(screen.getByText('h')).toBeTruthy()
+    expect(screen.getByText('a')).toBeTruthy()
+    expect(screen.getByText('b')).toBeTruthy()
   })
 })

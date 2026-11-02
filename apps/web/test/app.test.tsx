@@ -404,7 +404,7 @@ describe('goals', () => {
     await userEvent.click(await screen.findByText('Ship'))
     expect(await screen.findByRole('heading', { name: 'Ship' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Projects' })).toBeInTheDocument()
-    expect(await screen.findByText('App')).toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: /App/ })).toBeInTheDocument()
     expect(await screen.findByRole('img', { name: /projects and tasks/ })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Goals' })).toBeInTheDocument()
   })
@@ -460,7 +460,7 @@ describe('the project board', () => {
   test('Projects in the rail opens a board, not a list, and a project also opens from its goal', async () => {
     renderApp('/goals/GOAL-00001')
     await screen.findByRole('navigation', { name: 'Main' })
-    await userEvent.click(await screen.findByText('App'))
+    await userEvent.click(await screen.findByRole('link', { name: /App/ }))
     expect(railButton('Projects')).toHaveAttribute('aria-current', 'page')
     await screen.findByRole('region', { name: 'backlog' })
     for (const name of ['backlog', 'doing', 'blocked', 'done']) {

@@ -1,0 +1,9 @@
+.goals-new-area {
+  align-self: start;
+  margin-top: 4px;
+}
+.goals-area-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

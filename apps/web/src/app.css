@@ -327,133 +327,16 @@ body,
 }
 
 /* ---- goals ---- */
-.goals-columns {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 440px));
-  column-gap: 56px;
-  row-gap: 32px;
-  align-items: start;
-}
-.goals-area {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.goals-area-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 64px;
-  margin-bottom: 8px;
-}
-.goals-area-title {
-  font-size: 20px;
-  line-height: 26px;
-  font-weight: 600;
-  margin: 0;
-}
-.goal-card {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.goal-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.goal-card-title {
-  font-size: 16px;
-  line-height: 22px;
-  font-weight: 600;
-}
 .goal-overline {
   font-size: 12px;
   font-weight: 500;
   color: #a5a7ff;
-}
-.goal-achieved {
-  color: #6fcf97;
-  font-weight: 600;
-  font-size: 12px;
-}
-.goals-new {
-  height: 44px;
-  width: 100%;
-  background: transparent;
-  color: #b9bcd3;
-  border: 1px dashed #3a3d58;
-  border-radius: 10px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-.goals-new:hover {
-  border-color: #7f82ea;
-  color: #e6e7f2;
-}
-.goal-detail {
-  display: grid;
-  grid-template-columns: 480px minmax(0, 1fr);
-  gap: 40px;
-  align-items: start;
-}
-.goal-detail > .gv {
-  height: calc(100vh - 32px);
-  margin: -40px -96px -40px 0;
-  position: sticky;
-  top: 0;
-}
-.goal-detail-main {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.goal-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 12px;
-}
-.goal-title {
-  margin: 0;
-}
-.goal-ring {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.goal-projects-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-}
-.goal-projects-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0;
 }
 .goal-count {
   background: #2e3149;
   border-radius: 10px;
   padding: 0 8px;
   font-size: 12px;
-}
-.goal-link-button {
-  margin-left: auto;
-  background: none;
-  border: 0;
-  color: #a5a7ff;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 13px;
 }
 
 /* ---- project board ---- */
@@ -1321,6 +1204,10 @@ body,
   gap: 8px;
 }
 .project-views button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   width: 36px;
   height: 36px;
   border-radius: 8px;
@@ -1338,19 +1225,24 @@ body,
   flex-direction: column;
   gap: 8px;
 }
-.project-graph-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.project-graph-title {
-  font-size: 13px;
-  font-weight: 600;
-  margin: 0;
-}
 .project-graph {
-  margin-top: auto;
-  height: 404px;
+  /* To the rail on the left and the bottom edge of the screen. */
+  margin: 12px 0 calc(-1 * var(--nt-space-8)) calc(-1 * var(--nt-layout-page-inset));
+  width: calc(100% + var(--nt-layout-page-inset));
+  /* All the height the side column has left under the views. */
+  flex: 1;
+  min-height: 404px;
+}
+.project-graph-open {
+  position: absolute;
+  right: 0;
+  bottom: var(--nt-space-4);
+  z-index: 2;
+  display: inline-flex;
+  color: #969ab8;
+}
+.project-graph-open:hover {
+  color: #e6e7f2;
 }
 .project-graph .gv {
   flex: 1;
@@ -1381,16 +1273,6 @@ body,
 
 .app-page--wide {
   max-width: none;
-}
-
-.goals-new-area {
-  align-self: start;
-  margin-top: 4px;
-}
-.goals-area-form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 /* ---- task drawer, as designed ---- */

@@ -1,0 +1,22 @@
+.goal-projects-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.goal-projects-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+.goal-link-button {
+  margin-left: auto;
+  background: none;
+  border: 0;
+  color: #a5a7ff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+}

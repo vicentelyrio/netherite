@@ -1,0 +1,17 @@
+.goals-new {
+  height: 44px;
+  width: 100%;
+  background: transparent;
+  color: #b9bcd3;
+  border: 1px dashed #3a3d58;
+  border-radius: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.goals-new:hover {
+  border-color: #7f82ea;
+  color: #e6e7f2;
+}

@@ -1,0 +1,20 @@
+.goal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.goal-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.goal-card-title {
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
+}
+.goal-achieved {
+  color: #6fcf97;
+  font-weight: 600;
+  font-size: 12px;
+}

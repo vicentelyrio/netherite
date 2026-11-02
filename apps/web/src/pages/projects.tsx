@@ -270,12 +270,14 @@ function ProjectGraph({ board }: { readonly board: Board }) {
   const query = useQuery(graphQuery(api))
   return (
     <section className="project-graph" aria-label="Graph">
-      <header className="project-graph-head">
-        <h2 className="project-graph-title">Graph</h2>
-        <Link to="/graph" search={{ focus: board.id }} aria-label="Open the graph">
-          <Icon name="open_in_full" />
-        </Link>
-      </header>
+      <Link
+        to="/graph"
+        search={{ focus: board.id }}
+        aria-label="Open the graph"
+        className="project-graph-open"
+      >
+        <Icon name="open_in_full" />
+      </Link>
       {query.data ? (
         <GraphView
           data={query.data}

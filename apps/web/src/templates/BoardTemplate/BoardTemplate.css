@@ -20,6 +20,11 @@
   min-height: 0;
   overflow: auto;
 }
+/* To the right, top and bottom edges of the screen, the graph's own size: no scroll bar. */
+.tpl-board-main--bleed {
+  margin: -40px calc(-1 * var(--nt-grid-margin-end)) -40px 0;
+  overflow: hidden;
+}
 @media (max-width: 1279px) {
   .tpl-board {
     height: auto;
@@ -28,5 +33,8 @@
   .tpl-board-side,
   .tpl-board-main {
     grid-column: 1 / -1;
+  }
+  .tpl-board-main--bleed {
+    margin: 0;
   }
 }

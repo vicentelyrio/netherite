@@ -1,0 +1,13 @@
+.goals-area-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  margin-bottom: 8px;
+}
+.goals-area-title {
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 600;
+  margin: 0;
+}
