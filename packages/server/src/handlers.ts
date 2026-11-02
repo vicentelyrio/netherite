@@ -23,11 +23,15 @@ import {
   itemTypes,
   link,
   lint,
+  lintText,
   listItems,
   markReviewed,
   type OpResult,
+  pathMap,
   progressSeries,
   readActivity,
+  readSource,
+  replaceSource,
   type ScannedItem,
   searchItems,
   setState,
@@ -151,6 +155,32 @@ const items = (state: ServerState) =>
               ? {}
               : { createdBy: (payload.createdBy ?? state.createdBy) as string }),
           }),
+        ),
+      )
+      .handle('source', ({ params }) =>
+        Effect.gen(function* () {
+          yield* locate(state, params.id)
+          const source = yield* readSource(state.repo, params.id).pipe(Effect.mapError(gitFailure))
+          // What git has committed, for the editor's change gutter. Without git there is none.
+          const git = state.git
+          const head =
+            git === undefined
+              ? undefined
+              : yield* Effect.gen(function* () {
+                  const map = yield* pathMap(git, state.repo.workspace.root)
+                  return yield* git.fileAt(map.toGit(source.path))
+                }).pipe(Effect.orElseSucceed(() => undefined))
+          return { text: source.text, hash: source.hash, head: head ?? null }
+        }),
+      )
+      .handle('replaceSource', ({ params, payload }) =>
+        w(
+          replaceSource(
+            state.repo,
+            params.id,
+            payload.text,
+            payload.baseHash ? { baseHash: payload.baseHash } : {},
+          ),
         ),
       )
       .handle('update', ({ params, payload }) =>
@@ -308,6 +338,18 @@ const lintGroup = (state: ServerState) =>
       Effect.gen(function* () {
         const only = query.id === undefined ? undefined : (yield* locate(state, query.id)).path
         return yield* lintReport(state, only)
+      }),
+    ),
+  )
+
+const lintTextGroup = (state: ServerState) =>
+  HttpApiBuilder.group(NetheriteApi, 'lintText', (handlers) =>
+    handlers.handle('lintText', ({ payload }) =>
+      Effect.gen(function* () {
+        const item = yield* locate(state, payload.id)
+        const freshness = yield* state.freshness.get
+        const diagnostics = lintText(state.repo, item.path, payload.text, { freshness })
+        return { summary: summarize(diagnostics), diagnostics }
       }),
     ),
   )
@@ -534,6 +576,7 @@ export const handlersLayer = (state: ServerState) =>
     search(state),
     graph(state),
     lintGroup(state),
+    lintTextGroup(state),
     inbox(state),
     history(state),
     stats(state),

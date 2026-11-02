@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { cleanWorkspaceFiles } from '@netherite/testing'
-import { Effect } from 'effect'
+import { Effect, PubSub } from 'effect'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { commitAll, git, isolateGit, raw, withServer } from './helpers'
 
@@ -683,6 +683,196 @@ describe('history and stats', () => {
           expect(git(s.dir, 'status', '--porcelain')).toBe(before)
         }),
       { git: true },
+    )
+  })
+})
+
+describe('editing a whole file', () => {
+  test('source is the whole file with its hash, and no committed version without git', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const source = yield* s.client.items.source({ params: { id: 'TASK-00001' } })
+        expect(source.text).toBe(read(s.dir, task1))
+        expect(source.text.startsWith('---\nid: TASK-00001')).toBe(true)
+        const item = yield* s.client.items.get({ params: { id: 'TASK-00001' } })
+        expect(source.hash).toBe(item.hash)
+        expect(source.head).toBeNull()
+        const missing = yield* failure(s.client.items.source({ params: { id: 'TASK-09999' } }))
+        expect(missing._tag).toBe('NotFound')
+      }),
+    )
+  })
+
+  test('with git, head is the committed text, which stays put while the file is edited', async () => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const committed = read(s.dir, task1)
+          const first = yield* s.client.items.source({ params: { id: 'TASK-00001' } })
+          expect(first.head).toBe(committed)
+          yield* s.client.items.setState({
+            params: { id: 'TASK-00001' },
+            payload: { state: 'doing' },
+          })
+          const after = yield* s.client.items.source({ params: { id: 'TASK-00001' } })
+          expect(after.text).toContain('state: doing')
+          expect(after.head).toBe(committed)
+        }),
+      { git: true },
+    )
+  })
+
+  test('a file never committed has no head', async () => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const made = yield* s.client.items.create({
+            payload: { type: 'doc', title: 'Brand new' },
+          })
+          expect((yield* s.client.items.source({ params: { id: made.id } })).head).toBeNull()
+        }),
+      { git: true },
+    )
+  })
+
+  test('replaceSource saves the whole file and returns the new hash', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const source = yield* s.client.items.source({ params: { id: 'TASK-00001' } })
+        const text = source.text.replace('Plain notes.', 'Written in the editor.')
+        const saved = yield* s.client.items.replaceSource({
+          params: { id: 'TASK-00001' },
+          payload: { text, baseHash: source.hash },
+        })
+        expect(read(s.dir, task1)).toBe(text)
+        const again = yield* s.client.items.source({ params: { id: 'TASK-00001' } })
+        expect(again.hash).toBe(saved.hash)
+      }),
+    )
+  })
+
+  test('a stale baseHash is a 409 and the file is not touched', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const source = yield* s.client.items.source({ params: { id: 'TASK-00001' } })
+        yield* s.client.items.update({
+          params: { id: 'TASK-00001' },
+          payload: { set: { labels: ['x'] } },
+        })
+        const before = read(s.dir, task1)
+        const error = yield* failure(
+          s.client.items.replaceSource({
+            params: { id: 'TASK-00001' },
+            payload: { text: `${source.text}\nmine\n`, baseHash: source.hash },
+          }),
+        )
+        expect(error).toMatchObject({ _tag: 'Conflict', path: task1 })
+        expect(read(s.dir, task1)).toBe(before)
+      }),
+    )
+  })
+
+  test('text that breaks the schema, or changes the ID, is a 422 with the field', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const { text } = yield* s.client.items.source({ params: { id: 'TASK-00001' } })
+        const badState = yield* failure(
+          s.client.items.replaceSource({
+            params: { id: 'TASK-00001' },
+            payload: { text: text.replace('state: backlog', 'state: nonsense') },
+          }),
+        )
+        expect(badState).toMatchObject({ _tag: 'Invalid', issues: [{ path: ['state'] }] })
+        const renamed = yield* failure(
+          s.client.items.replaceSource({
+            params: { id: 'TASK-00001' },
+            payload: { text: text.replace('id: TASK-00001', 'id: TASK-00099') },
+          }),
+        )
+        expect(renamed).toMatchObject({ _tag: 'Invalid', issues: [{ path: ['id'] }] })
+        expect(read(s.dir, task1)).toBe(text)
+      }),
+    )
+  })
+
+  test('saving needs the session token, like every write', async () => {
+    await withServer((s) =>
+      Effect.promise(async () => {
+        const reply = await raw(s.url, '/api/items/TASK-00001/source', {
+          method: 'PUT',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ text: 'x' }),
+        })
+        expect(reply.status).toBe(401)
+      }),
+    )
+  })
+
+  test('a save is announced to other open pages', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const events: string[] = []
+        const sub = yield* PubSub.subscribe(s.state.events)
+        const source = yield* s.client.items.source({ params: { id: 'TASK-00001' } })
+        yield* s.client.items.replaceSource({
+          params: { id: 'TASK-00001' },
+          payload: { text: source.text.replace('Plain notes.', 'Announced.') },
+        })
+        const event = yield* PubSub.take(sub)
+        events.push(event.type)
+        expect(events).toEqual(['items'])
+      }),
+    )
+  })
+})
+
+describe('linting text that is not saved', () => {
+  test('reports a problem in the buffer, at its line, without writing anything', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const { text } = yield* s.client.items.source({ params: { id: 'TASK-00001' } })
+        const report = yield* s.client.lintText.lintText({
+          payload: { id: 'TASK-00001', text: text.replace('state: backlog', 'state: nonsense') },
+        })
+        expect(report.summary.error).toBeGreaterThan(0)
+        const problem = report.diagnostics.find((d) => d.rule === 'schema')
+        expect(problem).toMatchObject({ path: task1, severity: 'error' })
+        expect(problem?.line).toBeGreaterThan(1)
+        expect(read(s.dir, task1)).toBe(text)
+      }),
+    )
+  })
+
+  test('clean text has no errors; a broken link made in the buffer is found', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const { text } = yield* s.client.items.source({ params: { id: 'TASK-00001' } })
+        const clean = yield* s.client.lintText.lintText({ payload: { id: 'TASK-00001', text } })
+        expect(clean.summary.error).toBe(0)
+        const broken = yield* s.client.lintText.lintText({
+          payload: { id: 'TASK-00001', text: `${text}\nSee [[TASK-09999]].\n` },
+        })
+        expect(broken.diagnostics.map((d) => d.rule)).toContain('broken-link')
+      }),
+    )
+  })
+
+  test('an unknown item is a 404, and linting needs the token (it is a POST)', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const missing = yield* failure(
+          s.client.lintText.lintText({ payload: { id: 'TASK-09999', text: 'x' } }),
+        )
+        expect(missing._tag).toBe('NotFound')
+        const noToken = yield* Effect.promise(() =>
+          raw(s.url, '/api/lint/text', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: '{}',
+          }),
+        )
+        expect(noToken.status).toBe(401)
+      }),
     )
   })
 })

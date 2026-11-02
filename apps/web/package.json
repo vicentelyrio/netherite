@@ -21,7 +21,15 @@
     "@tanstack/react-query": "catalog:",
     "remark-rehype": "catalog:",
     "hast-util-to-jsx-runtime": "catalog:",
-    "@types/hast": "catalog:"
+    "@types/hast": "catalog:",
+    "@codemirror/state": "catalog:",
+    "@codemirror/view": "catalog:",
+    "@codemirror/commands": "catalog:",
+    "@codemirror/language": "catalog:",
+    "@codemirror/lang-markdown": "catalog:",
+    "@codemirror/lang-yaml": "catalog:",
+    "@codemirror/autocomplete": "catalog:",
+    "@lezer/highlight": "catalog:"
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",

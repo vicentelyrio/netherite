@@ -667,3 +667,37 @@ export const updateItem = (repo: Repo, id: string, patch: ItemPatch, options: Op
       ? undefined
       : ({ ...result, changed: [...changed], unchanged: changed.size === 0 } satisfies OpResult)
   })
+
+/** The whole text of an item's file, as it is on disk now, and its hash. */
+export const readSource = (repo: Repo, id: string) =>
+  Effect.gen(function* () {
+    const item = yield* locate(repo, id)
+    const text = yield* readText(repo, item.path)
+    return { path: item.path, text, hash: contentHash(text) }
+  })
+
+/**
+ * Replaces an item's whole file, as an editor saves it. The new text goes through the same checks
+ * as any other write: it may not have a problem the old text did not have. It must also stay the
+ * same item: `id` and `type` cannot change this way.
+ */
+export const replaceSource = (repo: Repo, id: string, text: string, options: OpOptions = {}) =>
+  mutate(repo, [
+    {
+      id,
+      baseHash: options.baseHash,
+      edit: (_source, item) =>
+        Effect.gen(function* () {
+          const front = outlineMarkdown(text).frontmatter?.data
+          const fields =
+            typeof front === 'object' && front !== null ? (front as Record<string, unknown>) : {}
+          const issues: FieldIssue[] = []
+          if (fields.id !== item.id)
+            issues.push({ path: ['id'], message: `id cannot be changed (it is ${item.id})` })
+          if (fields.type !== item.type) {
+            issues.push({ path: ['type'], message: `type cannot be changed (it is ${item.type})` })
+          }
+          return issues.length > 0 ? yield* new ValidationError({ issues }) : text
+        }),
+    },
+  ])

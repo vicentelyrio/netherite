@@ -12,10 +12,13 @@ import {
 } from '@netherite/ui'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
+import { useMemo, useState } from 'react'
+import { ItemEditor } from '../editor/ItemEditor'
 import { useApi } from '../lib/app-context'
 import { Markdown } from '../lib/markdown'
-import { itemQuery, keys } from '../lib/queries'
-import { useWrite } from '../lib/writes'
+import { useNotices } from '../lib/notices'
+import { itemQuery, itemsQuery, keys, sourceQuery } from '../lib/queries'
+import { noticeFor, useWrite } from '../lib/writes'
 
 const reviewable = new Set(['doc', 'runbook', 'context'])
 
@@ -28,6 +31,7 @@ export function ItemPage({ id }: { readonly id: string }) {
   const client = useQueryClient()
   const query = useQuery(itemQuery(api, id))
   const reload = () => void client.invalidateQueries({ queryKey: keys.item(id) })
+  const [editing, setEditing] = useState(false)
 
   const review = useWrite(
     api,
@@ -58,7 +62,11 @@ export function ItemPage({ id }: { readonly id: string }) {
   const fresh = item.freshness
 
   return (
-    <article className="app-page app-item" aria-labelledby="item-title" data-hash={item.hash}>
+    <article
+      className={`app-page app-item${editing ? ' app-item--editing' : ''}`}
+      aria-labelledby="item-title"
+      data-hash={item.hash}
+    >
       <header className="app-item-head">
         <div className="app-item-meta">
           <TypeBadge type={type} />
@@ -79,6 +87,9 @@ export function ItemPage({ id }: { readonly id: string }) {
           )}
           {item.orphan && <OrphanTag />}
         </div>
+        <Button icon={editing ? 'visibility' : 'edit'} onClick={() => setEditing(!editing)}>
+          {editing ? 'Done editing' : 'Edit source'}
+        </Button>
         {reviewable.has(type) && (
           <Button
             icon="done_all"
@@ -99,7 +110,7 @@ export function ItemPage({ id }: { readonly id: string }) {
         </div>
       )}
 
-      <Markdown source={item.body} />
+      {editing ? <SourceEditor id={id} /> : <Markdown source={item.body} />}
 
       <footer className="app-links">
         <LinkList title="Links" links={item.links} />
@@ -140,5 +151,45 @@ function LinkList({
         ))}
       </ul>
     </section>
+  )
+}
+
+/** The source editor for an item, wired to the server: saving, linting and the items to link to. */
+function SourceEditor({ id }: { readonly id: string }) {
+  const api = useApi()
+  const client = useQueryClient()
+  const notices = useNotices()
+  const source = useQuery(sourceQuery(api, id))
+  const items = useQuery(itemsQuery(api, { limit: 500 }))
+  const targets = useMemo(
+    () => (items.data?.items ?? []).map((i) => ({ id: i.id, title: i.title, type: i.type })),
+    [items.data],
+  )
+
+  if (source.isPending) return <p className="app-muted">Loading the source…</p>
+  if (source.isError) return <Banner variant="danger" title="Could not load the source" />
+
+  return (
+    <ItemEditor
+      source={source.data}
+      targets={targets}
+      lint={async (text) =>
+        (await api.call((c) => c.lintText.lintText({ payload: { id, text } }))).diagnostics
+      }
+      onSave={async (text, baseHash) => {
+        try {
+          const saved = await api.call((c) =>
+            c.items.replaceSource({ params: { id }, payload: { text, baseHash } }),
+          )
+          void client.invalidateQueries({ queryKey: ['items'] })
+          return { text, hash: saved.hash }
+        } catch (error) {
+          notices.notify(
+            noticeFor(error, () => void client.invalidateQueries({ queryKey: keys.source(id) })),
+          )
+          throw error
+        }
+      }}
+    />
   )
 }

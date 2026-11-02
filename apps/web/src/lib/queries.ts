@@ -9,6 +9,7 @@ export const keys = {
   health: ['health'] as const,
   items: (params: object = {}) => ['items', 'list', params] as const,
   item: (id: string) => ['items', 'item', id] as const,
+  source: (id: string) => ['items', 'source', id] as const,
   search: (q: string) => ['search', q] as const,
   graph: ['graph'] as const,
   lint: ['lint'] as const,
@@ -58,3 +59,11 @@ export const inboxQuery = (api: Api) =>
 
 export const useHealth = (api: Api) => useQuery(healthQuery(api))
 export const useInbox = (api: Api) => useQuery(inboxQuery(api))
+
+/** The whole file, for the editor. Refreshes with every other item query. */
+export const sourceQuery = (api: Api, id: string) =>
+  queryOptions({
+    queryKey: keys.source(id),
+    queryFn: () => api.call((c) => c.items.source({ params: { id } })),
+    retry: false,
+  })

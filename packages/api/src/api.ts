@@ -15,14 +15,17 @@ import {
   ItemDetail,
   ItemHistory,
   ItemList,
+  ItemSource,
   LinkPayload,
   LintQuery,
   LintReport,
+  LintTextPayload,
   ListQuery,
   ReviewPayload,
   SearchQuery,
   SearchResult,
   ServerEvent,
+  SourcePayload,
   StatePayload,
   Stats,
   StatsQuery,
@@ -45,6 +48,17 @@ export class ItemsGroup extends HttpApiGroup.make('items').add(
     params: id,
     success: ItemDetail,
     error: [NotFound, Refused],
+  }),
+  HttpApiEndpoint.get('source', '/items/:id/source', {
+    params: id,
+    success: ItemSource,
+    error: [NotFound, Refused, Failure],
+  }),
+  HttpApiEndpoint.put('replaceSource', '/items/:id/source', {
+    params: id,
+    payload: SourcePayload,
+    success: WriteResult,
+    error: writes,
   }),
   HttpApiEndpoint.post('create', '/items', {
     payload: CreatePayload,
@@ -115,6 +129,14 @@ export class LintGroup extends HttpApiGroup.make('lint').add(
   }),
 ) {}
 
+export class LintTextGroup extends HttpApiGroup.make('lintText').add(
+  HttpApiEndpoint.post('lintText', '/lint/text', {
+    payload: LintTextPayload,
+    success: LintReport,
+    error: [NotFound, Refused],
+  }),
+) {}
+
 export class InboxGroup extends HttpApiGroup.make('inbox').add(
   HttpApiEndpoint.get('inbox', '/inbox', {
     query: InboxQuery,
@@ -170,6 +192,7 @@ export class NetheriteApi extends HttpApi.make('netherite')
     SearchGroup,
     GraphGroup,
     LintGroup,
+    LintTextGroup,
     InboxGroup,
     HistoryGroup,
     StatsGroup,

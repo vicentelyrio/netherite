@@ -88,6 +88,20 @@ export const WriteResult = Schema.Struct({
 })
 export type WriteResult = typeof WriteResult.Type
 
+/** An item's whole file, for an editor. `head` is the text as last committed, for the change gutter. */
+export const ItemSource = Schema.Struct({
+  text: S,
+  /** Hash of `text`; send it back as `baseHash` when saving. */
+  hash: S,
+  /** The committed version, or `null` when there is no git or the file was never committed. */
+  head: Schema.NullOr(S),
+})
+
+export const SourcePayload = Schema.Struct({ text: S, baseHash: opt(S) })
+
+/** Text to lint without saving it: what an editor holds while someone types. */
+export const LintTextPayload = Schema.Struct({ id: S, text: S })
+
 export const DeleteResult = Schema.Struct({ deleted: S, path: S })
 
 // ---- request bodies -------------------------------------------------------------------

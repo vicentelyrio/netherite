@@ -14,6 +14,8 @@ export {
   type OpError,
   type OpOptions,
   type OpResult,
+  readSource,
+  replaceSource,
   type SectionPatch,
   setState,
   supersede,

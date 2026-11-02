@@ -7,7 +7,9 @@ import {
   link,
   lint,
   markReviewed,
+  readSource,
   renumber,
+  replaceSource,
   setState,
   supersede,
   toggleChecklistItem,
@@ -761,6 +763,75 @@ describe('renumber', () => {
   test('an unknown path is NotFound', async () => {
     const w = await world()
     expect(await w.fail(renumber(w.repo, 'netherite/tasks/nope.md'))).toMatchObject({
+      _tag: 'NotFound',
+    })
+  })
+})
+
+describe('readSource and replaceSource', () => {
+  test('readSource gives the whole file and its hash', async () => {
+    const w = await world()
+    const source = await w.run(readSource(w.repo, 'TASK-00001'))
+    expect(source.path).toBe('netherite/tasks/TASK-00001-core.md')
+    expect(source.text).toBe(w.read('netherite/tasks/TASK-00001-core.md'))
+    expect(source.hash).toBe(contentHash(source.text))
+  })
+
+  test('replaces the file with the new text, and the result has the new hash', async () => {
+    const w = await world()
+    const { text, hash } = await w.run(readSource(w.repo, 'TASK-00001'))
+    const next = text.replace('Plain notes.', 'Edited in an editor.')
+    const result = await w.run(replaceSource(w.repo, 'TASK-00001', next, { baseHash: hash }))
+    expect(w.read('netherite/tasks/TASK-00001-core.md')).toBe(next)
+    expect(result.hash).toBe(contentHash(next))
+    expect(result.unchanged).toBe(false)
+  })
+
+  test('saving the same text changes nothing', async () => {
+    const w = await world()
+    const { text, hash } = await w.run(readSource(w.repo, 'TASK-00001'))
+    expect(
+      (await w.run(replaceSource(w.repo, 'TASK-00001', text, { baseHash: hash }))).unchanged,
+    ).toBe(true)
+  })
+
+  test('a file that changed since it was read is a conflict, and is left alone', async () => {
+    const w = await world()
+    const { text, hash } = await w.run(readSource(w.repo, 'TASK-00001'))
+    w.write('netherite/tasks/TASK-00001-core.md', `${text}\nsomeone else\n`)
+    const error = await w.fail(
+      replaceSource(w.repo, 'TASK-00001', `${text}\nmine\n`, { baseHash: hash }),
+    )
+    expect(error).toMatchObject({ _tag: 'ConflictError' })
+    expect(w.read('netherite/tasks/TASK-00001-core.md')).toBe(`${text}\nsomeone else\n`)
+  })
+
+  test('the id and the type cannot be changed this way', async () => {
+    const w = await world()
+    const { text } = await w.run(readSource(w.repo, 'TASK-00001'))
+    const renamed = await w.fail(
+      replaceSource(w.repo, 'TASK-00001', text.replace('id: TASK-00001', 'id: TASK-00099')),
+    )
+    expect(renamed).toMatchObject({ _tag: 'ValidationError', issues: [{ path: ['id'] }] })
+    const retyped = await w.fail(
+      replaceSource(w.repo, 'TASK-00001', text.replace('type: task', 'type: doc')),
+    )
+    expect(retyped._tag).toBe('ValidationError')
+    expect(w.read('netherite/tasks/TASK-00001-core.md')).toBe(text)
+  })
+
+  test('new schema problems are refused, with the field; problems that were already there are not', async () => {
+    const w = await world()
+    const { text } = await w.run(readSource(w.repo, 'TASK-00001'))
+    const error = await w.fail(
+      replaceSource(w.repo, 'TASK-00001', text.replace('state: backlog', 'state: nonsense')),
+    )
+    expect(error).toMatchObject({ _tag: 'ValidationError', issues: [{ path: ['state'] }] })
+  })
+
+  test('an unknown item is not found', async () => {
+    const w = await world()
+    expect(await w.fail(replaceSource(w.repo, 'TASK-09999', 'x'))).toMatchObject({
       _tag: 'NotFound',
     })
   })

@@ -5,6 +5,7 @@ export {
   InboxGroup,
   ItemsGroup,
   LintGroup,
+  LintTextGroup,
   MetaGroup,
   NetheriteApi,
   SearchGroup,

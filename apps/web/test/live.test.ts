@@ -14,6 +14,8 @@ describe('what each event makes stale', () => {
     expect(keys).toContainEqual(['items', 'list'])
     expect(keys).toContainEqual(['items', 'item', 'TASK-00001'])
     expect(keys).toContainEqual(['items', 'item', 'DOC-00002'])
+    // The editor holds the whole file, which is stale too.
+    expect(keys).toContainEqual(['items', 'source', 'TASK-00001'])
     for (const family of ['health', 'search', 'graph', 'inbox', 'history', 'stats']) {
       expect(
         keys.some((k) => k[0] === family),

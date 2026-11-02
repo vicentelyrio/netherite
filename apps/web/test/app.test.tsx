@@ -1,8 +1,10 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { EditorView } from '@codemirror/view'
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, test } from 'vitest'
+import { changesField } from '../src/editor/extensions'
 import { other, renderApp, server } from './helpers'
 
 const nav = () => screen.getByRole('navigation', { name: 'Main' })
@@ -238,5 +240,140 @@ describe('writing, and conflicts', () => {
     } finally {
       globalThis.EventSource = real
     }
+  })
+})
+
+describe('editing the source of an item', () => {
+  const taskFile = () =>
+    readFileSync(join(server().dir, 'netherite/tasks/TASK-00002-cli.md'), 'utf8')
+  const editorView = async () => {
+    const dom = await waitFor(() => {
+      const el = document.querySelector('.cm-editor')
+      if (el === null) throw new Error('no editor yet')
+      return el as HTMLElement
+    })
+    return EditorView.findFromDOM(dom) as EditorView
+  }
+  const open = async (id: string) => {
+    renderApp(`/items/${id}`)
+    await userEvent.click(await screen.findByRole('button', { name: /Edit source/ }))
+    return editorView()
+  }
+  const type = (view: EditorView, insert: string, at = view.state.doc.length) =>
+    act(() => void view.dispatch({ changes: { from: at, insert } }))
+
+  test('opens the whole file, frontmatter and all, beside the rendered text', async () => {
+    const view = await open('TASK-00002')
+    expect(view.state.doc.toString()).toBe(taskFile())
+    expect(view.state.doc.toString().startsWith('---\nid: TASK-00002')).toBe(true)
+  })
+
+  test('saving writes the file, and the page shows the new text', async () => {
+    const view = await open('TASK-00002')
+    const marker = `Edited in the editor ${Date.now()}.`
+    type(view, `\n${marker}\n`)
+    await userEvent.click(screen.getByRole('button', { name: /^Save/ }))
+    await waitFor(() => expect(taskFile()).toContain(marker))
+    await waitFor(() => expect(screen.queryByText('Unsaved')).toBeNull())
+    expect(screen.queryByRole('alert')).toBeNull()
+  })
+
+  test('the server judges the text as it is typed: a bad state is marked on its line, with why', async () => {
+    const view = await open('TASK-00002')
+    const before = taskFile()
+    const at = view.state.doc.toString().indexOf('state: doing')
+    act(
+      () =>
+        void view.dispatch({
+          changes: { from: at, to: at + 'state: doing'.length, insert: 'state: nonsense' },
+        }),
+    )
+    await waitFor(() => expect(document.querySelector('.cm-problem-error')).not.toBeNull(), {
+      timeout: 8000,
+    })
+    expect(document.querySelector('.cm-hint')?.textContent).toMatch(/state/i)
+    expect(screen.getByTitle(/errors/)).not.toHaveTextContent('0')
+    // Nothing was saved by linting.
+    expect(taskFile()).toBe(before)
+  })
+
+  test('a save the server refuses is explained, and the text stays', async () => {
+    const view = await open('TASK-00002')
+    const before = taskFile()
+    const at = view.state.doc.toString().indexOf('state: doing')
+    act(
+      () =>
+        void view.dispatch({
+          changes: { from: at, to: at + 'state: doing'.length, insert: 'state: nonsense' },
+        }),
+    )
+    await userEvent.click(screen.getByRole('button', { name: /^Save/ }))
+    expect(await screen.findByRole('alert', {}, { timeout: 8000 })).toHaveTextContent('not valid')
+    expect(taskFile()).toBe(before)
+    expect(view.state.doc.toString()).toContain('state: nonsense')
+  })
+
+  test('the gutter shows changes since the last commit, from git', async () => {
+    const view = await open('TASK-00001')
+    // The sample workspace is committed, so the file matches its committed text until edited.
+    await waitFor(() =>
+      expect(
+        view.state.field(changesField).modified.size + view.state.field(changesField).added.size,
+      ).toBeGreaterThanOrEqual(0),
+    )
+    type(view, '\nA line that is new.\n')
+    await waitFor(() => expect(view.state.field(changesField).added.size).toBeGreaterThan(0))
+  })
+
+  test('[[ suggests the workspace’s items, and choosing one completes the link', async () => {
+    const view = await open('TASK-00002')
+    await waitFor(() => expect(document.querySelector('.cm-editor')).not.toBeNull())
+    // Give the items query a moment, then type an unfinished link at the end.
+    await new Promise((r) => setTimeout(r, 500))
+    type(view, '\nSee [[ADR-00002')
+    act(() => void view.dispatch({ selection: { anchor: view.state.doc.length } }))
+    const { startCompletion } = await import('@codemirror/autocomplete')
+    act(() => void startCompletion(view))
+    const option = await screen.findByText(
+      'ADR-00002',
+      { selector: '.cm-completionLabel' },
+      { timeout: 4000 },
+    )
+    expect(option).toBeInTheDocument()
+    await userEvent.click(option)
+    await waitFor(() => expect(view.state.doc.toString()).toContain('See [[ADR-00002]]'))
+  })
+
+  test('if someone else changes the file while you have unsaved edits, you are asked, and nothing is lost', async () => {
+    const view = await open('TASK-00002')
+    type(view, '\nMy unsaved line.\n')
+    const api = other()
+    const fresh = await api.call((c) => c.items.source({ params: { id: 'TASK-00002' } }))
+    await api.call((c) =>
+      c.items.replaceSource({
+        params: { id: 'TASK-00002' },
+        payload: { text: `${fresh.text}\nTheirs ${Date.now()}.\n`, baseHash: fresh.hash },
+      }),
+    )
+    expect(await screen.findByText('Changed on disk', {}, { timeout: 8000 })).toBeInTheDocument()
+    expect(view.state.doc.toString()).toContain('My unsaved line.')
+    await userEvent.click(screen.getByRole('button', { name: /Reload/ }))
+    await waitFor(() => expect(view.state.doc.toString()).toContain('Theirs'))
+    expect(view.state.doc.toString()).not.toContain('My unsaved line.')
+  })
+
+  test('if someone else changes the file and you have no edits, the editor just shows it', async () => {
+    const view = await open('TASK-00001')
+    const api = other()
+    const fresh = await api.call((c) => c.items.source({ params: { id: 'TASK-00001' } }))
+    const note = `Quietly changed ${Date.now()}.`
+    await api.call((c) =>
+      c.items.replaceSource({
+        params: { id: 'TASK-00001' },
+        payload: { text: `${fresh.text}\n${note}\n`, baseHash: fresh.hash },
+      }),
+    )
+    await waitFor(() => expect(view.state.doc.toString()).toContain(note), { timeout: 8000 })
+    expect(screen.queryByText('Changed on disk')).toBeNull()
   })
 })

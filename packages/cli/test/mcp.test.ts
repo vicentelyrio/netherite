@@ -89,7 +89,8 @@ describe.skipIf(!built)('netherite mcp (the built program)', () => {
         await client.close()
       }
     })
-  })
+    // Starting the built program takes seconds when the whole suite is running at once.
+  }, 30_000)
 
   test('sees a file changed outside the server', async () => {
     await temp(async (dir) => {

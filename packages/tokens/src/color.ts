@@ -58,6 +58,8 @@ export const color = {
     overlay: '#15162A',
     /** Bars and rings that show progress. */
     track: '#34374F',
+    /** The editor's line under the cursor, and its line number's ground. */
+    activeLine: '#2A2C45',
     /** The knob of a switch. */
     thumb: '#F4F4FA',
     /** The presentation canvas around screens; not used in the app. */

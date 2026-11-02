@@ -119,6 +119,7 @@ export {
   type Severity,
   summarize,
 } from './lint'
+export { lintText } from './lint-text'
 export { applyMarkedBlock, type Markers, renderMarkedBlock } from './marked-block'
 export * from './ops'
 export { type ParseOptions, parseFiles, type SourceFile } from './parse-pool'

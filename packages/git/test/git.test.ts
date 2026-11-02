@@ -678,3 +678,63 @@ describe('patchLog', () => {
     }
   })
 })
+
+describe('fileAt', () => {
+  test('is a file as committed, not as it is on disk now', async () => {
+    await withRepo(async (repo) => {
+      const git = await open(repo.root)
+      const committed = readFileSync(join(repo.root, 'src', 'app.ts'), 'utf8')
+      writeFileSync(join(repo.root, 'src', 'app.ts'), 'edited and not committed\n')
+      expect(await run(git.fileAt('src/app.ts'))).toBe(committed)
+      expect(await run(git.fileAt('src/app.ts', 'HEAD'))).toBe(committed)
+    })
+  })
+
+  test('reads an older commit', async () => {
+    await withRepo(async (repo) => {
+      const git = await open(repo.root)
+      const first = repo.git('rev-list', '--max-parents=0', 'HEAD')
+      const older = repo.git('show', `${first}:src/app.ts`)
+      expect((await run(git.fileAt('src/app.ts', first)))?.trim()).toBe(older.trim())
+    })
+  })
+
+  test('is undefined for a file that was never committed', async () => {
+    await withRepo(async (repo) => {
+      const git = await open(repo.root)
+      writeFileSync(join(repo.root, 'new.md'), 'new\n')
+      expect(await run(git.fileAt('new.md'))).toBeUndefined()
+      expect(await run(git.fileAt('no/such/file.md'))).toBeUndefined()
+    })
+  })
+
+  test('refuses an argument that could be an option, or a revision with odd characters', async () => {
+    await withRepo(async (repo) => {
+      const git = await open(repo.root)
+      expect((await fail(git.fileAt('--output=x')))._tag).toBe('InvalidGitArgument')
+      expect((await fail(git.fileAt('')))._tag).toBe('InvalidGitArgument')
+      expect((await fail(git.fileAt('src/app.ts', '--all')))._tag).toBe('InvalidGitArgument')
+      expect((await fail(git.fileAt('src/app.ts', 'HEAD; rm -rf /')))._tag).toBe(
+        'InvalidGitArgument',
+      )
+    })
+  })
+
+  test('runs only git show, which writes nothing', async () => {
+    await withRepo(async (repo) => {
+      const spy = recorder()
+      const git = await Effect.runPromise(
+        openGit(repo.root).pipe(Effect.provide(spy.layer), Effect.provide(services)),
+      )
+      const before = sh(repo.root, 'status', '--porcelain')
+      spy.commands.length = 0
+      await Effect.runPromise(
+        git
+          .fileAt('src/app.ts')
+          .pipe(Effect.provide(services), Effect.provide(spy.layer)) as Effect.Effect<unknown>,
+      )
+      expect(spy.commands.map((c) => c[0])).toEqual(['show'])
+      expect(sh(repo.root, 'status', '--porcelain')).toBe(before)
+    })
+  })
+})

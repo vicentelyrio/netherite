@@ -86,6 +86,11 @@ export interface GitRepository {
   ) => Effect.Effect<ReadonlyArray<CommitInfo>, GitError>
   /** The commit that added a path, or `undefined` if it was never committed. */
   readonly firstCommit: (path: string) => Effect.Effect<CommitInfo | undefined, GitError>
+  /**
+   * A file's text as committed in `rev` (default `HEAD`), or `undefined` if it is not there: never
+   * committed, or no commits yet. `path` is relative to the top of the repository.
+   */
+  readonly fileAt: (path: string, rev?: string) => Effect.Effect<string | undefined, GitError>
   /** `user.name`, `user.email` and `github.user` from git config. Missing values are `undefined`. */
   readonly identity: Effect.Effect<GitIdentity, GitError>
   /** Commits where a shallow clone's history stops. Empty for a full clone. */
@@ -231,6 +236,17 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
         )
       })
 
+    const fileAt: GitRepository['fileAt'] = (filePath, rev = 'HEAD') =>
+      Effect.gen(function* () {
+        if (filePath === '' || filePath.includes('\0') || filePath.startsWith('-')) {
+          return yield* Effect.fail(new InvalidGitArgument({ name: 'path', value: filePath }))
+        }
+        yield* checkRef('revision', rev)
+        // Exit code 128: the revision or the path is not there.
+        const out = yield* run(['show', `${rev}:${filePath}`], [0, 128])
+        return out.code === 0 ? out.stdout : undefined
+      })
+
     const log: GitRepository['log'] = (logOptions = {}) =>
       Effect.gen(function* () {
         const files = logOptions.files ?? 'none'
@@ -368,6 +384,7 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
       log,
       patchLog,
       readCommits,
+      fileAt,
       firstCommit,
       identity,
       shallowBoundary,

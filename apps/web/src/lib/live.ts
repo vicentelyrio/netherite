@@ -10,7 +10,7 @@ export const invalidationsFor = (event: ServerEvent): ReadonlyArray<ReadonlyArra
     case 'items':
       return [
         ['items', 'list'],
-        ...event.ids.map((id) => keys.item(id)),
+        ...event.ids.flatMap((id) => [keys.item(id), keys.source(id)]),
         keys.health,
         ['search'],
         keys.graph,
