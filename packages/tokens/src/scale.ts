@@ -1,25 +1,8 @@
-/**
- * Fonts. The variable fonts are self-hosted by `@netherite/ui/fonts.css` under the names that
- * Fontsource gives them (`... Variable`); the plain names and system fonts cover the moment
- * before they load, and installs of the static fonts.
- */
+/** Fonts. The variable fonts are self-hosted by `@netherite/ui/fonts.css`; the fallbacks cover the moment before they load. */
 export const fontFamily = {
   sans: "'Source Sans 3 Variable', 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
   mono: "'Source Code Pro Variable', 'Source Code Pro', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
   icon: "'Material Symbols Rounded Variable', 'Material Symbols Rounded'",
-} as const
-
-/** Font sizes in px. The UI is dense: body text is 14. */
-export const fontSize = {
-  '2xs': 10,
-  xs: 11,
-  sm: 12,
-  md: 13,
-  lg: 14,
-  xl: 16,
-  '2xl': 20,
-  '3xl': 24,
-  '4xl': 32,
 } as const
 
 export const fontWeight = { regular: 400, medium: 500, semibold: 600, bold: 700 } as const
@@ -34,89 +17,108 @@ export interface TextStyle {
   readonly uppercase?: true
 }
 
-/** Named text styles. Components pick a style rather than mixing sizes and weights. */
+/** The type scale from sheet T1, and the small caps label both sheets use for section titles. */
 export const textStyle = {
-  h1: { family: 'sans', size: 24, lineHeight: 30, weight: 600, letterSpacing: -0.01 },
-  h2: { family: 'sans', size: 20, lineHeight: 26, weight: 600, letterSpacing: -0.005 },
-  h3: { family: 'sans', size: 16, lineHeight: 22, weight: 600, letterSpacing: 0 },
-  h4: { family: 'sans', size: 14, lineHeight: 20, weight: 600, letterSpacing: 0 },
-  body: { family: 'sans', size: 14, lineHeight: 20, weight: 400, letterSpacing: 0 },
-  bodySm: { family: 'sans', size: 13, lineHeight: 18, weight: 400, letterSpacing: 0 },
-  label: { family: 'sans', size: 12, lineHeight: 16, weight: 600, letterSpacing: 0.01 },
+  display: { family: 'sans', size: 28, lineHeight: 34, weight: 600, letterSpacing: -0.01 },
+  title: { family: 'sans', size: 20, lineHeight: 26, weight: 600, letterSpacing: 0 },
+  heading: { family: 'sans', size: 16, lineHeight: 22, weight: 600, letterSpacing: 0 },
+  body: { family: 'sans', size: 15, lineHeight: 22, weight: 400, letterSpacing: 0 },
+  bodySm: { family: 'sans', size: 14, lineHeight: 20, weight: 400, letterSpacing: 0 },
+  caption: { family: 'sans', size: 13, lineHeight: 18, weight: 500, letterSpacing: 0 },
+  micro: { family: 'sans', size: 12, lineHeight: 16, weight: 500, letterSpacing: 0 },
+  mono: { family: 'mono', size: 13, lineHeight: 22, weight: 400, letterSpacing: 0 },
+  /** Not in T1's list but on every sheet: 12/16, 600, 6% tracking, upper case. */
   overline: {
     family: 'sans',
-    size: 11,
-    lineHeight: 14,
+    size: 12,
+    lineHeight: 16,
     weight: 600,
     letterSpacing: 0.06,
     uppercase: true,
   },
-  caption: { family: 'sans', size: 11, lineHeight: 14, weight: 400, letterSpacing: 0.01 },
-  code: { family: 'mono', size: 13, lineHeight: 20, weight: 400, letterSpacing: 0 },
-  codeSm: { family: 'mono', size: 12, lineHeight: 16, weight: 400, letterSpacing: 0 },
+  /** Not in the design: code in small places (shortcut keys use it at 12/16). */
+  monoSm: { family: 'mono', size: 12, lineHeight: 16, weight: 400, letterSpacing: 0 },
 } as const satisfies Record<string, TextStyle>
 export type TextStyleName = keyof typeof textStyle
 
-/** A 4px grid. Index by step; `space[4]` is 16px. */
+/** Font sizes in px, from the styles above. */
+export const fontSize = {
+  micro: textStyle.micro.size,
+  caption: textStyle.caption.size,
+  bodySm: textStyle.bodySm.size,
+  body: textStyle.body.size,
+  heading: textStyle.heading.size,
+  title: textStyle.title.size,
+  display: textStyle.display.size,
+} as const
+
+/** A 4px grid: `space[1]` is 4px … `space[10]` is 64px (T1 names them space-1 to space-10). */
 export const space = {
-  0: 0,
-  0.5: 2,
   1: 4,
-  1.5: 6,
   2: 8,
   3: 12,
   4: 16,
   5: 20,
   6: 24,
-  8: 32,
-  10: 40,
-  12: 48,
+  7: 32,
+  8: 40,
+  9: 48,
+  10: 64,
 } as const
 
-export const radius = { none: 0, xs: 2, sm: 4, md: 6, lg: 8, xl: 12, full: 9999 } as const
+/**
+ * Corner radii from T1: chip, button, card, column, pill. The extra sizes are ones the screens use
+ * that the sheet does not name: 7 (small square buttons), 8 (tooltips, the logo), 12 (rail groups).
+ */
+export const radius = { xs: 4, sm: 6, md: 10, lg: 14, full: 999 } as const
+export const radiusExtra = { control: 7, tooltip: 8, group: 12 } as const
 
-/** Sizes of the app's frame. */
+/** Sizes of the app's frame and its parts, measured from the screens. */
 export const layout = {
-  railWidth: 56,
-  sidebarWidth: 280,
-  drawerWidth: 560,
-  previewWidth: 360,
-  headerHeight: 44,
-  rowHeight: 32,
-  rowHeightCompact: 28,
-  cardWidth: 280,
-  iconSize: { sm: 16, md: 20, lg: 24 },
+  /** Screens are designed at 1920 by 1080. */
+  screen: { width: 1920, height: 1080 },
+  railWidth: 64,
+  railItem: 40,
+  /** Space left of a screen's content. */
+  pageInset: 96,
+  /** The rail's logo, and the avatar below the groups. */
+  logo: 32,
+  avatar: 32,
+  /** The knowledge switcher's targets. */
+  switcher: { width: 36, height: 32 },
+  tooltipHeight: 32,
+  cardPadding: 16,
+  cardGap: { board: 8, list: 12 },
+  columnGap: 16,
+  /** The task drawer (TaskDrawer.dc.html): text only is 912 wide; with the code pane, 1792. */
+  drawer: { text: 912, split: 1792, codePane: 880, header: 48, statusBar: 32 },
+  /** The edge bar beside the active rail item. */
+  railBar: { width: 3, height: 20 },
   focusRing: 2,
 } as const
 
+/** Icon sizes and strokes (sheet T1, "Icons"). */
+export const icon = {
+  rail: { size: 22, weight: 300 },
+  switcher: { size: 20, weight: 300 },
+  inline: { size: 16, weight: 400 },
+  pill: { size: 14, weight: 500 },
+} as const
+
 export const motion = {
-  duration: { fast: 100, base: 160, slow: 240 },
-  easing: {
-    standard: 'cubic-bezier(0.2, 0, 0, 1)',
-    enter: 'cubic-bezier(0, 0, 0, 1)',
-    exit: 'cubic-bezier(0.3, 0, 1, 1)',
-  },
+  /** Nodes fade and glow over this long. */
+  duration: { base: 160 },
+  easing: { standard: 'ease' },
 } as const
 
-export const zIndex = {
-  base: 0,
-  dropdown: 100,
-  sticky: 200,
-  overlay: 300,
-  modal: 400,
-  toast: 500,
-} as const
+/** Stacking, from the screens: the graph's legend, its tooltip, the rail, the rail's tooltip. */
+export const zIndex = { legend: 3, tooltip: 4, rail: 5, railTooltip: 20, modal: 400 } as const
 
-/** Box shadows per scheme: deeper on dark surfaces, where they would otherwise vanish. */
 export const shadow = {
-  dark: {
-    sm: '0 1px 2px rgba(0, 0, 0, 0.5)',
-    md: '0 4px 12px rgba(0, 0, 0, 0.55)',
-    lg: '0 12px 32px rgba(0, 0, 0, 0.6)',
-  },
-  light: {
-    sm: '0 1px 2px rgba(29, 26, 31, 0.08)',
-    md: '0 4px 12px rgba(29, 26, 31, 0.12)',
-    lg: '0 12px 32px rgba(29, 26, 31, 0.16)',
-  },
+  /** Rail tooltips. */
+  tooltip: '0 8px 24px rgba(0, 0, 0, 0.35)',
+  /** The graph tooltip. */
+  popover: '0 12px 32px rgba(0, 0, 0, 0.4)',
+  /** A screen on the presentation canvas; not used in the app. */
+  stage: '0 30px 80px rgba(0, 0, 0, 0.5)',
 } as const

@@ -1,7 +1,7 @@
 export {
   type AdrStatus,
   adrStatuses,
-  type ColorTokens,
+  type Color,
   color,
   type EdgeKind,
   edgeKinds,
@@ -9,30 +9,33 @@ export {
   freshnessStates,
   type ItemTypeName,
   itemTypeNames,
-  type Scheme,
   type StateCategory,
   stateCategories,
+  tint,
 } from './color'
 export { contrast, hexToRgb } from './contrast'
-export { libraryVariables, prefix, schemeVariables, staticVariables, stylesheet } from './css'
+export { libraryVariables, prefix, stylesheet, variables } from './css'
 export {
+  badgeGlyph,
   type EdgeStyle,
-  edgeColor,
   edgeStyle,
-  type GlyphShape,
-  glyphPath,
-  glyphShape,
+  type GlyphBox,
+  glyphBox,
   graphMetrics,
-  nodeRadius,
+  type NodeShape,
+  type NodeSpec,
+  nodeSpec,
 } from './graph'
-export { mantineTheme, mix, scaleOf } from './mantine'
+export { baseShade, mantineTheme, mix, scaleOf } from './mantine'
 export {
   fontFamily,
   fontSize,
   fontWeight,
+  icon,
   layout,
   motion,
   radius,
+  radiusExtra,
   shadow,
   space,
   type TextStyle,

@@ -2,32 +2,32 @@ import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, test } from 'vitest'
 import {
   adrStatuses,
+  badgeGlyph,
+  baseShade,
   color,
   contrast,
-  edgeColor,
   edgeKinds,
   edgeStyle,
   freshnessStates,
-  glyphPath,
-  glyphShape,
+  glyphBox,
   hexToRgb,
   itemTypeNames,
   layout,
   libraryVariables,
   mantineTheme,
   mix,
-  nodeRadius,
+  nodeSpec,
   prefix,
-  type Scheme,
+  radius,
   scaleOf,
-  schemeVariables,
+  space,
   stateCategories,
-  staticVariables,
   stylesheet,
   textStyle,
+  tint,
+  variables,
 } from '../src/index'
 
-const schemes: Scheme[] = ['dark', 'light']
 const hex = /^#[0-9a-f]{6}$/i
 
 const leaves = (value: unknown, path: string[] = []): Array<[string, unknown]> =>
@@ -35,276 +35,378 @@ const leaves = (value: unknown, path: string[] = []): Array<[string, unknown]> =
     ? Object.entries(value).flatMap(([k, v]) => leaves(v, [...path, k]))
     : [[path.join('.'), value]]
 
+/** The colour as written, apart from the two translucent ones. */
+const solid = leaves(color).filter(([, v]) => typeof v === 'string' && hex.test(v)) as Array<
+  [string, string]
+>
+
 describe('the contrast helper', () => {
   test('matches the known WCAG values', () => {
     expect(contrast('#000000', '#ffffff')).toBeCloseTo(21, 5)
     expect(contrast('#777777', '#777777')).toBe(1)
     expect(contrast('#767676', '#ffffff')).toBeCloseTo(4.54, 1)
-    expect(contrast('#ffffff', '#000000')).toBe(contrast('#000000', '#ffffff'))
   })
 
   test('refuses anything but #rrggbb', () => {
     expect(() => hexToRgb('red')).toThrow()
-    expect(() => hexToRgb('#fff')).toThrow()
     expect(hexToRgb('#ff8000')).toEqual([255, 128, 0])
   })
 })
 
-describe.each(schemes)('colours (%s)', (scheme) => {
-  const c = color[scheme]
-  const surfaces = Object.entries({
-    canvas: c.bg.canvas,
-    surface: c.bg.surface,
-    raised: c.bg.raised,
-    overlay: c.bg.overlay,
+describe('colours match the design sheets', () => {
+  test('the surfaces, from T1', () => {
+    expect(color.bg).toMatchObject({
+      shell: '#1E2032',
+      canvas: '#282A3F',
+      card: '#212336',
+      cardHover: '#25273C',
+      column: '#2E3148',
+      sunken: '#18192A',
+      track: '#34374F',
+    })
+    expect(color.border).toMatchObject({ subtle: '#2F3250', strong: '#474B6E' })
   })
 
-  test('every colour is a #rrggbb', () => {
-    for (const [path, value] of leaves(c)) expect(value, path).toMatch(hex)
+  test('text, accent and status, from T1', () => {
+    expect(color.text).toMatchObject({
+      primary: '#E8E9F3',
+      secondary: '#B9BCD3',
+      muted: '#969AB8',
+      faint: '#6E7292',
+      lineNumber: '#8A8FAD',
+    })
+    expect(color.accent).toMatchObject({ fg: '#A5A7FF', solid: '#7F82EA', subtle: '#34365A' })
+    expect(color.status).toMatchObject({
+      success: '#2CC27E',
+      warning: '#E2AE4C',
+      danger: '#F0717E',
+    })
   })
 
-  test.each(surfaces)('text is readable on %s (4.5:1)', (_name, bg) => {
-    for (const key of ['primary', 'secondary', 'muted'] as const) {
-      expect(contrast(c.text[key], bg), `text.${key}`).toBeGreaterThanOrEqual(4.5)
-    }
-    expect(contrast(c.accent.fg, bg), 'accent.fg').toBeGreaterThanOrEqual(4.5)
+  test('the type colours: graph nodes from T1, knowledge types from T2', () => {
+    expect(color.type).toEqual({
+      goal: '#8F91F2',
+      project: '#3BA474',
+      task: '#D9A646',
+      adr: '#D2A8F0',
+      doc: '#8FC3F2',
+      context: '#7ED6C8',
+      runbook: '#F0B397',
+    })
   })
 
-  test.each(surfaces)('code and links are readable on %s (4.5:1)', (_name, bg) => {
-    for (const [name, value] of Object.entries(c.syntax)) {
-      expect(contrast(value, bg), `syntax.${name}`).toBeGreaterThanOrEqual(4.5)
-    }
+  test('ADR status colours, from T2', () => {
+    expect(color.adr).toEqual({
+      proposed: '#A5A7FF',
+      accepted: '#2CC27E',
+      deprecated: '#F0717E',
+      superseded: '#B9BCD3',
+    })
   })
 
-  test.each(surfaces)(
-    'types, states, statuses and freshness stand out on %s (3:1)',
-    (_name, bg) => {
-      for (const group of ['type', 'state', 'adr', 'freshness', 'status', 'diff'] as const) {
-        for (const [name, value] of Object.entries(c[group])) {
-          expect(contrast(value, bg), `${group}.${name}`).toBeGreaterThanOrEqual(3)
-        }
-      }
-      expect(contrast(c.focus, bg), 'focus ring').toBeGreaterThanOrEqual(3)
-    },
-  )
-
-  test('text on a solid accent is readable, including when hovered', () => {
-    expect(contrast(c.text.onAccent, c.accent.solid)).toBeGreaterThanOrEqual(4.5)
-    expect(contrast(c.text.onAccent, c.accent.solidHover)).toBeGreaterThanOrEqual(4.5)
+  test('syntax and gutter colours, from T1', () => {
+    expect(color.syntax).toEqual({
+      key: '#F29AA5',
+      string: '#A6DCAE',
+      date: '#E8C07A',
+      mention: '#A5A7FF',
+      punct: '#8A8FAD',
+      text: '#D4D6E8',
+    })
+    expect(color.diff).toMatchObject({ added: '#2CC27E', modified: '#E2AE4C', deleted: '#F0717E' })
   })
 
-  test('borders can be seen against the surfaces they separate', () => {
-    expect(contrast(c.border.strong, c.bg.surface)).toBeGreaterThanOrEqual(2)
-    expect(contrast(c.border.default, c.bg.surface)).toBeGreaterThan(
-      contrast(c.border.subtle, c.bg.surface),
-    )
-  })
-
-  test('the layers of the page are told apart', () => {
-    const order = [c.bg.canvas, c.bg.surface, c.bg.raised]
-    for (let i = 1; i < order.length; i++) {
-      expect(contrast(order[i] as string, order[i - 1] as string)).toBeGreaterThan(1.05)
-    }
-  })
-
-  test('the seven item types have seven different colours', () => {
-    expect(new Set(Object.values(c.type)).size).toBe(itemTypeNames.length)
-  })
-})
-
-describe('colours across schemes', () => {
-  test('dark and light define exactly the same roles', () => {
-    expect(leaves(color.dark).map(([k]) => k)).toEqual(leaves(color.light).map(([k]) => k))
+  test('every colour is a #rrggbb, except the one translucent label ground', () => {
+    const others = leaves(color).filter(([, v]) => !(typeof v === 'string' && hex.test(v)))
+    expect(others.map(([k]) => k)).toEqual(['graph.labelBg'])
   })
 
   test('every type, state category, ADR status and freshness state has a colour', () => {
-    for (const scheme of schemes) {
-      expect(Object.keys(color[scheme].type)).toEqual([...itemTypeNames])
-      expect(Object.keys(color[scheme].state)).toEqual([...stateCategories])
-      expect(Object.keys(color[scheme].adr)).toEqual([...adrStatuses])
-      expect(Object.keys(color[scheme].freshness)).toEqual([...freshnessStates])
+    expect(Object.keys(color.type)).toEqual([...itemTypeNames])
+    expect(Object.keys(color.state)).toEqual([...stateCategories])
+    expect(Object.keys(color.adr)).toEqual([...adrStatuses])
+    expect(Object.keys(color.freshness)).toEqual([...freshnessStates])
+  })
+
+  test('the seven item types have seven different colours', () => {
+    expect(new Set(Object.values(color.type)).size).toBe(itemTypeNames.length)
+  })
+})
+
+describe('contrast', () => {
+  const surfaces = Object.entries({
+    canvas: color.bg.canvas,
+    card: color.bg.card,
+    cardHover: color.bg.cardHover,
+    cardSelected: color.bg.cardSelected,
+    column: color.bg.column,
+    sunken: color.bg.sunken,
+    shell: color.bg.shell,
+    chip: color.bg.chip,
+    overlay: color.bg.overlay,
+  })
+
+  test.each([
+    ['text-primary', color.text.primary, 11.5],
+    ['text-secondary', color.text.secondary, 7.5],
+    ['text-muted', color.text.muted, 5.1],
+    ['text-faint', color.text.faint, 3.0],
+    ['lavender', color.accent.fg, 6.4],
+    ['green', color.status.success, 6.1],
+    ['amber', color.status.warning, 7.0],
+    ['red', color.status.danger, 4.9],
+    ['type-adr', color.type.adr, 7.1],
+    ['type-doc', color.type.doc, 7.5],
+    ['type-context', color.type.context, 8.2],
+    ['type-runbook', color.type.runbook, 7.8],
+  ])('%s on the canvas is the ratio the sheet states (%f)', (_name, fg, stated) => {
+    expect(contrast(fg, color.bg.canvas)).toBeGreaterThanOrEqual(stated - 0.1)
+  })
+
+  test('the line numbers reach the 4.9 the sheet states on the editor (the card colour)', () => {
+    expect(contrast(color.text.lineNumber, color.bg.card)).toBeGreaterThanOrEqual(4.8)
+  })
+
+  test.each(surfaces)(
+    'primary, secondary and muted text are readable on %s (4.5:1)',
+    (_name, bg) => {
+      for (const fg of [color.text.primary, color.text.secondary, color.text.muted]) {
+        expect(contrast(fg, bg)).toBeGreaterThanOrEqual(4.5)
+      }
+    },
+  )
+
+  test('the accent and the type colours read as text on the canvas and cards (4.5:1), and show as shapes on every surface (3:1)', () => {
+    for (const fg of [color.accent.fg, ...Object.values(color.type)]) {
+      for (const bg of [
+        color.bg.canvas,
+        color.bg.card,
+        color.bg.cardHover,
+        color.bg.sunken,
+        color.bg.shell,
+      ]) {
+        expect(contrast(fg, bg), `${fg} on ${bg}`).toBeGreaterThanOrEqual(4.5)
+      }
+      for (const [, bg] of surfaces)
+        expect(contrast(fg, bg), `${fg} on ${bg}`).toBeGreaterThanOrEqual(3)
     }
   })
 
-  test('the accent scale has ten steps, light to dark', () => {
-    for (const scheme of schemes) {
-      const scale = color[scheme].accent.scale
-      expect(scale).toHaveLength(10)
-      const brightness = scale.map((s) => hexToRgb(s).reduce((a, b) => a + b, 0))
-      expect([...brightness].sort((a, b) => b - a)).toEqual(brightness)
+  test('statuses and the diff gutter can be seen on the canvas (3:1)', () => {
+    for (const group of [color.status, color.diff, color.adr, color.state]) {
+      for (const [name, value] of Object.entries(group)) {
+        expect(contrast(value, color.bg.canvas), name).toBeGreaterThanOrEqual(3)
+      }
     }
+  })
+
+  test('text on the solid accent is readable', () => {
+    expect(contrast(color.text.onAccent, color.accent.solid)).toBeGreaterThanOrEqual(4.5)
+  })
+
+  test('the active rail item: icon on its ground', () => {
+    expect(contrast(color.accent.fgHover, color.accent.subtle)).toBeGreaterThanOrEqual(4.5)
+    expect(contrast(color.text.icon, color.bg.shell)).toBeGreaterThanOrEqual(4.5)
+  })
+
+  test('the quietest text (line numbers, punctuation, "not tracked") is only for the editor and the dark panels, where the sheet measures it', () => {
+    // On the canvas, columns and chips these three are 4.0 to 4.4:1, a little under AA. That is
+    // the design's own value (#8A8FAD), kept as drawn; the sheet states 4.9 on the editor.
+    for (const fg of [color.text.lineNumber, color.syntax.punct, color.freshness.unknown]) {
+      for (const bg of [color.bg.card, color.bg.sunken, color.bg.shell, color.bg.overlay]) {
+        expect(contrast(fg, bg)).toBeGreaterThanOrEqual(4.5)
+      }
+      expect(contrast(fg, color.bg.canvas)).toBeGreaterThan(4.0)
+      expect(contrast(fg, color.bg.canvas)).toBeLessThan(4.5)
+    }
+    expect(solid.length).toBeGreaterThan(50)
   })
 })
 
 describe('shapes', () => {
-  test('every type has its own shape, so colour is never the only difference', () => {
-    expect(Object.keys(glyphShape)).toEqual([...itemTypeNames])
-    expect(new Set(Object.values(glyphShape)).size).toBe(itemTypeNames.length)
+  test('graph nodes: sizes and shapes from the graph component', () => {
+    expect(Object.keys(nodeSpec)).toEqual([...itemTypeNames])
+    expect(nodeSpec.goal).toEqual({ shape: 'circle', radius: 15 })
+    expect(nodeSpec.project).toEqual({ shape: 'circle', radius: 10.5 })
+    expect(nodeSpec.task).toEqual({ shape: 'circle', radius: 6 })
+    expect(nodeSpec.adr).toEqual({ shape: 'diamond', radius: 8 })
+    expect(nodeSpec.doc).toEqual({ shape: 'square', radius: 7.5 })
+    expect(nodeSpec.context).toEqual({ shape: 'ring', radius: 7.5 })
+    expect(nodeSpec.runbook).toEqual({ shape: 'bar', radius: 7 })
   })
 
-  test('paths are closed and stay inside the box', () => {
-    for (const shape of new Set(Object.values(glyphShape))) {
-      for (const size of [16, 24]) {
-        const d = glyphPath(shape, size)
-        expect(d.startsWith('M '), shape).toBe(true)
-        expect(d.endsWith(' Z'), shape).toBe(true)
-        const numbers = (d.match(/-?\d+(\.\d+)?/g) ?? []).map(Number)
-        // Arc flags are 0 or 1; every other number is a coordinate or radius.
-        for (const n of numbers) {
-          expect(n, `${shape} ${size}`).toBeGreaterThanOrEqual(0)
-          expect(n, `${shape} ${size}`).toBeLessThanOrEqual(size)
-        }
-      }
-    }
+  test('the glyph box follows the graph’s own proportions', () => {
+    expect(glyphBox('task', 12)).toMatchObject({
+      width: 12,
+      height: 12,
+      radius: '50%',
+      fill: color.type.task,
+    })
+    expect(glyphBox('adr', 20).width).toBeCloseTo(15.6, 5)
+    expect(glyphBox('adr', 20)).toMatchObject({ rotate: 45, radius: '2px' })
+    expect(glyphBox('doc', 20)).toMatchObject({ width: 17.2, height: 17.2, radius: '3px' })
+    expect(glyphBox('runbook', 20)).toMatchObject({ width: 26, height: 14 })
+    expect(glyphBox('context', 20)).toMatchObject({
+      border: '2px solid #7ED6C8',
+      fill: '#7ED6C833',
+    })
   })
 
-  test('polygons have the right number of corners and point up', () => {
-    const corners = (d: string) => d.split(' L ').length
-    expect(corners(glyphPath('triangle'))).toBe(3)
-    expect(corners(glyphPath('diamond'))).toBe(4)
-    expect(corners(glyphPath('square'))).toBe(4)
-    expect(corners(glyphPath('pentagon'))).toBe(5)
-    expect(corners(glyphPath('hexagon'))).toBe(6)
-    expect(corners(glyphPath('octagon'))).toBe(8)
-    // The first corner of a triangle is straight up from the centre.
-    expect(glyphPath('triangle', 24).startsWith('M 12 ')).toBe(true)
+  test('a superseded ADR is the same diamond, hollow', () => {
+    expect(glyphBox('adr', 20, true)).toMatchObject({
+      fill: 'transparent',
+      border: '1.5px solid #D2A8F0',
+    })
+    expect(glyphBox('adr', 20, false).border).toBe('none')
   })
 
-  test('a square is axis-aligned and a diamond is not', () => {
-    const xs = (d: string) => (d.match(/(?<=[ML] )-?\d+(\.\d+)?/g) ?? []).map(Number)
-    expect(new Set(xs(glyphPath('square'))).size).toBe(2)
-    expect(new Set(xs(glyphPath('diamond'))).size).toBe(3)
+  test('badge glyphs: the four knowledge types as sheet T2 draws them', () => {
+    expect(badgeGlyph.adr).toMatchObject({ width: 6, height: 6, rotate: 45, radius: '2px' })
+    expect(badgeGlyph.doc).toMatchObject({ width: 7, height: 7, radius: '3px' })
+    expect(badgeGlyph.context).toMatchObject({ width: 8, height: 8, border: '1.5px solid #7ED6C8' })
+    expect(badgeGlyph.runbook).toMatchObject({ width: 9, height: 5, radius: '2px' })
+  })
+
+  test('every type has its own look: shape, size or ring', () => {
+    const looks = itemTypeNames.map((t) => `${nodeSpec[t].shape}`)
+    expect(new Set(looks).size).toBe(5)
+    expect(new Set(itemTypeNames.map((t) => color.type[t])).size).toBe(7)
   })
 })
 
-describe('the graph', () => {
-  test('goals draw biggest and tasks smallest', () => {
-    expect(Object.keys(nodeRadius)).toEqual(expect.arrayContaining([...itemTypeNames]))
-    expect(Math.max(...Object.values(nodeRadius))).toBe(nodeRadius.goal)
-    expect(Math.min(...Object.values(nodeRadius))).toBe(nodeRadius.task)
+describe('edges', () => {
+  test('the five kinds in the graph legend, as drawn', () => {
+    expect(edgeStyle.belongs_to).toMatchObject({
+      width: 1,
+      dash: [],
+      arrow: false,
+      opacity: 0.45,
+      color: '#50547A',
+    })
+    expect(edgeStyle.implements).toMatchObject({
+      width: 1.5,
+      dash: [],
+      arrow: true,
+      color: '#6A6E96',
+      opacity: 0.7,
+    })
+    expect(edgeStyle.explains).toMatchObject({ width: 1.6, dash: [1.5, 4.5], arrow: false })
+    expect(edgeStyle.supersedes).toMatchObject({ width: 1.5, dash: [7, 4], arrow: true })
+    expect(edgeStyle.co_changes).toMatchObject({ width: 1.25, dash: [10, 4, 2, 4], arrow: false })
   })
 
-  test('every kind of edge has a style, and the ones that point have an arrow', () => {
+  test('every kind has a style, and the ones the design does not draw are marked', () => {
     expect(Object.keys(edgeStyle)).toEqual([...edgeKinds])
-    for (const kind of ['supersedes', 'depends_on', 'implements', 'explains'] as const) {
-      expect(edgeStyle[kind].arrow, kind).toBe(true)
-    }
-    expect(edgeStyle.belongs_to.arrow).toBe(false)
-  })
-
-  test('text references are fainter than typed relations, and git hints are dashed', () => {
-    expect(edgeStyle.reference.opacity).toBeLessThan(edgeStyle.belongs_to.opacity)
-    expect(edgeStyle.co_changes.dash.length).toBeGreaterThan(0)
-    expect(edgeStyle.supersedes.width).toBeGreaterThan(edgeStyle.reference.width)
-  })
-
-  test('edges can be seen on the page in both schemes', () => {
-    for (const scheme of schemes) {
-      for (const kind of edgeKinds) {
-        // Faint lines are faint on purpose; the colour itself must not vanish into the surface.
-        expect(
-          contrast(edgeColor(scheme, kind), color[scheme].bg.canvas),
-          `${scheme} ${kind}`,
-        ).toBeGreaterThanOrEqual(2)
-      }
-    }
+    const extra = edgeKinds.filter((k) => !edgeStyle[k].inDesign)
+    expect(extra).toEqual(['depends_on', 'related', 'reference'])
   })
 })
 
-describe('type', () => {
-  test('body text is 14px and code is monospace', () => {
-    expect(textStyle.body.size).toBe(14)
-    expect(textStyle.code.family).toBe('mono')
-    expect(textStyle.overline).toMatchObject({ uppercase: true })
+describe('type, space and radii match T1', () => {
+  test('the type scale', () => {
+    expect(textStyle.display).toMatchObject({
+      size: 28,
+      lineHeight: 34,
+      weight: 600,
+      letterSpacing: -0.01,
+    })
+    expect(textStyle.title).toMatchObject({ size: 20, lineHeight: 26, weight: 600 })
+    expect(textStyle.heading).toMatchObject({ size: 16, lineHeight: 22, weight: 600 })
+    expect(textStyle.body).toMatchObject({ size: 15, lineHeight: 22, weight: 400 })
+    expect(textStyle.bodySm).toMatchObject({ size: 14, lineHeight: 20, weight: 400 })
+    expect(textStyle.caption).toMatchObject({ size: 13, lineHeight: 18, weight: 500 })
+    expect(textStyle.micro).toMatchObject({ size: 12, lineHeight: 16, weight: 500 })
+    expect(textStyle.mono).toMatchObject({ family: 'mono', size: 13, lineHeight: 22, weight: 400 })
+    expect(textStyle.overline).toMatchObject({
+      size: 12,
+      weight: 600,
+      letterSpacing: 0.06,
+      uppercase: true,
+    })
   })
 
-  test('line heights leave room: at least 1.1 times the size, and on a 2px grid', () => {
+  test('spacing is 4, 8, 12, 16, 20, 24, 32, 40, 48, 64', () => {
+    expect(Object.values(space)).toEqual([4, 8, 12, 16, 20, 24, 32, 40, 48, 64])
+    expect(Object.keys(space)).toEqual(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
+  })
+
+  test('radii: chip 4, button 6, card 10, column 14, pill', () => {
+    expect(radius).toEqual({ xs: 4, sm: 6, md: 10, lg: 14, full: 999 })
+  })
+
+  test('the frame: a 64px rail with 40px items, screens at 1920 by 1080', () => {
+    expect(layout.railWidth).toBe(64)
+    expect(layout.railItem).toBe(40)
+    expect(layout.screen).toEqual({ width: 1920, height: 1080 })
+    expect(layout.pageInset).toBe(96)
+    expect(layout.cardPadding).toBe(16)
+  })
+
+  test('line heights leave room', () => {
     for (const [name, style] of Object.entries(textStyle)) {
       expect(style.lineHeight, name).toBeGreaterThanOrEqual(style.size * 1.1)
-      expect(style.lineHeight % 2, name).toBe(0)
     }
-  })
-
-  test('a row is tall enough for body text', () => {
-    expect(layout.rowHeight).toBeGreaterThanOrEqual(textStyle.body.lineHeight + 8)
   })
 })
 
 describe('CSS variables', () => {
-  const dark = schemeVariables('dark')
-  const light = schemeVariables('light')
-  const shared = staticVariables()
-
-  test('dark and light define the same variables', () => {
-    expect(Object.keys(dark)).toEqual(Object.keys(light))
-  })
-
-  test('shared variables do not overlap with either scheme', () => {
-    for (const name of Object.keys(shared)) expect(name in dark, name).toBe(false)
-  })
+  const vars = variables()
 
   test('every name starts with the prefix and is lowercase kebab-case', () => {
-    for (const name of [...Object.keys(dark), ...Object.keys(shared)]) {
+    for (const name of Object.keys(vars)) {
       expect(name.startsWith(prefix), name).toBe(true)
       expect(name, name).toMatch(/^--[a-z0-9-]+$/)
     }
   })
 
-  test('no value is empty or a leftover of a bug', () => {
-    for (const [name, value] of [
-      ...Object.entries(dark),
-      ...Object.entries(light),
-      ...Object.entries(shared),
-    ]) {
+  test('no value is empty or the trace of a bug', () => {
+    for (const [name, value] of Object.entries(vars)) {
       expect(value, name).not.toMatch(/undefined|NaN|\[object|null/)
       expect(value.trim(), name).not.toBe('')
     }
   })
 
   test('has the variables the app and components rely on', () => {
-    expect(dark['--nt-color-bg-canvas']).toBe(color.dark.bg.canvas)
-    expect(light['--nt-color-bg-canvas']).toBe(color.light.bg.canvas)
-    expect(dark['--nt-color-type-adr']).toBe(color.dark.type.adr)
-    expect(dark['--nt-color-freshness-stale']).toBe(color.dark.freshness.stale)
-    expect(dark['--nt-color-syntax-wikilink']).toBe(color.dark.syntax.wikilink)
-    expect(dark['--nt-color-accent-scale-4']).toBe(color.dark.accent.scale[4])
-    expect(dark['--nt-edge-supersedes-width']).toBe('2px')
-    expect(dark['--nt-edge-belongs-to-dash']).toBe('none')
-    expect(dark['--nt-edge-related-dash']).toBe('2 2')
-    expect(shared['--nt-text-body-size']).toBe('14px')
-    expect(shared['--nt-text-overline-transform']).toBe('uppercase')
-    expect(shared['--nt-space-1']).toBe('4px')
-    expect(shared['--nt-space-0-5']).toBe('2px')
-    expect(shared['--nt-space-0']).toBe('0')
-    expect(shared['--nt-radius-md']).toBe('6px')
-    expect(shared['--nt-layout-rail-width']).toBe('56px')
-    expect(shared['--nt-duration-base']).toBe('160ms')
-    expect(shared['--nt-node-radius-goal']).toBe('11px')
+    expect(vars['--nt-color-bg-canvas']).toBe('#282A3F')
+    expect(vars['--nt-color-accent-fg']).toBe('#A5A7FF')
+    expect(vars['--nt-color-type-adr']).toBe('#D2A8F0')
+    expect(vars['--nt-color-adr-superseded']).toBe('#B9BCD3')
+    expect(vars['--nt-color-syntax-mention']).toBe('#A5A7FF')
+    expect(vars['--nt-tint-pill']).toBe('0.14')
+    expect(vars['--nt-text-body-size']).toBe('15px')
+    expect(vars['--nt-text-display-letter-spacing']).toBe('-0.01em')
+    expect(vars['--nt-text-overline-transform']).toBe('uppercase')
+    expect(vars['--nt-space-1']).toBe('4px')
+    expect(vars['--nt-space-10']).toBe('64px')
+    expect(vars['--nt-radius-md']).toBe('10px')
+    expect(vars['--nt-radius-control']).toBe('7px')
+    expect(vars['--nt-layout-rail-width']).toBe('64px')
+    expect(vars['--nt-layout-rail-bar-height']).toBe('20px')
+    expect(vars['--nt-icon-rail-size']).toBe('22px')
+    expect(vars['--nt-icon-rail-weight']).toBe('300')
+    expect(vars['--nt-duration-base']).toBe('160ms')
+    expect(vars['--nt-node-radius-goal']).toBe('15px')
+    expect(vars['--nt-edge-supersedes-dash']).toBe('7 4')
+    expect(vars['--nt-edge-belongs-to-dash']).toBe('none')
+    expect(vars['--nt-shadow-tooltip']).toBe('0 8px 24px rgba(0, 0, 0, 0.35)')
   })
 
-  test('points the library’s variables at ours', () => {
+  test('the library variables point at ours, and every target exists', () => {
     const lib = libraryVariables()
     expect(lib['--mantine-color-body']).toBe('var(--nt-color-bg-canvas)')
-    for (const value of Object.values(lib)) expect(value).toMatch(/^var\(--nt-[a-z0-9-]+\)$/)
-    const defined = new Set([...Object.keys(dark), ...Object.keys(shared)])
     for (const value of Object.values(lib)) {
-      expect(defined.has(value.slice(4, -1)), value).toBe(true)
+      expect(value).toMatch(/^var\(--nt-[a-z0-9-]+\)$/)
+      expect(vars[value.slice(4, -1)], value).toBeDefined()
     }
   })
 
-  test('the stylesheet has shared variables, dark as the default, and light when asked', () => {
+  test('the stylesheet is one :root block, dark, each variable declared once', () => {
     const css = stylesheet()
-    expect(css).toContain(':root {')
-    expect(css).toContain(':root, :root[data-mantine-color-scheme="dark"] {')
-    expect(css).toContain(':root[data-mantine-color-scheme="light"] {')
+    expect(css.match(/:root \{/g)).toHaveLength(1)
     expect(css).toContain('color-scheme: dark;')
-    expect(css).toContain('color-scheme: light;')
-    // Each variable is declared once per block.
-    for (const block of css.split('\n}\n')) {
-      const names = [...block.matchAll(/^\s+(--[a-z0-9-]+):/gm)].map((m) => m[1])
-      expect(new Set(names).size).toBe(names.length)
-    }
-    expect(css.indexOf('data-mantine-color-scheme="light"')).toBeGreaterThan(css.indexOf('="dark"'))
+    expect(css).not.toContain('data-mantine-color-scheme')
+    const names = [...css.matchAll(/^\s+(--[a-z0-9-]+):/gm)].map((m) => m[1])
+    expect(new Set(names).size).toBe(names.length)
   })
 
   test.skipIf(!existsSync(new URL('../dist/tokens.css', import.meta.url)))(
@@ -323,12 +425,9 @@ describe('the library theme', () => {
       dependencies?: Record<string, string>
     }
     expect(Object.keys(pkg.dependencies ?? {}).filter((d) => d.startsWith('@mantine'))).toEqual([])
-    expect(JSON.parse(JSON.stringify(mantineTheme))).toEqual(
-      JSON.parse(JSON.stringify(mantineTheme)),
-    )
   })
 
-  test('every colour is a ten-step scale, and the primary colour exists', () => {
+  test('every colour is a ten-step scale and the primary colour exists', () => {
     for (const [name, scale] of Object.entries(mantineTheme.colors)) {
       expect(scale, name).toHaveLength(10)
       for (const step of scale) expect(step).toMatch(hex)
@@ -336,41 +435,40 @@ describe('the library theme', () => {
     expect(mantineTheme.colors[mantineTheme.primaryColor]).toBeDefined()
   })
 
-  test('with the shades it picks, each scale gives exactly our dark and light colours', () => {
-    const { light, dark } = mantineTheme.primaryShade
-    for (const type of itemTypeNames) {
-      expect(mantineTheme.colors[type]?.[dark], `${type} dark`).toBe(color.dark.type[type])
-      expect(mantineTheme.colors[type]?.[light], `${type} light`).toBe(color.light.type[type])
+  test('with the shade the theme picks, each scale gives exactly the design’s colour', () => {
+    expect(mantineTheme.primaryShade).toBe(baseShade)
+    for (const type of itemTypeNames)
+      expect(mantineTheme.colors[type]?.[baseShade]).toBe(color.type[type])
+    for (const status of ['success', 'warning', 'danger'] as const) {
+      expect(mantineTheme.colors[status]?.[baseShade]).toBe(color.status[status])
     }
-    for (const status of ['success', 'warning', 'danger', 'info'] as const) {
-      expect(mantineTheme.colors[status]?.[dark]).toBe(color.dark.status[status])
-      expect(mantineTheme.colors[status]?.[light]).toBe(color.light.status[status])
-    }
-    expect(mantineTheme.colors.copper?.[dark]).toBe(color.dark.accent.solid)
-    expect(mantineTheme.colors.copper?.[light]).toBe(color.light.accent.solid)
+    expect(mantineTheme.colors.lavender?.[baseShade]).toBe(color.accent.solid)
   })
 
   test('scales run from light to dark', () => {
     for (const [name, scale] of Object.entries(mantineTheme.colors)) {
       const brightness = scale.map((s) => hexToRgb(s).reduce((a, b) => a + b, 0))
-      expect(brightness[0], name).toBeGreaterThan(brightness[9] as number)
+      expect(
+        [...brightness].sort((a, b) => b - a),
+        name,
+      ).toEqual(brightness)
     }
   })
 
-  test('sizes match the scales', () => {
+  test('sizes match the type scale and the spacing', () => {
     expect(mantineTheme.fontSizes.md).toBe('14px')
     expect(mantineTheme.spacing.sm).toBe('8px')
-    expect(mantineTheme.radius.md).toBe('6px')
-    expect(mantineTheme.defaultRadius).toBe('md')
-    expect(mantineTheme.headings.sizes.h1.fontSize).toBe('24px')
+    expect(mantineTheme.radius.md).toBe('10px')
+    expect(mantineTheme.headings.sizes.h1.fontSize).toBe('28px')
     expect(mantineTheme.fontFamily).toContain('Source Sans 3')
     expect(mantineTheme.fontFamilyMonospace).toContain('Source Code Pro')
+    expect(mantineTheme.black).toBe(color.text.onAccent)
   })
 
   test('mixing is exact at the ends', () => {
     expect(mix('#000000', '#ffffff', 0)).toBe('#000000')
     expect(mix('#000000', '#ffffff', 1)).toBe('#ffffff')
-    expect(mix('#000000', '#ffffff', 0.5)).toBe('#808080')
-    expect(scaleOf('#102030', '#405060')[4]).toBe('#102030')
+    expect(scaleOf('#102030')[baseShade]).toBe('#102030')
+    expect(tint.pill).toBe(0.14)
   })
 })

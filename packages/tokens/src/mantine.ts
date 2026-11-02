@@ -1,6 +1,6 @@
 import { color } from './color'
 import { hexToRgb } from './contrast'
-import { fontFamily, fontSize, fontWeight, radius, shadow, space, textStyle } from './scale'
+import { fontFamily, fontWeight, radius, space, textStyle } from './scale'
 
 type Scale = readonly [
   string,
@@ -25,33 +25,35 @@ export const mix = (a: string, b: string, t: number) => {
   return toHex([r1 + (r2 - r1) * t, g1 + (g2 - g1) * t, b1 + (b2 - b1) * t])
 }
 
+/** The step of every scale that holds the colour itself; the theme's `primaryShade` points here. */
+export const baseShade = 6
+
 /**
- * The ten-step scale the UI library wants, from two colours that work on a dark and a light
- * surface. With `primaryShade` of 4 (dark) and 7 (light), the library picks exactly these two.
+ * The ten-step scale the UI library wants, around one colour: step 6 is the colour, lighter steps
+ * mix toward white and darker ones toward the design's deepest background.
  */
-export const scaleOf = (forDark: string, forLight: string): Scale => [
-  mix(forDark, '#ffffff', 0.9),
-  mix(forDark, '#ffffff', 0.75),
-  mix(forDark, '#ffffff', 0.55),
-  mix(forDark, '#ffffff', 0.3),
-  forDark,
-  mix(forDark, forLight, 0.33),
-  mix(forDark, forLight, 0.66),
-  forLight,
-  mix(forLight, '#000000', 0.15),
-  mix(forLight, '#000000', 0.3),
+export const scaleOf = (base: string): Scale => [
+  mix(base, '#ffffff', 0.82),
+  mix(base, '#ffffff', 0.68),
+  mix(base, '#ffffff', 0.5),
+  mix(base, '#ffffff', 0.32),
+  mix(base, '#ffffff', 0.16),
+  mix(base, '#ffffff', 0.07),
+  base,
+  mix(base, color.bg.overlay, 0.22),
+  mix(base, color.bg.overlay, 0.42),
+  mix(base, color.bg.overlay, 0.62),
 ]
 
 const colors = {
-  copper: scaleOf(color.dark.accent.solid, color.light.accent.solid),
-  success: scaleOf(color.dark.status.success, color.light.status.success),
-  warning: scaleOf(color.dark.status.warning, color.light.status.warning),
-  danger: scaleOf(color.dark.status.danger, color.light.status.danger),
-  info: scaleOf(color.dark.status.info, color.light.status.info),
+  lavender: scaleOf(color.accent.solid),
+  success: scaleOf(color.status.success),
+  warning: scaleOf(color.status.warning),
+  danger: scaleOf(color.status.danger),
   ...Object.fromEntries(
-    (Object.keys(color.dark.type) as Array<keyof typeof color.dark.type>).map((type) => [
+    (Object.keys(color.type) as Array<keyof typeof color.type>).map((type) => [
       type,
-      scaleOf(color.dark.type[type], color.light.type[type]),
+      scaleOf(color.type[type]),
     ]),
   ),
 } as Record<string, Scale>
@@ -63,33 +65,33 @@ const px = (n: number) => `${n}px`
  * data and not a call to the library because only `packages/ui` may import it (ADR-00011).
  */
 export const mantineTheme = {
-  primaryColor: 'copper',
-  primaryShade: { light: 7, dark: 4 },
+  primaryColor: 'lavender',
+  primaryShade: baseShade,
   autoContrast: true,
   luminanceThreshold: 0.5,
   colors,
   white: '#ffffff',
-  black: color.dark.bg.canvas,
+  black: color.text.onAccent,
   fontFamily: fontFamily.sans,
   fontFamilyMonospace: fontFamily.mono,
   fontSmoothing: true,
   focusRing: 'auto' as const,
-  defaultRadius: 'md',
+  defaultRadius: 'sm',
   respectReducedMotion: true,
   cursorType: 'pointer' as const,
   fontSizes: {
-    xs: px(fontSize.xs),
-    sm: px(fontSize.sm),
-    md: px(fontSize.lg),
-    lg: px(fontSize.xl),
-    xl: px(fontSize['2xl']),
+    xs: px(textStyle.micro.size),
+    sm: px(textStyle.caption.size),
+    md: px(textStyle.bodySm.size),
+    lg: px(textStyle.heading.size),
+    xl: px(textStyle.title.size),
   },
   lineHeights: {
-    xs: px(textStyle.caption.lineHeight),
-    sm: px(textStyle.label.lineHeight),
-    md: px(textStyle.body.lineHeight),
-    lg: px(textStyle.h3.lineHeight),
-    xl: px(textStyle.h2.lineHeight),
+    xs: px(textStyle.micro.lineHeight),
+    sm: px(textStyle.caption.lineHeight),
+    md: px(textStyle.bodySm.lineHeight),
+    lg: px(textStyle.heading.lineHeight),
+    xl: px(textStyle.title.lineHeight),
   },
   spacing: {
     xs: px(space[1]),
@@ -103,25 +105,18 @@ export const mantineTheme = {
     sm: px(radius.sm),
     md: px(radius.md),
     lg: px(radius.lg),
-    xl: px(radius.xl),
-  },
-  shadows: {
-    xs: shadow.dark.sm,
-    sm: shadow.dark.sm,
-    md: shadow.dark.md,
-    lg: shadow.dark.lg,
-    xl: shadow.dark.lg,
+    xl: px(radius.lg),
   },
   headings: {
     fontFamily: fontFamily.sans,
     fontWeight: String(fontWeight.semibold),
     sizes: {
-      h1: { fontSize: px(textStyle.h1.size), lineHeight: px(textStyle.h1.lineHeight) },
-      h2: { fontSize: px(textStyle.h2.size), lineHeight: px(textStyle.h2.lineHeight) },
-      h3: { fontSize: px(textStyle.h3.size), lineHeight: px(textStyle.h3.lineHeight) },
-      h4: { fontSize: px(textStyle.h4.size), lineHeight: px(textStyle.h4.lineHeight) },
-      h5: { fontSize: px(textStyle.bodySm.size), lineHeight: px(textStyle.bodySm.lineHeight) },
-      h6: { fontSize: px(textStyle.label.size), lineHeight: px(textStyle.label.lineHeight) },
+      h1: { fontSize: px(textStyle.display.size), lineHeight: px(textStyle.display.lineHeight) },
+      h2: { fontSize: px(textStyle.title.size), lineHeight: px(textStyle.title.lineHeight) },
+      h3: { fontSize: px(textStyle.heading.size), lineHeight: px(textStyle.heading.lineHeight) },
+      h4: { fontSize: px(textStyle.bodySm.size), lineHeight: px(textStyle.bodySm.lineHeight) },
+      h5: { fontSize: px(textStyle.caption.size), lineHeight: px(textStyle.caption.lineHeight) },
+      h6: { fontSize: px(textStyle.micro.size), lineHeight: px(textStyle.micro.lineHeight) },
     },
   },
 } as const

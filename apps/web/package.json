@@ -5,18 +5,26 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "dev": "vite",
+    "build": "vite build"
   },
   "dependencies": {
     "@netherite/ui": "workspace:*",
     "@netherite/schema": "workspace:*",
     "effect": "catalog:",
-    "@netherite/markdown": "workspace:*"
+    "@netherite/markdown": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",
     "@types/node": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "vite": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:"
   }
 }

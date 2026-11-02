@@ -1,4 +1,7 @@
 {
   "extends": "@netherite/config/tsconfig.browser.json",
-  "include": ["src", "test"]
+  "include": ["src", "vite.config.ts"],
+  "compilerOptions": {
+    "types": ["vite/client"]
+  }
 }

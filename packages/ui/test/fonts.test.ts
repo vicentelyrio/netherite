@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { existsSync, readFileSync, statSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
@@ -37,7 +38,7 @@ describe('what fonts.css brings in', () => {
       '@fontsource-variable/source-sans-3/wght.css',
       '@fontsource-variable/source-sans-3/wght-italic.css',
       '@fontsource-variable/source-code-pro/wght.css',
-      '@fontsource-variable/material-symbols-rounded/wght.css',
+      '@fontsource-variable/material-symbols-rounded/fill.css',
     ])
   })
 
@@ -105,11 +106,12 @@ describe('what fonts.css brings in', () => {
     }
   })
 
-  test('the icon font is the weight-axis file, not the 5 MB one with every axis', () => {
+  test('the icon font is the weight-and-fill file the design needs, not the 5 MB one with every axis', () => {
     const { dir, text } = load(imports[3] as string)
     const files = urls(text)
     expect(files).toHaveLength(1)
-    expect(statSync(join(dir, files[0] as string)).size).toBeLessThan(1_200_000)
+    expect(files[0]).toContain('-fill-')
+    expect(statSync(join(dir, files[0] as string)).size).toBeLessThan(1_600_000)
   })
 
   test('each font is licensed for bundling and ships its licence', () => {
@@ -133,6 +135,9 @@ describe('the icon class', () => {
 
   test('turns a name into an icon with ligatures, at a fixed size, and does not wrap', () => {
     expect(rule).toMatch(/font-feature-settings: ["']liga["']/)
+    // The design pairs FILL 1 with warnings and weights 300 to 500 with sizes.
+    expect(rule).toContain('FILL')
+    expect(rule).toContain('wght')
     expect(rule).toContain('line-height: 1')
     expect(rule).toContain('white-space: nowrap')
     expect(rule).toContain('text-transform: none')
@@ -143,7 +148,7 @@ describe('the icon class', () => {
     expect(rule).toMatch(
       /font-family: var\(--nt-font-icon, ["']?Material Symbols Rounded Variable["']?\)/,
     )
-    expect(rule).toContain('var(--nt-layout-icon-size-md, 20px)')
+    expect(rule).toContain('var(--nt-icon-switcher-size, 20px)')
   })
 })
 

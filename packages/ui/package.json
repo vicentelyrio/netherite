@@ -8,11 +8,15 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./fonts.css": "./fonts.css"
+    "./fonts.css": "./fonts.css",
+    "./styles.css": "./styles.css",
+    "./components.css": "./components.css"
   },
   "files": [
     "dist",
-    "fonts.css"
+    "fonts.css",
+    "components.css",
+    "styles.css"
   ],
   "scripts": {
     "build": "tsdown",
@@ -23,13 +27,28 @@
     "@netherite/tokens": "workspace:*",
     "@fontsource-variable/source-sans-3": "catalog:",
     "@fontsource-variable/source-code-pro": "catalog:",
-    "@fontsource-variable/material-symbols-rounded": "catalog:"
+    "@fontsource-variable/material-symbols-rounded": "catalog:",
+    "@mantine/core": "catalog:",
+    "@mantine/hooks": "catalog:"
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",
     "typescript": "catalog:",
     "vitest": "catalog:",
     "tsdown": "catalog:",
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "jsdom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/dom": "catalog:",
+    "@testing-library/user-event": "catalog:",
+    "@testing-library/jest-dom": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:",
+    "react-dom": "catalog:"
   }
 }

@@ -13,3 +13,7 @@ depends_on: [TASK-00031]
 # Fonts and icons
 
 - [x] Self-hosted Source Sans 3, Source Code Pro and Material Symbols Rounded
+
+## Notes
+
+The icon font is Fontsource's fill file (weight and fill axes, about 1.4 MB) because the design uses FILL 1 for warnings and stale marks, and weights 300 to 500.
