@@ -1,6 +1,7 @@
 export { Breadcrumbs, type BreadcrumbsProps } from './Breadcrumbs'
 export { type FilterOption, FilterTabs, type FilterTabsProps } from './FilterTabs'
 export { GroupCard, type GroupCardProps } from './GroupCard'
+export * from './Markdown'
 export { ProgressBar, type ProgressBarProps } from './ProgressBar'
 export { SearchField, type SearchFieldProps } from './SearchField'
 export { SelectField, type SelectFieldProps } from './SelectField'

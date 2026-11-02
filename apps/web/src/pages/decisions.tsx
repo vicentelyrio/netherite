@@ -5,8 +5,8 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Breadcrumbs, FilterTabs } from '@/components'
-import { useApi } from '../lib/app-context'
-import { decisionsQuery, knowledgeQuery } from '../lib/queries'
+import { useApi } from '@/infrastructure/api'
+import { decisionsQuery, knowledgeQuery } from '@/infrastructure/query'
 
 export interface Transition {
   readonly id: string

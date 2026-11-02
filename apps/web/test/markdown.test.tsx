@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, test } from 'vitest'
-import { Markdown, renderMarkdown, safeUrl, wikiHref } from '../src/lib/markdown'
+import { Markdown, renderMarkdown, safeUrl, wikiHref } from '@/components/Markdown'
 
 const html = (source: string) => {
   const { container } = render(<Markdown source={source} />)

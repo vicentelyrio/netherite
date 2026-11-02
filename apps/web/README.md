@@ -14,4 +14,4 @@ Rules, enforced by Biome (`noRestrictedImports`): a layer never imports upward; 
 
 Each component, feature and template lives in its own folder: `Name/Name.tsx`, `Name.css`, `Name.test.tsx` and an `index.ts`; the layer's `index.ts` re-exports them.
 
-`lib/`, `editor/`, `graph/`, `shell.tsx` and `search.tsx` are the old layout; they move into the layers under TASK-00080 to TASK-00084.
+`editor/`, `graph/`, `shell.tsx` and `search.tsx` are the old layout; they move into the layers under TASK-00083 and TASK-00084. `lib/` is gone: its modules are in `infrastructure/` (`api`, `config`, `live`, `notices`, `query`, `text`) and `components/Markdown`.

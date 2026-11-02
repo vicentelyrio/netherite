@@ -5,10 +5,9 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { type FormEvent, useState } from 'react'
 import { Breadcrumbs, ProgressBar, TagList, TextField, TitleForm } from '@/components'
+import { useApi } from '@/infrastructure/api'
+import { goalQuery, goalsQuery, graphQuery, useWrite } from '@/infrastructure/query'
 import { GraphView } from '../graph/GraphView'
-import { useApi } from '../lib/app-context'
-import { goalQuery, goalsQuery, graphQuery } from '../lib/queries'
-import { useWrite } from '../lib/writes'
 
 const noArea = 'No area'
 

@@ -4,10 +4,9 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { type FormEvent, useState } from 'react'
 import { Breadcrumbs, FilterTabs, GroupCard, SearchField, TextField } from '@/components'
-import { useApi } from '../lib/app-context'
-import { useNotices } from '../lib/notices'
-import { tagsQuery } from '../lib/queries'
-import { useWrite } from '../lib/writes'
+import { useApi } from '@/infrastructure/api'
+import { useNotices } from '@/infrastructure/notices'
+import { tagsQuery, useWrite } from '@/infrastructure/query'
 
 export type FieldFilter = 'all' | 'tags' | 'labels'
 

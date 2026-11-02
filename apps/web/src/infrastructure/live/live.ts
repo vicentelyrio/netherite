@@ -2,7 +2,7 @@ import { ServerEvent } from '@netherite/api'
 import type { QueryClient } from '@tanstack/react-query'
 import { Schema } from 'effect'
 import { useEffect, useState } from 'react'
-import { keys } from './queries'
+import { keys } from '../query'
 
 /** Which queries a server event makes stale. */
 export const invalidationsFor = (event: ServerEvent): ReadonlyArray<ReadonlyArray<unknown>> => {

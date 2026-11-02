@@ -3,8 +3,8 @@ import { Banner, EmptyState } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Breadcrumbs, StatCard } from '@/components'
-import { useApi } from '../lib/app-context'
-import { goalsQuery, projectsQuery, statsQuery } from '../lib/queries'
+import { useApi } from '@/infrastructure/api'
+import { goalsQuery, projectsQuery, statsQuery } from '@/infrastructure/query'
 
 export interface Point {
   readonly week: string

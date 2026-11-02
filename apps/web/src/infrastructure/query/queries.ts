@@ -1,5 +1,5 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
-import type { Api } from './api'
+import type { Api } from '../api'
 
 /**
  * Query keys, grouped so one invalidation can cover a family: `['items']` is every list and

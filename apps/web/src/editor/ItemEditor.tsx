@@ -10,7 +10,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { Markdown } from '../lib/markdown'
+import { Markdown } from '@/components/Markdown'
 import type { LinkTarget } from './complete'
 import { counts, type Problem, placeProblems, type ServerDiagnostic } from './diagnostics'
 import { hasChanges } from './diff'

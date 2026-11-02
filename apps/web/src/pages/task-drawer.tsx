@@ -12,10 +12,9 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { ProgressBar } from '@/components'
-import { useApi } from '../lib/app-context'
-import { itemQuery, itemsQuery, useHealth } from '../lib/queries'
-import { summaryOf } from '../lib/summary'
-import { useWrite } from '../lib/writes'
+import { useApi } from '@/infrastructure/api'
+import { itemQuery, itemsQuery, useHealth, useWrite } from '@/infrastructure/query'
+import { summaryOf } from '@/infrastructure/text'
 import { SourceEditor } from './source-editor'
 
 interface Column {

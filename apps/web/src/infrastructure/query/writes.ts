@@ -1,7 +1,7 @@
 import { Conflict, Failure, Invalid, NotFound, Refused } from '@netherite/api'
 import { type QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
-import type { Api } from './api'
-import { type Notice, type Notices, useNotices } from './notices'
+import type { Api } from '../api'
+import { type Notice, type Notices, useNotices } from '../notices'
 
 /** The message for a failed call, as a notice. Conflicts offer to reload. */
 export const noticeFor = (error: unknown, reload: () => void): Omit<Notice, 'id'> => {

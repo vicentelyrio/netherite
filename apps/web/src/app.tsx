@@ -2,10 +2,9 @@ import { NetheriteProvider } from '@netherite/ui'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { type RouterHistory, RouterProvider } from '@tanstack/react-router'
 import { useMemo } from 'react'
-import { createApi } from './lib/api'
-import { ApiProvider } from './lib/app-context'
-import type { AppConfig } from './lib/config'
-import { NoticeProvider } from './lib/notices'
+import { ApiProvider, createApi } from '@/infrastructure/api'
+import type { AppConfig } from '@/infrastructure/config'
+import { NoticeProvider } from '@/infrastructure/notices'
 import { createAppRouter } from './router'
 
 export interface AppProps {

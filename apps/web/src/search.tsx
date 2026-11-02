@@ -4,8 +4,8 @@ import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FilterTabs } from '@/components'
-import { useApi } from './lib/app-context'
-import { searchQuery } from './lib/queries'
+import { useApi } from '@/infrastructure/api'
+import { searchQuery } from '@/infrastructure/query'
 
 /** A result: the item's summary, how well it matched, and where the words were found. */
 export type SearchHit = ItemSummary & {

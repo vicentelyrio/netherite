@@ -1,7 +1,7 @@
 import { makeClient } from '@netherite/api'
 import { Effect } from 'effect'
 import { FetchHttpClient } from 'effect/http'
-import type { AppConfig } from './config'
+import type { AppConfig } from '../config'
 
 type Client = Effect.Success<ReturnType<typeof makeClient>>
 

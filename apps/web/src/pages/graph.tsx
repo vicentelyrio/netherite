@@ -2,9 +2,9 @@ import { Banner, EmptyState } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { Breadcrumbs } from '@/components'
+import { useApi } from '@/infrastructure/api'
+import { graphQuery, itemQuery } from '@/infrastructure/query'
 import { GraphView } from '../graph/GraphView'
-import { useApi } from '../lib/app-context'
-import { graphQuery, itemQuery } from '../lib/queries'
 
 export function GraphPage({ focus }: { readonly focus?: string | undefined }) {
   const api = useApi()

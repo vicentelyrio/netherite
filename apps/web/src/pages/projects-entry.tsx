@@ -1,8 +1,8 @@
 import { EmptyState } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Navigate } from '@tanstack/react-router'
-import { useApi } from '../lib/app-context'
-import { projectsQuery } from '../lib/queries'
+import { useApi } from '@/infrastructure/api'
+import { projectsQuery } from '@/infrastructure/query'
 
 const key = 'netherite:last-project'
 

@@ -13,10 +13,16 @@ import {
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { useApi } from '../lib/app-context'
-import { Markdown } from '../lib/markdown'
-import { itemHistoryQuery, keys, previewQuery, useHealth, viewQuery } from '../lib/queries'
-import { useWrite } from '../lib/writes'
+import { Markdown } from '@/components/Markdown'
+import { useApi } from '@/infrastructure/api'
+import {
+  itemHistoryQuery,
+  keys,
+  previewQuery,
+  useHealth,
+  useWrite,
+  viewQuery,
+} from '@/infrastructure/query'
 import { SourceEditor } from './source-editor'
 
 export const knowledgeTypes = new Set(['adr', 'doc', 'context', 'runbook'])

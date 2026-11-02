@@ -21,10 +21,9 @@ import {
   SelectField,
   TitleForm,
 } from '@/components'
-import { useApi } from '../lib/app-context'
-import { useNotices } from '../lib/notices'
-import { knowledgeQuery, previewQuery } from '../lib/queries'
-import { useWrite } from '../lib/writes'
+import { useApi } from '@/infrastructure/api'
+import { useNotices } from '@/infrastructure/notices'
+import { knowledgeQuery, previewQuery, useWrite } from '@/infrastructure/query'
 
 export type SortKey = 'id' | 'title' | 'freshness' | 'date'
 
