@@ -1221,11 +1221,10 @@ body,
   color: #e6e7f2;
 }
 .project-graph {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-.project-graph {
+
   /* To the rail on the left and the bottom edge of the screen. */
   margin: 12px 0 calc(-1 * var(--nt-space-8)) calc(-1 * var(--nt-layout-page-inset));
   width: calc(100% + var(--nt-layout-page-inset));
@@ -1235,11 +1234,20 @@ body,
 }
 .project-graph-open {
   position: absolute;
-  right: 0;
+  right: var(--nt-space-4);
   bottom: var(--nt-space-4);
   z-index: 2;
   display: inline-flex;
+  align-items: center;
+  height: 20px;
   color: #969ab8;
+}
+.project-graph .gv-legend--row {
+  /* On the line of the open icon, clear of the rail. */
+  left: var(--nt-space-4);
+  right: calc(var(--nt-space-4) + 32px);
+  bottom: var(--nt-space-4);
+  min-height: 20px;
 }
 .project-graph-open:hover {
   color: #e6e7f2;

@@ -772,7 +772,7 @@ describe('the graph view', () => {
     await userEvent.unhover(node)
     await waitFor(() => expect(screen.queryByRole('tooltip')).toBeNull())
     node.focus()
-    await userEvent.keyboard('{Enter}')
+    await userEvent.keyboard(' ')
     expect(node).toHaveAttribute('aria-pressed', 'true')
   })
 
@@ -795,6 +795,23 @@ describe('the graph view', () => {
     const panned = at()
     fireEvent.wheel(graph, { deltaY: -100, clientX: 0, clientY: 0 })
     await waitFor(() => expect(at()).not.toBe(panned))
+  })
+
+  test('double-clicking a node, or pressing Enter on it, opens its page', async () => {
+    renderApp('/graph')
+    await userEvent.dblClick(await nodeButton('GOAL-00001'))
+    expect(await screen.findByRole('heading', { name: 'Ship' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Projects' })).toBeInTheDocument()
+  })
+
+  test('Enter on a focused node opens it, and Space still toggles its focus', async () => {
+    renderApp('/graph')
+    const node = await nodeButton('PRJ-00001')
+    node.focus()
+    await userEvent.keyboard(' ')
+    expect(node).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.keyboard('{Enter}')
+    expect(await screen.findByRole('tablist', { name: 'Views' })).toBeInTheDocument()
   })
 
   test('a node can be dragged, letting go on the node ends the drag, and the drop is not a click', async () => {

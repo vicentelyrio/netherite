@@ -9,7 +9,7 @@ import {
   nodeSpec,
   typeLabels,
 } from '@netherite/ui'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   fitTo,
@@ -22,6 +22,7 @@ import {
   subgraph,
   toGraphology,
 } from './layout'
+import { graphTarget } from './target'
 
 const NODE_SCALE = 1.25
 
@@ -192,6 +193,12 @@ export function GraphView({
   padBottom,
 }: GraphViewProps) {
   const embedded = variant === 'embedded'
+  const navigate = useNavigate()
+  /** Opens a node's page: double-click or Enter. */
+  const open = (id: string) => {
+    const node = data.nodes.find((n) => n.id === id)
+    if (node) void navigate(graphTarget(node, data) as never)
+  }
   const wrap = useRef<HTMLDivElement>(null)
   const svg = useRef<SVGSVGElement>(null)
   const [box, setBox] = useState({ width: 1000, height: 700 })
@@ -516,8 +523,15 @@ export function GraphView({
                   }
                   setFocus(focus === p.id ? undefined : p.id)
                 }}
+                onDoubleClick={(e) => {
+                  e.stopPropagation()
+                  open(p.id)
+                }}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    open(p.id)
+                  } else if (e.key === ' ') {
                     e.preventDefault()
                     setFocus(focus === p.id ? undefined : p.id)
                   }
@@ -694,7 +708,7 @@ export function GraphView({
 
       {!embedded && (
         <div className="gv-hint">
-          <Icon name="mouse" /> Hover for details · click to focus
+          <Icon name="mouse" /> Hover for details · click to focus · double-click or Enter to open
         </div>
       )}
       {/* Small embedded graphs (the project page) pan and zoom too, but have no room for buttons. */}
