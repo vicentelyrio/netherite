@@ -7,10 +7,12 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    }
+    },
+    "./fonts.css": "./fonts.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "fonts.css"
   ],
   "scripts": {
     "build": "tsdown",
@@ -18,12 +20,16 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@netherite/tokens": "workspace:*"
+    "@netherite/tokens": "workspace:*",
+    "@fontsource-variable/source-sans-3": "catalog:",
+    "@fontsource-variable/source-code-pro": "catalog:",
+    "@fontsource-variable/material-symbols-rounded": "catalog:"
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",
     "typescript": "catalog:",
     "vitest": "catalog:",
-    "tsdown": "catalog:"
+    "tsdown": "catalog:",
+    "@types/node": "catalog:"
   }
 }

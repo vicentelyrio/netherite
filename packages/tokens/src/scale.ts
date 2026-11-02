@@ -1,8 +1,12 @@
-/** Fonts. Self-hosted in TASK-00032; the fallbacks cover the moment before they load. */
+/**
+ * Fonts. The variable fonts are self-hosted by `@netherite/ui/fonts.css` under the names that
+ * Fontsource gives them (`... Variable`); the plain names and system fonts cover the moment
+ * before they load, and installs of the static fonts.
+ */
 export const fontFamily = {
-  sans: "'Source Sans 3', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
-  mono: "'Source Code Pro', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
-  icon: "'Material Symbols Rounded'",
+  sans: "'Source Sans 3 Variable', 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif",
+  mono: "'Source Code Pro Variable', 'Source Code Pro', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+  icon: "'Material Symbols Rounded Variable', 'Material Symbols Rounded'",
 } as const
 
 /** Font sizes in px. The UI is dense: body text is 14. */

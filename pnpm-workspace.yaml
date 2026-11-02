@@ -15,6 +15,9 @@ catalog:
   "@effect/platform-node": 4.1.1
   "@effect/vitest": 4.1.1
   yaml: ^2.9.1
+  "@fontsource-variable/source-sans-3": 5.3.1
+  "@fontsource-variable/source-code-pro": 5.3.1
+  "@fontsource-variable/material-symbols-rounded": 5.3.9
   unified: ^11.0.5
   remark-parse: ^11.0.0
   remark-gfm: ^4.0.1

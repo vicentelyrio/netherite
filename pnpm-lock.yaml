@@ -167,6 +167,15 @@ catalogs:
     '@effect/platform-node':
       specifier: 4.1.1
       version: 4.1.1
+    '@fontsource-variable/material-symbols-rounded':
+      specifier: 5.3.9
+      version: 5.3.9
+    '@fontsource-variable/source-code-pro':
+      specifier: 5.3.1
+      version: 5.3.1
+    '@fontsource-variable/source-sans-3':
+      specifier: 5.3.1
+      version: 5.3.1
     '@modelcontextprotocol/sdk':
       specifier: ^1.32.2
       version: 1.32.2
@@ -662,6 +671,15 @@ importers:
 
   packages/ui:
     dependencies:
+      '@fontsource-variable/material-symbols-rounded':
+        specifier: 'catalog:'
+        version: 5.3.9
+      '@fontsource-variable/source-code-pro':
+        specifier: 'catalog:'
+        version: 5.3.1
+      '@fontsource-variable/source-sans-3':
+        specifier: 'catalog:'
+        version: 5.3.1
       '@netherite/tokens':
         specifier: workspace:*
         version: link:../tokens
@@ -669,6 +687,9 @@ importers:
       '@netherite/config':
         specifier: workspace:*
         version: link:../config
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.19.2
       tsdown:
         specifier: 'catalog:'
         version: 0.23.4(typescript@7.0.2)
@@ -831,6 +852,15 @@ packages:
     peerDependencies:
       effect: ^4.1.1
       redis: '>=5.1.0 <7.0.0'
+
+  '@fontsource-variable/material-symbols-rounded@5.3.9':
+    resolution: {integrity: sha512-gM663V+62mQ7wUcXyWs/eU27ZSMHT0F5f43mus/RgwkeExZj+rnnYlvGm4QVBrJlL/zX9XRYIdyU/fhbFcJtxA==}
+
+  '@fontsource-variable/source-code-pro@5.3.1':
+    resolution: {integrity: sha512-N0nZDizh8CQ19+AHHA8Ssb1i/aQf4N2lpRl3qZVH4/9f1yNgWzTkBFpc26v+QQr2hm4By4aiv597BCoEg2SDQg==}
+
+  '@fontsource-variable/source-sans-3@5.3.1':
+    resolution: {integrity: sha512-u0p5Z/PM2e1uxYOMiodLM6NVzxHwULcB6Oi7QSr2WU/sdoLBFP/BeOZ3YYHeJ6rHsjPZA1nZweZVaV7sf2MAyQ==}
 
   '@hono/node-server@2.1.5':
     resolution: {integrity: sha512-MgP/I06GdvsilDspMk/qmRzpk8LOUStP6jFAbSRi40W09DhoyUn+Mj7eyKICPqeYKybOjVFLVIAQzvu1bfIa7Q==}
@@ -2631,6 +2661,12 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+
+  '@fontsource-variable/material-symbols-rounded@5.3.9': {}
+
+  '@fontsource-variable/source-code-pro@5.3.1': {}
+
+  '@fontsource-variable/source-sans-3@5.3.1': {}
 
   '@hono/node-server@2.1.5(hono@4.13.14)':
     dependencies:

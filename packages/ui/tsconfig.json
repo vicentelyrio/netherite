@@ -1,4 +1,7 @@
 {
   "extends": "@netherite/config/tsconfig.browser.json",
-  "include": ["src", "test", "tsdown.config.ts"]
+  "include": ["src", "test", "tsdown.config.ts"],
+  "compilerOptions": {
+    "types": ["node"]
+  }
 }

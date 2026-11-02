@@ -1,0 +1,33 @@
+/*
+ * The fonts, served by the app itself so it works offline (ADR-00011). Import this once, before
+ * the token stylesheet:  import '@netherite/ui/fonts.css'
+ *
+ * Source Sans 3 (text) and Source Code Pro (code) are variable fonts, split by script so only
+ * what a page uses is downloaded. Material Symbols Rounded (icons) is the weight-axis variable
+ * font; draw an icon by putting its name in an element with the `nt-icon` class.
+ * All three are SIL Open Font License 1.1, provided by Fontsource.
+ */
+@import "@fontsource-variable/source-sans-3/wght.css";
+@import "@fontsource-variable/source-sans-3/wght-italic.css";
+@import "@fontsource-variable/source-code-pro/wght.css";
+@import "@fontsource-variable/material-symbols-rounded/wght.css";
+
+/* <span class="nt-icon">check</span> */
+.nt-icon {
+  font-family: var(--nt-font-icon, "Material Symbols Rounded Variable");
+  font-weight: 400;
+  font-style: normal;
+  font-size: var(--nt-layout-icon-size-md, 20px);
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: "liga";
+  font-variation-settings: "wght" 400;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  flex-shrink: 0;
+}
