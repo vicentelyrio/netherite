@@ -1,17 +1,40 @@
 {
   "name": "netherite",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A typed, linked knowledge base in Markdown and git: a CLI, an MCP server for agents, and a local app.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vicentelyrio/netherite.git",
+    "directory": "packages/netherite"
+  },
+  "homepage": "https://github.com/vicentelyrio/netherite#readme",
+  "bugs": {
+    "url": "https://github.com/vicentelyrio/netherite/issues"
+  },
+  "keywords": [
+    "knowledge-base",
+    "markdown",
+    "git",
+    "mcp",
+    "agents",
+    "adr",
+    "tasks"
+  ],
   "type": "module",
   "bin": {
     "netherite": "./dist/bin.mjs"
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/**/*.map"
   ],
   "engines": {
     "node": ">=24"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
   },
   "scripts": {
     "build": "tsdown && node scripts/bundle-app.mjs",

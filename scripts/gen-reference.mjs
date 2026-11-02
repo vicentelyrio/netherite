@@ -65,7 +65,10 @@ const table = (schema) => {
   const props = Object.entries(schema.properties ?? {})
   if (props.length === 0) return '_No inputs._\n'
   const required = new Set(schema.required ?? [])
-  const oneLine = (s) => String(s ?? '').replace(/\s+/g, ' ').replace(/\|/g, '\\|')
+  const oneLine = (s) =>
+    String(s ?? '')
+      .replace(/\s+/g, ' ')
+      .replace(/\|/g, '\\|')
   return (
     '| Name | Type | Required | Description |\n| --- | --- | --- | --- |\n' +
     props
@@ -124,7 +127,11 @@ const mcpAndSchemas = async () => {
     sch += `## \`${type}\`\n\n`
     const required = new Set(s.required ?? [])
     const rows = Object.entries(s.properties ?? {}).map(([name, p]) => {
-      const desc = [p.description, p.pattern ? `pattern \`${p.pattern}\`` : '', p.format ? `format ${p.format}` : '']
+      const desc = [
+        p.description,
+        p.pattern ? `pattern \`${p.pattern}\`` : '',
+        p.format ? `format ${p.format}` : '',
+      ]
         .filter(Boolean)
         .join('; ')
       return `| \`${name}\` | ${typeOf(p)} | ${required.has(name) ? 'yes' : ''} | ${String(desc).replace(/\|/g, '\\|')} |`
