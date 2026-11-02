@@ -1,0 +1,61 @@
+{
+  "name": "netherite",
+  "version": "0.0.0",
+  "description": "A typed, linked knowledge base in Markdown and git: a CLI, an MCP server for agents, and a local app.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "netherite": "./dist/bin.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "tsdown && node scripts/bundle-app.mjs",
+    "typecheck": "tsc",
+    "test": "vitest run --passWithNoTests",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "@effect/platform-node": "catalog:",
+    "@modelcontextprotocol/sdk": "catalog:",
+    "@parcel/watcher": "catalog:",
+    "effect": "catalog:",
+    "graphology": "catalog:",
+    "mdast-util-gfm-footnote": "catalog:",
+    "mdast-util-gfm-strikethrough": "catalog:",
+    "mdast-util-gfm-table": "catalog:",
+    "mdast-util-gfm-task-list-item": "catalog:",
+    "micromark-extension-gfm-footnote": "catalog:",
+    "micromark-extension-gfm-strikethrough": "catalog:",
+    "micromark-extension-gfm-table": "catalog:",
+    "micromark-extension-gfm-task-list-item": "catalog:",
+    "minisearch": "catalog:",
+    "picomatch": "catalog:",
+    "remark-frontmatter": "catalog:",
+    "remark-gfm": "catalog:",
+    "remark-parse": "catalog:",
+    "unified": "catalog:",
+    "unist-util-visit": "catalog:",
+    "yaml": "catalog:"
+  },
+  "devDependencies": {
+    "@netherite/api": "workspace:*",
+    "@netherite/cli": "workspace:*",
+    "@netherite/config": "workspace:*",
+    "@netherite/core": "workspace:*",
+    "@netherite/git": "workspace:*",
+    "@netherite/markdown": "workspace:*",
+    "@netherite/mcp": "workspace:*",
+    "@netherite/schema": "workspace:*",
+    "@netherite/server": "workspace:*",
+    "@netherite/web": "workspace:*",
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

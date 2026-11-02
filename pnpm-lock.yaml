@@ -759,6 +759,115 @@ importers:
         specifier: 'catalog:'
         version: 5.0.5(@types/node@24.19.2)(jsdom@30.1.3)(vite@8.3.5(@types/node@24.19.2)(yaml@2.9.1))
 
+  packages/netherite:
+    dependencies:
+      '@effect/platform-node':
+        specifier: 'catalog:'
+        version: 4.1.1(effect@4.1.1)(redis@6.3.1)
+      '@modelcontextprotocol/sdk':
+        specifier: 'catalog:'
+        version: 1.32.2(zod@4.6.7)
+      '@parcel/watcher':
+        specifier: 'catalog:'
+        version: 2.6.0
+      effect:
+        specifier: 'catalog:'
+        version: 4.1.1
+      graphology:
+        specifier: 'catalog:'
+        version: 0.26.0(graphology-types@0.24.8)
+      mdast-util-gfm-footnote:
+        specifier: 'catalog:'
+        version: 2.1.0
+      mdast-util-gfm-strikethrough:
+        specifier: 'catalog:'
+        version: 2.0.1
+      mdast-util-gfm-table:
+        specifier: 'catalog:'
+        version: 2.0.0
+      mdast-util-gfm-task-list-item:
+        specifier: 'catalog:'
+        version: 2.0.0
+      micromark-extension-gfm-footnote:
+        specifier: 'catalog:'
+        version: 2.1.0
+      micromark-extension-gfm-strikethrough:
+        specifier: 'catalog:'
+        version: 2.1.0
+      micromark-extension-gfm-table:
+        specifier: 'catalog:'
+        version: 2.1.2
+      micromark-extension-gfm-task-list-item:
+        specifier: 'catalog:'
+        version: 2.1.0
+      minisearch:
+        specifier: 'catalog:'
+        version: 7.2.0
+      picomatch:
+        specifier: 'catalog:'
+        version: 4.0.7
+      remark-frontmatter:
+        specifier: 'catalog:'
+        version: 5.0.0
+      remark-gfm:
+        specifier: 'catalog:'
+        version: 4.0.1
+      remark-parse:
+        specifier: 'catalog:'
+        version: 11.0.0
+      unified:
+        specifier: 'catalog:'
+        version: 11.0.5
+      unist-util-visit:
+        specifier: 'catalog:'
+        version: 5.2.0
+      yaml:
+        specifier: 'catalog:'
+        version: 2.9.1
+    devDependencies:
+      '@netherite/api':
+        specifier: workspace:*
+        version: link:../api
+      '@netherite/cli':
+        specifier: workspace:*
+        version: link:../cli
+      '@netherite/config':
+        specifier: workspace:*
+        version: link:../config
+      '@netherite/core':
+        specifier: workspace:*
+        version: link:../core
+      '@netherite/git':
+        specifier: workspace:*
+        version: link:../git
+      '@netherite/markdown':
+        specifier: workspace:*
+        version: link:../markdown
+      '@netherite/mcp':
+        specifier: workspace:*
+        version: link:../mcp
+      '@netherite/schema':
+        specifier: workspace:*
+        version: link:../schema
+      '@netherite/server':
+        specifier: workspace:*
+        version: link:../server
+      '@netherite/web':
+        specifier: workspace:*
+        version: link:../../apps/web
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.19.2
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.23.4(typescript@7.0.2)
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.5(@types/node@24.19.2)(jsdom@30.1.3)(vite@8.3.5(@types/node@24.19.2)(yaml@2.9.1))
+
   packages/schema:
     dependencies:
       effect:

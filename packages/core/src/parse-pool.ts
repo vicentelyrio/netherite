@@ -1,6 +1,7 @@
+import { existsSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { availableParallelism } from 'node:os'
-import { pathToFileURL } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { Worker } from 'node:worker_threads'
 import { type Outline, outlineMarkdown } from '@netherite/markdown'
 import { Effect } from 'effect'
@@ -37,8 +38,21 @@ parentPort.on('message', (batch) => {
 })
 `
 
-const markdownUrl = () =>
-  pathToFileURL(createRequire(import.meta.url).resolve('@netherite/markdown')).href
+/**
+ * Where the worker threads import the Markdown parser from: the workspace package when this runs
+ * from source or a checkout, or `markdown.mjs` next to the program when it runs from the published
+ * `netherite` package, which bundles everything into one file. Throws when neither is there, and
+ * the caller then parses on its own thread.
+ */
+const markdownUrl = () => {
+  try {
+    return pathToFileURL(createRequire(import.meta.url).resolve('@netherite/markdown')).href
+  } catch {
+    const bundled = new URL('./markdown.mjs', import.meta.url)
+    if (existsSync(fileURLToPath(bundled))) return bundled.href
+    throw new Error('The Markdown parser cannot be found for worker threads')
+  }
+}
 
 interface Parsed {
   readonly path: string
