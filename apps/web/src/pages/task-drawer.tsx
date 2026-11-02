@@ -11,8 +11,8 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
+import { ProgressBar } from '@/components'
 import { useApi } from '../lib/app-context'
-import { Bar } from '../lib/bits'
 import { itemQuery, itemsQuery, useHealth } from '../lib/queries'
 import { summaryOf } from '../lib/summary'
 import { useWrite } from '../lib/writes'
@@ -185,7 +185,11 @@ function Body({ id, columns }: { readonly id: string; readonly columns: Readonly
           <h3 className="drawer-h">Tasklist</h3>
           {task.progress !== null && (
             <div className="drawer-check-bar">
-              <Bar done={task.progress.done} total={task.progress.total} label="Checklist" />
+              <ProgressBar
+                done={task.progress.done}
+                total={task.progress.total}
+                label="Checklist"
+              />
             </div>
           )}
         </div>

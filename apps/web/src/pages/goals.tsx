@@ -3,12 +3,11 @@ import { NotFound } from '@netherite/api'
 import { Banner, Button, Card, EmptyState, Icon, ProgressRing } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-import { type FormEvent, type ReactNode, useState } from 'react'
+import { type FormEvent, useState } from 'react'
+import { Breadcrumbs, ProgressBar, TagList, TitleForm } from '@/components'
 import { GraphView } from '../graph/GraphView'
 import { useApi } from '../lib/app-context'
-import { Bar, Tags } from '../lib/bits'
 import { goalQuery, goalsQuery, graphQuery } from '../lib/queries'
-import { TitleForm } from '../lib/title-form'
 import { useWrite } from '../lib/writes'
 
 const noArea = 'No area'
@@ -32,15 +31,6 @@ const sum = (goals: ReadonlyArray<GoalRow>) =>
     { done: 0, total: 0 },
   )
 
-export function Crumbs({ children }: { readonly children?: ReactNode }) {
-  return (
-    <nav className="goal-crumbs" aria-label="Breadcrumb">
-      <Icon name="track_changes" />
-      {children}
-    </nav>
-  )
-}
-
 function GoalCard({ goal }: { readonly goal: GoalRow }) {
   const achieved = goal.status === 'achieved'
   const progress = goal.progress ?? { done: 0, total: 0 }
@@ -53,8 +43,8 @@ function GoalCard({ goal }: { readonly goal: GoalRow }) {
             {achieved && <span className="goal-achieved">Achieved</span>}
           </div>
           {goal.due && <span className="app-muted">Due {goal.due}</span>}
-          <Tags tags={goal.tags} />
-          <Bar
+          <TagList tags={goal.tags} />
+          <ProgressBar
             done={achieved ? progress.total || 1 : progress.done}
             total={progress.total || (achieved ? 1 : 0)}
           />
@@ -168,9 +158,9 @@ export function GoalsPage() {
   const groups = groupByArea(query.data.goals)
   return (
     <div className="app-page app-page--wide">
-      <Crumbs>
-        <h1 className="goal-crumb-title">Goals</h1>
-      </Crumbs>
+      <Breadcrumbs>
+        <h1 className="breadcrumbs-title">Goals</h1>
+      </Breadcrumbs>
       {groups.length === 0 && (
         <>
           <EmptyState
@@ -213,8 +203,8 @@ function ProjectCard({ project }: { readonly project: ProjectRow }) {
             <span className="goal-overline">{project.goals.map((g) => g.title).join(' · ')}</span>
           )}
           <span className="goal-card-title">{project.title}</span>
-          <Tags tags={project.tags} />
-          <Bar done={progress.done} total={progress.total} />
+          <TagList tags={project.tags} />
+          <ProgressBar done={progress.done} total={progress.total} />
         </div>
       </Card>
     </Link>
@@ -264,12 +254,12 @@ export function GoalPage({ id }: { readonly id: string }) {
   return (
     <div className="app-page app-page--wide goal-detail">
       <div className="goal-detail-main">
-        <Crumbs>
+        <Breadcrumbs>
           <Link to="/goals">Goals</Link>
           {goal.area && <span> / {goal.area}</span>}
           <span> / </span>
           <strong>{goal.title}</strong>
-        </Crumbs>
+        </Breadcrumbs>
         <header className="goal-head">
           <h1 className="app-title goal-title">{goal.title}</h1>
           <div className="goal-ring">

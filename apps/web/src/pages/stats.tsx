@@ -1,7 +1,8 @@
 import { Unavailable } from '@netherite/api'
-import { Banner, EmptyState, Icon } from '@netherite/ui'
+import { Banner, EmptyState } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { Breadcrumbs, StatCard } from '@/components'
 import { useApi } from '../lib/app-context'
 import { goalsQuery, projectsQuery, statsQuery } from '../lib/queries'
 
@@ -223,15 +224,6 @@ export function Lines({
   )
 }
 
-function Tile({ value, label }: { readonly value: string | number; readonly label: string }) {
-  return (
-    <div className="st-tile">
-      <strong>{value}</strong>
-      <span>{label}</span>
-    </div>
-  )
-}
-
 /**
  * Stats: how work moved over time, from the git history: tasks done per week, progress of each
  * goal or project, and what happened to ADRs.
@@ -285,10 +277,9 @@ export function StatsPage() {
 
   return (
     <div className="app-page app-page--wide st-page">
-      <nav className="goal-crumbs" aria-label="Breadcrumb">
-        <Icon name="bar_chart" />
+      <Breadcrumbs icon="bar_chart">
         <strong>Stats</strong>
-      </nav>
+      </Breadcrumbs>
       <h1 className="app-title">Stats</h1>
       {data.partial && (
         <Banner variant="warning" title="History is cut short">
@@ -296,13 +287,13 @@ export function StatsPage() {
         </Banner>
       )}
       <div className="st-tiles">
-        <Tile value={done} label="tasks done" />
-        <Tile
+        <StatCard value={done} label="tasks done" />
+        <StatCard
           value={best ? best.count : 0}
           label={best ? `best week · ${shortWeek(best.week)}` : 'best week'}
         />
-        <Tile value={adrs} label="ADRs accepted" />
-        <Tile value={data.completions.length} label="weeks of history" />
+        <StatCard value={adrs} label="ADRs accepted" />
+        <StatCard value={data.completions.length} label="weeks of history" />
       </div>
 
       <section className="st-card" aria-label="Tasks done per week">

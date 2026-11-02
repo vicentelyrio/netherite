@@ -1,6 +1,7 @@
-import { Banner, EmptyState, Icon } from '@netherite/ui'
+import { Banner, EmptyState } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
+import { Breadcrumbs } from '@/components'
 import { GraphView } from '../graph/GraphView'
 import { useApi } from '../lib/app-context'
 import { graphQuery, itemQuery } from '../lib/queries'
@@ -33,8 +34,7 @@ export function GraphPage({ focus }: { readonly focus?: string | undefined }) {
   return (
     <div className="graph-page">
       <header className="graph-head">
-        <nav className="goal-crumbs" aria-label="Breadcrumb">
-          <Icon name="hub" />
+        <Breadcrumbs icon="hub">
           {focus ? (
             <>
               <Link to="/graph">Graph</Link>
@@ -42,9 +42,9 @@ export function GraphPage({ focus }: { readonly focus?: string | undefined }) {
               <strong>{focused.data?.type ?? focus}</strong>
             </>
           ) : (
-            <h1 className="goal-crumb-title">Graph</h1>
+            <h1 className="breadcrumbs-title">Graph</h1>
           )}
-        </nav>
+        </Breadcrumbs>
         {focus && <h1 className="app-title graph-title">{focused.data?.title ?? focus}</h1>}
       </header>
       <GraphView

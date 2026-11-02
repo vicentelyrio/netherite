@@ -24,13 +24,11 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
+import { Breadcrumbs, ProgressBar, TagList, TitleForm } from '@/components'
 import { GraphView } from '../graph/GraphView'
 import { useApi } from '../lib/app-context'
-import { Bar, Tags } from '../lib/bits'
 import { boardQuery, graphQuery } from '../lib/queries'
-import { TitleForm } from '../lib/title-form'
 import { useWrite } from '../lib/writes'
-import { Crumbs } from './goals'
 import { rememberProject } from './projects-entry'
 import { TaskDrawer } from './task-drawer'
 
@@ -58,13 +56,13 @@ function CardBody({
         </Link>
         {assignee !== undefined && <Avatar name={assignee} size={24} />}
       </div>
-      <Tags tags={card.labels} />
+      <TagList tags={card.labels} />
       {card.waitingOn.length > 0 && (
         <div className="board-waiting">
           <Icon name="link" /> Waiting on {card.waitingOn.map((d) => d.title).join(', ')}
         </div>
       )}
-      {card.checklist && <Bar done={card.checklist.done} total={card.checklist.total} />}
+      {card.checklist && <ProgressBar done={card.checklist.done} total={card.checklist.total} />}
     </div>
   )
 }
@@ -337,7 +335,7 @@ export function BoardPage({
   return (
     <div className="app-page app-page--wide project-page">
       <aside className="project-side">
-        <Crumbs>
+        <Breadcrumbs>
           <Link to="/goals">Goals</Link>
           {goal && (
             <>
@@ -347,7 +345,7 @@ export function BoardPage({
               </Link>
             </>
           )}
-        </Crumbs>
+        </Breadcrumbs>
         <h1 className="app-title project-title">{board.title}</h1>
         <div className="project-views" role="tablist" aria-label="Views">
           {views.map((v) => (

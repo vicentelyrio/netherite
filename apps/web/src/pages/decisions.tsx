@@ -4,6 +4,7 @@ import { Avatar, Banner, EmptyState, Icon } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
+import { Breadcrumbs } from '@/components'
 import { useApi } from '../lib/app-context'
 import { decisionsQuery, knowledgeQuery } from '../lib/queries'
 
@@ -208,12 +209,11 @@ export function DecisionsPage() {
     <div className="app-page app-page--wide dl-page">
       <header className="dl-head">
         <div>
-          <nav className="goal-crumbs" aria-label="Breadcrumb">
-            <Icon name="stacks" />
+          <Breadcrumbs icon="stacks">
             <Link to="/knowledge">Knowledge</Link>
             <span> / </span>
             <strong>Decision log</strong>
-          </nav>
+          </Breadcrumbs>
           <h1 className="app-title dl-title">Decision log</h1>
           <p className="kn-sub">
             Status changes from <code className="dl-code">git log -- knowledge/adr</code> · newest

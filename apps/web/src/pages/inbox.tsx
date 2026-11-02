@@ -1,7 +1,8 @@
-import { Banner, Button, EmptyState, Icon, type ItemTypeName, TypeBadge } from '@netherite/ui'
+import { Banner, Button, EmptyState, type ItemTypeName, TypeBadge } from '@netherite/ui'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
+import { Breadcrumbs, GroupCard } from '@/components'
 import { useApi } from '../lib/app-context'
 import { inboxQuery, keys } from '../lib/queries'
 import { ago } from './knowledge'
@@ -32,29 +33,6 @@ export const waitingCount = (inbox: {
   readonly errors: ReadonlyArray<unknown>
   readonly blocked: ReadonlyArray<unknown>
 }) => inbox.proposed.length + inbox.freshness.length + inbox.errors.length + inbox.blocked.length
-
-function Group({
-  title,
-  icon,
-  count,
-  children,
-}: {
-  readonly title: string
-  readonly icon: string
-  readonly count: number
-  readonly children: React.ReactNode
-}) {
-  if (count === 0) return null
-  return (
-    <section className="kn-group ib-group" aria-label={title}>
-      <div className="kn-group-head">
-        <Icon name={icon} size={16} />
-        <strong>{title}</strong> <span>{count}</span>
-      </div>
-      {children}
-    </section>
-  )
-}
 
 function ItemRow({
   id,
@@ -116,10 +94,9 @@ export function InboxPage() {
     <div className="app-page app-page--wide ib-page">
       <header className="kn-head">
         <div>
-          <nav className="goal-crumbs" aria-label="Breadcrumb">
-            <Icon name="inbox" />
+          <Breadcrumbs icon="inbox">
             <strong>Inbox</strong>
-          </nav>
+          </Breadcrumbs>
           <h1 className="app-title kn-h1">Inbox</h1>
           <p className="kn-sub">
             {waiting === 0
@@ -144,7 +121,12 @@ export function InboxPage() {
         />
       ) : (
         <div className="ib-groups">
-          <Group title="Decisions to make" icon="gavel" count={inbox.proposed.length}>
+          <GroupCard
+            className="ib-group"
+            title="Decisions to make"
+            icon="gavel"
+            count={inbox.proposed.length}
+          >
             {inbox.proposed.map((a) => (
               <ItemRow
                 key={a.id}
@@ -158,8 +140,13 @@ export function InboxPage() {
                 }
               />
             ))}
-          </Group>
-          <Group title="Docs gone stale" icon="warning" count={inbox.freshness.length}>
+          </GroupCard>
+          <GroupCard
+            className="ib-group"
+            title="Docs gone stale"
+            icon="warning"
+            count={inbox.freshness.length}
+          >
             {inbox.freshness.map((f) => (
               <ItemRow
                 key={f.id}
@@ -174,8 +161,13 @@ export function InboxPage() {
                 }
               />
             ))}
-          </Group>
-          <Group title="Lint errors" icon="error" count={inbox.errors.length}>
+          </GroupCard>
+          <GroupCard
+            className="ib-group"
+            title="Lint errors"
+            icon="error"
+            count={inbox.errors.length}
+          >
             {inbox.errors.map((d) => (
               <div key={`${d.path}:${d.line}:${d.rule}`} className="ib-row">
                 <code className="kn-mono">
@@ -186,8 +178,13 @@ export function InboxPage() {
                 <span className="app-muted">{d.rule}</span>
               </div>
             ))}
-          </Group>
-          <Group title="Blocked tasks" icon="pause_circle" count={inbox.blocked.length}>
+          </GroupCard>
+          <GroupCard
+            className="ib-group"
+            title="Blocked tasks"
+            icon="pause_circle"
+            count={inbox.blocked.length}
+          >
             {inbox.blocked.map((t) => (
               <ItemRow
                 key={t.id}
@@ -197,13 +194,23 @@ export function InboxPage() {
                 meta={<span className="app-muted">{t.project}</span>}
               />
             ))}
-          </Group>
-          <Group title="Orphans" icon="link_off" count={inbox.orphans.length}>
+          </GroupCard>
+          <GroupCard
+            className="ib-group"
+            title="Orphans"
+            icon="link_off"
+            count={inbox.orphans.length}
+          >
             {inbox.orphans.map((o) => (
               <ItemRow key={o.id} id={o.id} title={o.title} type={o.type} />
             ))}
-          </Group>
-          <Group title="Agent activity" icon="smart_toy" count={inbox.activity.length}>
+          </GroupCard>
+          <GroupCard
+            className="ib-group"
+            title="Agent activity"
+            icon="smart_toy"
+            count={inbox.activity.length}
+          >
             {(all ? inbox.activity : inbox.activity.slice(0, 8)).map((a) => (
               <ItemRow
                 key={a.id}
@@ -213,8 +220,13 @@ export function InboxPage() {
                 meta={<span className="app-muted">{ago(a.last)}</span>}
               />
             ))}
-          </Group>
-          <Group title="Uncommitted changes" icon="difference" count={inbox.changes.length}>
+          </GroupCard>
+          <GroupCard
+            className="ib-group"
+            title="Uncommitted changes"
+            icon="difference"
+            count={inbox.changes.length}
+          >
             {(all ? inbox.changes : inbox.changes.slice(0, 8)).map((c) =>
               c.id ? (
                 <ItemRow
@@ -232,7 +244,7 @@ export function InboxPage() {
                 </div>
               ),
             )}
-          </Group>
+          </GroupCard>
           {!all && (inbox.activity.length > 8 || inbox.changes.length > 8) && (
             <button type="button" className="ib-more" onClick={() => setAll(true)}>
               Show all {inbox.activity.length + inbox.changes.length} changes

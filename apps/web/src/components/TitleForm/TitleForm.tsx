@@ -1,16 +1,15 @@
 import { Button } from '@netherite/ui'
 import { type FormEvent, useState } from 'react'
+import './TitleForm.css'
 
-/** Asks for a title in place, then hands it over. Escape or an empty title cancels. */
-export function TitleForm({
-  label,
-  onSubmit,
-  onCancel,
-}: {
+export interface TitleFormProps {
   readonly label: string
   readonly onSubmit: (title: string) => void
   readonly onCancel: () => void
-}) {
+}
+
+/** Asks for a title in place, then hands it over. Escape or an empty title cancels. */
+export function TitleForm({ label, onSubmit, onCancel }: TitleFormProps) {
   const [title, setTitle] = useState('')
   const submit = (e: FormEvent) => {
     e.preventDefault()
@@ -19,9 +18,9 @@ export function TitleForm({
     onSubmit(trimmed)
   }
   return (
-    <form className="goal-title-form" onSubmit={submit}>
+    <form className="title-form" onSubmit={submit}>
       <input
-        className="goal-title-input"
+        className="title-form-input"
         aria-label={label}
         placeholder={label}
         value={title}

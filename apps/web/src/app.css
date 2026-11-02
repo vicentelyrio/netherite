@@ -327,27 +327,6 @@ body,
 }
 
 /* ---- goals ---- */
-.goal-crumbs {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  margin-bottom: 24px;
-  color: var(--mantine-color-dimmed);
-}
-.goal-crumbs a {
-  color: #a5a7ff;
-  text-decoration: none;
-}
-.goal-crumbs strong {
-  color: #e6e7f2;
-}
-.goal-crumb-title {
-  font-size: 14px;
-  font-weight: 600;
-  margin: 0;
-  color: #e6e7f2;
-}
 .goals-columns {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 440px));
@@ -397,38 +376,6 @@ body,
   color: #6fcf97;
   font-weight: 600;
   font-size: 12px;
-}
-.goal-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.goal-tag {
-  background: #2e3149;
-  border-radius: 6px;
-  padding: 2px 8px;
-  font-size: 12px;
-  color: #c9cbe0;
-}
-.goal-bar {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.goal-bar > :first-child {
-  flex: 1;
-}
-.goal-bar-count {
-  min-width: 40px;
-  text-align: right;
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 600;
-  color: #b9bcd3;
-  font-variant-numeric: tabular-nums;
-}
-.goal-bar-count[data-done] {
-  color: #2cc27e;
 }
 .goals-new {
   height: 44px;
@@ -507,11 +454,6 @@ body,
   align-items: center;
   gap: 4px;
   font-size: 13px;
-}
-.goal-title-form {
-  display: flex;
-  gap: 8px;
-  max-width: 420px;
 }
 .goal-title-input {
   flex: 1;
@@ -847,26 +789,6 @@ body,
   color: #969ab8;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-}
-.kn-group {
-  background: #212336;
-  border: 1px solid #2f3250;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-top: 12px;
-}
-.kn-group-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 32px;
-  padding: 0 16px;
-  background: #1f2134;
-  font-size: 13px;
-}
-.kn-group-head span {
-  font-size: 12px;
-  color: #969ab8;
 }
 .kn-row {
   height: 48px;
@@ -2727,7 +2649,7 @@ body,
   gap: 4px;
   max-width: 1160px;
 }
-.ib-group .kn-group-head {
+.ib-group .group-card-head {
   height: 36px;
 }
 .ib-row {
@@ -2783,25 +2705,6 @@ a.ib-row:hover {
   grid-template-columns: repeat(4, minmax(0, 220px));
   gap: 12px;
   margin: 24px 0;
-}
-.st-tile {
-  background: #212336;
-  border: 1px solid #2f3250;
-  border-radius: 10px;
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.st-tile strong {
-  font-size: 26px;
-  line-height: 32px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-.st-tile span {
-  font-size: 13px;
-  color: #969ab8;
 }
 .st-card {
   background: #212336;

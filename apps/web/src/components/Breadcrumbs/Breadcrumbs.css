@@ -1,0 +1,21 @@
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  margin-bottom: 24px;
+  color: var(--mantine-color-dimmed);
+}
+.breadcrumbs a {
+  color: #a5a7ff;
+  text-decoration: none;
+}
+.breadcrumbs strong {
+  color: #e6e7f2;
+}
+.breadcrumbs-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: #e6e7f2;
+}

@@ -13,10 +13,10 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
+import { Breadcrumbs, GroupCard, TitleForm } from '@/components'
 import { useApi } from '../lib/app-context'
 import { useNotices } from '../lib/notices'
 import { knowledgeQuery, previewQuery } from '../lib/queries'
-import { TitleForm } from '../lib/title-form'
 import { useWrite } from '../lib/writes'
 
 export type SortKey = 'id' | 'title' | 'freshness' | 'date'
@@ -401,10 +401,9 @@ export function KnowledgePage() {
     <div className="app-page app-page--wide kn-page">
       <header className="kn-head">
         <div>
-          <nav className="goal-crumbs" aria-label="Breadcrumb">
-            <Icon name="stacks" />
+          <Breadcrumbs icon="stacks">
             <strong>Knowledge</strong>
-          </nav>
+          </Breadcrumbs>
           <h1 className="app-title kn-h1">Knowledge</h1>
           <p className="kn-sub">
             Docs, decisions and agent context ·{' '}
@@ -562,10 +561,7 @@ export function KnowledgePage() {
                 const inGroup = shown.filter((r) => r.type === type)
                 if (inGroup.length === 0) return null
                 return (
-                  <div key={type} className="kn-group">
-                    <div className="kn-group-head">
-                      <strong>{name}</strong> <span>{inGroup.length}</span>
-                    </div>
+                  <GroupCard key={type} title={name} count={inGroup.length}>
                     {inGroup.map((row) => (
                       <Row
                         key={row.id}
@@ -574,7 +570,7 @@ export function KnowledgePage() {
                         onSelect={() => setSelected(row.id)}
                       />
                     ))}
-                  </div>
+                  </GroupCard>
                 )
               })}
               {shown.length === 0 && (

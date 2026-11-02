@@ -3,6 +3,7 @@ import { Banner, Button, EmptyState, Icon, type ItemTypeName, TypeGlyph } from '
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { type FormEvent, useState } from 'react'
+import { Breadcrumbs, GroupCard } from '@/components'
 import { useApi } from '../lib/app-context'
 import { useNotices } from '../lib/notices'
 import { tagsQuery } from '../lib/queries'
@@ -166,10 +167,9 @@ export function TagsPage() {
 
   return (
     <div className="app-page app-page--wide tg-page">
-      <nav className="goal-crumbs" aria-label="Breadcrumb">
-        <Icon name="sell" />
+      <Breadcrumbs icon="sell">
         <strong>Tags</strong>
-      </nav>
+      </Breadcrumbs>
       <h1 className="app-title">Tags</h1>
       {all.length === 0 ? (
         <EmptyState
@@ -210,12 +210,12 @@ export function TagsPage() {
               ))}
             </div>
           </div>
-          <section className="kn-group tg-list" aria-label="Tags">
+          <GroupCard label="Tags" className="tg-list">
             {shown.map((tag) => (
               <Row key={`${tag.field}:${tag.name}`} tag={tag} tags={all} />
             ))}
             {shown.length === 0 && <div className="kn-nomatch">No tags match.</div>}
-          </section>
+          </GroupCard>
         </>
       )}
     </div>
