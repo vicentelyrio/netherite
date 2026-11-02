@@ -74,7 +74,15 @@ export {
   stateFor,
   type Thresholds,
 } from './freshness'
-export { type GitRepository, gitHandle, workspaceGit } from './git-access'
+export { type FreshnessCache, freshnessCache } from './freshness-cache'
+export {
+  type GitError,
+  type GitRepository,
+  type GitStatus,
+  gitHandle,
+  type StatusEntry,
+  workspaceGit,
+} from './git-access'
 export { type PathMap, pathMap } from './gitpaths'
 export {
   type AdrWeek,
@@ -125,6 +133,20 @@ export {
 } from './resolve'
 export { scanItems } from './scan'
 export { type ScannedItem, scannedItemFrom, toScannedItem } from './scanned-item'
+export {
+  fieldsOf,
+  graphOf,
+  type ItemFilter,
+  type ItemSearchOptions,
+  type ItemSummary,
+  itemDetail,
+  itemSummary,
+  type LinkView,
+  type ListOptions,
+  listItems,
+  matchesFilter,
+  searchItems,
+} from './views'
 export {
   type ChangeEvent,
   parcelBackend,

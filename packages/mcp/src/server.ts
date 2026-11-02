@@ -11,29 +11,29 @@ import {
 import {
   appendActivity,
   buildContext,
-  computeFreshness,
-  contentHash,
   createItem,
   deleteItem,
   type EdgeKind,
-  type Freshness,
+  freshnessCache,
   type GitRepository,
   type ItemType,
+  itemDetail,
   itemJsonSchemas,
   itemTypes,
   link,
   lint,
+  listItems,
   markReviewed,
   type OpEnv,
   type OpResult,
   type Repo,
   type ScannedItem,
+  searchItems,
   setState,
   summarize,
   toggleChecklistItem,
   unlink,
-  updateFields,
-  updateSection,
+  updateItem,
 } from '@netherite/core'
 import { Effect } from 'effect'
 import { ArgReader } from './args'
@@ -64,50 +64,6 @@ const instructions = [
   "Nothing is committed for you. Run `lint` after a batch of changes. Read the `netherite://context` resource for this project's conventions.",
 ].join('\n')
 
-type Fields = Record<string, unknown>
-
-const fieldsOf = (item: ScannedItem): Fields => {
-  const data = item.parsed.frontmatter?.data
-  return typeof data === 'object' && data !== null && !Array.isArray(data) ? (data as Fields) : {}
-}
-
-const summary = (item: ScannedItem) => {
-  const f = fieldsOf(item)
-  return {
-    id: item.id,
-    type: item.type,
-    title: item.title,
-    path: item.path,
-    ...(typeof f.status === 'string' ? { status: f.status } : {}),
-    ...(typeof f.state === 'string' ? { state: f.state } : {}),
-    ...(typeof f.project === 'string' ? { project: f.project } : {}),
-    ...(Array.isArray(f.labels) ? { labels: f.labels } : {}),
-  }
-}
-
-const matches = (
-  item: ScannedItem,
-  filter: { status?: string | undefined; project?: string | undefined; tag?: string | undefined },
-) => {
-  const f = fieldsOf(item)
-  if (filter.status !== undefined && f.status !== filter.status && f.state !== filter.status)
-    return false
-  if (
-    filter.project !== undefined &&
-    f.project !== filter.project &&
-    !(Array.isArray(f.goals) && f.goals.includes(filter.project))
-  )
-    return false
-  if (filter.tag !== undefined) {
-    const tags = [
-      ...(Array.isArray(f.tags) ? f.tags : []),
-      ...(Array.isArray(f.labels) ? f.labels : []),
-    ]
-    if (!tags.includes(filter.tag)) return false
-  }
-  return true
-}
-
 const opSummary = (r: OpResult) => ({
   id: r.id,
   path: r.path,
@@ -133,24 +89,8 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
     )
 
     // Freshness covers the whole index, so it is computed on demand and kept until something changes.
-    let generation = 0
-    let cached: { generation: number; map: ReadonlyMap<string, Freshness> } | undefined
-    const freshness = async (): Promise<ReadonlyMap<string, Freshness> | undefined> => {
-      if (options.git === undefined) return undefined
-      if (cached?.generation === generation) return cached.map
-      const map = await run(
-        computeFreshness({
-          index: repo.index,
-          git: options.git,
-          thresholds: repo.workspace.config.freshness,
-          root: repo.workspace.root,
-        }).pipe(Effect.orElseSucceed(() => undefined)),
-      )
-      if (map === undefined) return undefined
-      cached = { generation, map }
-      return map
-    }
-    options.git?.invalidate()
+    const cache = freshnessCache(repo, options.git)
+    const freshness = () => run(cache.get)
 
     const locate = (id: string) => {
       const found = repo.index.findById(id)
@@ -217,7 +157,7 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           return failure({ type: 'InternalError', message: 'Nothing to do' })
         const outcome = await run(Effect.result(effect))
         if (outcome._tag === 'Failure') return describeError(outcome.failure)
-        generation++
+        cache.invalidate()
         noteWrite(outcome.success)
         return ok(format(outcome.success))
       }
@@ -234,19 +174,7 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           const limit = r.integer('limit', { min: 1, max: 100 }) ?? 20
           const problem = r.check()
           if (problem !== undefined) return describeError(problem)
-          const wide = repo.index.search(query as string, {
-            ...(types === undefined ? {} : { types }),
-            limit: limit * 10,
-          })
-          const results = wide
-            .flatMap((hit) => {
-              const item = repo.index.get(hit.path)
-              return item !== undefined && matches(item, { status, project, tag })
-                ? [{ ...summary(item), score: Math.round(hit.score * 100) / 100 }]
-                : []
-            })
-            .slice(0, limit)
-          return ok({ total: results.length, results })
+          return ok(searchItems(repo, query as string, { types, status, project, tag, limit }))
         },
       },
 
@@ -259,38 +187,7 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           const found = locate(id as string)
           if (found.error) return found.error
           const item = found.item as ScannedItem
-          const link_ = (edge: { kind: EdgeKind; from: string; to: string }, other: string) => {
-            const target = repo.index.get(other)
-            return { kind: edge.kind, id: target?.id, title: target?.title, path: other }
-          }
-          const fresh = (await freshness())?.get(item.path)
-          return ok({
-            ...summary(item),
-            hash: contentHash(item.parsed.source),
-            frontmatter: item.parsed.frontmatter?.data ?? null,
-            body: item.parsed.source.slice(item.parsed.bodyStart).replace(/^\r?\n/, ''),
-            links: repo.index.outgoing(item.path).map((e) => link_(e, e.to)),
-            backlinks: repo.index.backlinks(item.path).map((e) => link_(e, e.from)),
-            unresolved: repo.index
-              .refs(item.path)
-              .filter(({ resolution }) => resolution.status !== 'resolved')
-              .map(({ ref, resolution }) => ({
-                target: ref.target,
-                field: ref.field,
-                status: resolution.status,
-              })),
-            progress: repo.index.progress(item.path) ?? null,
-            orphan: repo.index.isOrphan(item.path),
-            freshness:
-              fresh && fresh.state !== 'not-tracked'
-                ? {
-                    state: fresh.state,
-                    commits: fresh.commits,
-                    since: fresh.baseline?.date ?? null,
-                    atLeast: fresh.atLeast,
-                  }
-                : null,
-          })
+          return ok(itemDetail(repo, item, await freshness()))
         },
       },
 
@@ -305,19 +202,7 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           const offset = r.integer('offset', { min: 0 }) ?? 0
           const problem = r.check()
           if (problem !== undefined) return describeError(problem)
-          const all = repo.index
-            .items()
-            .filter(
-              (item) =>
-                (type === undefined || item.type === type) &&
-                matches(item, { status, project, tag }),
-            )
-            .sort((a, b) => (a.id ?? a.path).localeCompare(b.id ?? b.path))
-          return ok({
-            total: all.length,
-            offset,
-            items: all.slice(offset, offset + limit).map(summary),
-          })
+          return ok(listItems(repo, { type, status, project, tag, limit, offset }))
         },
       },
 
@@ -375,40 +260,27 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           }
           const problem = r.check()
           if (problem !== undefined) return describeError(problem)
-          const steps = Effect.gen(function* () {
-            let result: OpResult | undefined
-            let hash = baseHash
-            const changed = new Set<string>()
-            if (set !== undefined || unset !== undefined) {
-              result = yield* updateFields(
-                repo,
-                id as string,
-                { ...(set ? { set: set as never } : {}), ...(unset ? { unset } : {}) },
-                hash ? { baseHash: hash } : {},
-              )
-              hash = result.hash
-              for (const c of result.changed) changed.add(c)
-            }
-            if (heading !== undefined && content !== undefined) {
-              result = yield* updateSection(
-                repo,
-                id as string,
-                {
-                  heading,
-                  content,
-                  mode: (mode as 'replace' | 'append' | 'create' | undefined) ?? 'replace',
-                },
-                hash ? { baseHash: hash } : {},
-              )
-              for (const c of result.changed) changed.add(c)
-            }
-            return result === undefined
-              ? undefined
-              : { ...opSummary(result), changed: [...changed], unchanged: changed.size === 0 }
-          })
+          const steps = updateItem(
+            repo,
+            id as string,
+            {
+              ...(set ? { set: set as never } : {}),
+              ...(unset ? { unset } : {}),
+              ...(heading !== undefined && content !== undefined
+                ? {
+                    section: {
+                      heading,
+                      content,
+                      mode: (mode as 'replace' | 'append' | 'create' | undefined) ?? 'replace',
+                    },
+                  }
+                : {}),
+            },
+            baseHash ? { baseHash } : {},
+          ).pipe(Effect.map((result) => (result === undefined ? undefined : opSummary(result))))
           const outcome = await run(Effect.result(steps))
           if (outcome._tag === 'Failure') return describeError(outcome.failure)
-          generation++
+          cache.invalidate()
           noteWrite(outcome.success)
           return ok(outcome.success)
         },
@@ -560,7 +432,7 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
         try {
           written = undefined
           const result = await entry.handle(
-            new ArgReader((request.params.arguments ?? {}) as Fields),
+            new ArgReader((request.params.arguments ?? {}) as Record<string, unknown>),
           )
           if (entry.write && result.isError !== true && written !== undefined) {
             await record(request.params.name, written)
@@ -652,10 +524,7 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
 
     const handle: McpHandle = {
       server,
-      invalidate: () => {
-        generation++
-        options.git?.invalidate()
-      },
+      invalidate: () => cache.invalidate(),
     }
     return handle
   })

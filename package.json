@@ -27,7 +27,9 @@
     "cs:version": "changeset version",
     "cs:status": "changeset status",
     "cs:publish": "changeset publish",
-    "test:scale": "turbo run test:scale"
+    "test:scale": "turbo run test:scale",
+    "netherite:lint": "node packages/cli/dist/bin.mjs lint --fail-on warning",
+    "netherite:context": "node packages/cli/dist/bin.mjs context sync --check"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.4",

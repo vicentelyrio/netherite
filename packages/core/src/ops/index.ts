@@ -6,6 +6,7 @@ export {
   createItem,
   deleteItem,
   type FieldPatch,
+  type ItemPatch,
   type LinkInput,
   link,
   markReviewed,
@@ -19,6 +20,7 @@ export {
   toggleChecklistItem,
   unlink,
   updateFields,
+  updateItem,
   updateSection,
 } from './operations'
 export { type Overlay, overlayFileSystem } from './overlay'

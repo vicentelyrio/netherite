@@ -51,8 +51,11 @@ jobs:
       - name: Browser bundle size
         run: echo "Enabled with apps/web in TASK-00034. It fails if the browser build imports more of effect than Schema and the HTTP client, or exceeds its size budget."
 
+      # The repository's own knowledge base, checked with the CLI that was just built.
       - name: Netherite lint on this repository
-        run: echo "Enabled in TASK-00026, once the CLI exists."
+        run: pnpm netherite:lint
+      - name: Netherite context is in sync
+        run: pnpm netherite:context
 
   test:
     name: Test (${{ matrix.os }})

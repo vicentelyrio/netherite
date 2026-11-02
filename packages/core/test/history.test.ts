@@ -606,3 +606,40 @@ describe('fixtures/basic', () => {
     }
   })
 })
+
+describe('commit dates with a time zone offset', () => {
+  // 21:30 on Sunday January 11 in UTC-3 is already 00:30 on Monday January 12 in UTC.
+  const lateSunday = (message: string, write: Record<string, string>): Commit => ({
+    message,
+    date: '2026-01-11T21:30:00-03:00',
+    author: ada,
+    write,
+  })
+
+  test('weeks, completions and progress are counted in UTC, whatever the commit offset', async () => {
+    await withHistory(
+      [
+        {
+          message: 'plan',
+          date: '2026-01-05T10:00:00Z',
+          author: ada,
+          write: {
+            'netherite/projects/PRJ-00001-x.md': project('PRJ-00001', ['GOAL-00001']),
+            [taskFile(1)]: task('TASK-00001', 'backlog'),
+          },
+        },
+        lateSunday('finish', { [taskFile(1)]: task('TASK-00001', 'done') }),
+      ],
+      async (history) => {
+        const done = new Set(['done'])
+        // The finish happened on Monday the 12th in UTC, so it belongs to that week.
+        expect(completionsByWeek(history, done)).toEqual([{ week: '2026-01-12', count: 1 }])
+        expect(progressSeries(history, done).projects.get('PRJ-00001')).toEqual([
+          { week: '2026-01-05', done: 0, total: 1 },
+          { week: '2026-01-12', done: 1, total: 1 },
+        ])
+        expect(weekStart('2026-01-11T21:30:00-03:00')).toBe('2026-01-12')
+      },
+    )
+  })
+})

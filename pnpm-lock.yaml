@@ -300,6 +300,31 @@ importers:
         specifier: 'catalog:'
         version: 5.0.5(@types/node@24.19.2)(vite@8.3.5(@types/node@24.19.2)(yaml@2.9.1))
 
+  packages/api:
+    dependencies:
+      '@netherite/schema':
+        specifier: workspace:*
+        version: link:../schema
+      effect:
+        specifier: 'catalog:'
+        version: 4.1.1
+    devDependencies:
+      '@netherite/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.19.2
+      tsdown:
+        specifier: 'catalog:'
+        version: 0.23.4(typescript@7.0.2)
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vitest:
+        specifier: 'catalog:'
+        version: 5.0.5(@types/node@24.19.2)(vite@8.3.5(@types/node@24.19.2)(yaml@2.9.1))
+
   packages/cli:
     dependencies:
       '@effect/platform-node':
@@ -566,6 +591,12 @@ importers:
 
   packages/server:
     dependencies:
+      '@effect/platform-node':
+        specifier: 'catalog:'
+        version: 4.1.1(effect@4.1.1)(redis@6.3.1)
+      '@netherite/api':
+        specifier: workspace:*
+        version: link:../api
       '@netherite/core':
         specifier: workspace:*
         version: link:../core
@@ -576,6 +607,9 @@ importers:
       '@netherite/config':
         specifier: workspace:*
         version: link:../config
+      '@netherite/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@types/node':
         specifier: 'catalog:'
         version: 24.19.2

@@ -2,7 +2,7 @@ import { detectGit, type GitRepository, handleFrom } from '@netherite/git'
 import { Effect } from 'effect'
 import type { Workspace } from './workspace'
 
-export type { GitRepository } from '@netherite/git'
+export type { GitError, GitRepository, GitStatus, StatusEntry } from '@netherite/git'
 
 /**
  * The git repository around a workspace, or `undefined` when there is none or git is not

@@ -628,3 +628,42 @@ export const deleteItem = (
     yield* applyChanges(repo, [{ path: item.path, content: null, before: source }])
     return { id, path: item.path }
   })
+
+export interface ItemPatch {
+  readonly set?: FieldPatch['set']
+  readonly unset?: FieldPatch['unset']
+  readonly section?: SectionPatch
+}
+
+/**
+ * Sets and unsets fields and/or changes one section, as one request. Each step chains on the
+ * hash the previous one left, so a stale `baseHash` is caught by the first. The result lists
+ * every file written; `unchanged` is `true` only if no step changed anything. `undefined` when
+ * the patch asked for nothing.
+ */
+export const updateItem = (repo: Repo, id: string, patch: ItemPatch, options: OpOptions = {}) =>
+  Effect.gen(function* () {
+    let result: OpResult | undefined
+    let baseHash = options.baseHash
+    const changed = new Set<string>()
+    if (patch.set !== undefined || patch.unset !== undefined) {
+      result = yield* updateFields(
+        repo,
+        id,
+        {
+          ...(patch.set ? { set: patch.set } : {}),
+          ...(patch.unset ? { unset: patch.unset } : {}),
+        },
+        baseHash ? { baseHash } : {},
+      )
+      baseHash = result.hash
+      for (const c of result.changed) changed.add(c)
+    }
+    if (patch.section !== undefined) {
+      result = yield* updateSection(repo, id, patch.section, baseHash ? { baseHash } : {})
+      for (const c of result.changed) changed.add(c)
+    }
+    return result === undefined
+      ? undefined
+      : ({ ...result, changed: [...changed], unchanged: changed.size === 0 } satisfies OpResult)
+  })

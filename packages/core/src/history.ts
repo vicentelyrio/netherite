@@ -195,7 +195,7 @@ export const readHistory = (
           item.commits++
           const key = (commit.author.email || commit.author.name).toLowerCase()
           const seen = item.authors.get(key)
-          const day = commit.committerDate.slice(0, 10)
+          const day = utcDay(commit.committerDate)
           if (seen === undefined) {
             item.authors.set(key, { author: commit.author, commits: 1, first: day, last: day })
           } else {
@@ -279,9 +279,20 @@ export const taskTransitions = (history: History): ReadonlyArray<Transition> =>
     .flatMap((item) => item.transitions.filter((t) => t.field === 'state'))
     .sort(byTime)
 
+/**
+ * The UTC calendar day of an ISO 8601 timestamp, as `YYYY-MM-DD`. Commit dates carry their
+ * author's offset (`2026-11-01T21:07:44-03:00` is already November 2 in UTC), and weeks are
+ * counted in UTC so they are the same on every machine. A plain date is returned as it is.
+ */
+const utcDay = (iso: string) => {
+  if (iso.length <= 10) return iso
+  const time = Date.parse(iso)
+  return Number.isNaN(time) ? iso.slice(0, 10) : new Date(time).toISOString().slice(0, 10)
+}
+
 /** The Monday (UTC) of the week a date falls in, as `YYYY-MM-DD`. */
 export const weekStart = (date: string) => {
-  const d = new Date(`${date.slice(0, 10)}T00:00:00Z`)
+  const d = new Date(`${utcDay(date)}T00:00:00Z`)
   const back = (d.getUTCDay() + 6) % 7
   d.setUTCDate(d.getUTCDate() - back)
   return d.toISOString().slice(0, 10)
@@ -329,7 +340,7 @@ export const completionsByWeek = (
       doneStates.has(t.to) &&
       !(typeof t.from === 'string' && doneStates.has(t.from)),
   )
-  const dates = done.map((t) => t.date.slice(0, 10))
+  const dates = done.map((t) => utcDay(t.date))
   const from =
     range.from ??
     dates.reduce<string | undefined>((a, b) => (a === undefined || b < a ? b : a), undefined)
@@ -359,7 +370,7 @@ export const adrActivityByWeek = (
   range: WeekRange = {},
 ): ReadonlyArray<AdrWeek> => {
   const log = decisionLog(history)
-  const dates = log.map((t) => t.date.slice(0, 10))
+  const dates = log.map((t) => utcDay(t.date))
   const from = range.from ?? dates[0]
   const to = range.to ?? dates.at(-1)
   if (from === undefined || to === undefined) return []
@@ -415,8 +426,8 @@ export const progressSeries = (
 ): ProgressSeries => {
   const items = [...history.items.values()]
   const stamps = items.flatMap((i) => [
-    ...i.transitions.map((t) => t.date.slice(0, 10)),
-    ...(i.deletedAt ? [i.deletedAt.slice(0, 10)] : []),
+    ...i.transitions.map((t) => utcDay(t.date)),
+    ...(i.deletedAt ? [utcDay(i.deletedAt)] : []),
   ])
   const from =
     range.from ??
