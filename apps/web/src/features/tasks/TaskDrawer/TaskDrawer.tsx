@@ -14,9 +14,10 @@ import { useState } from 'react'
 import { ProgressBar } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { formatDateTime } from '@/infrastructure/datetime'
-import { itemQuery, itemsQuery, useHealth, useWrite } from '@/infrastructure/query'
+import { boardQuery, itemQuery, itemsQuery, useHealth, useWrite } from '@/infrastructure/query'
 import { summaryOf } from '@/infrastructure/text'
-import { SourceEditor } from './source-editor'
+import './TaskDrawer.css'
+import { SourceEditor } from '@/features/editor'
 
 interface Column {
   readonly name: string
@@ -227,19 +228,21 @@ function Body({ id, columns }: { readonly id: string; readonly columns: Readonly
 /** A task in a drawer: its fields and checklist, and with `code` the file beside them. */
 export function TaskDrawer({
   id,
-  columns,
-  projectTitle,
+  projectId,
   initial,
   onClose,
 }: {
   readonly id: string | undefined
+  /** The project whose board the task is on: its states are the task's choices. */
+  readonly projectId: string
   /** `code` opens with the file beside the task. */
   readonly initial?: 'code'
-  readonly columns: ReadonlyArray<Column>
-  readonly projectTitle?: string | undefined
   readonly onClose: () => void
 }) {
   const api = useApi()
+  const board = useQuery(boardQuery(api, projectId))
+  const columns = board.data?.columns ?? []
+  const projectTitle = board.data?.title
   const task = useQuery({ ...itemQuery(api, id ?? ''), enabled: id !== undefined })
   const health = useHealth(api)
   const [mode, setMode] = useState<'text' | 'code'>(initial ?? 'text')

@@ -13,8 +13,7 @@ import { GraphPage } from './pages/graph'
 import { InboxPage } from './pages/inbox'
 import { ItemPage } from './pages/item'
 import { KnowledgePage } from './pages/knowledge'
-import { BoardPage } from './pages/projects'
-import { ProjectsEntry } from './pages/projects-entry'
+import { ProjectPage, ProjectsEntryPage } from './pages/projects'
 import { StatsPage } from './pages/stats'
 import { TagsPage } from './pages/tags'
 import { Shell } from './shell'
@@ -48,7 +47,7 @@ const goal = createRoute({
 const projects = createRoute({
   getParentRoute: () => root,
   path: '/projects',
-  component: ProjectsEntry,
+  component: ProjectsEntryPage,
 })
 const project = createRoute({
   getParentRoute: () => root,
@@ -60,7 +59,7 @@ const project = createRoute({
   component: function ProjectRoute() {
     const { id } = project.useParams()
     const { task, mode } = project.useSearch()
-    return <BoardPage id={id} task={task} {...(mode ? { mode } : {})} />
+    return <ProjectPage id={id} task={task} {...(mode ? { mode } : {})} />
   },
 })
 const knowledge = createRoute({

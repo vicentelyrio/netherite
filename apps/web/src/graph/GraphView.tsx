@@ -173,6 +173,8 @@ export interface GraphViewProps {
   /** Space around the fitted picture. */
   readonly pad?: number
   readonly padBottom?: number
+  /** Show the zoom buttons. By default the full view and wide embedded ones have them. */
+  readonly zoomButtons?: boolean
 }
 
 /**
@@ -191,6 +193,7 @@ export function GraphView({
   nodeScale = NODE_SCALE,
   pad = 60,
   padBottom,
+  zoomButtons,
 }: GraphViewProps) {
   const embedded = variant === 'embedded'
   const navigate = useNavigate()
@@ -712,7 +715,7 @@ export function GraphView({
         </div>
       )}
       {/* Small embedded graphs (the project page) pan and zoom too, but have no room for buttons. */}
-      {(!embedded || box.width > 500) && (
+      {(zoomButtons ?? (!embedded || box.width > 500)) && (
         <div className="gv-controls" role="toolbar" aria-label="Zoom">
           <button type="button" aria-label="Zoom in" title="Zoom in" onClick={() => zoom(1.3)}>
             <Icon name="add" />

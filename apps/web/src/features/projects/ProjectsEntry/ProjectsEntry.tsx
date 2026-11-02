@@ -3,25 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Navigate } from '@tanstack/react-router'
 import { useApi } from '@/infrastructure/api'
 import { projectsQuery } from '@/infrastructure/query'
-
-const key = 'netherite:last-project'
-
-/** The project board you looked at last, kept for the Projects item in the rail. */
-export const rememberProject = (id: string) => {
-  try {
-    localStorage.setItem(key, id)
-  } catch {
-    // Private windows and blocked storage just forget it.
-  }
-}
-
-const lastProject = () => {
-  try {
-    return localStorage.getItem(key) ?? undefined
-  } catch {
-    return undefined
-  }
-}
+import { lastProject } from './remember'
 
 /**
  * Projects in the rail is not a list: a project is reached from its goal. It opens the board you

@@ -1,0 +1,28 @@
+.project-title {
+  margin: 0;
+}
+
+.project-views {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.project-views button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: #b9bcd3;
+  cursor: pointer;
+}
+
+.project-views button[data-active] {
+  background: #34365a;
+  color: #e6e7f2;
+}

@@ -1,0 +1,303 @@
+/* ---- task drawer ---- */
+.drawer-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.drawer-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.drawer-state {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+}
+
+.drawer-fields {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 6px 12px;
+  margin: 12px 0 0;
+}
+
+.drawer-fields dt {
+  color: var(--mantine-color-dimmed);
+}
+
+.drawer-fields dd {
+  margin: 0;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.drawer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.drawer-decisions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.drawer-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.drawer-full {
+  margin-top: 24px;
+  display: inline-block;
+}
+
+/* ---- task drawer, as designed ---- */
+.drawer-inner {
+  left: 64px;
+}
+
+.drawer-overlay {
+  left: 64px;
+  background: rgba(14, 15, 26, 0.62);
+}
+
+.drawer-content {
+  background: #282a3f;
+  box-shadow: 24px 0 64px rgba(0, 0, 0, 0.4);
+}
+
+.drawer-head.drawer-head {
+  height: 48px;
+  min-height: 48px;
+  padding: 0 12px 0 24px;
+  background: #23253a;
+  border-bottom: 1px solid #33364f;
+}
+
+.drawer-title-slot {
+  flex: 1;
+}
+
+.drawer-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--nt-font-mono, monospace);
+  font-size: 13px;
+  color: #b9bcd3;
+}
+
+.drawer-crumbs strong {
+  color: #e6e7f2;
+  font-weight: 500;
+}
+
+.drawer-lines {
+  background: rgba(240, 180, 41, 0.14);
+  color: #f0b429;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.drawer-frame.drawer-frame {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  padding: 0;
+}
+
+.drawer-preview {
+  padding: 40px 56px;
+}
+
+.drawer-row {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 24px;
+  margin-top: 20px;
+}
+
+.drawer-adr {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #2e3149;
+  border-radius: 6px;
+  padding: 3px 10px;
+  color: #e6e7f2;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.drawer-adr-id {
+  font-family: var(--nt-font-mono, monospace);
+  color: #c7a8f0;
+}
+
+.drawer-check-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.drawer-check-bar {
+  width: 220px;
+}
+
+.drawer-meta {
+  display: grid;
+  grid-template-columns: 120px 200px 170px 1fr;
+  column-gap: 24px;
+}
+
+.drawer-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.drawer-cell-label {
+  font-size: 12px;
+  color: #8a8fad;
+}
+
+.drawer-people,
+.drawer-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.drawer-person {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.drawer-h {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.drawer-task-title {
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+
+.drawer-title-block {
+  border-top: 1px solid #2f3250;
+  padding-top: 16px;
+}
+
+.drawer-empty {
+  list-style: none;
+  border: 1px dashed #2f3250;
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: #8a8fad;
+}
+
+.drawer-checklist input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #4a4e73;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  vertical-align: middle;
+}
+
+.drawer-checklist input[type="checkbox"]:checked {
+  background: #2cc27e;
+  border-color: #2cc27e;
+}
+
+.drawer-checklist input[type="checkbox"]:checked::after {
+  content: "";
+  width: 5px;
+  height: 9px;
+  border: solid #15162a;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-1px) rotate(45deg);
+}
+
+.drawer-checklist input[type="checkbox"]:focus-visible {
+  outline: 2px solid #a5a7ff;
+  outline-offset: 2px;
+}
+
+.drawer-checklist {
+  gap: 2px;
+  margin-left: -8px;
+}
+
+.drawer-checklist li label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 15px;
+  line-height: 22px;
+  cursor: pointer;
+}
+
+.drawer-checklist li label:hover {
+  background: #2e3148;
+}
+
+.drawer-checklist li:has(input:checked) label {
+  color: #b9bcd3;
+}
+
+.drawer-task-title {
+  letter-spacing: -0.01em;
+}
+
+.drawer-title-block {
+  margin-top: 24px;
+  padding-top: 28px;
+}
+
+.drawer-title-block p {
+  font-size: 15px;
+  line-height: 22px;
+  color: #b9bcd3;
+  margin: 6px 0 0;
+}
+
+/* The drawer is a column: header, body, and the status bar fixed at the bottom. */
+.drawer-content {
+  display: flex;
+  flex-direction: column;
+}

@@ -14,6 +14,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Markdown } from '@/components/Markdown'
+import { SourceEditor } from '@/features/editor'
 import { useApi } from '@/infrastructure/api'
 import { formatDate, isoDay } from '@/infrastructure/datetime'
 import {
@@ -24,7 +25,6 @@ import {
   useWrite,
   viewQuery,
 } from '@/infrastructure/query'
-import { SourceEditor } from './source-editor'
 
 export const knowledgeTypes = new Set(['adr', 'doc', 'context', 'runbook'])
 

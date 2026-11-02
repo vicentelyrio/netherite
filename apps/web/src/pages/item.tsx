@@ -14,10 +14,10 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Markdown } from '@/components/Markdown'
+import { SourceEditor } from '@/features/editor'
 import { useApi } from '@/infrastructure/api'
 import { itemQuery, keys, useWrite } from '@/infrastructure/query'
 import { KnowledgeFrame, knowledgeTypes } from './knowledge-item'
-import { SourceEditor } from './source-editor'
 
 const reviewable = new Set(['doc', 'runbook', 'context'])
 

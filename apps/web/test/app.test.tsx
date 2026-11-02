@@ -5,8 +5,8 @@ import { EditorView } from '@codemirror/view'
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, test } from 'vitest'
+import { moveFor } from '@/features/projects'
 import { changesField } from '../src/editor/extensions'
-import { moveFor } from '../src/pages/projects'
 import { other, renderApp, server } from './helpers'
 
 const nav = () => screen.getByRole('navigation', { name: 'Main' })
