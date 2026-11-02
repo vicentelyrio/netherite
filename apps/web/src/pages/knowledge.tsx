@@ -13,7 +13,14 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Breadcrumbs, GroupCard, TitleForm } from '@/components'
+import {
+  Breadcrumbs,
+  FilterTabs,
+  GroupCard,
+  SearchField,
+  SelectField,
+  TitleForm,
+} from '@/components'
 import { useApi } from '../lib/app-context'
 import { useNotices } from '../lib/notices'
 import { knowledgeQuery, previewQuery } from '../lib/queries'
@@ -452,68 +459,39 @@ export function KnowledgePage() {
       ) : (
         <>
           <div className="kn-bar">
-            <label className="kn-search">
-              <Icon name="search" size={18} />
-              <input
-                aria-label="Filter by title or path"
-                placeholder="Filter by title or path"
-                value={filters.q}
-                onChange={(e) => set({ q: e.currentTarget.value })}
-              />
-            </label>
-            <div className="kn-tabs" role="radiogroup" aria-label="Type">
-              {typeTabs.map(([value, label]) => (
-                <label key={value} data-on={filters.type === value || undefined}>
-                  <input
-                    type="radio"
-                    name="kn-type"
-                    className="nt-visually-hidden"
-                    checked={filters.type === value}
-                    onChange={() => set({ type: value })}
-                  />
-                  {label} <span className="kn-count">{counts[value] ?? 0}</span>
-                </label>
-              ))}
-            </div>
-            <label className="kn-select">
-              <span>Status</span>
-              <select
-                aria-label="Status"
-                value={filters.status}
-                onChange={(e) => set({ status: e.currentTarget.value })}
-              >
-                <option value="">Any</option>
-                {adrStatuses.map((s) => (
-                  <option key={s}>{s}</option>
-                ))}
-              </select>
-            </label>
-            <label className="kn-select">
-              <span>Project</span>
-              <select
-                aria-label="Project"
-                value={filters.project}
-                onChange={(e) => set({ project: e.currentTarget.value })}
-              >
-                <option value="">Any</option>
-                {projects.map((p) => (
-                  <option key={p}>{p}</option>
-                ))}
-              </select>
-            </label>
-            <label className="kn-select">
-              <span>Tag</span>
-              <select
-                aria-label="Tag"
-                value={filters.tag}
-                onChange={(e) => set({ tag: e.currentTarget.value })}
-              >
-                <option value="">Any</option>
-                {tags.map((t) => (
-                  <option key={t}>{t}</option>
-                ))}
-              </select>
-            </label>
+            <SearchField
+              label="Filter by title or path"
+              value={filters.q}
+              onChange={(q) => set({ q })}
+            />
+            <FilterTabs
+              label="Type"
+              options={typeTabs.map(([value, label]) => ({
+                value,
+                label,
+                count: counts[value] ?? 0,
+              }))}
+              value={filters.type}
+              onChange={(type) => set({ type })}
+            />
+            <SelectField
+              label="Status"
+              value={filters.status}
+              options={adrStatuses}
+              onChange={(status) => set({ status })}
+            />
+            <SelectField
+              label="Project"
+              value={filters.project}
+              options={projects}
+              onChange={(project) => set({ project })}
+            />
+            <SelectField
+              label="Tag"
+              value={filters.tag}
+              options={tags}
+              onChange={(tag) => set({ tag })}
+            />
             <span className="kn-rule" />
             <button
               type="button"

@@ -3,6 +3,7 @@ import { Icon, type ItemTypeName, Modal, TypeGlyph } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { FilterTabs } from '@/components'
 import { useApi } from './lib/app-context'
 import { searchQuery } from './lib/queries'
 
@@ -168,24 +169,24 @@ export function SearchPalette({
           />
           <kbd>esc</kbd>
         </div>
-        <div className="sp-chips" role="radiogroup" aria-label="Type">
-          {chips.map(([key, label]) => (
-            <label key={key} data-on={only === key || undefined}>
-              <input
-                type="radio"
-                name="sp-type"
-                className="nt-visually-hidden"
-                checked={only === key}
-                onChange={() => {
-                  setOnly(key)
-                  setHi(0)
-                }}
-              />
-              {key !== 'all' && <TypeGlyph type={(key === 'doc' ? 'doc' : key) as ItemTypeName} />}
-              {label} <span>{counts(key)}</span>
-            </label>
-          ))}
-        </div>
+        <FilterTabs
+          className="sp-chips"
+          variant="chips"
+          label="Type"
+          options={chips.map(([key, label]) => ({
+            value: key,
+            label,
+            count: counts(key),
+            icon: key !== 'all' && (
+              <TypeGlyph type={(key === 'doc' ? 'doc' : key) as ItemTypeName} />
+            ),
+          }))}
+          value={only}
+          onChange={(key) => {
+            setOnly(key)
+            setHi(0)
+          }}
+        />
         <div className="sp-results" role="listbox" aria-label="Results">
           {debounced.trim() === '' && (
             <div className="sp-empty">Search goals, projects, tasks and knowledge.</div>

@@ -1,0 +1,25 @@
+.select-field {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 8px 0 12px;
+  border-radius: 8px;
+  border: 1px solid #3a3d58;
+  font-size: 13px;
+  color: #969ab8;
+}
+.select-field:hover {
+  border-color: #474b6e;
+}
+.select-field select {
+  background: transparent;
+  border: 0;
+  color: #e8e9f3;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.select-field option {
+  background: #212336;
+}

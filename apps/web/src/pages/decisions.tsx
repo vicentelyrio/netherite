@@ -4,7 +4,7 @@ import { Avatar, Banner, EmptyState, Icon } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Breadcrumbs } from '@/components'
+import { Breadcrumbs, FilterTabs } from '@/components'
 import { useApi } from '../lib/app-context'
 import { decisionsQuery, knowledgeQuery } from '../lib/queries'
 
@@ -238,22 +238,14 @@ export function DecisionsPage() {
             Supersession
           </span>
           <span className="kn-rule" />
-          <div className="kn-tabs" role="radiogroup" aria-label="Project">
-            {[['', 'All projects'], ...all.map((l) => [l.project, l.project])].map(
-              ([value, label]) => (
-                <label key={value} data-on={project === value || undefined}>
-                  <input
-                    type="radio"
-                    name="dl-project"
-                    className="nt-visually-hidden"
-                    checked={project === value}
-                    onChange={() => setProject(value as string)}
-                  />
-                  {label}
-                </label>
-              ),
+          <FilterTabs
+            label="Project"
+            options={[['', 'All projects'], ...all.map((l) => [l.project, l.project])].map(
+              ([value, label]) => ({ value: value as string, label }),
             )}
-          </div>
+            value={project}
+            onChange={setProject}
+          />
         </div>
       </header>
       {noGit && (

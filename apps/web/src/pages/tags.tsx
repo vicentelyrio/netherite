@@ -3,7 +3,7 @@ import { Banner, Button, EmptyState, Icon, type ItemTypeName, TypeGlyph } from '
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { type FormEvent, useState } from 'react'
-import { Breadcrumbs, GroupCard } from '@/components'
+import { Breadcrumbs, FilterTabs, GroupCard, SearchField } from '@/components'
 import { useApi } from '../lib/app-context'
 import { useNotices } from '../lib/notices'
 import { tagsQuery } from '../lib/queries'
@@ -180,35 +180,19 @@ export function TagsPage() {
       ) : (
         <>
           <div className="kn-bar">
-            <label className="kn-search">
-              <Icon name="search" size={18} />
-              <input
-                aria-label="Filter tags"
-                placeholder="Filter tags"
-                value={q}
-                onChange={(e) => setQ(e.currentTarget.value)}
-              />
-            </label>
-            <div className="kn-tabs" role="radiogroup" aria-label="Kind">
-              {(
+            <SearchField label="Filter tags" value={q} onChange={setQ} />
+            <FilterTabs
+              label="Kind"
+              options={(
                 [
                   ['all', 'All'],
                   ['tags', 'Tags'],
                   ['labels', 'Labels'],
                 ] as const
-              ).map(([value, label]) => (
-                <label key={value} data-on={field === value || undefined}>
-                  <input
-                    type="radio"
-                    name="tg-field"
-                    className="nt-visually-hidden"
-                    checked={field === value}
-                    onChange={() => setField(value)}
-                  />
-                  {label} <span className="kn-count">{count(value)}</span>
-                </label>
-              ))}
-            </div>
+              ).map(([value, label]) => ({ value, label, count: count(value) }))}
+              value={field}
+              onChange={setField}
+            />
           </div>
           <GroupCard label="Tags" className="tg-list">
             {shown.map((tag) => (
