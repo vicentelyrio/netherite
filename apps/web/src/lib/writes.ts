@@ -37,7 +37,12 @@ export const noticeFor = (error: unknown, reload: () => void): Omit<Notice, 'id'
 }
 
 /** Refreshes everything about items after a write (the event stream does too; this is just sooner). */
-export const refresh = (client: QueryClient) => client.invalidateQueries({ queryKey: ['items'] })
+export const refresh = (client: QueryClient) =>
+  Promise.all(
+    [['items'], ['goals'], ['projects'], ['graph']].map((queryKey) =>
+      client.invalidateQueries({ queryKey }),
+    ),
+  )
 
 /**
  * A write to the server. On success the item queries refresh. On failure the person is told why in

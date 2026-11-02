@@ -10,6 +10,7 @@ import {
 import { GoalPage, GoalsPage } from './pages/goals'
 import { ItemPage } from './pages/item'
 import { type PageProps, Placeholder } from './pages/lists'
+import { BoardPage, ProjectsPage } from './pages/projects'
 import { Shell } from './shell'
 
 const root = createRootRoute({
@@ -46,11 +47,18 @@ const goal = createRoute({
     return <GoalPage id={id} />
   },
 })
-const projects = screen('/projects', {
-  title: 'Projects',
-  icon: 'task_alt',
-  types: ['project'],
-  arrives: 'The project board: tasks by state, with drag to change state (TASK-00038).',
+const projects = createRoute({
+  getParentRoute: () => root,
+  path: '/projects',
+  component: ProjectsPage,
+})
+const project = createRoute({
+  getParentRoute: () => root,
+  path: '/projects/$id',
+  component: function ProjectRoute() {
+    const { id } = project.useParams()
+    return <BoardPage id={id} />
+  },
 })
 const knowledge = screen('/knowledge', {
   title: 'Knowledge',
@@ -92,6 +100,7 @@ const routeTree = root.addChildren([
   goals,
   goal,
   projects,
+  project,
   knowledge,
   stats,
   tags,

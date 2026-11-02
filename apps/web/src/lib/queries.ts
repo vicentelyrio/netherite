@@ -13,6 +13,8 @@ export const keys = {
   search: (q: string) => ['search', q] as const,
   graph: ['graph'] as const,
   goals: ['goals'] as const,
+  projects: ['projects'] as const,
+  board: (id: string) => ['projects', id] as const,
   goal: (id: string) => ['goals', id] as const,
   lint: ['lint'] as const,
   inbox: ['inbox'] as const,
@@ -82,3 +84,13 @@ export const goalQuery = (api: Api, id: string) =>
 
 export const graphQuery = (api: Api) =>
   queryOptions({ queryKey: keys.graph, queryFn: () => api.call((c) => c.graph.graph()) })
+
+export const projectsQuery = (api: Api) =>
+  queryOptions({ queryKey: keys.projects, queryFn: () => api.call((c) => c.projects.list()) })
+
+export const boardQuery = (api: Api, id: string) =>
+  queryOptions({
+    queryKey: keys.board(id),
+    queryFn: () => api.call((c) => c.projects.board({ params: { id } })),
+    retry: false,
+  })

@@ -29,6 +29,7 @@ describe('the API definition', () => {
       'lint',
       'lintText',
       'meta',
+      'projects',
       'search',
       'stats',
     ])
@@ -53,6 +54,8 @@ describe('the API definition', () => {
         '/api/items/{id}/state',
         '/api/lint',
         '/api/schemas/{type}',
+        '/api/projects',
+        '/api/projects/{id}/board',
         '/api/search',
         '/api/stats',
       ].sort(),

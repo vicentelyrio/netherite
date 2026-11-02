@@ -2,6 +2,7 @@ import { Schema } from 'effect'
 import { HttpApi, HttpApiEndpoint, HttpApiGroup, HttpApiSchema } from 'effect/http-api'
 import { Conflict, Failure, Invalid, NotFound, Refused, Unavailable } from './errors'
 import {
+  Board,
   CheckPayload,
   CreatePayload,
   DecisionLog,
@@ -23,6 +24,7 @@ import {
   LintReport,
   LintTextPayload,
   ListQuery,
+  ProjectList,
   ReviewPayload,
   SearchQuery,
   SearchResult,
@@ -132,6 +134,15 @@ export class GoalsGroup extends HttpApiGroup.make('goals').add(
   }),
 ) {}
 
+export class ProjectsGroup extends HttpApiGroup.make('projects').add(
+  HttpApiEndpoint.get('list', '/projects', { success: ProjectList }),
+  HttpApiEndpoint.get('board', '/projects/:id/board', {
+    params: id,
+    success: Board,
+    error: [NotFound, Refused],
+  }),
+) {}
+
 export class LintGroup extends HttpApiGroup.make('lint').add(
   HttpApiEndpoint.get('lint', '/lint', {
     query: LintQuery,
@@ -203,6 +214,7 @@ export class NetheriteApi extends HttpApi.make('netherite')
     SearchGroup,
     GraphGroup,
     GoalsGroup,
+    ProjectsGroup,
     LintGroup,
     LintTextGroup,
     InboxGroup,

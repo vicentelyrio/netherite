@@ -135,6 +135,10 @@ export {
 export { scanItems } from './scan'
 export { type ScannedItem, scannedItemFrom, toScannedItem } from './scanned-item'
 export {
+  type BoardCard,
+  type BoardColumn,
+  type BoardItem,
+  boardOf,
   fieldsOf,
   type GoalRow,
   goalDetail,
@@ -150,6 +154,7 @@ export {
   listItems,
   matchesFilter,
   type ProjectRow,
+  projectRows,
   searchItems,
 } from './views'
 export {

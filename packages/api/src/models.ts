@@ -372,3 +372,31 @@ export const GoalDetail = Schema.Struct({
   projectRows: Schema.Array(ProjectRow),
 })
 export type GoalDetail = typeof GoalDetail.Type
+
+// ---- projects and their board ----------------------------------------------------------
+
+export const ProjectList = Schema.Struct({ projects: Schema.Array(ProjectRow) })
+
+export const BoardCard = Schema.Struct({
+  id: S,
+  title: S,
+  path: S,
+  state: S,
+  labels: Schema.Array(S),
+  assignees: Schema.Array(S),
+  due: opt(S),
+  checklist: Schema.NullOr(Progress),
+  /** Tasks it depends on that are not done yet. */
+  waitingOn: Schema.Array(Schema.Struct({ id: S, title: S })),
+})
+export type BoardCard = typeof BoardCard.Type
+
+export const Board = Schema.Struct({
+  ...ProjectRow.fields,
+  /** The configured states, in order, each with its category (todo, active, blocked, done). */
+  columns: Schema.Array(Schema.Struct({ name: S, category: S })),
+  tasks: Schema.Array(BoardCard),
+  /** Docs, ADRs and the like that link to the project. */
+  linked: Schema.Array(Schema.Struct({ id: S, type: S, title: S })),
+})
+export type Board = typeof Board.Type

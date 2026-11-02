@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { goalDetail, goalRows } from '../src/index'
+import { boardOf, goalDetail, goalRows } from '../src/index'
 import { cleanFiles, world } from './ops-helpers'
 
 const goal = (n: number, extra: string[] = [], title = `Goal ${n}`) => ({
@@ -100,5 +100,34 @@ describe('a goal in detail', () => {
     const detail = goalDetail(w.repo, w.repo.index.findById('GOAL-00002')[0] as never)
     expect(detail.projectRows).toEqual([])
     expect(detail.projects).toBe(0)
+  })
+})
+
+describe('a project board', () => {
+  test('puts tasks in columns by configured state, with checklist progress and what each waits on', async () => {
+    const w = await world({
+      ...cleanFiles(),
+      ...goal(2),
+      ...project(7, ['GOAL-00002']),
+      ...task(1, 'PRJ-00007', 'done'),
+      ...task(2, 'PRJ-00007', 'backlog'),
+      '/repo/netherite/tasks/TASK-00013-w.md':
+        '---\nid: TASK-00013\naliases: [TASK-00013]\ntype: task\ntitle: W\nproject: PRJ-00007\nstate: backlog\ndepends_on: [TASK-00011, TASK-00012]\nlabels: [a]\nassignees: ["@ada"]\n---\n\n# W\n\n- [x] one\n- [ ] two\n',
+    })
+    const board = boardOf(w.repo, w.repo.index.findById('PRJ-00007')[0] as never)
+    expect(board.columns.map((c) => c.name)).toEqual(['backlog', 'doing', 'blocked', 'done'])
+    expect(board.tasks.map((t) => [t.id, t.state])).toEqual([
+      ['TASK-00011', 'done'],
+      ['TASK-00012', 'backlog'],
+      ['TASK-00013', 'backlog'],
+    ])
+    const waiting = board.tasks[2]
+    expect(waiting?.waitingOn.map((d) => d.id)).toEqual(['TASK-00012'])
+    expect(waiting).toMatchObject({
+      labels: ['a'],
+      assignees: ['@ada'],
+      checklist: { done: 1, total: 2 },
+    })
+    expect(board.tasks[0]?.checklist).toBeNull()
   })
 })

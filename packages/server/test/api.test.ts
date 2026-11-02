@@ -200,6 +200,20 @@ describe('search, graph, lint', () => {
     )
   })
 
+  test('projects list, and a board has the configured columns and the tasks', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const { projects } = yield* s.client.projects.list()
+        expect(projects.map((p) => p.id)).toContain('PRJ-00001')
+        const board = yield* s.client.projects.board({ params: { id: 'PRJ-00001' } })
+        expect(board.columns.map((c) => c.name)).toEqual(['backlog', 'doing', 'blocked', 'done'])
+        expect(board.tasks.map((t) => t.id)).toContain('TASK-00001')
+        const notProject = yield* failure(s.client.projects.board({ params: { id: 'TASK-00001' } }))
+        expect(notProject._tag).toBe('NotFound')
+      }),
+    )
+  })
+
   test('lint reports the whole workspace or one item, and sees edits straight away', async () => {
     await withServer((s) =>
       Effect.gen(function* () {

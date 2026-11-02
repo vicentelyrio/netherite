@@ -269,3 +269,90 @@ export const goalDetail = (repo: Repo, item: ScannedItem) => ({
     .sort((a, b) => (a.id ?? '').localeCompare(b.id ?? ''))
     .map((p) => projectRow(repo, p)),
 })
+
+// ---- a project's board ---------------------------------------------------------------------------
+
+export interface BoardCard {
+  readonly id: string
+  readonly title: string
+  readonly path: string
+  readonly state: string
+  readonly labels: ReadonlyArray<string>
+  readonly assignees: ReadonlyArray<string>
+  readonly due: string | undefined
+  readonly checklist: { readonly done: number; readonly total: number } | null
+  /** Tasks it depends on that are not done yet. */
+  readonly waitingOn: ReadonlyArray<{ readonly id: string; readonly title: string }>
+}
+
+export interface BoardColumn {
+  readonly name: string
+  readonly category: string
+}
+
+/** What belongs to a project besides its tasks, for the board's other views. */
+export interface BoardItem {
+  readonly id: string
+  readonly type: string
+  readonly title: string
+}
+
+const taskCard = (repo: Repo, item: ScannedItem, doneStates: ReadonlySet<string>): BoardCard => {
+  const f = fieldsOf(item)
+  const waitingOn = strings(f.depends_on).flatMap((id) => {
+    const dep = repo.index.findById(id)[0]
+    if (dep === undefined) return []
+    const state = fieldsOf(dep).state
+    return typeof state === 'string' && doneStates.has(state)
+      ? []
+      : [{ id, title: dep.title ?? id }]
+  })
+  return {
+    id: item.id as string,
+    title: item.title ?? (item.id as string),
+    path: item.path,
+    state: typeof f.state === 'string' ? f.state : '',
+    labels: strings(f.labels),
+    assignees: strings(f.assignees),
+    due: typeof f.due === 'string' ? f.due : undefined,
+    checklist: repo.index.progress(item.path) ?? null,
+    waitingOn,
+  }
+}
+
+/** Every project, in ID order. */
+export const projectRows = (repo: Repo): ProjectRow[] =>
+  repo.index
+    .items()
+    .filter((i) => i.type === 'project' && i.id !== undefined)
+    .sort((a, b) => (a.id ?? '').localeCompare(b.id ?? ''))
+    .map((i) => projectRow(repo, i))
+
+/** A project's tasks by configured state (in the order of the config), and what else is linked to it. */
+export const boardOf = (repo: Repo, project: ScannedItem) => {
+  const states = repo.workspace.config.states
+  const doneStates = new Set(states.filter((s) => s.category === 'done').map((s) => s.name))
+  const linked = repo.index.backlinks(project.path).filter((e) => e.kind === 'belongs_to')
+  const tasks = linked
+    .flatMap((e) => {
+      const item = repo.index.get(e.from)
+      return item?.type === 'task' && item.id !== undefined ? [item] : []
+    })
+    .sort((a, b) => (a.id ?? '').localeCompare(b.id ?? ''))
+    .map((t) => taskCard(repo, t, doneStates))
+  const others = repo.index
+    .backlinks(project.path)
+    .flatMap((e) => {
+      const item = repo.index.get(e.from)
+      return item !== undefined && item.type !== 'task' && item.id !== undefined
+        ? [{ id: item.id, type: item.type ?? '', title: item.title ?? item.id }]
+        : []
+    })
+    .sort((a, b) => a.id.localeCompare(b.id))
+  return {
+    ...projectRow(repo, project),
+    columns: states.map((s): BoardColumn => ({ name: s.name, category: s.category })),
+    tasks,
+    linked: [...new Map(others.map((o) => [o.id, o])).values()] as BoardItem[],
+  }
+}

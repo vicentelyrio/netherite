@@ -5,6 +5,7 @@ import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, test } from 'vitest'
 import { changesField } from '../src/editor/extensions'
+import { moveFor } from '../src/pages/projects'
 import { other, renderApp, server } from './helpers'
 
 const nav = () => screen.getByRole('navigation', { name: 'Main' })
@@ -408,5 +409,40 @@ describe('goals', () => {
     await userEvent.type(screen.getByLabelText('Goal title'), 'Learn to sail')
     await userEvent.click(screen.getByRole('button', { name: 'Create' }))
     expect(await screen.findByText('Learn to sail')).toBeInTheDocument()
+  })
+})
+
+describe('the project board', () => {
+  test('Projects lists projects, and one opens as a board with a column per configured state', async () => {
+    renderApp('/projects')
+    await userEvent.click(await screen.findByText('PRJ-00001'))
+    for (const name of ['backlog', 'doing', 'blocked', 'done']) {
+      expect(await screen.findByRole('region', { name })).toBeInTheDocument()
+    }
+    const backlog = screen.getByRole('region', { name: 'backlog' })
+    expect(within(backlog).getByText('TASK-00001')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /: tasks$/ })).toBeInTheDocument()
+  })
+
+  test('Docs and Knowledge are views of what links to the project', async () => {
+    renderApp('/projects/PRJ-00001')
+    await screen.findByRole('region', { name: 'backlog' })
+    await userEvent.click(screen.getByRole('tab', { name: 'Knowledge' }))
+    expect(await screen.findByText(/ADR-0000|No decisions/)).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('tab', { name: 'Docs' }))
+    expect(await screen.findByText(/DOC-0000|RUN-0000|No docs/)).toBeInTheDocument()
+  })
+
+  test('an unknown or non-project ID says so', async () => {
+    renderApp('/projects/TASK-00001')
+    expect(await screen.findByText('No project TASK-00001')).toBeInTheDocument()
+  })
+
+  test('a drop changes state only when it lands on another column', () => {
+    const tasks = [{ id: 'TASK-00001', state: 'backlog' }]
+    expect(moveFor(tasks, 'TASK-00001', 'doing')).toEqual({ id: 'TASK-00001', state: 'doing' })
+    expect(moveFor(tasks, 'TASK-00001', 'backlog')).toBeUndefined()
+    expect(moveFor(tasks, 'TASK-00001', undefined)).toBeUndefined()
+    expect(moveFor(tasks, 'TASK-09999', 'doing')).toBeUndefined()
   })
 })

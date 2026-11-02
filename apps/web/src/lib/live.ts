@@ -15,6 +15,7 @@ export const invalidationsFor = (event: ServerEvent): ReadonlyArray<ReadonlyArra
         ['search'],
         keys.graph,
         keys.goals,
+        keys.projects,
         keys.inbox,
         keys.history,
         keys.stats,

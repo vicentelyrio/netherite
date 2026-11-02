@@ -9,6 +9,7 @@ export {
   LintTextGroup,
   MetaGroup,
   NetheriteApi,
+  ProjectsGroup,
   SearchGroup,
   StatsGroup,
 } from './api'

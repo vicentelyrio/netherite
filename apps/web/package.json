@@ -17,6 +17,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "@netherite/api": "workspace:*",
+    "@dnd-kit/core": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-query": "catalog:",
     "remark-rehype": "catalog:",

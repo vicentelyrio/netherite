@@ -4,11 +4,9 @@ import {
   Banner,
   Button,
   Card,
-  designColor as color,
   EmptyState,
   Icon,
   type ItemTypeName,
-  nodeSpec,
   Progress,
   ProgressRing,
 } from '@netherite/ui'
@@ -18,6 +16,7 @@ import { type FormEvent, useState } from 'react'
 import { useApi } from '../lib/app-context'
 import { goalQuery, goalsQuery, graphQuery } from '../lib/queries'
 import { useWrite } from '../lib/writes'
+import { nodeTitle, RadialGraph } from './radial-graph'
 
 const noArea = 'No area'
 
@@ -181,10 +180,6 @@ function ProjectCard({ project }: { readonly project: ProjectRow }) {
   )
 }
 
-/**
- * The goal's own node in the middle, its projects around it and each project's tasks around
- * that, drawn with the design's node sizes and colours.
- */
 function FocusedGraph({
   goal,
 }: {
@@ -193,64 +188,22 @@ function FocusedGraph({
   const api = useApi()
   const query = useQuery(graphQuery(api))
   if (!query.data) return <div className="goal-graph app-muted">Loading graph…</div>
-  const nodes = new Map(query.data.nodes.map((n) => [n.id, n]))
-  const size = 520
-  const mid = size / 2
-  const items: { id: string; type: ItemTypeName; x: number; y: number; parent?: string }[] = [
-    { id: goal.id, type: 'goal', x: mid, y: mid },
-  ]
-  goal.projectRows.forEach((project, i) => {
-    const angle = (2 * Math.PI * i) / Math.max(goal.projectRows.length, 1)
-    const px = mid + Math.cos(angle) * 120
-    const py = mid + Math.sin(angle) * 120
-    items.push({ id: project.id, type: 'project', x: px, y: py, parent: goal.id })
-    const tasks = query.data.edges.filter((e) => e.kind === 'belongs_to' && e.to === project.id)
-    tasks.forEach((edge, j) => {
-      const a = angle + (j - (tasks.length - 1) / 2) * 0.35
-      items.push({
-        id: edge.from,
-        type: (nodes.get(edge.from)?.type ?? 'task') as ItemTypeName,
-        x: px + Math.cos(a) * 80,
-        y: py + Math.sin(a) * 80,
-        parent: project.id,
-      })
-    })
-  })
-  const at = new Map(items.map((i) => [i.id, i]))
+  const { edges, nodes } = query.data
+  const tasksOf = (id: string) =>
+    edges
+      .filter((e) => e.kind === 'belongs_to' && e.to === id)
+      .map((e) => ({ id: e.from, type: 'task' as ItemTypeName, title: nodeTitle(nodes, e.from) }))
   return (
-    <svg
-      className="goal-graph"
-      viewBox={`0 0 ${size} ${size}`}
-      role="img"
-      aria-label={`${goal.title}: projects and tasks`}
-    >
-      {items.map((item) => {
-        const parent = item.parent ? at.get(item.parent) : undefined
-        return parent ? (
-          <line
-            key={`e-${item.id}`}
-            x1={parent.x}
-            y1={parent.y}
-            x2={item.x}
-            y2={item.y}
-            stroke={color.graph.edge}
-            strokeOpacity={0.45}
-          />
-        ) : null
-      })}
-      {items.map((item) => (
-        <g key={item.id}>
-          <circle
-            cx={item.x}
-            cy={item.y}
-            r={nodeSpec[item.type].radius * 1.25}
-            fill={color.type[item.type]}
-          >
-            <title>{`${item.id} ${nodes.get(item.id)?.title ?? goal.title}`}</title>
-          </circle>
-        </g>
-      ))}
-    </svg>
+    <RadialGraph
+      label={`${goal.title}: projects and tasks`}
+      root={{ id: goal.id, type: 'goal', title: goal.title }}
+      branches={goal.projectRows.map((p) => ({
+        id: p.id,
+        type: 'project' as ItemTypeName,
+        title: p.title,
+        leaves: tasksOf(p.id),
+      }))}
+    />
   )
 }
 

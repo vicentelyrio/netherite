@@ -9,6 +9,7 @@ import {
 } from '@netherite/api'
 import {
   adrActivityByWeek,
+  boardOf,
   completionsByWeek,
   createItem,
   decisionLog,
@@ -31,6 +32,7 @@ import {
   type OpResult,
   pathMap,
   progressSeries,
+  projectRows,
   readActivity,
   readSource,
   replaceSource,
@@ -337,6 +339,21 @@ const goals = (state: ServerState) =>
       ),
   )
 
+const projects = (state: ServerState) =>
+  HttpApiBuilder.group(NetheriteApi, 'projects', (handlers) =>
+    handlers
+      .handle('list', () => Effect.sync(() => ({ projects: projectRows(state.repo) })))
+      .handle('board', ({ params }) =>
+        Effect.gen(function* () {
+          const item = yield* locate(state, params.id)
+          if (item.type !== 'project') {
+            return yield* new NotFound({ message: `${params.id} is not a project`, id: params.id })
+          }
+          return boardOf(state.repo, item)
+        }),
+      ),
+  )
+
 const lintReport = (state: ServerState, only?: string) =>
   Effect.gen(function* () {
     const fresh = yield* state.freshness.get
@@ -593,6 +610,7 @@ export const handlersLayer = (state: ServerState) =>
     search(state),
     graph(state),
     goals(state),
+    projects(state),
     lintGroup(state),
     lintTextGroup(state),
     inbox(state),
