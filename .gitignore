@@ -146,3 +146,7 @@ generated
 .yarn/install-state.gz
 .pnp.*
 .netherite/local/
+
+# Playwright
+test-results
+playwright-report

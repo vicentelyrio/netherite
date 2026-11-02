@@ -7,7 +7,8 @@
     "typecheck": "tsc",
     "test": "vitest run --passWithNoTests",
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@netherite/ui": "workspace:*",
@@ -35,6 +36,7 @@
     "@lezer/highlight": "catalog:"
   },
   "devDependencies": {
+    "@playwright/test": "catalog:",
     "@types/d3-force": "catalog:",
     "@netherite/config": "workspace:*",
     "@types/node": "catalog:",

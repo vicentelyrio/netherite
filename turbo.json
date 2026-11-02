@@ -17,6 +17,10 @@
     "test": {
       "dependsOn": ["^build"]
     },
+    "e2e": {
+      "dependsOn": ["^build", "@netherite/cli#build", "@netherite/web#build"],
+      "cache": false
+    },
     "test:scale": {
       "dependsOn": ["^build"]
     }
