@@ -489,3 +489,28 @@ export const KnowledgeView = Schema.Struct({
   ),
 })
 export type KnowledgeView = typeof KnowledgeView.Type
+
+// ---- tags and labels -------------------------------------------------------------------
+
+export const TagField = Schema.Literals(['tags', 'labels'])
+
+export const TagUse = Schema.Struct({
+  field: TagField,
+  name: S,
+  total: N,
+  /** How many items of each type carry it. */
+  byType: Schema.Record(S, N),
+  ids: Schema.Array(S),
+})
+export type TagUse = typeof TagUse.Type
+
+export const TagList = Schema.Struct({ tags: Schema.Array(TagUse) })
+
+export const RenameTagPayload = Schema.Struct({ field: TagField, from: S, to: S })
+
+export const RenameTagResult = Schema.Struct({
+  /** How many items changed. */
+  renamed: N,
+  /** Every file written. */
+  changed: Schema.Array(S),
+})

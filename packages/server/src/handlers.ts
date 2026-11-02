@@ -38,6 +38,7 @@ import {
   projectRows,
   readActivity,
   readSource,
+  renameTag,
   replaceSource,
   type ScannedItem,
   searchItems,
@@ -46,6 +47,7 @@ import {
   summaryOf,
   supersessionChain,
   syncContext,
+  tagUsage,
   toggleChecklistItem,
   unlink,
   updateItem,
@@ -454,6 +456,20 @@ const knowledgeView = (state: ServerState, item: ScannedItem) =>
     return { id: item.id as string, chain, changes, context }
   })
 
+const tags = (state: ServerState) =>
+  HttpApiBuilder.group(NetheriteApi, 'tags', (handlers) =>
+    handlers
+      .handle('list', () => Effect.sync(() => ({ tags: tagUsage(state.repo) })))
+      .handle('rename', ({ payload }) =>
+        state.writes.withPermits(1)(
+          renameTag(state.repo, payload).pipe(
+            Effect.mapError(toApiError),
+            Effect.tap((r) => notifyChanged(state, r.changed, [])),
+          ),
+        ),
+      ),
+  )
+
 const lintReport = (state: ServerState, only?: string) =>
   Effect.gen(function* () {
     const fresh = yield* state.freshness.get
@@ -723,6 +739,7 @@ export const handlersLayer = (state: ServerState) =>
     goals(state),
     projects(state),
     knowledge(state),
+    tags(state),
     lintGroup(state),
     lintTextGroup(state),
     inbox(state),

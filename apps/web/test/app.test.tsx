@@ -49,11 +49,6 @@ describe('the shell', () => {
     }
   })
 
-  test('a screen that is not built yet says which task builds it', async () => {
-    renderApp('/tags')
-    expect(await screen.findByText(/TASK-00047/)).toBeInTheDocument()
-  })
-
   test('an unknown address is a clear dead end, not a blank page', async () => {
     renderApp('/nowhere')
     expect(await screen.findByText('Nothing here')).toBeInTheDocument()
@@ -968,5 +963,63 @@ describe('Stats', () => {
     expect(await screen.findByRole('img', { name: /Progress of each project/ })).toBeInTheDocument()
     await waitFor(() => expect(within(progress).getAllByText('App').length).toBeGreaterThan(0))
     expect(within(progress).getAllByText(/^\d+%$|^—$/).length).toBeGreaterThan(0)
+  })
+})
+
+describe('Tags', () => {
+  test('lists labels with how many items of each type carry them', async () => {
+    renderApp('/tags')
+    expect(await screen.findByRole('heading', { name: 'Tags' })).toBeInTheDocument()
+    const list = await screen.findByRole('region', { name: 'Tags' })
+    expect(within(list).getByText('backend')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('radio', { name: /^Tags/ }))
+    await waitFor(() => expect(within(list).queryByText('backend')).toBeNull())
+  })
+
+  test('expanding a tag lists the items that have it', async () => {
+    renderApp('/tags')
+    const list = await screen.findByRole('region', { name: 'Tags' })
+    await userEvent.click(within(list).getByRole('button', { name: /backend/ }))
+    expect(
+      within(await screen.findByRole('list', { name: 'Items with backend' })).getByRole('link', {
+        name: 'TASK-00001',
+      }),
+    ).toHaveAttribute('href', '/items/TASK-00001')
+  })
+
+  test('renaming a label changes the file, tells you how many, and the list follows', async () => {
+    renderApp('/tags')
+    const list = await screen.findByRole('region', { name: 'Tags' })
+    const row = within(list).getByText('backend').closest('.tg-row-wrap') as HTMLElement
+    await userEvent.click(within(row).getByRole('button', { name: 'Rename' }))
+    const input = within(row).getByLabelText('New name for backend')
+    await userEvent.clear(input)
+    await userEvent.type(input, 'server')
+    await userEvent.click(
+      within(row).getAllByRole('button', { name: 'Rename' }).at(-1) as HTMLElement,
+    )
+    await waitFor(() =>
+      expect(
+        readFileSync(join(server().dir, 'netherite/tasks/TASK-00001-core.md'), 'utf8'),
+      ).toContain('labels: [server]'),
+    )
+    expect(await screen.findByText(/Changed in 1 file/)).toBeInTheDocument()
+    expect(await within(list).findByText('server')).toBeInTheDocument()
+    // Put it back so other tests see the same workspace.
+    await other().call((c) =>
+      c.tags.rename({ payload: { field: 'labels', from: 'server', to: 'backend' } }),
+    )
+  })
+
+  test('says what a name already in use will do, and does not allow spaces', async () => {
+    renderApp('/tags')
+    const list = await screen.findByRole('region', { name: 'Tags' })
+    const row = within(list).getByText('backend').closest('.tg-row-wrap') as HTMLElement
+    await userEvent.click(within(row).getByRole('button', { name: 'Rename' }))
+    const input = within(row).getByLabelText('New name for backend')
+    await userEvent.clear(input)
+    await userEvent.type(input, 'two words')
+    expect(within(row).getByText('A tag cannot contain spaces')).toBeInTheDocument()
+    expect(within(row).getAllByRole('button', { name: 'Rename' }).at(-1)).toBeDisabled()
   })
 })

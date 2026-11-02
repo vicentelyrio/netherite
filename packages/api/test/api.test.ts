@@ -33,6 +33,7 @@ describe('the API definition', () => {
       'projects',
       'search',
       'stats',
+      'tags',
     ])
     expect(Object.keys(doc.paths).every((p) => p.startsWith('/api/'))).toBe(true)
     expect(Object.keys(doc.paths).sort()).toEqual(
@@ -62,6 +63,8 @@ describe('the API definition', () => {
         '/api/projects/{id}/board',
         '/api/search',
         '/api/stats',
+        '/api/tags',
+        '/api/tags/rename',
       ].sort(),
     )
   })

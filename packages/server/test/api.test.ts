@@ -292,6 +292,26 @@ describe('search, graph, lint', () => {
     )
   })
 
+  test('tags list with counts, and renaming one changes every file that has it', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const { tags } = yield* s.client.tags.list()
+        expect(tags.find((t) => t.field === 'labels' && t.name === 'backend')?.total).toBe(1)
+        const result = yield* s.client.tags.rename({
+          payload: { field: 'labels', from: 'backend', to: 'server' },
+        })
+        expect(result.renamed).toBe(1)
+        expect(read(s.dir, task1)).toContain('labels: [server]')
+        const after = yield* s.client.tags.list()
+        expect(after.tags.some((t) => t.name === 'backend')).toBe(false)
+        const bad = yield* failure(
+          s.client.tags.rename({ payload: { field: 'labels', from: 'server', to: 'two words' } }),
+        )
+        expect(bad._tag).toBe('Invalid')
+      }),
+    )
+  })
+
   test('lint reports the whole workspace or one item, and sees edits straight away', async () => {
     await withServer((s) =>
       Effect.gen(function* () {

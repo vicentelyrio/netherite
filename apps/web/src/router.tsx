@@ -13,10 +13,10 @@ import { GraphPage } from './pages/graph'
 import { InboxPage } from './pages/inbox'
 import { ItemPage } from './pages/item'
 import { KnowledgePage } from './pages/knowledge'
-import { type PageProps, Placeholder } from './pages/lists'
 import { BoardPage } from './pages/projects'
 import { ProjectsEntry } from './pages/projects-entry'
 import { StatsPage } from './pages/stats'
+import { TagsPage } from './pages/tags'
 import { Shell } from './shell'
 
 const root = createRootRoute({
@@ -34,9 +34,6 @@ const index = createRoute({
     throw redirect({ to: '/goals' } as never)
   },
 })
-
-const screen = (path: string, props: PageProps) =>
-  createRoute({ getParentRoute: () => root, path, component: () => <Placeholder {...props} /> })
 
 const inbox = createRoute({ getParentRoute: () => root, path: '/inbox', component: InboxPage })
 const goals = createRoute({ getParentRoute: () => root, path: '/goals', component: GoalsPage })
@@ -77,11 +74,7 @@ const decisions = createRoute({
   component: DecisionsPage,
 })
 const stats = createRoute({ getParentRoute: () => root, path: '/stats', component: StatsPage })
-const tags = screen('/tags', {
-  title: 'Tags',
-  icon: 'sell',
-  arrives: 'Every label and tag, with counts, and renaming across files (TASK-00047).',
-})
+const tags = createRoute({ getParentRoute: () => root, path: '/tags', component: TagsPage })
 const graph = createRoute({
   getParentRoute: () => root,
   path: '/graph',

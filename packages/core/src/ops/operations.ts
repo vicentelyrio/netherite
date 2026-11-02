@@ -701,3 +701,84 @@ export const replaceSource = (repo: Repo, id: string, text: string, options: OpO
         }),
     },
   ])
+
+// ---- tags and labels across files --------------------------------------------------------------
+
+export const tagFields = ['tags', 'labels'] as const
+export type TagField = (typeof tagFields)[number]
+
+export interface TagUse {
+  readonly field: TagField
+  readonly name: string
+  readonly total: number
+  /** How many items of each type carry it. */
+  readonly byType: Readonly<Record<string, number>>
+  readonly ids: ReadonlyArray<string>
+}
+
+const listOf = (value: unknown): string[] =>
+  Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []
+
+/** Every tag and label in use, most used first, with how many items of each type carry it. */
+export const tagUsage = (repo: Repo): TagUse[] => {
+  const uses = new Map<
+    string,
+    { field: TagField; name: string; byType: Record<string, number>; ids: string[] }
+  >()
+  for (const item of repo.index.items()) {
+    if (item.id === undefined) continue
+    const data = item.parsed.frontmatter?.data as Record<string, unknown> | undefined
+    for (const field of tagFields) {
+      for (const name of new Set(listOf(data?.[field]))) {
+        const key = `${field}:${name}`
+        const use = uses.get(key) ?? { field, name, byType: {}, ids: [] }
+        const type = item.type ?? 'unknown'
+        use.byType[type] = (use.byType[type] ?? 0) + 1
+        use.ids.push(item.id)
+        uses.set(key, use)
+      }
+    }
+  }
+  return [...uses.values()]
+    .map((u) => ({ ...u, total: u.ids.length, ids: u.ids.sort() }))
+    .sort(
+      (a, b) => b.total - a.total || a.name.localeCompare(b.name) || a.field.localeCompare(b.field),
+    )
+}
+
+export interface RenameResult {
+  /** How many items were changed. */
+  readonly renamed: number
+  /** Every file written. */
+  readonly changed: ReadonlyArray<string>
+}
+
+/**
+ * Renames a tag or label in every item that has it, one file at a time through `updateItem`, so
+ * each file is checked against its schema and keeps its formatting. If the new name is already
+ * on an item, the two merge into one. Nothing is written when the name is empty or unchanged.
+ */
+export const renameTag = (repo: Repo, input: { field: TagField; from: string; to: string }) =>
+  Effect.gen(function* () {
+    const to = input.to.trim()
+    if (to === '') return yield* invalid(['to'], 'A tag needs a name')
+    if (/\s/.test(to)) return yield* invalid(['to'], 'A tag cannot contain spaces')
+    if (to === input.from) return { renamed: 0, changed: [] } satisfies RenameResult
+    const changed = new Set<string>()
+    let renamed = 0
+    for (const use of tagUsage(repo).filter(
+      (u) => u.field === input.field && u.name === input.from,
+    )) {
+      for (const id of use.ids) {
+        const item = repo.index.findById(id)[0]
+        const data = item?.parsed.frontmatter?.data as Record<string, unknown> | undefined
+        const next = [
+          ...new Set(listOf(data?.[input.field]).map((v) => (v === input.from ? to : v))),
+        ]
+        const result = yield* updateItem(repo, id, { set: { [input.field]: next } })
+        if (result !== undefined && !result.unchanged) renamed++
+        for (const c of result?.changed ?? []) changed.add(c)
+      }
+    }
+    return { renamed, changed: [...changed] } satisfies RenameResult
+  })

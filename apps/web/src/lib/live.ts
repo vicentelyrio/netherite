@@ -20,6 +20,7 @@ export const invalidationsFor = (event: ServerEvent): ReadonlyArray<ReadonlyArra
         keys.inbox,
         keys.history,
         keys.stats,
+        keys.tags,
       ]
     case 'git':
       return [keys.knowledge, keys.inbox, keys.history, keys.stats, keys.health]

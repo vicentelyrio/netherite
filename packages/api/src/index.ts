@@ -13,6 +13,7 @@ export {
   ProjectsGroup,
   SearchGroup,
   StatsGroup,
+  TagsGroup,
 } from './api'
 export { makeClient } from './client'
 export { Conflict, Failure, Invalid, type Issue, NotFound, Refused, Unavailable } from './errors'

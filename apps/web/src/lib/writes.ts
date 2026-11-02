@@ -39,7 +39,7 @@ export const noticeFor = (error: unknown, reload: () => void): Omit<Notice, 'id'
 /** Refreshes everything about items after a write (the event stream does too; this is just sooner). */
 export const refresh = (client: QueryClient) =>
   Promise.all(
-    [['items'], ['goals'], ['projects'], ['knowledge'], ['graph']].map((queryKey) =>
+    [['items'], ['goals'], ['projects'], ['knowledge'], ['tags'], ['graph']].map((queryKey) =>
       client.invalidateQueries({ queryKey }),
     ),
   )

@@ -28,6 +28,8 @@ import {
   LintTextPayload,
   ListQuery,
   ProjectList,
+  RenameTagPayload,
+  RenameTagResult,
   ReviewPayload,
   SearchQuery,
   SearchResult,
@@ -36,6 +38,7 @@ import {
   StatePayload,
   Stats,
   StatsQuery,
+  TagList,
   UnlinkQuery,
   UpdatePayload,
   WriteResult,
@@ -160,6 +163,15 @@ export class KnowledgeGroup extends HttpApiGroup.make('knowledge').add(
   }),
 ) {}
 
+export class TagsGroup extends HttpApiGroup.make('tags').add(
+  HttpApiEndpoint.get('list', '/tags', { success: TagList }),
+  HttpApiEndpoint.post('rename', '/tags/rename', {
+    payload: RenameTagPayload,
+    success: RenameTagResult,
+    error: writes,
+  }),
+) {}
+
 export class LintGroup extends HttpApiGroup.make('lint').add(
   HttpApiEndpoint.get('lint', '/lint', {
     query: LintQuery,
@@ -233,6 +245,7 @@ export class NetheriteApi extends HttpApi.make('netherite')
     GoalsGroup,
     ProjectsGroup,
     KnowledgeGroup,
+    TagsGroup,
     LintGroup,
     LintTextGroup,
     InboxGroup,

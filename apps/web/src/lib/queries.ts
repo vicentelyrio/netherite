@@ -23,6 +23,7 @@ export const keys = {
   inbox: ['inbox'] as const,
   history: ['history'] as const,
   stats: ['stats'] as const,
+  tags: ['tags'] as const,
 }
 
 export const healthQuery = (api: Api) =>
@@ -143,3 +144,6 @@ export const statsQuery = (api: Api) =>
     queryFn: () => api.call((c) => c.stats.stats({ query: {} })),
     retry: false,
   })
+
+export const tagsQuery = (api: Api) =>
+  queryOptions({ queryKey: keys.tags, queryFn: () => api.call((c) => c.tags.list()) })
