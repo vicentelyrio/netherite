@@ -114,3 +114,10 @@ export const viewQuery = (api: Api, id: string) =>
     queryFn: () => api.call((c) => c.knowledge.view({ params: { id } })),
     retry: false,
   })
+
+export const decisionsQuery = (api: Api) =>
+  queryOptions({
+    queryKey: [...keys.history, 'decisions'] as const,
+    queryFn: () => api.call((c) => c.history.decisions({ query: {} })),
+    retry: false,
+  })

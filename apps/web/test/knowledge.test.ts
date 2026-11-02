@@ -11,6 +11,8 @@ const row = (id: string, extra: Partial<KnowledgeRow> = {}): KnowledgeRow => ({
   tags: [],
   freshness: null,
   orphan: false,
+  supersedes: [],
+  supersededBy: [],
   ...extra,
 })
 

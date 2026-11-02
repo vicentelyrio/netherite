@@ -642,3 +642,25 @@ describe('ADR and context views', () => {
     expect(screen.getByRole('button', { name: 'Mark reviewed' })).toBeInTheDocument()
   })
 })
+
+describe('the decision log', () => {
+  test('has a lane per project with each ADR, its status, and its recorded changes', async () => {
+    renderApp('/decisions')
+    const lane = await screen.findByRole('region', { name: 'PRJ-00001' })
+    expect(within(lane).getByText('ADR-00002')).toBeInTheDocument()
+    const steps = await screen.findByRole('list', { name: 'ADR-00002 status changes' })
+    expect(within(steps).getByText(/Proposed as accepted/)).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'No project' })).toBeInTheDocument()
+  })
+
+  test('the project filter shows one lane, and Knowledge links to the log', async () => {
+    renderApp('/decisions')
+    await screen.findByRole('region', { name: 'No project' })
+    await userEvent.selectOptions(screen.getByLabelText('Project'), 'PRJ-00001')
+    await waitFor(() => expect(screen.queryByRole('region', { name: 'No project' })).toBeNull())
+    expect(screen.getByRole('region', { name: 'PRJ-00001' })).toBeInTheDocument()
+    await userEvent.click(railButton(/^Knowledge/))
+    await userEvent.click(await screen.findByRole('link', { name: 'Decision log' }))
+    expect(await screen.findByRole('heading', { name: 'Decision log' })).toBeInTheDocument()
+  })
+})

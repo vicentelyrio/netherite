@@ -6,10 +6,10 @@ title: Decision log
 created: 2026-11-01T23:50:43Z
 created_by: "@vicentelyrio"
 project: PRJ-00007
-state: backlog
+state: done
 depends_on: [TASK-00034, TASK-00018]
 ---
 
 # Decision log
 
-- [ ] Lanes per project, status transitions, supersession links, project filter
+- [x] Lanes per project, status transitions, supersession links, project filter

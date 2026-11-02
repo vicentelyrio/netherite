@@ -270,6 +270,9 @@ export function KnowledgePage() {
   return (
     <div className="app-page app-page--wide">
       <h1 className="app-title">Knowledge</h1>
+      <p>
+        <Link to="/decisions">Decision log</Link>
+      </p>
       {rows.length === 0 ? (
         <Starters />
       ) : (

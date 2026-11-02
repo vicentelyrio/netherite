@@ -167,3 +167,17 @@ describe('a summary', () => {
     expect(summaryOf('# Only a heading')).toBe('')
   })
 })
+
+describe('knowledge rows and supersession', () => {
+  test('say which ADRs each one replaces and is replaced by', async () => {
+    const w = await world({
+      ...cleanFiles(),
+      '/repo/netherite/adr/ADR-00004-newer.md':
+        '---\nid: ADR-00004\naliases: [ADR-00004]\ntype: adr\ntitle: Newer\nstatus: accepted\ndate: 2026-02-01\nsupersedes: [ADR-00001]\n---\n\n# Newer\n\nText.\n',
+    })
+    const rows = knowledgeRows(w.repo, undefined)
+    expect(rows.find((r) => r.id === 'ADR-00004')?.supersedes).toEqual(['ADR-00001'])
+    expect(rows.find((r) => r.id === 'ADR-00001')?.supersededBy).toEqual(['ADR-00004'])
+    expect(rows.find((r) => r.id === 'ADR-00002')?.supersedes).toEqual([])
+  })
+})

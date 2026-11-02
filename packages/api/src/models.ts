@@ -416,6 +416,8 @@ export const KnowledgeRow = Schema.Struct({
   freshness: Schema.NullOr(Schema.Literals(['fresh', 'drifting', 'stale', 'unknown'])),
   orphan: Schema.Boolean,
   date: opt(S),
+  supersedes: Schema.Array(S),
+  supersededBy: Schema.Array(S),
 })
 export type KnowledgeRow = typeof KnowledgeRow.Type
 

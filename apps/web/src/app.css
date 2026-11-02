@@ -712,3 +712,29 @@ body,
   flex-direction: column;
   gap: 4px;
 }
+
+/* ---- decision log ---- */
+.dec-lanes {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(300px, 1fr);
+  gap: 16px;
+  overflow-x: auto;
+  align-items: start;
+}
+.dec-lane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #212336;
+  border-radius: 10px;
+  padding: 12px;
+}
+.dec-steps {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+}

@@ -376,14 +376,23 @@ export interface KnowledgeRow {
   readonly orphan: boolean
   /** An ADR's date, or when the item was last reviewed. */
   readonly date: string | undefined
+  /** The ADRs this one replaces. */
+  readonly supersedes: ReadonlyArray<string>
+  /** The ADRs that replace this one. */
+  readonly supersededBy: ReadonlyArray<string>
 }
 
 /** Every ADR, doc, context and runbook, in ID order, with what the index filters and sorts on. */
 export const knowledgeRows = (
   repo: Repo,
   freshness: ReadonlyMap<string, Freshness> | undefined,
-): KnowledgeRow[] =>
-  repo.index
+): KnowledgeRow[] => {
+  const idsOf = (paths: ReadonlyArray<string>) =>
+    paths.flatMap((p) => {
+      const id = repo.index.get(p)?.id
+      return id === undefined ? [] : [id]
+    })
+  return repo.index
     .items()
     .filter((i) => knowledgeKinds.has(i.type ?? '') && i.id !== undefined)
     .sort((a, b) => (a.id ?? '').localeCompare(b.id ?? ''))
@@ -416,6 +425,18 @@ export const knowledgeRows = (
             ? null
             : (fresh.state as 'fresh' | 'drifting' | 'stale' | 'unknown'),
         orphan: repo.index.isOrphan(item.path),
+        supersedes: idsOf(
+          repo.index
+            .outgoing(item.path)
+            .filter((e) => e.kind === 'supersedes')
+            .map((e) => e.to),
+        ),
+        supersededBy: idsOf(
+          repo.index
+            .backlinks(item.path)
+            .filter((e) => e.kind === 'supersedes')
+            .map((e) => e.from),
+        ),
         date:
           typeof date === 'string'
             ? date
@@ -424,6 +445,7 @@ export const knowledgeRows = (
               : undefined,
       }
     })
+}
 
 /** The first paragraph of the text, with Markdown marks and headings dropped. */
 export const summaryOf = (body: string): string => {

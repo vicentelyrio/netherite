@@ -7,6 +7,7 @@ import {
   type RouterHistory,
   redirect,
 } from '@tanstack/react-router'
+import { DecisionsPage } from './pages/decisions'
 import { GoalPage, GoalsPage } from './pages/goals'
 import { ItemPage } from './pages/item'
 import { KnowledgePage } from './pages/knowledge'
@@ -69,6 +70,11 @@ const knowledge = createRoute({
   path: '/knowledge',
   component: KnowledgePage,
 })
+const decisions = createRoute({
+  getParentRoute: () => root,
+  path: '/decisions',
+  component: DecisionsPage,
+})
 const stats = screen('/stats', {
   title: 'Stats',
   icon: 'bar_chart',
@@ -104,6 +110,7 @@ const routeTree = root.addChildren([
   projects,
   project,
   knowledge,
+  decisions,
   stats,
   tags,
   graph,
