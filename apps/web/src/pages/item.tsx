@@ -19,6 +19,7 @@ import { Markdown } from '../lib/markdown'
 import { useNotices } from '../lib/notices'
 import { itemQuery, itemsQuery, keys, sourceQuery } from '../lib/queries'
 import { noticeFor, useWrite } from '../lib/writes'
+import { KnowledgeTop, knowledgeTypes, SidePanel } from './knowledge-item'
 
 const reviewable = new Set(['doc', 'runbook', 'context'])
 
@@ -90,7 +91,7 @@ export function ItemPage({ id }: { readonly id: string }) {
         <Button icon={editing ? 'visibility' : 'edit'} onClick={() => setEditing(!editing)}>
           {editing ? 'Done editing' : 'Edit source'}
         </Button>
-        {reviewable.has(type) && (
+        {reviewable.has(type) && !(fresh?.state === 'stale' || fresh?.state === 'drifting') && (
           <Button
             icon="done_all"
             loading={review.isPending}
@@ -100,6 +101,14 @@ export function ItemPage({ id }: { readonly id: string }) {
           </Button>
         )}
       </header>
+
+      {knowledgeTypes.has(type) && (
+        <KnowledgeTop
+          item={item}
+          reviewing={review.isPending}
+          onReview={() => review.mutate(item.hash)}
+        />
+      )}
 
       {item.progress !== null && item.progress.total > 0 && (
         <div className="app-progress">
@@ -112,10 +121,14 @@ export function ItemPage({ id }: { readonly id: string }) {
 
       {editing ? <SourceEditor id={id} /> : <Markdown source={item.body} />}
 
-      <footer className="app-links">
-        <LinkList title="Links" links={item.links} />
-        <LinkList title="Linked from" links={item.backlinks} />
-      </footer>
+      {knowledgeTypes.has(type) ? (
+        <SidePanel item={item} />
+      ) : (
+        <footer className="app-links">
+          <LinkList title="Links" links={item.links} />
+          <LinkList title="Linked from" links={item.backlinks} />
+        </footer>
+      )}
     </article>
   )
 }

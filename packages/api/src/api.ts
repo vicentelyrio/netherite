@@ -21,6 +21,7 @@ import {
   ItemSource,
   KnowledgeList,
   KnowledgePreview,
+  KnowledgeView,
   LinkPayload,
   LintQuery,
   LintReport,
@@ -150,6 +151,11 @@ export class KnowledgeGroup extends HttpApiGroup.make('knowledge').add(
   HttpApiEndpoint.get('preview', '/knowledge/:id/preview', {
     params: id,
     success: KnowledgePreview,
+    error: [NotFound, Refused, Failure],
+  }),
+  HttpApiEndpoint.get('view', '/knowledge/:id/view', {
+    params: id,
+    success: KnowledgeView,
     error: [NotFound, Refused, Failure],
   }),
 ) {}

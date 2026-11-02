@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { cleanWorkspaceFiles } from '@netherite/testing'
 import { Effect, PubSub } from 'effect'
@@ -229,6 +229,52 @@ describe('search, graph, lint', () => {
         const missing = yield* failure(s.client.knowledge.preview({ params: { id: 'ADR-09999' } }))
         expect(missing._tag).toBe('NotFound')
       }),
+    )
+  })
+
+  test('a knowledge view has the supersession chain, and for a context item where it is synced', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        yield* s.client.items.link({
+          params: { id: 'ADR-00002' },
+          payload: { to: 'ADR-00001', kind: 'supersedes' },
+        })
+        const view = yield* s.client.knowledge.view({ params: { id: 'ADR-00001' } })
+        expect(view.chain.map((c) => c.id)).toEqual(['ADR-00001', 'ADR-00002'])
+        expect(view.changes).toBeNull()
+        expect(view.context).toBeNull()
+
+        const made = yield* s.client.items.create({
+          payload: { type: 'context', title: 'House rules', fields: { include_in_context: true } },
+        })
+        const context = yield* s.client.knowledge.view({ params: { id: made.id } })
+        expect(context.context?.include).toBe(true)
+        expect(context.context?.targets.map((t) => t.path)).toEqual(
+          expect.arrayContaining(['CLAUDE.md']),
+        )
+        expect(context.context?.targets.every((t) => t.budget > 0)).toBe(true)
+      }),
+    )
+  })
+
+  test('a doc lists the commits since it was reviewed that touched what it covers', async () => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const before = yield* s.client.knowledge.view({ params: { id: 'DOC-00001' } })
+          expect(before.changes?.covers).toEqual(['src/**'])
+          yield* Effect.sync(() => {
+            mkdirSync(join(s.dir, 'src'), { recursive: true })
+            writeFileSync(join(s.dir, 'src/a.ts'), 'export {}\n')
+            commitAll(s.dir, 'add a')
+          })
+          s.state.invalidate()
+          const after = yield* s.client.knowledge.view({ params: { id: 'DOC-00001' } })
+          expect(after.changes?.since).toBe('2026-01-01')
+          expect(after.changes?.commits.map((c) => c.subject)).toEqual(['add a'])
+          expect(after.changes?.commits[0]?.author).toBe('Ada Lovelace')
+        }),
+      { git: true },
     )
   })
 

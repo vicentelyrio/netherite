@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { EditorView } from '@codemirror/view'
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
@@ -542,5 +543,102 @@ describe('the knowledge index', () => {
       'href',
       '/items/ADR-00002',
     )
+  })
+})
+
+describe('ADR and context views', () => {
+  test('an ADR shows where it is in its lifecycle', async () => {
+    renderApp('/items/ADR-00002')
+    const lifecycle = await screen.findByRole('list', { name: 'Lifecycle' })
+    expect(within(lifecycle).getByText('accepted')).toHaveAttribute('aria-current', 'step')
+    expect(within(lifecycle).getByText('proposed')).not.toHaveAttribute('aria-current')
+  })
+
+  test('a superseded ADR has a banner naming its replacement, and the chain', async () => {
+    const api = other()
+    const old = await api.call((c) =>
+      c.items.create({ payload: { type: 'adr', title: 'Old way' } }),
+    )
+    const next = await api.call((c) =>
+      c.items.create({ payload: { type: 'adr', title: 'New way' } }),
+    )
+    try {
+      await api.call((c) =>
+        c.items.setState({ params: { id: old.id }, payload: { state: 'accepted' } }),
+      )
+      await api.call((c) =>
+        c.items.setState({
+          params: { id: old.id },
+          payload: { state: 'superseded', supersededBy: next.id },
+        }),
+      )
+      renderApp(`/items/${old.id}`)
+      expect(await screen.findByText(/Replaced by/)).toBeInTheDocument()
+      const chain = await screen.findByRole('region', { name: 'Supersession chain' })
+      expect(within(chain).getByRole('link', { name: new RegExp(next.id) })).toBeInTheDocument()
+      const lifecycle = screen.getByRole('list', { name: 'Lifecycle' })
+      expect(within(lifecycle).getByText('superseded')).toHaveAttribute('aria-current', 'step')
+    } finally {
+      for (const made of [old, next])
+        await api.call((c) => c.items.delete({ params: { id: made.id }, query: { force: 'true' } }))
+    }
+  })
+
+  test('a context item has an include switch that writes the file, and its sync targets', async () => {
+    const api = other()
+    const made = await api.call((c) =>
+      c.items.create({ payload: { type: 'context', title: 'House rules' } }),
+    )
+    try {
+      renderApp(`/items/${made.id}`)
+      const panel = await screen.findByRole('region', { name: 'Context' })
+      const box = within(panel).getByRole('switch', { name: 'Include in context' })
+      expect(box).not.toBeChecked()
+      await userEvent.click(box)
+      await waitFor(() =>
+        expect(readFileSync(join(server().dir, made.path.replace(/^\/?/, '')), 'utf8')).toContain(
+          'include_in_context: true',
+        ),
+      )
+      expect(await within(panel).findByText('CLAUDE.md')).toBeInTheDocument()
+    } finally {
+      await api.call((c) => c.items.delete({ params: { id: made.id }, query: { force: 'true' } }))
+    }
+  })
+
+  test('the side panel lists who links to a doc, and what it links to', async () => {
+    renderApp('/items/DOC-00001')
+    const side = await screen.findByRole('complementary', { name: 'Related' })
+    expect(within(side).getByText('Linked from')).toBeInTheDocument()
+    expect(within(side).getByRole('link', { name: /ADR-00001/ })).toBeInTheDocument()
+    expect(await within(side).findByText(/Changes with/)).toBeInTheDocument()
+  })
+
+  test('a doc whose covered files changed shows the stale banner, the commits, and Mark reviewed', async () => {
+    mkdirSync(join(server().dir, 'src'), { recursive: true })
+    writeFileSync(join(server().dir, 'src/a.ts'), 'export {}\n')
+    const env = { ...process.env, GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_SYSTEM: '/dev/null' }
+    const git = (...args: string[]) =>
+      execFileSync('git', args, { cwd: server().dir, env, stdio: 'ignore' })
+    git('add', '-A')
+    git('commit', '-q', '-m', 'touch covered code')
+    // Earlier tests may have reviewed the doc today, so put the review back. The test server does not watch, so this write is also what makes it look at git again.
+    const api = other()
+    const doc = await api.call((c) => c.items.get({ params: { id: 'DOC-00001' } }))
+    await api.call((c) =>
+      c.items.update({
+        params: { id: 'DOC-00001' },
+        payload: { set: { reviewed_at: '2026-01-01' }, baseHash: doc.hash },
+      }),
+    )
+
+    renderApp('/items/DOC-00001')
+    expect(
+      await screen.findByText(/touched what it covers/, {}, { timeout: 10000 }),
+    ).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('button', { name: 'Review changes' }))
+    const commits = await screen.findByRole('list', { name: 'Commits since review' })
+    expect(within(commits).getByText(/touch covered code/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Mark reviewed' })).toBeInTheDocument()
   })
 })

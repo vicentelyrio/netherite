@@ -438,3 +438,42 @@ export const KnowledgePreview = Schema.Struct({
   ),
 })
 export type KnowledgePreview = typeof KnowledgePreview.Type
+
+export const ChainLink = Schema.Struct({ id: S, title: S, status: opt(S) })
+
+export const CommitView = Schema.Struct({ hash: S, subject: S, date: S, author: S })
+
+export const ContextTargetView = Schema.Struct({
+  target: S,
+  path: S,
+  /** Whether this item is in the block written to the file. */
+  included: Schema.Boolean,
+  /** Wanted, but over the token budget. */
+  omitted: Schema.Boolean,
+  tokens: N,
+  budget: N,
+  /** Whether the file is out of date with the context items. */
+  stale: Schema.Boolean,
+})
+
+/** What the doc, ADR and context views add to an item: the supersession chain, the commits since review, and where a context item is synced. */
+export const KnowledgeView = Schema.Struct({
+  id: S,
+  chain: Schema.Array(ChainLink),
+  /** Commits since the item was reviewed that touched what it covers; `null` when it covers nothing or there is no git. */
+  changes: Schema.NullOr(
+    Schema.Struct({
+      since: Schema.NullOr(S),
+      commits: Schema.Array(CommitView),
+      covers: Schema.Array(S),
+    }),
+  ),
+  /** Only for context items. */
+  context: Schema.NullOr(
+    Schema.Struct({
+      include: Schema.Boolean,
+      targets: Schema.Array(ContextTargetView),
+    }),
+  ),
+})
+export type KnowledgeView = typeof KnowledgeView.Type

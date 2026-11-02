@@ -55,6 +55,7 @@ describe('the API definition', () => {
         '/api/items/{id}/state',
         '/api/knowledge',
         '/api/knowledge/{id}/preview',
+        '/api/knowledge/{id}/view',
         '/api/lint',
         '/api/schemas/{type}',
         '/api/projects',

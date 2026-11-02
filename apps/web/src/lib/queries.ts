@@ -14,6 +14,7 @@ export const keys = {
   graph: ['graph'] as const,
   goals: ['goals'] as const,
   knowledge: ['knowledge'] as const,
+  view: (id: string) => ['knowledge', 'view', id] as const,
   preview: (id: string) => ['knowledge', 'preview', id] as const,
   projects: ['projects'] as const,
   board: (id: string) => ['projects', id] as const,
@@ -104,5 +105,12 @@ export const previewQuery = (api: Api, id: string) =>
   queryOptions({
     queryKey: keys.preview(id),
     queryFn: () => api.call((c) => c.knowledge.preview({ params: { id } })),
+    retry: false,
+  })
+
+export const viewQuery = (api: Api, id: string) =>
+  queryOptions({
+    queryKey: keys.view(id),
+    queryFn: () => api.call((c) => c.knowledge.view({ params: { id } })),
     retry: false,
   })

@@ -43,6 +43,8 @@ import {
   setState,
   summarize,
   summaryOf,
+  supersessionChain,
+  syncContext,
   toggleChecklistItem,
   unlink,
   updateItem,
@@ -385,8 +387,71 @@ const knowledge = (state: ServerState) =>
             coChanged: changed,
           }
         }),
+      )
+      .handle('view', ({ params }) =>
+        Effect.gen(function* () {
+          const item = yield* locate(state, params.id)
+          return yield* knowledgeView(state, item)
+        }),
       ),
   )
+
+const knowledgeView = (state: ServerState, item: ScannedItem) =>
+  Effect.gen(function* () {
+    const fields = fieldsOf(item)
+    const chain = item.type === 'adr' ? supersessionChain(state.repo, item) : []
+
+    const fresh = (yield* state.freshness.get)?.get(item.path)
+    const git = state.git
+    const changes =
+      git === undefined || fresh === undefined || fresh.covers.length === 0
+        ? null
+        : yield* Effect.gen(function* () {
+            const map = yield* pathMap(git, state.repo.workspace.root)
+            const commits = yield* git.log({
+              paths: fresh.covers.map((c) => map.toGit(c)),
+              ...(fresh.baseline ? { after: fresh.baseline.date } : {}),
+              limit: 30,
+            })
+            return {
+              since: fresh.baseline?.date ?? null,
+              covers: [...fresh.covers],
+              commits: commits.map((c) => ({
+                hash: c.hash,
+                subject: c.subject,
+                date: c.committerDate,
+                author: c.author.name,
+              })),
+            }
+          }).pipe(Effect.mapError(gitFailure))
+
+    const context =
+      item.type !== 'context'
+        ? null
+        : yield* Effect.gen(function* () {
+            const report = yield* syncContext(state.repo, { check: true })
+            return {
+              include: fields.include_in_context === true,
+              targets: report.targets.map((t) => {
+                const mine = (list: ReadonlyArray<{ id: string; tokens: number }>) =>
+                  list.find((i) => i.id === item.id)
+                const inBlock = mine(t.included)
+                const left = mine(t.omitted)
+                return {
+                  target: t.target,
+                  path: t.path,
+                  included: inBlock !== undefined,
+                  omitted: left !== undefined,
+                  tokens: (inBlock ?? left)?.tokens ?? 0,
+                  budget: t.budget,
+                  stale: t.stale,
+                }
+              }),
+            }
+          }).pipe(Effect.mapError(gitFailure))
+
+    return { id: item.id as string, chain, changes, context }
+  })
 
 const lintReport = (state: ServerState, only?: string) =>
   Effect.gen(function* () {

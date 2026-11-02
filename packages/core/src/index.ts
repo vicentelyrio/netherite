@@ -139,6 +139,7 @@ export {
   type BoardColumn,
   type BoardItem,
   boardOf,
+  type ChainLink,
   fieldsOf,
   type GoalRow,
   goalDetail,
@@ -159,6 +160,7 @@ export {
   projectRows,
   searchItems,
   summaryOf,
+  supersessionChain,
 } from './views'
 export {
   type ChangeEvent,

@@ -439,3 +439,39 @@ export const summaryOf = (body: string): string => {
     .replace(/\s+/g, ' ')
     .slice(0, 400)
 }
+
+export interface ChainLink {
+  readonly id: string
+  readonly title: string
+  readonly status: string | undefined
+}
+
+/**
+ * The ADRs an ADR replaced and the ones that replaced it, oldest first, itself included. Follows
+ * `supersedes` links both ways, and stops at a repeat so a bad cycle cannot loop.
+ */
+export const supersessionChain = (repo: Repo, item: ScannedItem): ChainLink[] => {
+  const link = (i: ScannedItem): ChainLink => ({
+    id: i.id as string,
+    title: i.title ?? (i.id as string),
+    status: typeof fieldsOf(i).status === 'string' ? (fieldsOf(i).status as string) : undefined,
+  })
+  const seen = new Set([item.path])
+  const walk = (from: ScannedItem, older: boolean): ScannedItem[] => {
+    const out: ScannedItem[] = []
+    let current = from
+    for (;;) {
+      const edges = older
+        ? repo.index.outgoing(current.path).filter((e) => e.kind === 'supersedes')
+        : repo.index.backlinks(current.path).filter((e) => e.kind === 'supersedes')
+      const next = edges
+        .map((e) => repo.index.get(older ? e.to : e.from))
+        .find((i): i is ScannedItem => i !== undefined && i.id !== undefined && !seen.has(i.path))
+      if (next === undefined) return out
+      seen.add(next.path)
+      out.push(next)
+      current = next
+    }
+  }
+  return [...walk(item, true).reverse(), item, ...walk(item, false)].map(link)
+}
