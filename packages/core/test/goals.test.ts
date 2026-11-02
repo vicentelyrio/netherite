@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { boardOf, goalDetail, goalRows } from '../src/index'
+import { boardOf, goalDetail, goalRows, knowledgeRows, summaryOf } from '../src/index'
 import { cleanFiles, world } from './ops-helpers'
 
 const goal = (n: number, extra: string[] = [], title = `Goal ${n}`) => ({
@@ -129,5 +129,41 @@ describe('a project board', () => {
       checklist: { done: 1, total: 2 },
     })
     expect(board.tasks[0]?.checklist).toBeNull()
+  })
+})
+
+describe('the knowledge index', () => {
+  test('lists ADRs, docs, context and runbooks with their projects, tags and orphan flag', async () => {
+    const w = await world({
+      ...cleanFiles(),
+      '/repo/netherite/docs/DOC-00002-tagged.md':
+        '---\nid: DOC-00002\naliases: [DOC-00002]\ntype: doc\ntitle: Tagged\ntags: [ops]\nreviewed_at: 2026-02-03\n---\n\n# Tagged\n\nNobody links here.\n',
+    })
+    const rows = knowledgeRows(w.repo, undefined)
+    expect(rows.map((r) => r.type)).not.toContain('task')
+    expect(rows.map((r) => r.id)).toEqual(
+      expect.arrayContaining(['ADR-00001', 'ADR-00002', 'ADR-00003', 'DOC-00001', 'DOC-00002']),
+    )
+    const tagged = rows.find((r) => r.id === 'DOC-00002')
+    expect(tagged).toMatchObject({
+      tags: ['ops'],
+      date: '2026-02-03',
+      orphan: true,
+      freshness: null,
+    })
+    expect(rows.find((r) => r.id === 'DOC-00001')?.projects).toEqual(['PRJ-00001'])
+    expect(rows.find((r) => r.id === 'ADR-00002')).toMatchObject({
+      status: 'accepted',
+      projects: ['PRJ-00001'],
+    })
+  })
+})
+
+describe('a summary', () => {
+  test('is the first plain paragraph, without headings, lists or link marks', () => {
+    expect(
+      summaryOf('# Title\n\n- a list\n\nUse **promises** and [[ADR-00001|callbacks]].\n\nSecond.'),
+    ).toBe('Use promises and callbacks.')
+    expect(summaryOf('# Only a heading')).toBe('')
   })
 })

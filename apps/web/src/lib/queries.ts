@@ -13,6 +13,8 @@ export const keys = {
   search: (q: string) => ['search', q] as const,
   graph: ['graph'] as const,
   goals: ['goals'] as const,
+  knowledge: ['knowledge'] as const,
+  preview: (id: string) => ['knowledge', 'preview', id] as const,
   projects: ['projects'] as const,
   board: (id: string) => ['projects', id] as const,
   goal: (id: string) => ['goals', id] as const,
@@ -92,5 +94,15 @@ export const boardQuery = (api: Api, id: string) =>
   queryOptions({
     queryKey: keys.board(id),
     queryFn: () => api.call((c) => c.projects.board({ params: { id } })),
+    retry: false,
+  })
+
+export const knowledgeQuery = (api: Api) =>
+  queryOptions({ queryKey: keys.knowledge, queryFn: () => api.call((c) => c.knowledge.list()) })
+
+export const previewQuery = (api: Api, id: string) =>
+  queryOptions({
+    queryKey: keys.preview(id),
+    queryFn: () => api.call((c) => c.knowledge.preview({ params: { id } })),
     retry: false,
   })

@@ -446,3 +446,101 @@ describe('the project board', () => {
     expect(moveFor(tasks, 'TASK-09999', 'doing')).toBeUndefined()
   })
 })
+
+describe('the task drawer', () => {
+  const taskFile = () =>
+    readFileSync(join(server().dir, 'netherite/tasks/TASK-00001-core.md'), 'utf8')
+
+  test('opens from a card with the fields, checklist and decisions, and closes back to the board', async () => {
+    renderApp('/projects/PRJ-00001')
+    await userEvent.click(await screen.findByRole('link', { name: 'Core' }))
+    const drawer = await screen.findByRole('dialog')
+    expect(await within(drawer).findByText('backend')).toBeInTheDocument()
+    expect(within(drawer).getByRole('checkbox', { name: 'second' })).toBeChecked()
+    expect(within(drawer).getByRole('checkbox', { name: 'first' })).not.toBeChecked()
+    expect(within(drawer).getByRole('button', { name: /Link ADR/ })).toBeInTheDocument()
+    await userEvent.keyboard('{Escape}')
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    expect(screen.getByRole('region', { name: 'backlog' })).toBeInTheDocument()
+  })
+
+  test('is a link: the address opens the drawer', async () => {
+    renderApp('/projects/PRJ-00001?task=TASK-00002')
+    const drawer = await screen.findByRole('dialog')
+    expect(await within(drawer).findByText('ADR-00002 Promises')).toBeInTheDocument()
+  })
+
+  test('ticking a checklist item writes it to the file, and unticking undoes it', async () => {
+    renderApp('/projects/PRJ-00001?task=TASK-00001')
+    const drawer = await screen.findByRole('dialog')
+    const box = await within(drawer).findByRole('checkbox', { name: 'first' })
+    await userEvent.click(box)
+    await waitFor(() => expect(taskFile()).toContain('- [x] first'))
+    await waitFor(() =>
+      expect(within(drawer).getByRole('checkbox', { name: 'first' })).toBeChecked(),
+    )
+    await userEvent.click(within(drawer).getByRole('checkbox', { name: 'first' }))
+    await waitFor(() => expect(taskFile()).toContain('- [ ] first'))
+  })
+
+  test('changing the state from the drawer moves the card to that column', async () => {
+    renderApp('/projects/PRJ-00001?task=TASK-00001')
+    const drawer = await screen.findByRole('dialog')
+    await userEvent.click(await within(drawer).findByRole('button', { name: 'Change state' }))
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'doing' }))
+    await waitFor(() => expect(taskFile()).toContain('state: doing'))
+    await other().call((c) =>
+      c.items.setState({ params: { id: 'TASK-00001' }, payload: { state: 'backlog' } }),
+    )
+  })
+
+  test('Link ADR adds the decision to the task', async () => {
+    renderApp('/projects/PRJ-00001?task=TASK-00001')
+    const drawer = await screen.findByRole('dialog')
+    await userEvent.click(await within(drawer).findByRole('button', { name: /Link ADR/ }))
+    await userEvent.click(await screen.findByRole('menuitem', { name: /ADR-00001/ }))
+    await waitFor(() => expect(taskFile()).toContain('ADR-00001'))
+    expect(await within(drawer).findByText('ADR-00001 Callbacks')).toBeInTheDocument()
+    await other().call((c) =>
+      c.items.unlink({
+        params: { id: 'TASK-00001' },
+        query: { to: 'ADR-00001', kind: 'implements' },
+      }),
+    )
+  })
+})
+
+describe('the knowledge index', () => {
+  test('lists knowledge with type tabs that count, and filters by tab', async () => {
+    renderApp('/knowledge')
+    expect(await screen.findByText('ADR-00001')).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: /^ADRs 3/ })).toBeInTheDocument()
+    expect(screen.queryByText('TASK-00001')).toBeNull()
+    await userEvent.click(screen.getByRole('radio', { name: /^Docs/ }))
+    await waitFor(() => expect(screen.queryByText('ADR-00001')).toBeNull())
+    expect(screen.getByText('DOC-00001')).toBeInTheDocument()
+  })
+
+  test('the status filter narrows to proposed ADRs, and Clear filters brings everything back', async () => {
+    renderApp('/knowledge')
+    await screen.findByText('ADR-00001')
+    await userEvent.selectOptions(screen.getByLabelText('Status'), 'proposed')
+    await waitFor(() => expect(screen.queryByText('ADR-00001')).toBeNull())
+    expect(screen.getByText('ADR-00003')).toBeInTheDocument()
+    await userEvent.selectOptions(screen.getByLabelText('Status'), 'deprecated')
+    await userEvent.click(await screen.findByRole('button', { name: 'Clear filters' }))
+    expect(await screen.findByText('ADR-00001')).toBeInTheDocument()
+  })
+
+  test('selecting a row shows its summary, who links to it, and an Open link', async () => {
+    renderApp('/knowledge')
+    await userEvent.click(await screen.findByText('Promises'))
+    const preview = await screen.findByRole('complementary', { name: 'Preview of ADR-00002' })
+    expect(await within(preview).findByText('Text.')).toBeInTheDocument()
+    expect(within(preview).getAllByText(/PRJ-00001/).length).toBeGreaterThan(0)
+    expect(within(preview).getByRole('link', { name: 'Open' })).toHaveAttribute(
+      'href',
+      '/items/ADR-00002',
+    )
+  })
+})

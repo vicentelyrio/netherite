@@ -6,11 +6,11 @@ title: Task drawer
 created: 2026-11-01T23:50:43Z
 created_by: "@vicentelyrio"
 project: PRJ-00007
-state: backlog
+state: done
 depends_on: [TASK-00036, TASK-00038]
 ---
 
 # Task drawer
 
-- [ ] Fields header (state, created, assignees, labels), decisions row with "Link ADR"
-- [ ] Checklist toggles write back; related items
+- [x] Fields header (state, created, assignees, labels), decisions row with "Link ADR"
+- [x] Checklist toggles write back; related items

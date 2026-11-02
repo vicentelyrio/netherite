@@ -116,7 +116,7 @@ export function GoalsPage() {
   if (query.isPending) return <div className="app-page app-muted">Loading…</div>
   if (query.isError) {
     return (
-      <div className="app-page">
+      <div className="app-page app-page--wide">
         <Banner variant="danger" title="Could not load goals">
           Check that `netherite serve` is still running.
         </Banner>
@@ -125,7 +125,7 @@ export function GoalsPage() {
   }
   const groups = groupByArea(query.data.goals)
   return (
-    <div className="app-page">
+    <div className="app-page app-page--wide">
       <h1 className="app-title">Goals</h1>
       {groups.length === 0 && (
         <EmptyState
@@ -218,7 +218,7 @@ export function GoalPage({ id }: { readonly id: string }) {
   if (query.isError) {
     const missing = query.error instanceof NotFound
     return (
-      <div className="app-page">
+      <div className="app-page app-page--wide">
         <Banner
           variant={missing ? 'warning' : 'danger'}
           title={missing ? `No goal ${id}` : 'Could not load this goal'}
@@ -231,7 +231,7 @@ export function GoalPage({ id }: { readonly id: string }) {
   const goal = query.data
   const progress = goal.progress ?? { done: 0, total: 0 }
   return (
-    <div className="app-page goal-detail">
+    <div className="app-page app-page--wide goal-detail">
       <div className="goal-detail-main">
         <nav className="goal-crumbs" aria-label="Breadcrumb">
           <Link to="/goals">Goals</Link>

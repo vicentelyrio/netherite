@@ -19,6 +19,8 @@ import {
   ItemHistory,
   ItemList,
   ItemSource,
+  KnowledgeList,
+  KnowledgePreview,
   LinkPayload,
   LintQuery,
   LintReport,
@@ -143,6 +145,15 @@ export class ProjectsGroup extends HttpApiGroup.make('projects').add(
   }),
 ) {}
 
+export class KnowledgeGroup extends HttpApiGroup.make('knowledge').add(
+  HttpApiEndpoint.get('list', '/knowledge', { success: KnowledgeList }),
+  HttpApiEndpoint.get('preview', '/knowledge/:id/preview', {
+    params: id,
+    success: KnowledgePreview,
+    error: [NotFound, Refused, Failure],
+  }),
+) {}
+
 export class LintGroup extends HttpApiGroup.make('lint').add(
   HttpApiEndpoint.get('lint', '/lint', {
     query: LintQuery,
@@ -215,6 +226,7 @@ export class NetheriteApi extends HttpApi.make('netherite')
     GraphGroup,
     GoalsGroup,
     ProjectsGroup,
+    KnowledgeGroup,
     LintGroup,
     LintTextGroup,
     InboxGroup,

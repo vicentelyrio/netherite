@@ -10,6 +10,7 @@ import {
 import {
   adrActivityByWeek,
   boardOf,
+  coChanged,
   completionsByWeek,
   createItem,
   decisionLog,
@@ -24,6 +25,7 @@ import {
   itemJsonSchemas,
   itemSummary,
   itemTypes,
+  knowledgeRows,
   link,
   lint,
   lintText,
@@ -40,6 +42,7 @@ import {
   searchItems,
   setState,
   summarize,
+  summaryOf,
   toggleChecklistItem,
   unlink,
   updateItem,
@@ -354,6 +357,37 @@ const projects = (state: ServerState) =>
       ),
   )
 
+const knowledge = (state: ServerState) =>
+  HttpApiBuilder.group(NetheriteApi, 'knowledge', (handlers) =>
+    handlers
+      .handle('list', () =>
+        Effect.gen(function* () {
+          const fresh = yield* state.freshness.get
+          return { items: knowledgeRows(state.repo, fresh) }
+        }),
+      )
+      .handle('preview', ({ params }) =>
+        Effect.gen(function* () {
+          const item = yield* locate(state, params.id)
+          const detail = itemDetail(state.repo, item, undefined)
+          const git = state.git
+          const changed =
+            git === undefined
+              ? null
+              : yield* coChanged(git, state.repo.workspace.root, item.path, {
+                  contentRoot: state.repo.workspace.config.content,
+                  minCommits: 1,
+                }).pipe(Effect.mapError(gitFailure))
+          return {
+            id: params.id,
+            summary: summaryOf(detail.body),
+            backlinks: detail.backlinks,
+            coChanged: changed,
+          }
+        }),
+      ),
+  )
+
 const lintReport = (state: ServerState, only?: string) =>
   Effect.gen(function* () {
     const fresh = yield* state.freshness.get
@@ -611,6 +645,7 @@ export const handlersLayer = (state: ServerState) =>
     graph(state),
     goals(state),
     projects(state),
+    knowledge(state),
     lintGroup(state),
     lintTextGroup(state),
     inbox(state),

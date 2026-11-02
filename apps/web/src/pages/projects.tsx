@@ -23,11 +23,12 @@ import {
   TypeBadge,
 } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useApi } from '../lib/app-context'
 import { boardQuery, projectsQuery } from '../lib/queries'
 import { useWrite } from '../lib/writes'
 import { RadialGraph } from './radial-graph'
+import { TaskDrawer } from './task-drawer'
 
 export function ProjectsPage() {
   const api = useApi()
@@ -35,7 +36,7 @@ export function ProjectsPage() {
   if (query.isPending) return <div className="app-page app-muted">Loading…</div>
   if (query.isError) {
     return (
-      <div className="app-page">
+      <div className="app-page app-page--wide">
         <Banner variant="danger" title="Could not load projects">
           Check that `netherite serve` is still running.
         </Banner>
@@ -44,7 +45,7 @@ export function ProjectsPage() {
   }
   const { projects } = query.data
   return (
-    <div className="app-page">
+    <div className="app-page app-page--wide">
       <h1 className="app-title">Projects</h1>
       {projects.length === 0 && (
         <EmptyState
@@ -78,10 +79,15 @@ export function ProjectsPage() {
   )
 }
 
-function CardBody({ card }: { readonly card: BoardCard }) {
+function CardBody({ card, projectId }: { readonly card: BoardCard; readonly projectId: string }) {
   return (
     <div className="board-card">
-      <Link to="/items/$id" params={{ id: card.id }} className="board-card-title">
+      <Link
+        to="/projects/$id"
+        params={{ id: projectId }}
+        search={{ task: card.id }}
+        className="board-card-title"
+      >
         {card.title}
       </Link>
       {card.labels.length > 0 && (
@@ -111,7 +117,13 @@ function CardBody({ card }: { readonly card: BoardCard }) {
   )
 }
 
-function DraggableCard({ card }: { readonly card: BoardCard }) {
+function DraggableCard({
+  card,
+  projectId,
+}: {
+  readonly card: BoardCard
+  readonly projectId: string
+}) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: card.id })
   return (
     <div
@@ -122,7 +134,7 @@ function DraggableCard({ card }: { readonly card: BoardCard }) {
       {...listeners}
     >
       <Card interactive>
-        <CardBody card={card} />
+        <CardBody card={card} projectId={projectId} />
       </Card>
     </div>
   )
@@ -132,7 +144,9 @@ function Column({
   name,
   category,
   cards,
+  projectId,
 }: {
+  readonly projectId: string
   readonly name: string
   readonly category: string
   readonly cards: ReadonlyArray<BoardCard>
@@ -150,7 +164,7 @@ function Column({
         <span className="goal-count">{cards.length}</span>
       </header>
       {cards.map((card) => (
-        <DraggableCard key={card.id} card={card} />
+        <DraggableCard key={card.id} card={card} projectId={projectId} />
       ))}
     </section>
   )
@@ -193,6 +207,7 @@ function TasksView({ board }: { readonly board: Board }) {
             key={column.name}
             name={column.name}
             category={column.category}
+            projectId={board.id}
             cards={board.tasks.filter((t) => t.state === column.name)}
           />
         ))}
@@ -229,14 +244,21 @@ function LinkedView({
   )
 }
 
-export function BoardPage({ id }: { readonly id: string }) {
+export function BoardPage({
+  id,
+  task,
+}: {
+  readonly id: string
+  readonly task?: string | undefined
+}) {
   const api = useApi()
+  const navigate = useNavigate()
   const query = useQuery(boardQuery(api, id))
   if (query.isPending) return <div className="app-page app-muted">Loading…</div>
   if (query.isError) {
     const missing = query.error instanceof NotFound
     return (
-      <div className="app-page">
+      <div className="app-page app-page--wide">
         <Banner
           variant={missing ? 'warning' : 'danger'}
           title={missing ? `No project ${id}` : 'Could not load this project'}
@@ -249,7 +271,7 @@ export function BoardPage({ id }: { readonly id: string }) {
   const board = query.data
   const progress = board.progress ?? { done: 0, total: 0 }
   return (
-    <div className="app-page">
+    <div className="app-page app-page--wide">
       <nav className="goal-crumbs" aria-label="Breadcrumb">
         <Link to="/projects">Projects</Link>
         <span> / {board.title}</span>
@@ -299,6 +321,11 @@ export function BoardPage({ id }: { readonly id: string }) {
           />
         </Tabs.Panel>
       </Tabs>
+      <TaskDrawer
+        id={task}
+        columns={board.columns}
+        onClose={() => void navigate({ to: '/projects/$id', params: { id }, search: {} })}
+      />
     </div>
   )
 }

@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-router'
 import { GoalPage, GoalsPage } from './pages/goals'
 import { ItemPage } from './pages/item'
+import { KnowledgePage } from './pages/knowledge'
 import { type PageProps, Placeholder } from './pages/lists'
 import { BoardPage, ProjectsPage } from './pages/projects'
 import { Shell } from './shell'
@@ -55,17 +56,18 @@ const projects = createRoute({
 const project = createRoute({
   getParentRoute: () => root,
   path: '/projects/$id',
+  validateSearch: (search: Record<string, unknown>): { task?: string } =>
+    typeof search.task === 'string' && search.task !== '' ? { task: search.task } : {},
   component: function ProjectRoute() {
     const { id } = project.useParams()
-    return <BoardPage id={id} />
+    const { task } = project.useSearch()
+    return <BoardPage id={id} task={task} />
   },
 })
-const knowledge = screen('/knowledge', {
-  title: 'Knowledge',
-  icon: 'stacks',
-  types: ['adr', 'doc', 'context', 'runbook'],
-  arrives:
-    'The knowledge index with filters, stale and orphan toggles and a preview panel (TASK-00040).',
+const knowledge = createRoute({
+  getParentRoute: () => root,
+  path: '/knowledge',
+  component: KnowledgePage,
 })
 const stats = screen('/stats', {
   title: 'Stats',

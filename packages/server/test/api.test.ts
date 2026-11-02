@@ -214,6 +214,24 @@ describe('search, graph, lint', () => {
     )
   })
 
+  test('knowledge lists ADRs and docs, and a preview has a summary and backlinks', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const { items } = yield* s.client.knowledge.list()
+        expect(items.map((i) => i.id)).toEqual(
+          expect.arrayContaining(['ADR-00001', 'ADR-00002', 'ADR-00003', 'DOC-00001']),
+        )
+        expect(items.some((i) => i.type === 'task')).toBe(false)
+        const preview = yield* s.client.knowledge.preview({ params: { id: 'ADR-00002' } })
+        expect(preview.summary).toBe('Text.')
+        expect(preview.backlinks.map((b) => b.id)).toContain('PRJ-00001')
+        expect(preview.coChanged).toBeNull()
+        const missing = yield* failure(s.client.knowledge.preview({ params: { id: 'ADR-09999' } }))
+        expect(missing._tag).toBe('NotFound')
+      }),
+    )
+  })
+
   test('lint reports the whole workspace or one item, and sees edits straight away', async () => {
     await withServer((s) =>
       Effect.gen(function* () {

@@ -149,6 +149,8 @@ export {
   type ItemSummary,
   itemDetail,
   itemSummary,
+  type KnowledgeRow,
+  knowledgeRows,
   type LinkView,
   type ListOptions,
   listItems,
@@ -156,6 +158,7 @@ export {
   type ProjectRow,
   projectRows,
   searchItems,
+  summaryOf,
 } from './views'
 export {
   type ChangeEvent,

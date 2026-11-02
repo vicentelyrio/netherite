@@ -15,13 +15,14 @@ export const invalidationsFor = (event: ServerEvent): ReadonlyArray<ReadonlyArra
         ['search'],
         keys.graph,
         keys.goals,
+        keys.knowledge,
         keys.projects,
         keys.inbox,
         keys.history,
         keys.stats,
       ]
     case 'git':
-      return [keys.inbox, keys.history, keys.stats, keys.health]
+      return [keys.knowledge, keys.inbox, keys.history, keys.stats, keys.health]
     case 'lint':
       return [keys.lint, keys.inbox]
     case 'config':

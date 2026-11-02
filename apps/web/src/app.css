@@ -554,3 +554,106 @@ body,
   align-items: center;
   gap: 4px;
 }
+
+/* ---- task drawer ---- */
+.drawer-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.drawer-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.drawer-state {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+}
+.drawer-fields {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 6px 12px;
+  margin: 12px 0 0;
+}
+.drawer-fields dt {
+  color: var(--mantine-color-dimmed);
+}
+.drawer-fields dd {
+  margin: 0;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.drawer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.drawer-decisions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.drawer-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.drawer-full {
+  margin-top: 24px;
+  display: inline-block;
+}
+
+/* ---- knowledge index ---- */
+.kn-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 16px 0;
+}
+.kn-filters select {
+  height: 32px;
+  background: #212336;
+  color: inherit;
+  border: 1px solid #2f3250;
+  border-radius: 8px;
+  padding: 0 8px;
+}
+.kn-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.kn-layout--preview {
+  grid-template-columns: minmax(0, 1fr) 380px;
+}
+.kn-preview {
+  background: #212336;
+  border: 1px solid #2f3250;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: sticky;
+  top: 16px;
+}
+.kn-preview-title {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+  margin: 0;
+}

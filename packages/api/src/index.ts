@@ -5,6 +5,7 @@ export {
   HistoryGroup,
   InboxGroup,
   ItemsGroup,
+  KnowledgeGroup,
   LintGroup,
   LintTextGroup,
   MetaGroup,
