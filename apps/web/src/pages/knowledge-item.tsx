@@ -15,6 +15,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Markdown } from '@/components/Markdown'
 import { useApi } from '@/infrastructure/api'
+import { formatDate, isoDay } from '@/infrastructure/datetime'
 import {
   itemHistoryQuery,
   keys,
@@ -26,9 +27,6 @@ import {
 import { SourceEditor } from './source-editor'
 
 export const knowledgeTypes = new Set(['adr', 'doc', 'context', 'runbook'])
-
-const shortDate = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 
 /** The steps an ADR goes through: where it has been and where it is. */
 export function Lifecycle({
@@ -62,7 +60,7 @@ export function Lifecycle({
             <strong>{step}</strong>
             <span className="app-muted">
               {record?.date
-                ? `${shortDate(record.date)}${record.sha ? ` · ${record.sha}` : ''}`
+                ? `${formatDate(record.date)}${record.sha ? ` · ${record.sha}` : ''}`
                 : ''}
             </span>
           </li>
@@ -294,7 +292,7 @@ export function KnowledgeFrame({
             <li key={c.hash}>
               <code>{c.hash.slice(0, 7)}</code> {c.subject}{' '}
               <span className="app-muted">
-                {c.author}, {c.date.slice(0, 10)}
+                {c.author}, {isoDay(c.date)}
               </span>
             </li>
           ))}
@@ -352,7 +350,7 @@ export function KnowledgeFrame({
             <div key={c.hash} className="kf-commit">
               <code>{c.hash.slice(0, 7)}</code>
               <span>{c.subject}</span>
-              <span className="app-muted">{c.date.slice(0, 10)}</span>
+              <span className="app-muted">{isoDay(c.date)}</span>
             </div>
           ))}
         </section>

@@ -22,6 +22,7 @@ import {
   TitleForm,
 } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { ago } from '@/infrastructure/datetime'
 import { useNotices } from '@/infrastructure/notices'
 import { knowledgeQuery, previewQuery, useWrite } from '@/infrastructure/query'
 
@@ -136,19 +137,6 @@ const starters: ReadonlyArray<{ type: ItemTypeName; text: string; path: string }
   },
   { type: 'runbook', text: 'Step-by-step operational procedures.', path: 'runbooks/….md' },
 ]
-
-/** How long ago a date was, in the design's short form: `2d ago`, `7w ago`, `4mo ago`. */
-export const ago = (date: string | undefined, now = Date.now()): string => {
-  if (date === undefined) return '—'
-  const then = Date.parse(date)
-  if (Number.isNaN(then)) return '—'
-  const days = Math.max(0, Math.floor((now - then) / 86_400_000))
-  if (days < 1) return 'today'
-  if (days < 14) return `${days}d ago`
-  if (days < 60) return `${Math.floor(days / 7)}w ago`
-  if (days < 365) return `${Math.floor(days / 30)}mo ago`
-  return `${Math.floor(days / 365)}y ago`
-}
 
 function FreshnessCell({ row }: { readonly row: KnowledgeRow }) {
   if (row.freshness === null) return <span className="kn-fresh kn-fresh--na">Not tracked</span>

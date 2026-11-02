@@ -4,8 +4,8 @@ import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Breadcrumbs, GroupCard } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { ago, nowIso } from '@/infrastructure/datetime'
 import { inboxQuery, keys } from '@/infrastructure/query'
-import { ago } from './knowledge'
 
 const seenKey = 'netherite:inbox-seen'
 
@@ -84,7 +84,7 @@ export function InboxPage() {
   const waiting = waitingCount(inbox)
   const changed = inbox.activity.length + inbox.changes.length
   const seen = () => {
-    const now = new Date().toISOString()
+    const now = nowIso()
     markSeen(now)
     setSince(now)
     void client.invalidateQueries({ queryKey: keys.inbox })

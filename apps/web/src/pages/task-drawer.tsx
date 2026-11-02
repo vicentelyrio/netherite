@@ -13,6 +13,7 @@ import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { ProgressBar } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { formatDateTime } from '@/infrastructure/datetime'
 import { itemQuery, itemsQuery, useHealth, useWrite } from '@/infrastructure/query'
 import { summaryOf } from '@/infrastructure/text'
 import { SourceEditor } from './source-editor'
@@ -79,13 +80,7 @@ function Body({ id, columns }: { readonly id: string; readonly columns: Readonly
   const createdRaw = field(fm, 'created') ?? field(fm, 'created_at')
   const created =
     typeof createdRaw === 'string' || createdRaw instanceof Date
-      ? new Date(createdRaw).toLocaleString('en-GB', {
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        })
+      ? formatDateTime(createdRaw)
       : undefined
   const linked = new Set(decisions.map((d) => d.id))
   const choices = (adrs.data?.items ?? []).filter((a) => !linked.has(a.id))

@@ -6,6 +6,7 @@ import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Breadcrumbs, FilterTabs } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { formatDay, formatYear } from '@/infrastructure/datetime'
 import { decisionsQuery, knowledgeQuery } from '@/infrastructure/query'
 
 export interface Transition {
@@ -111,9 +112,6 @@ const statusStyle: Record<string, { label: string; color: string; icon: string }
   superseded: { label: 'Superseded', color: '#969ab8', icon: 'swap_horiz' },
 }
 
-const day = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
-
 function Chip({ status, faded }: { readonly status: string; readonly faded?: boolean }) {
   const s = statusStyle[status] ?? { label: status, color: '#b9bcd3', icon: 'circle' }
   return (
@@ -134,8 +132,8 @@ function Card({ commit }: { readonly commit: CommitCard }) {
   return (
     <div className="dl-commit">
       <div className="dl-date">
-        <strong>{day(commit.date)}</strong>
-        <span>{new Date(commit.date).getFullYear()}</span>
+        <strong>{formatDay(commit.date)}</strong>
+        <span>{formatYear(commit.date)}</span>
       </div>
       <div className="dl-node-col">
         <span

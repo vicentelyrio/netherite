@@ -20,6 +20,7 @@
     "@netherite/api": "workspace:*",
     "@dnd-kit/core": "catalog:",
     "d3-force": "catalog:",
+    "dayjs": "catalog:",
     "graphology": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-query": "catalog:",

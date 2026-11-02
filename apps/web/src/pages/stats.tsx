@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Breadcrumbs, StatCard } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { formatWeekStart } from '@/infrastructure/datetime'
 import { goalsQuery, projectsQuery, statsQuery } from '@/infrastructure/query'
 
 export interface Point {
@@ -21,13 +22,6 @@ export const niceMax = (value: number) => {
   const step = value <= 40 ? 4 : 10 ** Math.floor(Math.log10(value))
   return Math.ceil(value / step) * step
 }
-
-const shortWeek = (week: string) =>
-  new Date(`${week}T00:00:00Z`).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    timeZone: 'UTC',
-  })
 
 const W = 720
 const H = 220
@@ -72,7 +66,7 @@ function Axes({
             textAnchor="middle"
             className="st-tick"
           >
-            {shortWeek(w)}
+            {formatWeekStart(w)}
           </text>
         ) : null,
       )}
@@ -105,7 +99,7 @@ export function Bars({
             rx={3}
             className="st-bar"
           >
-            <title>{`${shortWeek(d.week)}: ${d.count}`}</title>
+            <title>{`${formatWeekStart(d.week)}: ${d.count}`}</title>
           </rect>
         )
       })}
@@ -152,7 +146,7 @@ export function StackedBars({
                   height={h}
                   fill={adrColors[k]}
                 >
-                  <title>{`${shortWeek(d.week)}: ${d[k]} ${k}`}</title>
+                  <title>{`${formatWeekStart(d.week)}: ${d[k]} ${k}`}</title>
                 </rect>
               ) : null
             })}
@@ -290,7 +284,7 @@ export function StatsPage() {
         <StatCard value={done} label="tasks done" />
         <StatCard
           value={best ? best.count : 0}
-          label={best ? `best week · ${shortWeek(best.week)}` : 'best week'}
+          label={best ? `best week · ${formatWeekStart(best.week)}` : 'best week'}
         />
         <StatCard value={adrs} label="ADRs accepted" />
         <StatCard value={data.completions.length} label="weeks of history" />
