@@ -3,6 +3,7 @@ import { request } from 'node:http'
 import { createConnection } from 'node:net'
 import { networkInterfaces } from 'node:os'
 import { join } from 'node:path'
+import { NodeServices } from '@effect/platform-node'
 import { Effect } from 'effect'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { check, isLoopbackHost, listen, NotLoopback, type Policy } from '../src/index'
@@ -351,10 +352,12 @@ describe('listening', () => {
     for (const host of ['0.0.0.0', '::', '192.168.1.20', 'example.com', '10.0.0.1', '']) {
       const state = await makeTempState()
       const error = await Effect.runPromise(
-        Effect.flip(Effect.scoped(listen(state, { host, port: 0 }))),
+        Effect.flip(Effect.scoped(listen(state, { host, port: 0 }))).pipe(
+          Effect.provide(NodeServices.layer),
+        ),
       )
       expect(error, host).toBeInstanceOf(NotLoopback)
-      expect(error.message).toContain('loopback')
+      expect((error as Error).message).toContain('loopback')
     }
     expect(['127.0.0.1', '127.1.2.3', 'localhost', '::1', '[::1]'].every(isLoopbackHost)).toBe(true)
     expect(

@@ -33,6 +33,9 @@ export const reportFailure = (env: Env, error: unknown): ExitCode => {
     case 'ItemReadError':
     case 'IoError':
     case 'WatchError':
+    case 'ServeError':
+    case 'NotLoopback':
+    case 'PortInUse':
       env.out.error(error.message)
       return exitCodes.usage as ExitCode
     case 'ValidationError': {

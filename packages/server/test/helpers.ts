@@ -33,6 +33,8 @@ export interface StartOptions {
   readonly live?: boolean
   /** Extra origins the server accepts. */
   readonly origins?: ReadonlyArray<string>
+  /** A folder with a built app to serve. */
+  readonly appRoot?: (dir: string) => string
 }
 
 /** A watch backend the test drives by hand, routed by folder like the real one. */
@@ -88,7 +90,10 @@ export const start = (options: StartOptions = {}): Effect.Effect<Running, unknow
       yield* startLive(state, { backend: fake.backend, debounceMs: 5, lintDebounceMs: 5 })
     }
 
-    const running = yield* listen(state, { port: 0 })
+    const running = yield* listen(state, {
+      port: 0,
+      ...(options.appRoot ? { appRoot: options.appRoot(dir) } : {}),
+    })
     const url = running.url
     const client = yield* makeClient({ baseUrl: url, token: running.token }).pipe(
       Effect.provide(FetchHttpClient.layer),

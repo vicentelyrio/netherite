@@ -14,10 +14,19 @@ export const exitCodes = { ok: 0, findings: 1, usage: 2 } as const satisfies Rec
   ExitCode
 >
 
+/** What `serve` needs from its surroundings; tests replace these. */
+export interface ServeEnv {
+  /** Stops the server when aborted (the real one aborts on Ctrl-C). Without it, `serve` runs forever. */
+  readonly signal?: AbortSignal
+  /** Opens a page in the browser. Default: the operating system's opener. */
+  readonly open?: (url: string) => void
+}
+
 export interface Env {
   readonly out: Output
   /** The folder the command was started from. */
   readonly cwd: string
+  readonly serve?: ServeEnv
   /** Streams for commands that speak a protocol (`mcp`). Default: the process's own. */
   readonly stdio?: {
     readonly input?: import('node:stream').Readable

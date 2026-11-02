@@ -48,6 +48,14 @@ export interface McpOptions {
   readonly version?: string
   /** Record each write in `.netherite/local/activity.jsonl`. Default `true`. */
   readonly activity?: boolean
+  /** Called after every write that changed something, for example to tell browsers about it. */
+  readonly onWrite?: (write: {
+    readonly tool: string
+    readonly id: string
+    readonly path: string
+    readonly hash: string | null
+    readonly changed: ReadonlyArray<string>
+  }) => void
 }
 
 export interface McpHandle {
@@ -434,8 +442,10 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           const result = await entry.handle(
             new ArgReader((request.params.arguments ?? {}) as Record<string, unknown>),
           )
-          if (entry.write && result.isError !== true && written !== undefined) {
-            await record(request.params.name, written)
+          const done = written as Written | undefined
+          if (entry.write && result.isError !== true && done !== undefined) {
+            await record(request.params.name, done)
+            options.onWrite?.({ tool: request.params.name, ...done })
           }
           written = undefined
           return result

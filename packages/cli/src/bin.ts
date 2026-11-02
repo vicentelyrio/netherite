@@ -3,11 +3,16 @@ import { Effect } from 'effect'
 import pkg from '../package.json' with { type: 'json' }
 import { runCli } from './cli'
 
+// Ctrl-C and `kill` stop `serve` cleanly: it closes the server, the watcher and MCP sessions.
+const stop = new AbortController()
+for (const signal of ['SIGINT', 'SIGTERM'] as const) process.once(signal, () => stop.abort())
+
 const code = await Effect.runPromise(
   runCli(
     process.argv.slice(2),
     {
       cwd: process.cwd(),
+      serve: { signal: stop.signal },
       out: {
         line: (text) => void process.stdout.write(`${text}\n`),
         error: (text) => void process.stderr.write(`${text}\n`),

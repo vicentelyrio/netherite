@@ -1,5 +1,6 @@
 export { ArgReader } from './args'
 export { describeError, type ToolResult } from './errors'
+export { createMcpHttp, type McpHttp } from './http'
 export { createMcpServer, type McpHandle, type McpOptions } from './server'
 export { type StdioOptions, serveStdio } from './stdio'
 export { toolDefinitions } from './tools'

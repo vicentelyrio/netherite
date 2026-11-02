@@ -56,7 +56,7 @@ const invalid = (path: ReadonlyArray<string | number>, message: string) =>
  * Something this server changed: refresh what is cached and tell connected clients. Changes made
  * by an editor or `git` reach clients through the watcher instead (see `live.ts`).
  */
-export const changed = (
+export const notifyChanged = (
   state: ServerState,
   upserted: ReadonlyArray<string>,
   removed: ReadonlyArray<string>,
@@ -83,7 +83,7 @@ const write =
     state.writes.withPermits(1)(
       effect.pipe(
         Effect.mapError(toApiError),
-        Effect.tap((r) => changed(state, r.changed, [])),
+        Effect.tap((r) => notifyChanged(state, r.changed, [])),
         Effect.map(written),
       ),
     )
@@ -254,7 +254,7 @@ const items = (state: ServerState) =>
             ...(query.baseHash ? { baseHash: query.baseHash } : {}),
           }).pipe(
             Effect.mapError(toApiError),
-            Effect.tap((d) => changed(state, [], [d.path])),
+            Effect.tap((d) => notifyChanged(state, [], [d.path])),
             Effect.map((d) => ({ deleted: d.id, path: d.path })),
           ),
         ),
