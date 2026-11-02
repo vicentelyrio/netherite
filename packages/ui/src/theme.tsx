@@ -6,6 +6,7 @@ import {
   Chip,
   createTheme,
   Drawer,
+  Grid,
   type MantineThemeOverride,
   Menu,
   Modal,
@@ -15,7 +16,7 @@ import {
   Tabs,
   Tooltip,
 } from '@mantine/core'
-import { color, layout, mantineTheme } from '@netherite/tokens'
+import { color, grid, layout, mantineTheme } from '@netherite/tokens'
 
 /**
  * The class names the theme gives each component's parts, styled in `components.css`. Keeping
@@ -63,6 +64,7 @@ export const classNames = {
 export const theme: MantineThemeOverride = createTheme({
   ...(mantineTheme as unknown as MantineThemeOverride),
   components: {
+    Grid: Grid.extend({ defaultProps: { columns: grid.columns, gap: 'xl' } }),
     Button: Button.extend({
       classNames: classNames.button,
       defaultProps: { size: 'sm', radius: 'sm' },

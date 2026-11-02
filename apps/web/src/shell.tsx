@@ -2,6 +2,7 @@ import { Avatar, Rail, type RailItem } from '@netherite/ui'
 import { useQueryClient } from '@tanstack/react-query'
 import { Outlet, useNavigate, useRouterState } from '@tanstack/react-router'
 import { useCallback, useState } from 'react'
+import { AppShell } from '@/templates'
 import { useApi } from './lib/app-context'
 import { type Connection, useLiveUpdates } from './lib/live'
 import { useNotices } from './lib/notices'
@@ -128,16 +129,18 @@ export function Shell() {
   }
 
   return (
-    <div className="app-shell">
-      <Rail
-        items={items}
-        active={activeFor(pathname)}
-        onSelect={select}
-        footer={
-          health.data?.user ? <Avatar name={health.data.user} size={32} color="warning" /> : null
-        }
-      />
-      <div className="app-main">
+    <AppShell
+      rail={
+        <Rail
+          items={items}
+          active={activeFor(pathname)}
+          onSelect={select}
+          footer={
+            health.data?.user ? <Avatar name={health.data.user} size={32} color="warning" /> : null
+          }
+        />
+      }
+      statusBar={
         <div className="app-statusbar" role="status" aria-live="polite">
           <span className="app-status" data-state={connection}>
             <span className="app-status-dot" aria-hidden="true" />
@@ -149,11 +152,10 @@ export function Shell() {
             </span>
           )}
         </div>
-        <main className="app-content">
-          <Outlet />
-        </main>
-      </div>
-      <SearchPalette opened={searchOpen} onClose={() => setSearchOpen(false)} />
-    </div>
+      }
+      overlays={<SearchPalette opened={searchOpen} onClose={() => setSearchOpen(false)} />}
+    >
+      <Outlet />
+    </AppShell>
   )
 }

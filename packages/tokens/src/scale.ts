@@ -97,6 +97,21 @@ export const layout = {
   focusRing: 2,
 } as const
 
+/**
+ * The page grid every template sits on (ADR-00024): twelve columns, so content falls on columns and
+ * not on fixed pixels. At 1920 the content is 1728 wide (screen less rail, start and end margin),
+ * which is the width the designs use. Below `compactBelow` the margins shrink to `marginCompact`.
+ */
+export const grid = {
+  columns: 12,
+  gutter: 24,
+  /** Space left of the content, after the rail (the designs' 160px from the screen edge). */
+  marginStart: 96,
+  marginEnd: 32,
+  marginCompact: 24,
+  compactBelow: 1280,
+} as const
+
 /** Icon sizes and strokes (sheet T1, "Icons"). */
 export const icon = {
   rail: { size: 22, weight: 300 },

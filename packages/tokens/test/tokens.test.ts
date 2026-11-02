@@ -10,6 +10,7 @@ import {
   edgeStyle,
   freshnessStates,
   glyphBox,
+  grid,
   hexToRgb,
   itemTypeNames,
   layout,
@@ -340,6 +341,14 @@ describe('type, space and radii match T1', () => {
     expect(layout.screen).toEqual({ width: 1920, height: 1080 })
     expect(layout.pageInset).toBe(96)
     expect(layout.cardPadding).toBe(16)
+  })
+
+  test('the page grid: twelve columns of content 1728 wide at 1920', () => {
+    expect(grid.columns).toBe(12)
+    expect(layout.screen.width - layout.railWidth - grid.marginStart - grid.marginEnd).toBe(1728)
+    expect(variables()['--nt-grid-columns']).toBe('12')
+    expect(variables()['--nt-grid-gutter']).toBe('24px')
+    expect(variables()['--nt-grid-margin-start']).toBe('96px')
   })
 
   test('line heights leave room', () => {

@@ -3,6 +3,7 @@ import { edgeStyle, graphMetrics, nodeSpec } from './graph'
 import {
   fontFamily,
   fontWeight,
+  grid,
   icon,
   layout,
   motion,
@@ -79,6 +80,8 @@ export const variables = (): Record<string, string> => {
     ...named('radius', radius, lengths),
     ...named('radius', radiusExtra, lengths),
     ...named('layout', layout, lengths),
+    ...named('grid', grid, lengths),
+    [`${prefix}grid-columns`]: String(grid.columns),
     ...named('icon', icon, (v) => (typeof v === 'number' && v > 100 ? String(v) : px(v as number))),
     ...named('duration', motion.duration, (v) => `${v}ms`),
     ...named('easing', motion.easing),

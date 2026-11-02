@@ -31,6 +31,7 @@ export {
   fontFamily,
   fontSize,
   fontWeight,
+  grid,
   icon,
   layout,
   motion,

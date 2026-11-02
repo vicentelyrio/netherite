@@ -1,6 +1,6 @@
 import { color } from './color'
 import { hexToRgb } from './contrast'
-import { fontFamily, fontWeight, radius, space, textStyle } from './scale'
+import { fontFamily, fontWeight, grid, radius, space, textStyle } from './scale'
 
 type Scale = readonly [
   string,
@@ -92,6 +92,17 @@ export const mantineTheme = {
     md: px(textStyle.bodySm.lineHeight),
     lg: px(textStyle.heading.lineHeight),
     xl: px(textStyle.title.lineHeight),
+  },
+  /**
+   * Responsive props (`span={{ base: 12, lg: 8 }}`) switch at these widths. `lg` is where the page
+   * grid stops using its compact margins; `xl` is the width the screens are designed at.
+   */
+  breakpoints: {
+    xs: '36em',
+    sm: '48em',
+    md: '62em',
+    lg: `${grid.compactBelow / 16}em`,
+    xl: '120em',
   },
   spacing: {
     xs: px(space[1]),

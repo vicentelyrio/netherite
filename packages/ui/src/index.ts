@@ -46,6 +46,7 @@ export {
   type TypeGlyphProps,
   typeLabels,
 } from './components/domain'
+export { Box, Grid, Group, Stack } from './components/layout'
 export {
   Chip,
   Drawer,

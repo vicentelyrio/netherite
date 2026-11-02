@@ -1,0 +1,32 @@
+.tpl-canvas {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+.tpl-canvas-fill {
+  position: absolute;
+  inset: 0;
+}
+.tpl-canvas-header,
+.tpl-canvas-controls,
+.tpl-canvas-footer {
+  position: absolute;
+  z-index: 2;
+}
+.tpl-canvas-header {
+  top: 40px;
+  left: var(--nt-grid-margin-start);
+  pointer-events: none;
+}
+.tpl-canvas-header > * {
+  pointer-events: auto;
+}
+.tpl-canvas-controls {
+  top: 40px;
+  right: 40px;
+}
+.tpl-canvas-footer {
+  left: var(--nt-grid-margin-start);
+  right: 40px;
+  bottom: 40px;
+}
