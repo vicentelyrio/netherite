@@ -2793,3 +2793,90 @@ a.ib-row:hover {
   font: inherit;
   font-size: 13px;
 }
+
+/* ---- stats ---- */
+.st-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 220px));
+  gap: 12px;
+  margin: 24px 0;
+}
+.st-tile {
+  background: #212336;
+  border: 1px solid #2f3250;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.st-tile strong {
+  font-size: 26px;
+  line-height: 32px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.st-tile span {
+  font-size: 13px;
+  color: #969ab8;
+}
+.st-card {
+  background: #212336;
+  border: 1px solid #2f3250;
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  max-width: 1000px;
+}
+.st-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.st-h {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+.st-card-head .st-h {
+  margin: 0;
+}
+.st-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 8px;
+}
+.st-grid {
+  stroke: #33364f;
+  stroke-width: 1;
+}
+.st-tick {
+  fill: #969ab8;
+  font-size: 11px;
+}
+.st-bar {
+  fill: #2cc27e;
+}
+.st-legend {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  font-size: 13px;
+}
+.st-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.st-legend--row {
+  margin: 0;
+}
+.st-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}

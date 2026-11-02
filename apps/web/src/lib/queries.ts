@@ -136,3 +136,10 @@ export const searchQuery = (api: Api, q: string) =>
     enabled: q.trim() !== '',
     retry: false,
   })
+
+export const statsQuery = (api: Api) =>
+  queryOptions({
+    queryKey: keys.stats,
+    queryFn: () => api.call((c) => c.stats.stats({ query: {} })),
+    retry: false,
+  })

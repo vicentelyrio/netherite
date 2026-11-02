@@ -16,6 +16,7 @@ import { KnowledgePage } from './pages/knowledge'
 import { type PageProps, Placeholder } from './pages/lists'
 import { BoardPage } from './pages/projects'
 import { ProjectsEntry } from './pages/projects-entry'
+import { StatsPage } from './pages/stats'
 import { Shell } from './shell'
 
 const root = createRootRoute({
@@ -75,11 +76,7 @@ const decisions = createRoute({
   path: '/decisions',
   component: DecisionsPage,
 })
-const stats = screen('/stats', {
-  title: 'Stats',
-  icon: 'bar_chart',
-  arrives: 'Progress per goal and project over time, and tasks done per week (TASK-00046).',
-})
+const stats = createRoute({ getParentRoute: () => root, path: '/stats', component: StatsPage })
 const tags = screen('/tags', {
   title: 'Tags',
   icon: 'sell',

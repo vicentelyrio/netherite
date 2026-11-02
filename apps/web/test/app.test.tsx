@@ -50,8 +50,8 @@ describe('the shell', () => {
   })
 
   test('a screen that is not built yet says which task builds it', async () => {
-    renderApp('/stats')
-    expect(await screen.findByText(/TASK-00046/)).toBeInTheDocument()
+    renderApp('/tags')
+    expect(await screen.findByText(/TASK-00047/)).toBeInTheDocument()
   })
 
   test('an unknown address is a clear dead end, not a blank page', async () => {
@@ -947,5 +947,26 @@ describe('the Inbox', () => {
     expect(
       await within(nav()).findByRole('button', { name: /^Inbox, \d+ waiting$/ }),
     ).toBeInTheDocument()
+  })
+})
+
+describe('Stats', () => {
+  test('shows the tiles and the three charts from the git history', async () => {
+    renderApp('/stats')
+    expect(await screen.findByRole('heading', { name: 'Stats' })).toBeInTheDocument()
+    expect(await screen.findByRole('img', { name: 'Tasks done per week' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /Progress of each goal/ })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /ADRs by the status/ })).toBeInTheDocument()
+    expect(screen.getByText('tasks done')).toBeInTheDocument()
+    expect(screen.getByText('ADRs accepted')).toBeInTheDocument()
+  })
+
+  test('progress can be shown per goal or per project, with each one named and its latest percent', async () => {
+    renderApp('/stats')
+    const progress = await screen.findByRole('region', { name: 'Progress over time' })
+    await userEvent.click(within(progress).getByRole('radio', { name: 'Projects' }))
+    expect(await screen.findByRole('img', { name: /Progress of each project/ })).toBeInTheDocument()
+    await waitFor(() => expect(within(progress).getAllByText('App').length).toBeGreaterThan(0))
+    expect(within(progress).getAllByText(/^\d+%$|^—$/).length).toBeGreaterThan(0)
   })
 })

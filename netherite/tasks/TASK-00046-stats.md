@@ -6,10 +6,10 @@ title: Stats
 created: 2026-11-01T23:50:43Z
 created_by: "@vicentelyrio"
 project: PRJ-00007
-state: backlog
+state: done
 depends_on: [TASK-00018, TASK-00035]
 ---
 
 # Stats
 
-- [ ] Progress per goal and project over time; tasks done per week; ADR activity
+- [x] Progress per goal and project over time; tasks done per week; ADR activity
