@@ -6,12 +6,12 @@ title: Documentation
 created: 2026-11-01T23:50:43Z
 created_by: "@vicentelyrio"
 project: PRJ-00008
-state: backlog
+state: done
 depends_on: [TASK-00049]
 ---
 
 # Documentation
 
-- [ ] README and getting started: `init`, agent MCP config, skills, `serve`
-- [ ] Reference: schemas, CLI, MCP tools, config
-- [ ] Obsidian compatibility notes
+- [x] README and getting started: `init`, agent MCP config, skills, `serve`
+- [x] Reference: schemas, CLI, MCP tools, config
+- [x] Obsidian compatibility notes

@@ -29,6 +29,8 @@
     "cs:publish": "changeset publish",
     "test:scale": "turbo run test:scale",
     "e2e": "turbo run e2e",
+    "docs:gen": "node scripts/gen-reference.mjs",
+    "docs:check": "node scripts/gen-reference.mjs --check",
     "netherite:lint": "node packages/cli/dist/bin.mjs lint --fail-on warning",
     "netherite:context": "node packages/cli/dist/bin.mjs context sync --check"
   },

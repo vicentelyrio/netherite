@@ -52,6 +52,8 @@ jobs:
         run: echo "Enabled with apps/web in TASK-00034. It fails if the browser build imports more of effect than Schema and the HTTP client, or exceeds its size budget."
 
       # The repository's own knowledge base, checked with the CLI that was just built.
+      - name: Reference docs are up to date
+        run: pnpm docs:check
       - name: Netherite lint on this repository
         run: pnpm netherite:lint
       - name: Netherite context is in sync
