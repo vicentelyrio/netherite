@@ -7,6 +7,7 @@ import {
   type RouterHistory,
   redirect,
 } from '@tanstack/react-router'
+import { GoalPage, GoalsPage } from './pages/goals'
 import { ItemPage } from './pages/item'
 import { type PageProps, Placeholder } from './pages/lists'
 import { Shell } from './shell'
@@ -36,11 +37,14 @@ const inbox = screen('/inbox', {
   arrives:
     'What agents changed, ADRs waiting for a decision, stale docs, orphans, lint errors and blocked tasks (TASK-00045).',
 })
-const goals = screen('/goals', {
-  title: 'Goals',
-  icon: 'track_changes',
-  types: ['goal'],
-  arrives: 'Goals grouped by area with progress rings (TASK-00037).',
+const goals = createRoute({ getParentRoute: () => root, path: '/goals', component: GoalsPage })
+const goal = createRoute({
+  getParentRoute: () => root,
+  path: '/goals/$id',
+  component: function GoalRoute() {
+    const { id } = goal.useParams()
+    return <GoalPage id={id} />
+  },
 })
 const projects = screen('/projects', {
   title: 'Projects',
@@ -86,6 +90,7 @@ const routeTree = root.addChildren([
   index,
   inbox,
   goals,
+  goal,
   projects,
   knowledge,
   stats,

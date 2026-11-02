@@ -8,6 +8,8 @@ import {
   DecisionQuery,
   DeleteQuery,
   DeleteResult,
+  GoalDetail,
+  GoalList,
   Graph,
   Health,
   Inbox,
@@ -121,6 +123,15 @@ export class GraphGroup extends HttpApiGroup.make('graph').add(
   HttpApiEndpoint.get('graph', '/graph', { success: Graph }),
 ) {}
 
+export class GoalsGroup extends HttpApiGroup.make('goals').add(
+  HttpApiEndpoint.get('list', '/goals', { success: GoalList }),
+  HttpApiEndpoint.get('get', '/goals/:id', {
+    params: id,
+    success: GoalDetail,
+    error: [NotFound, Refused],
+  }),
+) {}
+
 export class LintGroup extends HttpApiGroup.make('lint').add(
   HttpApiEndpoint.get('lint', '/lint', {
     query: LintQuery,
@@ -191,6 +202,7 @@ export class NetheriteApi extends HttpApi.make('netherite')
     ItemsGroup,
     SearchGroup,
     GraphGroup,
+    GoalsGroup,
     LintGroup,
     LintTextGroup,
     InboxGroup,

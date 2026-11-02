@@ -183,6 +183,23 @@ describe('search, graph, lint', () => {
     )
   })
 
+  test('goals list with progress, and one goal has its projects', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const { goals } = yield* s.client.goals.list()
+        expect(goals.length).toBeGreaterThan(0)
+        const goal = goals[0]
+        const detail = yield* s.client.goals.get({ params: { id: goal?.id as string } })
+        expect(detail.id).toBe(goal?.id)
+        expect(detail.projectRows.length).toBe(detail.projects)
+        const notGoal = yield* failure(s.client.goals.get({ params: { id: 'TASK-00001' } }))
+        expect(notGoal._tag).toBe('NotFound')
+        const missing = yield* failure(s.client.goals.get({ params: { id: 'GOAL-09999' } }))
+        expect(missing._tag).toBe('NotFound')
+      }),
+    )
+  })
+
   test('lint reports the whole workspace or one item, and sees edits straight away', async () => {
     await withServer((s) =>
       Effect.gen(function* () {

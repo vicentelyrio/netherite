@@ -175,3 +175,97 @@ export const graphOf = (repo: Repo) => {
   )
   return { nodes, edges }
 }
+
+// ---- goals and their projects --------------------------------------------------------------------
+
+const strings = (value: unknown): string[] =>
+  Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []
+
+export interface GoalRow {
+  readonly id: string
+  readonly title: string
+  readonly path: string
+  readonly status: string
+  readonly area: string | undefined
+  readonly due: string | undefined
+  /** When the goal was made, for how far along its horizon it is. */
+  readonly created: string | undefined
+  readonly tags: ReadonlyArray<string>
+  /** Tasks done over tasks, across all its projects. `null` when it has none. */
+  readonly progress: { readonly done: number; readonly total: number } | null
+  readonly projects: number
+}
+
+export interface ProjectRow {
+  readonly id: string
+  readonly title: string
+  readonly path: string
+  readonly status: string | undefined
+  readonly tags: ReadonlyArray<string>
+  readonly progress: { readonly done: number; readonly total: number } | null
+  /** The goals it belongs to, in the order it lists them. */
+  readonly goals: ReadonlyArray<{ readonly id: string; readonly title: string }>
+}
+
+const idOrNull = (item: ScannedItem) => (item.id === undefined ? null : item.id)
+
+const projectsOf = (repo: Repo, goalPath: string) =>
+  repo.index
+    .backlinks(goalPath)
+    .filter((e) => e.kind === 'belongs_to')
+    .flatMap((e) => {
+      const item = repo.index.get(e.from)
+      return item?.type === 'project' && item.id !== undefined ? [item] : []
+    })
+
+const goalRow = (repo: Repo, item: ScannedItem): GoalRow => {
+  const f = fieldsOf(item)
+  return {
+    id: item.id as string,
+    title: item.title ?? (item.id as string),
+    path: item.path,
+    status: typeof f.status === 'string' ? f.status : 'active',
+    area: typeof f.area === 'string' && f.area !== '' ? f.area : undefined,
+    due: typeof f.due === 'string' ? f.due : undefined,
+    created: typeof f.created === 'string' ? f.created : undefined,
+    tags: strings(f.tags),
+    progress: repo.index.progress(item.path) ?? null,
+    projects: projectsOf(repo, item.path).length,
+  }
+}
+
+const projectRow = (repo: Repo, item: ScannedItem): ProjectRow => {
+  const f = fieldsOf(item)
+  const goals = strings(f.goals).flatMap((id) => {
+    const goal = repo.index.findById(id)[0]
+    return goal === undefined ? [] : [{ id, title: goal.title ?? id }]
+  })
+  return {
+    id: item.id as string,
+    title: item.title ?? (item.id as string),
+    path: item.path,
+    status: typeof f.status === 'string' ? f.status : undefined,
+    tags: strings(f.tags),
+    progress: repo.index.progress(item.path) ?? null,
+    goals,
+  }
+}
+
+/** Every goal, grouped by area (goals with no area last), each area's goals in ID order. */
+export const goalRows = (repo: Repo): GoalRow[] =>
+  repo.index
+    .items()
+    .filter((i) => i.type === 'goal' && idOrNull(i) !== null)
+    .map((i) => goalRow(repo, i))
+    .sort((a, b) => {
+      if ((a.area === undefined) !== (b.area === undefined)) return a.area === undefined ? 1 : -1
+      return (a.area ?? '').localeCompare(b.area ?? '') || a.id.localeCompare(b.id)
+    })
+
+/** One goal with the projects that belong to it, in ID order. */
+export const goalDetail = (repo: Repo, item: ScannedItem) => ({
+  ...goalRow(repo, item),
+  projectRows: projectsOf(repo, item.path)
+    .sort((a, b) => (a.id ?? '').localeCompare(b.id ?? ''))
+    .map((p) => projectRow(repo, p)),
+})

@@ -335,3 +335,40 @@ export const ServerEvent = Schema.Union([
   Tagged('ping', {}),
 ])
 export type ServerEvent = typeof ServerEvent.Type
+
+// ---- goals -----------------------------------------------------------------------------
+
+const OptProgress = Schema.NullOr(Progress)
+
+export const GoalRow = Schema.Struct({
+  id: S,
+  title: S,
+  path: S,
+  status: S,
+  area: opt(S),
+  due: opt(S),
+  created: opt(S),
+  tags: Schema.Array(S),
+  progress: OptProgress,
+  projects: N,
+})
+export type GoalRow = typeof GoalRow.Type
+
+export const GoalList = Schema.Struct({ goals: Schema.Array(GoalRow) })
+
+export const ProjectRow = Schema.Struct({
+  id: S,
+  title: S,
+  path: S,
+  status: opt(S),
+  tags: Schema.Array(S),
+  progress: OptProgress,
+  goals: Schema.Array(Schema.Struct({ id: S, title: S })),
+})
+export type ProjectRow = typeof ProjectRow.Type
+
+export const GoalDetail = Schema.Struct({
+  ...GoalRow.fields,
+  projectRows: Schema.Array(ProjectRow),
+})
+export type GoalDetail = typeof GoalDetail.Type

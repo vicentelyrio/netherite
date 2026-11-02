@@ -21,6 +21,7 @@ describe('the API definition', () => {
   test('has the groups and paths the app needs, all under /api', () => {
     expect(Object.keys(NetheriteApi.groups).sort()).toEqual([
       'events',
+      'goals',
       'graph',
       'history',
       'inbox',
@@ -35,6 +36,8 @@ describe('the API definition', () => {
     expect(Object.keys(doc.paths).sort()).toEqual(
       [
         '/api/events',
+        '/api/goals',
+        '/api/goals/{id}',
         '/api/graph',
         '/api/health',
         '/api/history/decisions',

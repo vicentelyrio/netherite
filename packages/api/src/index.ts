@@ -1,5 +1,6 @@
 export {
   EventsGroup,
+  GoalsGroup,
   GraphGroup,
   HistoryGroup,
   InboxGroup,

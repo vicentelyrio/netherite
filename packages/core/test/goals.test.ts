@@ -1,0 +1,104 @@
+import { describe, expect, test } from 'vitest'
+import { goalDetail, goalRows } from '../src/index'
+import { cleanFiles, world } from './ops-helpers'
+
+const goal = (n: number, extra: string[] = [], title = `Goal ${n}`) => ({
+  [`/repo/netherite/goals/GOAL-0000${n}-g.md`]: `---\nid: GOAL-0000${n}\naliases: [GOAL-0000${n}]\ntype: goal\ntitle: ${title}\nstatus: active\n${extra.join('\n')}${extra.length ? '\n' : ''}---\n\n# ${title}\n`,
+})
+const project = (n: number, goals: string[], extra: string[] = []) => ({
+  [`/repo/netherite/projects/PRJ-0000${n}-p.md`]: `---\nid: PRJ-0000${n}\naliases: [PRJ-0000${n}]\ntype: project\ntitle: Project ${n}\ngoals: [${goals.join(', ')}]\nstatus: active\n${extra.join('\n')}${extra.length ? '\n' : ''}---\n\n# P\n`,
+})
+const task = (n: number, projectId: string, state: string) => ({
+  [`/repo/netherite/tasks/TASK-0001${n}-t.md`]: `---\nid: TASK-0001${n}\naliases: [TASK-0001${n}]\ntype: task\ntitle: T${n}\nproject: ${projectId}\nstate: ${state}\n---\n\n# T\n`,
+})
+
+describe('goals for the overview', () => {
+  test('are grouped by area, areas in name order, goals with no area last, each in ID order', async () => {
+    const w = await world({
+      ...cleanFiles(),
+      ...goal(2, ['area: Life']),
+      ...goal(3, ['area: Health']),
+      ...goal(4),
+      ...goal(5, ['area: Health']),
+    })
+    expect(goalRows(w.repo).map((g) => [g.id, g.area])).toEqual([
+      ['GOAL-00003', 'Health'],
+      ['GOAL-00005', 'Health'],
+      ['GOAL-00002', 'Life'],
+      ['GOAL-00001', undefined],
+      ['GOAL-00004', undefined],
+    ])
+  })
+
+  test('carry status, due date, tags, and the count of their projects', async () => {
+    const w = await world({
+      ...cleanFiles(),
+      ...goal(2, ['area: Life', 'due: 2027-05-01', 'tags: [family, travel]']),
+      ...project(7, ['GOAL-00002']),
+      ...project(8, ['GOAL-00002', 'GOAL-00001']),
+    })
+    const row = goalRows(w.repo).find((g) => g.id === 'GOAL-00002')
+    expect(row).toMatchObject({
+      status: 'active',
+      due: '2027-05-01',
+      tags: ['family', 'travel'],
+      projects: 2,
+    })
+    expect(goalRows(w.repo).find((g) => g.id === 'GOAL-00001')?.projects).toBe(2)
+  })
+
+  test('progress is the done tasks over all tasks of all its projects, once each', async () => {
+    const w = await world({
+      ...cleanFiles(),
+      ...goal(2),
+      ...project(7, ['GOAL-00002']),
+      ...project(8, ['GOAL-00002']),
+      ...task(1, 'PRJ-00007', 'done'),
+      ...task(2, 'PRJ-00007', 'backlog'),
+      ...task(3, 'PRJ-00008', 'done'),
+    })
+    expect(goalRows(w.repo).find((g) => g.id === 'GOAL-00002')?.progress).toEqual({
+      done: 2,
+      total: 3,
+    })
+  })
+
+  test('a goal with no tasks has no progress, not 0 of 0', async () => {
+    const w = await world({ ...cleanFiles(), ...goal(2) })
+    expect(goalRows(w.repo).find((g) => g.id === 'GOAL-00002')?.progress).toBeNull()
+  })
+})
+
+describe('a goal in detail', () => {
+  test('lists its projects with their progress, tags and the other goals each belongs to', async () => {
+    const w = await world({
+      ...cleanFiles(),
+      ...goal(2, ['area: Knowledge'], 'Development'),
+      ...goal(3, [], 'Design'),
+      ...project(7, ['GOAL-00002', 'GOAL-00003'], ['tags: [web, writing]']),
+      ...project(8, ['GOAL-00002']),
+      ...task(1, 'PRJ-00007', 'done'),
+      ...task(2, 'PRJ-00007', 'backlog'),
+    })
+    const item = w.repo.index.findById('GOAL-00002')[0]
+    const detail = goalDetail(w.repo, item as never)
+    expect(detail.id).toBe('GOAL-00002')
+    expect(detail.projectRows.map((p) => p.id)).toEqual(['PRJ-00007', 'PRJ-00008'])
+    expect(detail.projectRows[0]).toMatchObject({
+      tags: ['web', 'writing'],
+      progress: { done: 1, total: 2 },
+      goals: [
+        { id: 'GOAL-00002', title: 'Development' },
+        { id: 'GOAL-00003', title: 'Design' },
+      ],
+    })
+    expect(detail.projectRows[1]?.progress).toBeNull()
+  })
+
+  test('has no projects when none belong to it', async () => {
+    const w = await world({ ...cleanFiles(), ...goal(2) })
+    const detail = goalDetail(w.repo, w.repo.index.findById('GOAL-00002')[0] as never)
+    expect(detail.projectRows).toEqual([])
+    expect(detail.projects).toBe(0)
+  })
+})

@@ -136,6 +136,9 @@ export { scanItems } from './scan'
 export { type ScannedItem, scannedItemFrom, toScannedItem } from './scanned-item'
 export {
   fieldsOf,
+  type GoalRow,
+  goalDetail,
+  goalRows,
   graphOf,
   type ItemFilter,
   type ItemSearchOptions,
@@ -146,6 +149,7 @@ export {
   type ListOptions,
   listItems,
   matchesFilter,
+  type ProjectRow,
   searchItems,
 } from './views'
 export {

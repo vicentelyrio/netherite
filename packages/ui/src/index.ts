@@ -1,4 +1,5 @@
 export type { AdrStatus, ItemTypeName, StateCategory } from '@netherite/tokens'
+export { color as designColor, edgeStyle, nodeSpec } from '@netherite/tokens'
 export {
   ActionIcon,
   type ActionIconProps,

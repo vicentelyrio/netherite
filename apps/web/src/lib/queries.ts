@@ -12,6 +12,8 @@ export const keys = {
   source: (id: string) => ['items', 'source', id] as const,
   search: (q: string) => ['search', q] as const,
   graph: ['graph'] as const,
+  goals: ['goals'] as const,
+  goal: (id: string) => ['goals', id] as const,
   lint: ['lint'] as const,
   inbox: ['inbox'] as const,
   history: ['history'] as const,
@@ -67,3 +69,16 @@ export const sourceQuery = (api: Api, id: string) =>
     queryFn: () => api.call((c) => c.items.source({ params: { id } })),
     retry: false,
   })
+
+export const goalsQuery = (api: Api) =>
+  queryOptions({ queryKey: keys.goals, queryFn: () => api.call((c) => c.goals.list()) })
+
+export const goalQuery = (api: Api, id: string) =>
+  queryOptions({
+    queryKey: keys.goal(id),
+    queryFn: () => api.call((c) => c.goals.get({ params: { id } })),
+    retry: false,
+  })
+
+export const graphQuery = (api: Api) =>
+  queryOptions({ queryKey: keys.graph, queryFn: () => api.call((c) => c.graph.graph()) })

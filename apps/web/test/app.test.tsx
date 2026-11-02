@@ -377,3 +377,36 @@ describe('editing the source of an item', () => {
     expect(screen.queryByText('Changed on disk')).toBeNull()
   })
 })
+
+describe('goals', () => {
+  test('are grouped by area, each card with its horizon and progress', async () => {
+    renderApp('/goals')
+    const card = await screen.findByText('Ship')
+    expect(card).toBeInTheDocument()
+    expect(screen.getByText('GOAL-00001')).toBeInTheDocument()
+    expect(screen.getAllByRole('img', { name: /done$/ }).length).toBeGreaterThan(0)
+  })
+
+  test('a goal opens with its projects and a graph', async () => {
+    renderApp('/goals')
+    await userEvent.click(await screen.findByText('Ship'))
+    expect(await screen.findByRole('heading', { name: 'Ship' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Projects' })).toBeInTheDocument()
+    expect(await screen.findByText('PRJ-00001')).toBeInTheDocument()
+    expect(await screen.findByRole('img', { name: /projects and tasks/ })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Goals' })).toBeInTheDocument()
+  })
+
+  test('an unknown or non-goal ID says so', async () => {
+    renderApp('/goals/TASK-00001')
+    expect(await screen.findByText('No goal TASK-00001')).toBeInTheDocument()
+  })
+
+  test('New goal asks for a title, creates the goal, and it shows up', async () => {
+    renderApp('/goals')
+    await userEvent.click(await screen.findByRole('button', { name: /New goal/ }))
+    await userEvent.type(screen.getByLabelText('Goal title'), 'Learn to sail')
+    await userEvent.click(screen.getByRole('button', { name: 'Create' }))
+    expect(await screen.findByText('Learn to sail')).toBeInTheDocument()
+  })
+})

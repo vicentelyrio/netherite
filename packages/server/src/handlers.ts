@@ -14,6 +14,8 @@ import {
   decisionLog,
   deleteItem,
   fieldsOf,
+  goalDetail,
+  goalRows,
   graphOf,
   groupActivity,
   type History,
@@ -320,6 +322,21 @@ const graph = (state: ServerState) =>
     handlers.handle('graph', () => Effect.sync(() => graphOf(state.repo))),
   )
 
+const goals = (state: ServerState) =>
+  HttpApiBuilder.group(NetheriteApi, 'goals', (handlers) =>
+    handlers
+      .handle('list', () => Effect.sync(() => ({ goals: goalRows(state.repo) })))
+      .handle('get', ({ params }) =>
+        Effect.gen(function* () {
+          const item = yield* locate(state, params.id)
+          if (item.type !== 'goal') {
+            return yield* new NotFound({ message: `${params.id} is not a goal`, id: params.id })
+          }
+          return goalDetail(state.repo, item)
+        }),
+      ),
+  )
+
 const lintReport = (state: ServerState, only?: string) =>
   Effect.gen(function* () {
     const fresh = yield* state.freshness.get
@@ -575,6 +592,7 @@ export const handlersLayer = (state: ServerState) =>
     items(state),
     search(state),
     graph(state),
+    goals(state),
     lintGroup(state),
     lintTextGroup(state),
     inbox(state),
