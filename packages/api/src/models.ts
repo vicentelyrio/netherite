@@ -38,7 +38,12 @@ export const ItemList = Schema.Struct({
   items: Schema.Array(ItemSummary),
 })
 
-export const SearchHit = Schema.Struct({ ...ItemSummary.fields, score: N })
+export const SearchHit = Schema.Struct({
+  ...ItemSummary.fields,
+  score: N,
+  /** Where the words were found in the text, when they were not in the title. */
+  snippet: opt(S),
+})
 export const SearchResult = Schema.Struct({ total: N, results: Schema.Array(SearchHit) })
 
 export const LinkView = Schema.Struct({
@@ -302,6 +307,10 @@ export const Health = Schema.Struct({
   root: S,
   items: N,
   git: Schema.Boolean,
+  /** The checked-out branch, when there is git and a branch. */
+  branch: opt(S),
+  /** The person running the server, as an `@handle`, from git. */
+  user: opt(S),
 })
 
 // ---- live events ---------------------------------------------------------------------
@@ -415,6 +424,7 @@ export const KnowledgeRow = Schema.Struct({
   tags: Schema.Array(S),
   freshness: Schema.NullOr(Schema.Literals(['fresh', 'drifting', 'stale', 'unknown'])),
   orphan: Schema.Boolean,
+  commits: N,
   date: opt(S),
   supersedes: Schema.Array(S),
   supersededBy: Schema.Array(S),

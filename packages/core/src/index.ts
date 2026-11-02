@@ -1,3 +1,4 @@
+export { handleFrom } from '@netherite/git'
 export {
   type FieldIssue,
   type ItemType,
@@ -159,6 +160,7 @@ export {
   type ProjectRow,
   projectRows,
   searchItems,
+  snippetOf,
   summaryOf,
   supersessionChain,
 } from './views'

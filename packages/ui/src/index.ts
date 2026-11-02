@@ -1,5 +1,11 @@
-export type { AdrStatus, ItemTypeName, StateCategory } from '@netherite/tokens'
-export { color as designColor, edgeStyle, nodeSpec } from '@netherite/tokens'
+export type { AdrStatus, EdgeKind, ItemTypeName, StateCategory } from '@netherite/tokens'
+export {
+  color as designColor,
+  edgeStyle,
+  graphMetrics,
+  itemTypeNames,
+  nodeSpec,
+} from '@netherite/tokens'
 export {
   ActionIcon,
   type ActionIconProps,

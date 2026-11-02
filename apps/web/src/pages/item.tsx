@@ -12,14 +12,13 @@ import {
 } from '@netherite/ui'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-import { useMemo, useState } from 'react'
-import { ItemEditor } from '../editor/ItemEditor'
+import { useState } from 'react'
 import { useApi } from '../lib/app-context'
 import { Markdown } from '../lib/markdown'
-import { useNotices } from '../lib/notices'
-import { itemQuery, itemsQuery, keys, sourceQuery } from '../lib/queries'
-import { noticeFor, useWrite } from '../lib/writes'
-import { KnowledgeTop, knowledgeTypes, SidePanel } from './knowledge-item'
+import { itemQuery, keys } from '../lib/queries'
+import { useWrite } from '../lib/writes'
+import { KnowledgeFrame, knowledgeTypes } from './knowledge-item'
+import { SourceEditor } from './source-editor'
 
 const reviewable = new Set(['doc', 'runbook', 'context'])
 
@@ -27,7 +26,7 @@ const reviewable = new Set(['doc', 'runbook', 'context'])
  * One item, read: its fields, its text rendered with the shared Markdown plugins, and what links
  * to it and from it. The real doc, task and ADR screens (TASK-00039 to 00041) build on this.
  */
-export function ItemPage({ id }: { readonly id: string }) {
+export function ItemPage({ id, mode }: { readonly id: string; readonly mode?: 'split' }) {
   const api = useApi()
   const client = useQueryClient()
   const query = useQuery(itemQuery(api, id))
@@ -60,6 +59,7 @@ export function ItemPage({ id }: { readonly id: string }) {
 
   const item = query.data
   const type = item.type as ItemTypeName
+  if (knowledgeTypes.has(type)) return <KnowledgeFrame item={item} {...(mode ? { mode } : {})} />
   const fresh = item.freshness
 
   return (
@@ -102,14 +102,6 @@ export function ItemPage({ id }: { readonly id: string }) {
         )}
       </header>
 
-      {knowledgeTypes.has(type) && (
-        <KnowledgeTop
-          item={item}
-          reviewing={review.isPending}
-          onReview={() => review.mutate(item.hash)}
-        />
-      )}
-
       {item.progress !== null && item.progress.total > 0 && (
         <div className="app-progress">
           <Progress done={item.progress.done} total={item.progress.total} label="Checklist" />
@@ -121,14 +113,10 @@ export function ItemPage({ id }: { readonly id: string }) {
 
       {editing ? <SourceEditor id={id} /> : <Markdown source={item.body} />}
 
-      {knowledgeTypes.has(type) ? (
-        <SidePanel item={item} />
-      ) : (
-        <footer className="app-links">
-          <LinkList title="Links" links={item.links} />
-          <LinkList title="Linked from" links={item.backlinks} />
-        </footer>
-      )}
+      <footer className="app-links">
+        <LinkList title="Links" links={item.links} />
+        <LinkList title="Linked from" links={item.backlinks} />
+      </footer>
     </article>
   )
 }
@@ -164,45 +152,5 @@ function LinkList({
         ))}
       </ul>
     </section>
-  )
-}
-
-/** The source editor for an item, wired to the server: saving, linting and the items to link to. */
-function SourceEditor({ id }: { readonly id: string }) {
-  const api = useApi()
-  const client = useQueryClient()
-  const notices = useNotices()
-  const source = useQuery(sourceQuery(api, id))
-  const items = useQuery(itemsQuery(api, { limit: 500 }))
-  const targets = useMemo(
-    () => (items.data?.items ?? []).map((i) => ({ id: i.id, title: i.title, type: i.type })),
-    [items.data],
-  )
-
-  if (source.isPending) return <p className="app-muted">Loading the source…</p>
-  if (source.isError) return <Banner variant="danger" title="Could not load the source" />
-
-  return (
-    <ItemEditor
-      source={source.data}
-      targets={targets}
-      lint={async (text) =>
-        (await api.call((c) => c.lintText.lintText({ payload: { id, text } }))).diagnostics
-      }
-      onSave={async (text, baseHash) => {
-        try {
-          const saved = await api.call((c) =>
-            c.items.replaceSource({ params: { id }, payload: { text, baseHash } }),
-          )
-          void client.invalidateQueries({ queryKey: ['items'] })
-          return { text, hash: saved.hash }
-        } catch (error) {
-          notices.notify(
-            noticeFor(error, () => void client.invalidateQueries({ queryKey: keys.source(id) })),
-          )
-          throw error
-        }
-      }}
-    />
   )
 }

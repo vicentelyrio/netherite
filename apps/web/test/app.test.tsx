@@ -11,6 +11,24 @@ import { other, renderApp, server } from './helpers'
 
 const nav = () => screen.getByRole('navigation', { name: 'Main' })
 const railButton = (name: RegExp | string) => within(nav()).getByRole('button', { name })
+/**
+ * Opens a menu and returns one of its items. The page refreshes itself while tests write, which
+ * can remount the button and close the menu, so it clicks again until the item shows.
+ */
+const menuItem = async (button: () => HTMLElement, name: string | RegExp) => {
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const target = button()
+    await waitFor(() => expect(target).toBeEnabled())
+    // Only click a closed menu: a second click would close it again.
+    if (target.getAttribute('aria-expanded') !== 'true') await userEvent.click(target)
+    try {
+      return await screen.findByRole('menuitem', { name }, { timeout: 2000 })
+    } catch {
+      // The button may have been replaced while the page refreshed: look again.
+    }
+  }
+  return screen.findByRole('menuitem', { name })
+}
 const key = (init: KeyboardEventInit) => act(() => void fireEvent.keyDown(window, init))
 
 describe('the shell', () => {
@@ -18,14 +36,13 @@ describe('the shell', () => {
     renderApp('/')
     expect(await screen.findByRole('heading', { name: 'Goals' })).toBeInTheDocument()
     expect(railButton('Goals')).toHaveAttribute('aria-current', 'page')
-    expect(await screen.findByText('GOAL-00001')).toBeInTheDocument()
-    expect(screen.getByText('Ship')).toBeInTheDocument()
+    expect(await screen.findByText('Ship')).toBeInTheDocument()
   })
 
   test('every rail item opens its screen', async () => {
     renderApp('/goals')
     await screen.findByRole('heading', { name: 'Goals' })
-    for (const name of ['Inbox', 'Projects', 'Knowledge', 'Stats', 'Tags', 'Graph', 'Goals']) {
+    for (const name of ['Inbox', 'Knowledge', 'Stats', 'Tags', 'Graph', 'Goals']) {
       await userEvent.click(railButton(new RegExp(`^${name}`)))
       expect(await screen.findByRole('heading', { name })).toBeInTheDocument()
       expect(railButton(new RegExp(`^${name}`))).toHaveAttribute('aria-current', 'page')
@@ -64,7 +81,6 @@ describe('keyboard shortcuts', () => {
   test.each([
     ['i', {}, 'Inbox'],
     ['g', {}, 'Goals'],
-    ['p', {}, 'Projects'],
     ['l', {}, 'Knowledge'],
     ['d', {}, 'Stats'],
     ['t', {}, 'Tags'],
@@ -88,8 +104,6 @@ describe('keyboard shortcuts', () => {
     expect(await screen.findByRole('heading', { name: 'Tags' })).toBeInTheDocument()
     key({ key: 'd', ctrlKey: true, altKey: true })
     expect(await screen.findByRole('heading', { name: 'Stats' })).toBeInTheDocument()
-    key({ key: 'p', ctrlKey: true, altKey: true })
-    expect(await screen.findByRole('heading', { name: 'Projects' })).toBeInTheDocument()
   })
 
   test('Control-K opens search, and Escape closes it', async () => {
@@ -381,12 +395,13 @@ describe('editing the source of an item', () => {
 })
 
 describe('goals', () => {
-  test('are grouped by area, each card with its horizon and progress', async () => {
+  test('are grouped by area, each card with its title, tags and progress count', async () => {
     renderApp('/goals')
     const card = await screen.findByText('Ship')
     expect(card).toBeInTheDocument()
-    expect(screen.getByText('GOAL-00001')).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'No area' })).toBeInTheDocument()
     expect(screen.getAllByRole('img', { name: /done$/ }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('button', { name: /New goal/ }).length).toBeGreaterThan(0)
   })
 
   test('a goal opens with its projects and a graph', async () => {
@@ -394,7 +409,7 @@ describe('goals', () => {
     await userEvent.click(await screen.findByText('Ship'))
     expect(await screen.findByRole('heading', { name: 'Ship' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Projects' })).toBeInTheDocument()
-    expect(await screen.findByText('PRJ-00001')).toBeInTheDocument()
+    expect(await screen.findByText('App')).toBeInTheDocument()
     expect(await screen.findByRole('img', { name: /projects and tasks/ })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Goals' })).toBeInTheDocument()
   })
@@ -402,6 +417,39 @@ describe('goals', () => {
   test('an unknown or non-goal ID says so', async () => {
     renderApp('/goals/TASK-00001')
     expect(await screen.findByText('No goal TASK-00001')).toBeInTheDocument()
+  })
+
+  test('New area asks for a name and a first goal, and the area appears with that goal in it', async () => {
+    renderApp('/goals')
+    await userEvent.click(await screen.findByRole('button', { name: /New area/ }))
+    await userEvent.type(screen.getByLabelText('Area name'), 'Health')
+    await userEvent.type(screen.getByLabelText('First goal'), 'Sleep well')
+    await userEvent.click(screen.getByRole('button', { name: 'Create area' }))
+    const area = await screen.findByRole('region', { name: 'Health' })
+    expect(within(area).getByText('Sleep well')).toBeInTheDocument()
+    // The goal's file records the area; remove it so other tests see the same workspace.
+    const api = other()
+    const goals = await api.call((c) => c.goals.list())
+    const made = goals.goals.find((g) => g.title === 'Sleep well')
+    expect(made?.area).toBe('Health')
+    await api.call((c) =>
+      c.items.delete({ params: { id: made?.id as string }, query: { force: 'true' } }),
+    )
+  })
+
+  test('a goal made inside an area joins that area', async () => {
+    renderApp('/goals')
+    const area = await screen.findByRole('region', { name: 'No area' })
+    await userEvent.click(within(area).getByRole('button', { name: /New goal/ }))
+    await userEvent.type(within(area).getByLabelText('Goal title'), 'Learn to sail')
+    await userEvent.click(within(area).getByRole('button', { name: 'Create' }))
+    expect(await within(area).findByText('Learn to sail')).toBeInTheDocument()
+    const api = other()
+    const goals = await api.call((c) => c.goals.list())
+    const made = goals.goals.find((g) => g.title === 'Learn to sail')
+    await api.call((c) =>
+      c.items.delete({ params: { id: made?.id as string }, query: { force: 'true' } }),
+    )
   })
 
   test('New goal asks for a title, creates the goal, and it shows up', async () => {
@@ -414,14 +462,17 @@ describe('goals', () => {
 })
 
 describe('the project board', () => {
-  test('Projects lists projects, and one opens as a board with a column per configured state', async () => {
-    renderApp('/projects')
-    await userEvent.click(await screen.findByText('PRJ-00001'))
+  test('Projects in the rail opens a board, not a list, and a project also opens from its goal', async () => {
+    renderApp('/goals/GOAL-00001')
+    await screen.findByRole('navigation', { name: 'Main' })
+    await userEvent.click(await screen.findByText('App'))
+    expect(railButton('Projects')).toHaveAttribute('aria-current', 'page')
+    await screen.findByRole('region', { name: 'backlog' })
     for (const name of ['backlog', 'doing', 'blocked', 'done']) {
       expect(await screen.findByRole('region', { name })).toBeInTheDocument()
     }
     const backlog = screen.getByRole('region', { name: 'backlog' })
-    expect(within(backlog).getByText('TASK-00001')).toBeInTheDocument()
+    expect(within(backlog).getByText('Core')).toBeInTheDocument()
     expect(screen.getByRole('img', { name: /: tasks$/ })).toBeInTheDocument()
   })
 
@@ -468,7 +519,9 @@ describe('the task drawer', () => {
   test('is a link: the address opens the drawer', async () => {
     renderApp('/projects/PRJ-00001?task=TASK-00002')
     const drawer = await screen.findByRole('dialog')
-    expect(await within(drawer).findByText('ADR-00002 Promises')).toBeInTheDocument()
+    expect(
+      await within(drawer).findByRole('link', { name: /ADR-00002.*Promises/ }),
+    ).toBeInTheDocument()
   })
 
   test('ticking a checklist item writes it to the file, and unticking undoes it', async () => {
@@ -487,8 +540,10 @@ describe('the task drawer', () => {
   test('changing the state from the drawer moves the card to that column', async () => {
     renderApp('/projects/PRJ-00001?task=TASK-00001')
     const drawer = await screen.findByRole('dialog')
-    await userEvent.click(await within(drawer).findByRole('button', { name: 'Change state' }))
-    await userEvent.click(await screen.findByRole('menuitem', { name: 'doing' }))
+    await within(drawer).findByRole('button', { name: 'Change state' })
+    await userEvent.click(
+      await menuItem(() => within(drawer).getByRole('button', { name: 'Change state' }), 'doing'),
+    )
     await waitFor(() => expect(taskFile()).toContain('state: doing'))
     await other().call((c) =>
       c.items.setState({ params: { id: 'TASK-00001' }, payload: { state: 'backlog' } }),
@@ -498,10 +553,14 @@ describe('the task drawer', () => {
   test('Link ADR adds the decision to the task', async () => {
     renderApp('/projects/PRJ-00001?task=TASK-00001')
     const drawer = await screen.findByRole('dialog')
-    await userEvent.click(await within(drawer).findByRole('button', { name: /Link ADR/ }))
-    await userEvent.click(await screen.findByRole('menuitem', { name: /ADR-00001/ }))
+    await within(drawer).findByRole('button', { name: /Link ADR/ })
+    await userEvent.click(
+      await menuItem(() => within(drawer).getByRole('button', { name: /Link ADR/ }), /ADR-00001/),
+    )
     await waitFor(() => expect(taskFile()).toContain('ADR-00001'))
-    expect(await within(drawer).findByText('ADR-00001 Callbacks')).toBeInTheDocument()
+    expect(
+      await within(drawer).findByRole('link', { name: /ADR-00001.*Callbacks/ }),
+    ).toBeInTheDocument()
     await other().call((c) =>
       c.items.unlink({
         params: { id: 'TASK-00001' },
@@ -515,9 +574,9 @@ describe('the knowledge index', () => {
   test('lists knowledge with type tabs that count, and filters by tab', async () => {
     renderApp('/knowledge')
     expect(await screen.findByText('ADR-00001')).toBeInTheDocument()
-    expect(screen.getByRole('radio', { name: /^ADRs 3/ })).toBeInTheDocument()
+    expect(screen.getByRole('radio', { name: /^ADR 3/ })).toBeInTheDocument()
     expect(screen.queryByText('TASK-00001')).toBeNull()
-    await userEvent.click(screen.getByRole('radio', { name: /^Docs/ }))
+    await userEvent.click(screen.getByRole('radio', { name: /^Doc/ }))
     await waitFor(() => expect(screen.queryByText('ADR-00001')).toBeNull())
     expect(screen.getByText('DOC-00001')).toBeInTheDocument()
   })
@@ -550,8 +609,13 @@ describe('ADR and context views', () => {
   test('an ADR shows where it is in its lifecycle', async () => {
     renderApp('/items/ADR-00002')
     const lifecycle = await screen.findByRole('list', { name: 'Lifecycle' })
-    expect(within(lifecycle).getByText('accepted')).toHaveAttribute('aria-current', 'step')
-    expect(within(lifecycle).getByText('proposed')).not.toHaveAttribute('aria-current')
+    expect(within(lifecycle).getByText('accepted').closest('li')).toHaveAttribute(
+      'aria-current',
+      'step',
+    )
+    expect(within(lifecycle).getByText('proposed').closest('li')).not.toHaveAttribute(
+      'aria-current',
+    )
   })
 
   test('a superseded ADR has a banner naming its replacement, and the chain', async () => {
@@ -573,11 +637,14 @@ describe('ADR and context views', () => {
         }),
       )
       renderApp(`/items/${old.id}`)
-      expect(await screen.findByText(/Replaced by/)).toBeInTheDocument()
+      expect(await screen.findByText(/Superseded by/)).toBeInTheDocument()
       const chain = await screen.findByRole('region', { name: 'Supersession chain' })
       expect(within(chain).getByRole('link', { name: new RegExp(next.id) })).toBeInTheDocument()
       const lifecycle = screen.getByRole('list', { name: 'Lifecycle' })
-      expect(within(lifecycle).getByText('superseded')).toHaveAttribute('aria-current', 'step')
+      expect(within(lifecycle).getByText('superseded').closest('li')).toHaveAttribute(
+        'aria-current',
+        'step',
+      )
     } finally {
       for (const made of [old, next])
         await api.call((c) => c.items.delete({ params: { id: made.id }, query: { force: 'true' } }))
@@ -609,7 +676,7 @@ describe('ADR and context views', () => {
   test('the side panel lists who links to a doc, and what it links to', async () => {
     renderApp('/items/DOC-00001')
     const side = await screen.findByRole('complementary', { name: 'Related' })
-    expect(within(side).getByText('Linked from')).toBeInTheDocument()
+    expect(within(side).getByText(/Linked from/)).toBeInTheDocument()
     expect(within(side).getByRole('link', { name: /ADR-00001/ })).toBeInTheDocument()
     expect(await within(side).findByText(/Changes with/)).toBeInTheDocument()
   })
@@ -634,7 +701,7 @@ describe('ADR and context views', () => {
 
     renderApp('/items/DOC-00001')
     expect(
-      await screen.findByText(/touched what it covers/, {}, { timeout: 10000 }),
+      await screen.findByText(/Related code changed in/, {}, { timeout: 10000 }),
     ).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Review changes' }))
     const commits = await screen.findByRole('list', { name: 'Commits since review' })
@@ -644,23 +711,160 @@ describe('ADR and context views', () => {
 })
 
 describe('the decision log', () => {
-  test('has a lane per project with each ADR, its status, and its recorded changes', async () => {
+  test('has a lane per project with the commits that changed each ADR, and the status it moved to', async () => {
     renderApp('/decisions')
     const lane = await screen.findByRole('region', { name: 'PRJ-00001' })
-    expect(within(lane).getByText('ADR-00002')).toBeInTheDocument()
-    const steps = await screen.findByRole('list', { name: 'ADR-00002 status changes' })
-    expect(within(steps).getByText(/Proposed as accepted/)).toBeInTheDocument()
+    expect(await within(lane).findByRole('link', { name: 'ADR-00002' })).toBeInTheDocument()
+    expect(within(lane).getByText('Accepted')).toBeInTheDocument()
+    expect(within(lane).getByText(/1 ADRs/)).toBeInTheDocument()
     expect(screen.getByRole('region', { name: 'No project' })).toBeInTheDocument()
   })
 
-  test('the project filter shows one lane, and Knowledge links to the log', async () => {
+  test('the project tabs show one lane, and Knowledge links to the log', async () => {
     renderApp('/decisions')
     await screen.findByRole('region', { name: 'No project' })
-    await userEvent.selectOptions(screen.getByLabelText('Project'), 'PRJ-00001')
+    await userEvent.click(screen.getByRole('radio', { name: 'PRJ-00001' }))
     await waitFor(() => expect(screen.queryByRole('region', { name: 'No project' })).toBeNull())
     expect(screen.getByRole('region', { name: 'PRJ-00001' })).toBeInTheDocument()
     await userEvent.click(railButton(/^Knowledge/))
-    await userEvent.click(await screen.findByRole('link', { name: 'Decision log' }))
+    await userEvent.click(await screen.findByRole('link', { name: /Decision log/ }))
     expect(await screen.findByRole('heading', { name: 'Decision log' })).toBeInTheDocument()
+  })
+})
+
+describe('the graph view', () => {
+  const nodeButton = (id: string) => screen.findByRole('button', { name: new RegExp(`^${id} `) })
+
+  test('draws every item, with a legend for the types and links present', async () => {
+    renderApp('/graph')
+    expect(await nodeButton('GOAL-00001')).toBeInTheDocument()
+    expect(await nodeButton('TASK-00001')).toBeInTheDocument()
+    const legend = screen.getByRole('complementary', { name: 'Legend' })
+    expect(within(legend).getByRole('checkbox', { name: /Goal/ })).toBeChecked()
+    expect(within(legend).getByRole('checkbox', { name: /belongs to/i })).toBeChecked()
+  })
+
+  test('the legend hides a type, and shows it again', async () => {
+    renderApp('/graph')
+    await nodeButton('TASK-00001')
+    const legend = screen.getByRole('complementary', { name: 'Legend' })
+    await userEvent.click(within(legend).getByRole('checkbox', { name: /Task/ }))
+    await waitFor(() => expect(screen.queryByRole('button', { name: /^TASK-00001 / })).toBeNull())
+    expect(screen.getByRole('button', { name: /^GOAL-00001 / })).toBeInTheDocument()
+    await userEvent.click(within(legend).getByRole('checkbox', { name: /Task/ }))
+    expect(await nodeButton('TASK-00001')).toBeInTheDocument()
+  })
+
+  test('clicking a node focuses it and offers to open it; clicking it again clears the focus', async () => {
+    renderApp('/graph')
+    const node = await nodeButton('PRJ-00001')
+    await userEvent.click(node)
+    expect(node).toHaveAttribute('aria-pressed', 'true')
+    expect(await screen.findByRole('link', { name: 'Open' })).toHaveAttribute(
+      'href',
+      '/items/PRJ-00001',
+    )
+    await userEvent.click(node)
+    expect(node).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.queryByRole('link', { name: 'Open' })).toBeNull()
+  })
+
+  test('hovering a node says what it is, and the keyboard works too', async () => {
+    renderApp('/graph')
+    const node = await nodeButton('ADR-00002')
+    await userEvent.hover(node)
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Promises')
+    await userEvent.unhover(node)
+    await waitFor(() => expect(screen.queryByRole('tooltip')).toBeNull())
+    node.focus()
+    await userEvent.keyboard('{Enter}')
+    expect(node).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  test('the goal page embeds the graph with its legend but without zoom controls', async () => {
+    renderApp('/goals/GOAL-00001')
+    expect(await screen.findByRole('img', { name: /projects and tasks/ })).toBeInTheDocument()
+    expect(await screen.findByRole('complementary', { name: 'Legend' })).toBeInTheDocument()
+    expect(screen.queryByRole('toolbar', { name: 'Zoom' })).toBeNull()
+  })
+
+  test('Fit and the zoom buttons are there', async () => {
+    renderApp('/graph')
+    await nodeButton('GOAL-00001')
+    const zoom = screen.getByRole('toolbar', { name: 'Zoom' })
+    for (const name of ['Zoom in', 'Zoom out', 'Fit to view']) {
+      await userEvent.click(within(zoom).getByRole('button', { name }))
+    }
+    expect(screen.getByRole('button', { name: /^GOAL-00001 / })).toBeInTheDocument()
+  })
+})
+
+describe('the Projects rail item', () => {
+  test('opens the board you were last on', async () => {
+    renderApp('/projects/PRJ-00001')
+    await screen.findByRole('region', { name: 'backlog' })
+    await userEvent.click(railButton('Goals'))
+    await screen.findByRole('heading', { name: 'Goals' })
+    await userEvent.click(railButton('Projects'))
+    expect(await screen.findByRole('region', { name: 'backlog' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'App' })).toBeInTheDocument()
+  })
+})
+
+describe('the search palette', () => {
+  const openPalette = async () => {
+    renderApp('/goals')
+    await screen.findByRole('heading', { name: 'Goals' })
+    key({ key: 'k', ctrlKey: true })
+    return await screen.findByRole('dialog', { name: 'Search' })
+  }
+
+  test('finds items by what you type, grouped by kind, with the match marked', async () => {
+    const palette = await openPalette()
+    await userEvent.type(within(palette).getByRole('textbox'), 'Promises')
+    const results = await within(palette).findByRole('listbox', { name: 'Results' })
+    expect(await within(results).findByText('Decisions')).toBeInTheDocument()
+    expect(within(results).getByText('ADR-00002')).toBeInTheDocument()
+    expect(results.querySelector('mark')?.textContent?.toLowerCase()).toBe('promises')
+  })
+
+  test('Enter opens the highlighted result, and the palette closes', async () => {
+    const palette = await openPalette()
+    await userEvent.type(within(palette).getByRole('textbox'), 'Promises')
+    await within(palette).findByText('ADR-00002')
+    await userEvent.keyboard('{Enter}')
+    expect(await screen.findByRole('article', { name: 'Promises' })).toBeInTheDocument()
+    expect(screen.queryByRole('dialog', { name: 'Search' })).toBeNull()
+  })
+
+  test('the type chips count and narrow the results, and Tab moves to the next type', async () => {
+    const palette = await openPalette()
+    await userEvent.type(within(palette).getByRole('textbox'), 'core')
+    await within(palette).findByRole('listbox', { name: 'Results' })
+    await waitFor(() =>
+      expect(within(palette).getByRole('radio', { name: /^All [1-9]/ })).toBeInTheDocument(),
+    )
+    await userEvent.keyboard('{Tab}')
+    expect(within(palette).getByRole('radio', { name: /^ADRs/ })).toBeChecked()
+  })
+
+  test('says so when nothing matches', async () => {
+    const palette = await openPalette()
+    await userEvent.type(within(palette).getByRole('textbox'), 'zzzzzqqq')
+    expect(await within(palette).findByText(/No results/)).toBeInTheDocument()
+  })
+})
+
+describe('opening as a split', () => {
+  test('a search result opened with Control-Enter has the file beside the text', async () => {
+    renderApp('/goals')
+    await screen.findByRole('heading', { name: 'Goals' })
+    key({ key: 'k', ctrlKey: true })
+    const palette = await screen.findByRole('dialog', { name: 'Search' })
+    await userEvent.type(within(palette).getByRole('textbox'), 'Promises')
+    await within(palette).findByText('ADR-00002')
+    await userEvent.keyboard('{Control>}{Enter}{/Control}')
+    expect(await screen.findByRole('article', { name: 'Promises' })).toBeInTheDocument()
+    expect(await screen.findByTestId('editor')).toBeInTheDocument()
   })
 })

@@ -10,7 +10,6 @@ import {
   Menu,
   Modal,
   Progress,
-  RingProgress,
   SegmentedControl,
   Switch,
   Tabs,
@@ -29,7 +28,6 @@ export const classNames = {
   avatar: { root: 'nt-avatar', placeholder: 'nt-avatar-placeholder' },
   card: { root: 'nt-card' },
   progress: { root: 'nt-progress', section: 'nt-progress-section' },
-  ring: { root: 'nt-ring', label: 'nt-ring-label' },
   segmented: {
     root: 'nt-segmented',
     indicator: 'nt-segmented-indicator',
@@ -88,10 +86,6 @@ export const theme: MantineThemeOverride = createTheme({
     Progress: Progress.extend({
       classNames: classNames.progress,
       defaultProps: { size: 32, radius: 'xl' },
-    }),
-    RingProgress: RingProgress.extend({
-      classNames: classNames.ring,
-      defaultProps: { size: 56, thickness: 5, roundCaps: true },
     }),
     SegmentedControl: SegmentedControl.extend({
       classNames: classNames.segmented,

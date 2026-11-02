@@ -6,18 +6,21 @@ export interface NetheriteProviderProps {
   readonly children: ReactNode
   /** Where the colour scheme attribute goes. Default: the page's root element. */
   readonly root?: () => HTMLElement | null
+  /** `test` turns off transitions and portals, so components render where tests can see them. */
+  readonly env?: 'default' | 'test'
 }
 
 /**
  * Wraps the app: the library's provider with Netherite's theme. The design is dark only, so the
  * scheme is fixed. Import the stylesheet once with `import '@netherite/ui/styles.css'`.
  */
-export function NetheriteProvider({ children, root }: NetheriteProviderProps) {
+export function NetheriteProvider({ children, root, env }: NetheriteProviderProps) {
   useIconsReady()
   return (
     <MantineProvider
       theme={theme}
       forceColorScheme="dark"
+      {...(env === undefined ? {} : { env })}
       {...(root === undefined ? {} : { getRootElement: () => root() ?? undefined })}
     >
       {children}

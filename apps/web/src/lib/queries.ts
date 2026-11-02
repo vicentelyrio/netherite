@@ -121,3 +121,18 @@ export const decisionsQuery = (api: Api) =>
     queryFn: () => api.call((c) => c.history.decisions({ query: {} })),
     retry: false,
   })
+
+export const itemHistoryQuery = (api: Api, id: string) =>
+  queryOptions({
+    queryKey: [...keys.history, 'item', id] as const,
+    queryFn: () => api.call((c) => c.history.item({ params: { id } })),
+    retry: false,
+  })
+
+export const searchQuery = (api: Api, q: string) =>
+  queryOptions({
+    queryKey: keys.search(q),
+    queryFn: () => api.call((c) => c.search.search({ query: { q, limit: 40 } })),
+    enabled: q.trim() !== '',
+    retry: false,
+  })

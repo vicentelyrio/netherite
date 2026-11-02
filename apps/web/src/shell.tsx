@@ -1,4 +1,4 @@
-import { Icon, Modal, Rail, type RailItem } from '@netherite/ui'
+import { Avatar, Rail, type RailItem } from '@netherite/ui'
 import { useQueryClient } from '@tanstack/react-query'
 import { Outlet, useNavigate, useRouterState } from '@tanstack/react-router'
 import { useCallback, useState } from 'react'
@@ -6,6 +6,7 @@ import { useApi } from './lib/app-context'
 import { type Connection, useLiveUpdates } from './lib/live'
 import { useNotices } from './lib/notices'
 import { useHealth, useInbox } from './lib/queries'
+import { SearchPalette } from './search'
 
 /** The rail's items and where each goes (Rail.dc.html). Command-K opens search instead of a page. */
 export const railItems: ReadonlyArray<RailItem & { readonly to?: string }> = [
@@ -132,7 +133,14 @@ export function Shell() {
 
   return (
     <div className="app-shell">
-      <Rail items={items} active={activeFor(pathname)} onSelect={select} footer={null} />
+      <Rail
+        items={items}
+        active={activeFor(pathname)}
+        onSelect={select}
+        footer={
+          health.data?.user ? <Avatar name={health.data.user} size={32} color="warning" /> : null
+        }
+      />
       <div className="app-main">
         <div className="app-statusbar" role="status" aria-live="polite">
           <span className="app-status" data-state={connection}>
@@ -149,11 +157,7 @@ export function Shell() {
           <Outlet />
         </main>
       </div>
-      <Modal opened={searchOpen} onClose={() => setSearchOpen(false)} title="Search" size="lg">
-        <p className="app-muted">
-          <Icon name="search" /> Search over titles, IDs and text arrives with the search palette.
-        </p>
-      </Modal>
+      <SearchPalette opened={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
   )
 }

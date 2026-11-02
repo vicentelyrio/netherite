@@ -14,6 +14,20 @@ const task1 = 'netherite/tasks/TASK-00001-core.md'
 const failure = <A, E>(effect: Effect.Effect<A, E>): Effect.Effect<any> =>
   Effect.flip(effect) as Effect.Effect<any>
 
+describe('health in a git repository', () => {
+  test('names the checked-out branch', async () => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const health = yield* s.client.meta.health()
+          expect(health.git).toBe(true)
+          expect(typeof health.branch).toBe('string')
+        }),
+      { git: true },
+    )
+  })
+})
+
 describe('meta', () => {
   test('health says what is being served', async () => {
     await withServer((s) =>

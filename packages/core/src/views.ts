@@ -87,6 +87,18 @@ export const listItems = (repo: Repo, options: ListOptions = {}) => {
   return { total: all.length, offset, items: all.slice(offset, offset + limit).map(itemSummary) }
 }
 
+/** A line of the text around the first place the query appears, trimmed to about 90 characters. */
+export const snippetOf = (body: string, query: string): string | undefined => {
+  const q = query.trim().toLowerCase()
+  if (q === '') return undefined
+  const at = body.toLowerCase().indexOf(q)
+  if (at === -1) return undefined
+  const from = Math.max(0, at - 36)
+  const to = Math.min(body.length, at + q.length + 54)
+  const text = body.slice(from, to).replace(/\s+/g, ' ').trim()
+  return `${from > 0 ? '…' : ''}${text}${to < body.length ? '…' : ''}`
+}
+
 export interface ItemSearchOptions extends ItemFilter {
   readonly types?: ReadonlyArray<string> | undefined
   readonly limit?: number
@@ -102,9 +114,15 @@ export const searchItems = (repo: Repo, query: string, options: ItemSearchOption
   const results = wide
     .flatMap((hit) => {
       const item = repo.index.get(hit.path)
-      return item !== undefined && matchesFilter(item, options)
-        ? [{ ...itemSummary(item), score: Math.round(hit.score * 100) / 100 }]
-        : []
+      if (item === undefined || !matchesFilter(item, options)) return []
+      const snippet = snippetOf(item.parsed.source.slice(item.parsed.bodyStart), query)
+      return [
+        {
+          ...itemSummary(item),
+          score: Math.round(hit.score * 100) / 100,
+          ...(snippet === undefined ? {} : { snippet }),
+        },
+      ]
     })
     .slice(0, limit)
   return { total: results.length, results }
@@ -374,7 +392,9 @@ export interface KnowledgeRow {
   readonly tags: ReadonlyArray<string>
   readonly freshness: 'fresh' | 'drifting' | 'stale' | 'unknown' | null
   readonly orphan: boolean
-  /** An ADR's date, or when the item was last reviewed. */
+  /** Commits since review that touched what it covers; 0 when not tracked. */
+  readonly commits: number
+  /** An ADR's date, or when the item was last reviewed, or when it was made. */
   readonly date: string | undefined
   /** The ADRs this one replaces. */
   readonly supersedes: ReadonlyArray<string>
@@ -411,7 +431,7 @@ export const knowledgeRows = (
         ),
       ].sort()
       const fresh = freshness?.get(item.path)
-      const date = typeof f.reviewed_at === 'string' ? f.reviewed_at : f.date
+      const date = f.reviewed_at ?? f.date ?? f.created
       return {
         id: item.id as string,
         type: item.type as string,
@@ -425,6 +445,7 @@ export const knowledgeRows = (
             ? null
             : (fresh.state as 'fresh' | 'drifting' | 'stale' | 'unknown'),
         orphan: repo.index.isOrphan(item.path),
+        commits: fresh?.commits ?? 0,
         supersedes: idsOf(
           repo.index
             .outgoing(item.path)

@@ -21,6 +21,7 @@ import {
   graphOf,
   groupActivity,
   type History,
+  handleFrom,
   itemDetail,
   itemJsonSchemas,
   itemSummary,
@@ -683,12 +684,23 @@ const meta = (state: ServerState) =>
   HttpApiBuilder.group(NetheriteApi, 'meta', (handlers) =>
     handlers
       .handle('health', () =>
-        Effect.succeed({
-          name: 'netherite' as const,
-          version: state.version,
-          root: state.repo.workspace.root,
-          items: state.repo.index.size(),
-          git: state.git !== undefined,
+        Effect.gen(function* () {
+          const status = state.git
+            ? yield* state.git.status().pipe(Effect.orElseSucceed(() => undefined))
+            : undefined
+          const identity = state.git
+            ? yield* state.git.identity.pipe(Effect.orElseSucceed(() => undefined))
+            : undefined
+          const user = identity ? handleFrom(identity) : undefined
+          return {
+            name: 'netherite' as const,
+            version: state.version,
+            root: state.repo.workspace.root,
+            items: state.repo.index.size(),
+            git: state.git !== undefined,
+            ...(status?.branch ? { branch: status.branch } : {}),
+            ...(user ? { user } : {}),
+          }
         }),
       )
       .handle('schema', ({ params }) => {

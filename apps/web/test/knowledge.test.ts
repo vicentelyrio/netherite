@@ -11,6 +11,7 @@ const row = (id: string, extra: Partial<KnowledgeRow> = {}): KnowledgeRow => ({
   tags: [],
   freshness: null,
   orphan: false,
+  commits: 0,
   supersedes: [],
   supersededBy: [],
   ...extra,
@@ -24,7 +25,7 @@ const rows = [
   row('DOC-00003', { freshness: 'drifting', tags: ['ops'] }),
 ]
 const ids = (f: Partial<typeof noFilters>) =>
-  filterKnowledge(rows, { ...noFilters, ...f }).map((r) => r.id)
+  filterKnowledge(rows, { ...noFilters, sort: 'id', ...f }).map((r) => r.id)
 
 describe('filtering knowledge', () => {
   test('type, status, project and tag each narrow the list, and together they all apply', () => {

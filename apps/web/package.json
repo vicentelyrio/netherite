@@ -18,6 +18,8 @@
     "react-dom": "catalog:",
     "@netherite/api": "workspace:*",
     "@dnd-kit/core": "catalog:",
+    "d3-force": "catalog:",
+    "graphology": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-query": "catalog:",
     "remark-rehype": "catalog:",
@@ -33,6 +35,7 @@
     "@lezer/highlight": "catalog:"
   },
   "devDependencies": {
+    "@types/d3-force": "catalog:",
     "@netherite/config": "workspace:*",
     "@types/node": "catalog:",
     "typescript": "catalog:",

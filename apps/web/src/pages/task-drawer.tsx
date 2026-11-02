@@ -1,20 +1,22 @@
 import {
+  Avatar,
   Banner,
   Button,
   Drawer,
   Icon,
-  type ItemTypeName,
   Menu,
-  Progress,
   type StateCategory,
   TaskStatePill,
-  TypeBadge,
 } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
 import { useApi } from '../lib/app-context'
-import { itemQuery, itemsQuery } from '../lib/queries'
+import { Bar } from '../lib/bits'
+import { itemQuery, itemsQuery, useHealth } from '../lib/queries'
+import { summaryOf } from '../lib/summary'
 import { useWrite } from '../lib/writes'
+import { SourceEditor } from './source-editor'
 
 interface Column {
   readonly name: string
@@ -75,59 +77,84 @@ function Body({ id, columns }: { readonly id: string; readonly columns: Readonly
     ...task.links.filter((l) => l.kind !== 'implements' && l.kind !== 'belongs_to'),
     ...task.backlinks.filter((l) => l.kind !== 'belongs_to'),
   ].filter((l) => l.id !== undefined)
+  const createdRaw = field(fm, 'created') ?? field(fm, 'created_at')
+  const created =
+    typeof createdRaw === 'string' || createdRaw instanceof Date
+      ? new Date(createdRaw).toLocaleString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      : undefined
   const linked = new Set(decisions.map((d) => d.id))
   const choices = (adrs.data?.items ?? []).filter((a) => !linked.has(a.id))
 
   return (
     <div className="drawer-body" data-hash={task.hash}>
       <div className="drawer-meta">
-        <Menu>
-          <Menu.Target>
-            <button type="button" className="drawer-state" aria-label="Change state">
-              <TaskStatePill state={task.state ?? ''} category={category} />
-              <Icon name="expand_more" />
-            </button>
-          </Menu.Target>
-          <Menu.Dropdown>
-            {columns.map((c) => (
-              <Menu.Item
-                key={c.name}
-                onClick={() => setState.mutate({ state: c.name, hash: task.hash })}
-              >
-                {c.name}
-              </Menu.Item>
+        <div className="drawer-cell">
+          <span className="drawer-cell-label">State</span>
+          <Menu>
+            <Menu.Target>
+              <button type="button" className="drawer-state" aria-label="Change state">
+                <TaskStatePill state={task.state ?? ''} category={category} />
+                <Icon name="expand_more" />
+              </button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              {columns.map((c) => (
+                <Menu.Item
+                  key={c.name}
+                  onClick={() => setState.mutate({ state: c.name, hash: task.hash })}
+                >
+                  {c.name}
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
+        </div>
+        <div className="drawer-cell">
+          <span className="drawer-cell-label">Created</span>
+          <span>{created ?? '—'}</span>
+          {typeof field(fm, 'created_by') === 'string' && (
+            <span className="app-muted">
+              by {String(field(fm, 'created_by')).replace(/^@/, '')}
+            </span>
+          )}
+        </div>
+        <div className="drawer-cell">
+          <span className="drawer-cell-label">Assignees</span>
+          <span className="drawer-people">
+            {strings(field(fm, 'assignees')).map((a) => (
+              <span key={a} className="drawer-person">
+                <Avatar name={a} size={22} /> {a.replace(/^@/, '')}
+              </span>
             ))}
-          </Menu.Dropdown>
-        </Menu>
-        <dl className="drawer-fields">
-          <dt>Created</dt>
-          <dd>{String(field(fm, 'created') ?? '—')}</dd>
-          <dt>Assignees</dt>
-          <dd>{strings(field(fm, 'assignees')).join(', ') || '—'}</dd>
-          <dt>Labels</dt>
-          <dd>
+            {strings(field(fm, 'assignees')).length === 0 && '—'}
+          </span>
+        </div>
+        <div className="drawer-cell">
+          <span className="drawer-cell-label">Labels</span>
+          <span className="drawer-labels">
             {strings(field(fm, 'labels')).map((l) => (
               <span key={l} className="goal-tag">
                 {l}
               </span>
             ))}
             {strings(field(fm, 'labels')).length === 0 && '—'}
-          </dd>
-          {typeof field(fm, 'due') === 'string' && (
-            <>
-              <dt>Due</dt>
-              <dd>{String(field(fm, 'due'))}</dd>
-            </>
-          )}
-        </dl>
+          </span>
+        </div>
       </div>
 
-      <section className="drawer-section" aria-label="Decisions">
-        <h3 className="nt-overline">Decisions</h3>
+      <section className="drawer-row" aria-label="Decisions">
+        <span className="drawer-cell-label">Decisions</span>
         <div className="drawer-decisions">
           {decisions.map((d) => (
-            <Link key={d.id} to="/items/$id" params={{ id: d.id as string }} className="goal-tag">
-              {d.id} {d.title}
+            <Link key={d.id} to="/items/$id" params={{ id: d.id as string }} className="drawer-adr">
+              <Icon name="diamond" size={14} />
+              <span className="drawer-adr-id">{d.id}</span> {d.title}
             </Link>
           ))}
           {decisions.length === 0 && <span className="app-muted">None linked</span>}
@@ -148,11 +175,20 @@ function Body({ id, columns }: { readonly id: string; readonly columns: Readonly
         </div>
       </section>
 
+      <section className="drawer-title-block" aria-label="Summary">
+        <h2 className="drawer-task-title">{task.title}</h2>
+        {summaryOf(task.body) !== '' && <p>{summaryOf(task.body)}</p>}
+      </section>
+
       <section className="drawer-section" aria-label="Checklist">
-        <h3 className="nt-overline">Checklist</h3>
-        {task.progress !== null && (
-          <Progress done={task.progress.done} total={task.progress.total} label="Checklist" />
-        )}
+        <div className="drawer-check-head">
+          <h3 className="drawer-h">Tasklist</h3>
+          {task.progress !== null && (
+            <div className="drawer-check-bar">
+              <Bar done={task.progress.done} total={task.progress.total} label="Checklist" />
+            </div>
+          )}
+        </div>
         <ul className="drawer-checklist">
           {task.checklist.map((item, index) => (
             <li key={`${index}:${item.text}`}>
@@ -173,7 +209,7 @@ function Body({ id, columns }: { readonly id: string; readonly columns: Readonly
       </section>
 
       <section className="drawer-section" aria-label="Related">
-        <h3 className="nt-overline">Related</h3>
+        <h3 className="drawer-h">Related</h3>
         <ul className="app-link-list">
           {related.map((l) => (
             <li key={`${l.kind}:${l.path}`}>
@@ -183,46 +219,82 @@ function Body({ id, columns }: { readonly id: string; readonly columns: Readonly
               </Link>
             </li>
           ))}
-          {related.length === 0 && <li className="app-muted">Nothing related</li>}
+          {related.length === 0 && <li className="drawer-empty">No related items.</li>}
         </ul>
       </section>
     </div>
   )
 }
 
-/** A task in a side drawer: fields, decisions, checklist and related items, all editable in place. */
+/** A task in a drawer: its fields and checklist, and with `code` the file beside them. */
 export function TaskDrawer({
   id,
   columns,
+  projectTitle,
+  initial,
   onClose,
 }: {
   readonly id: string | undefined
+  /** `code` opens with the file beside the task. */
+  readonly initial?: 'code'
   readonly columns: ReadonlyArray<Column>
+  readonly projectTitle?: string | undefined
   readonly onClose: () => void
 }) {
   const api = useApi()
-  const title = useQuery({ ...itemQuery(api, id ?? ''), enabled: id !== undefined })
+  const task = useQuery({ ...itemQuery(api, id ?? ''), enabled: id !== undefined })
+  const health = useHealth(api)
+  const [mode, setMode] = useState<'text' | 'code'>(initial ?? 'text')
+  const [changedLines, setChangedLines] = useState(0)
+  const file = task.data ? `${task.data.id.replace(/^[A-Z]+-0*/, '')} - ${task.data.title}.md` : ''
+  const preview =
+    id === undefined ? null : (
+      <div className="drawer-preview">
+        <Body id={id} columns={columns} />
+        <Link to="/items/$id" params={{ id }} className="drawer-full">
+          Open full page
+        </Link>
+      </div>
+    )
   return (
     <Drawer
       opened={id !== undefined}
       onClose={onClose}
-      position="right"
-      size={480}
+      position="left"
+      size={mode === 'code' ? 'min(1792px, calc(100vw - 128px))' : 912}
+      classNames={{
+        body: 'drawer-frame',
+        inner: 'drawer-inner',
+        content: 'drawer-content',
+        header: 'drawer-head',
+        overlay: 'drawer-overlay',
+        title: 'drawer-title-slot',
+      }}
       title={
         id === undefined ? undefined : (
-          <span className="drawer-title">
-            <TypeBadge type={'task' as ItemTypeName} />
-            <code className="app-id">{id}</code>
-            <span>{title.data?.title}</span>
-          </span>
+          <nav className="drawer-crumbs" aria-label="Task path">
+            <Icon name="description" />
+            <span>Projects</span> › <span>{projectTitle ?? task.data?.project}</span> ›{' '}
+            <span>Tasks</span> › <strong>{file || id}</strong>
+            {changedLines > 0 && (
+              <span className="drawer-lines">
+                M {changedLines} {changedLines === 1 ? 'line' : 'lines'} changed
+              </span>
+            )}
+          </nav>
         )
       }
     >
-      {id !== undefined && <Body id={id} columns={columns} />}
       {id !== undefined && (
-        <Link to="/items/$id" params={{ id }} className="drawer-full">
-          Open full page
-        </Link>
+        <SourceEditor
+          id={id}
+          variant="drawer"
+          preview={preview}
+          mode={mode === 'code' ? 'split' : 'text'}
+          onModeChange={(m) => setMode(m === 'split' ? 'code' : 'text')}
+          onStats={(stats) => setChangedLines(stats.changedLines)}
+          branch={health.data?.branch}
+        />
       )}
     </Drawer>
   )

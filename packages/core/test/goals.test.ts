@@ -181,3 +181,19 @@ describe('knowledge rows and supersession', () => {
     expect(rows.find((r) => r.id === 'ADR-00002')?.supersedes).toEqual([])
   })
 })
+
+describe('search snippets', () => {
+  test('are the text around the first match, with ellipses where it was cut', async () => {
+    const { snippetOf } = await import('../src/index')
+    expect(snippetOf('The quick brown fox jumps over the lazy dog', 'fox')).toBe(
+      'The quick brown fox jumps over the lazy dog',
+    )
+    const long = `${'a '.repeat(60)}needle${' b'.repeat(60)}`
+    const snippet = snippetOf(long, 'needle') as string
+    expect(snippet.startsWith('…')).toBe(true)
+    expect(snippet.endsWith('…')).toBe(true)
+    expect(snippet).toContain('needle')
+    expect(snippetOf('nothing here', 'zzz')).toBeUndefined()
+    expect(snippetOf('anything', '  ')).toBeUndefined()
+  })
+})

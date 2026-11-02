@@ -168,18 +168,31 @@
   transition: width var(--nt-duration-base) var(--nt-easing-standard);
 }
 .nt-ring {
+  position: relative;
   flex-shrink: 0;
+  border-radius: 50%;
 }
-.nt-ring-label {
+.nt-ring-inner {
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 50%;
+  background: var(--nt-color-bg-canvas);
+  color: var(--nt-color-status-success);
 }
 .nt-ring-text {
-  font-size: var(--nt-text-micro-size);
+  display: inline-flex;
+  align-items: baseline;
   font-weight: var(--nt-font-weight-semibold);
-  letter-spacing: -0.02em;
-  color: var(--nt-color-text-secondary);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.nt-ring-unit {
+  font-size: 11px;
+}
+.nt-ring-count {
+  font-weight: var(--nt-font-weight-semibold);
   font-variant-numeric: tabular-nums;
 }
 

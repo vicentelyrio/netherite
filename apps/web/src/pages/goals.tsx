@@ -1,22 +1,15 @@
 import type { GoalRow, ProjectRow } from '@netherite/api'
 import { NotFound } from '@netherite/api'
-import {
-  Banner,
-  Button,
-  Card,
-  EmptyState,
-  Icon,
-  type ItemTypeName,
-  Progress,
-  ProgressRing,
-} from '@netherite/ui'
+import { Banner, Button, Card, EmptyState, Icon, ProgressRing } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-import { type FormEvent, useState } from 'react'
+import { type FormEvent, type ReactNode, useState } from 'react'
+import { GraphView } from '../graph/GraphView'
 import { useApi } from '../lib/app-context'
+import { Bar, Tags } from '../lib/bits'
 import { goalQuery, goalsQuery, graphQuery } from '../lib/queries'
+import { TitleForm } from '../lib/title-form'
 import { useWrite } from '../lib/writes'
-import { nodeTitle, RadialGraph } from './radial-graph'
 
 const noArea = 'No area'
 
@@ -39,6 +32,15 @@ const sum = (goals: ReadonlyArray<GoalRow>) =>
     { done: 0, total: 0 },
   )
 
+export function Crumbs({ children }: { readonly children?: ReactNode }) {
+  return (
+    <nav className="goal-crumbs" aria-label="Breadcrumb">
+      <Icon name="track_changes" />
+      {children}
+    </nav>
+  )
+}
+
 function GoalCard({ goal }: { readonly goal: GoalRow }) {
   const achieved = goal.status === 'achieved'
   const progress = goal.progress ?? { done: 0, total: 0 }
@@ -46,60 +48,104 @@ function GoalCard({ goal }: { readonly goal: GoalRow }) {
     <Link to="/goals/$id" params={{ id: goal.id }} className="app-row-link">
       <Card interactive>
         <div className="goal-card">
-          <div className="goal-card-horizon">
-            <Icon name={goal.due ? 'hourglass_empty' : 'all_inclusive'} />
-            <span>{goal.due ? `Due ${goal.due}` : 'Ongoing'}</span>
+          <div className="goal-card-top">
+            <span className="goal-card-title">{goal.title}</span>
             {achieved && <span className="goal-achieved">Achieved</span>}
           </div>
-          <div className="goal-card-title">{goal.title}</div>
-          {goal.tags.length > 0 && (
-            <div className="goal-tags">
-              {goal.tags.map((tag) => (
-                <span key={tag} className="goal-tag">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-          <Progress done={achieved ? 1 : progress.done} total={achieved ? 1 : progress.total} />
-          <code className="app-id">{goal.id}</code>
+          {goal.due && <span className="app-muted">Due {goal.due}</span>}
+          <Tags tags={goal.tags} />
+          <Bar
+            done={achieved ? progress.total || 1 : progress.done}
+            total={progress.total || (achieved ? 1 : 0)}
+          />
         </div>
       </Card>
     </Link>
   )
 }
 
-/** Asks for a title in place, then hands it over. Escape or an empty title cancels. */
-function TitleForm({
-  label,
-  onSubmit,
-  onCancel,
-}: {
-  readonly label: string
-  readonly onSubmit: (title: string) => void
-  readonly onCancel: () => void
-}) {
+function NewGoal({ area }: { readonly area: string | undefined }) {
+  const api = useApi()
+  const [adding, setAdding] = useState(false)
+  const create = useWrite(api, (a, title: string) =>
+    a.call((c) =>
+      c.items.create({
+        payload: { type: 'goal', title, ...(area ? { fields: { area } } : {}) },
+      }),
+    ),
+  )
+  return adding ? (
+    <TitleForm
+      label="Goal title"
+      onCancel={() => setAdding(false)}
+      onSubmit={(title) => create.mutate(title, { onSuccess: () => setAdding(false) })}
+    />
+  ) : (
+    <button type="button" className="goals-new" onClick={() => setAdding(true)}>
+      <Icon name="add" /> New goal
+    </button>
+  )
+}
+
+/**
+ * An area exists because a goal names it, so a new area starts with its first goal: the form asks
+ * for both. Areas already in use are offered so a typo does not make a second one.
+ */
+function NewArea({ areas }: { readonly areas: ReadonlyArray<string> }) {
+  const api = useApi()
+  const [adding, setAdding] = useState(false)
+  const [area, setArea] = useState('')
   const [title, setTitle] = useState('')
+  const create = useWrite(api, (a, v: { area: string; title: string }) =>
+    a.call((c) =>
+      c.items.create({ payload: { type: 'goal', title: v.title, fields: { area: v.area } } }),
+    ),
+  )
+  const clash = areas.some((a) => a.toLowerCase() === area.trim().toLowerCase())
   const submit = (e: FormEvent) => {
     e.preventDefault()
-    const trimmed = title.trim()
-    if (trimmed === '') return
-    onSubmit(trimmed)
+    if (area.trim() === '' || title.trim() === '') return
+    create.mutate(
+      { area: area.trim(), title: title.trim() },
+      {
+        onSuccess: () => {
+          setAdding(false)
+          setArea('')
+          setTitle('')
+        },
+      },
+    )
+  }
+  if (!adding) {
+    return (
+      <button type="button" className="goals-new goals-new-area" onClick={() => setAdding(true)}>
+        <Icon name="add" /> New area
+      </button>
+    )
   }
   return (
-    <form className="goal-title-form" onSubmit={submit}>
+    <form className="goals-area-form" onSubmit={submit} aria-label="New area">
       <input
         className="goal-title-input"
-        aria-label={label}
-        placeholder={label}
-        value={title}
+        aria-label="Area name"
+        placeholder="Area name"
+        value={area}
         // biome-ignore lint/a11y/noAutofocus: the form appears because the person asked for it
         autoFocus
+        onChange={(e) => setArea(e.currentTarget.value)}
+        onKeyDown={(e) => e.key === 'Escape' && setAdding(false)}
+      />
+      {clash && <span className="app-muted">That area exists: the goal will join it.</span>}
+      <input
+        className="goal-title-input"
+        aria-label="First goal"
+        placeholder="First goal"
+        value={title}
         onChange={(e) => setTitle(e.currentTarget.value)}
-        onKeyDown={(e) => e.key === 'Escape' && onCancel()}
+        onKeyDown={(e) => e.key === 'Escape' && setAdding(false)}
       />
       <Button variant="primary" type="submit">
-        Create
+        Create area
       </Button>
     </form>
   )
@@ -108,10 +154,6 @@ function TitleForm({
 export function GoalsPage() {
   const api = useApi()
   const query = useQuery(goalsQuery(api))
-  const create = useWrite(api, (a, title: string) =>
-    a.call((c) => c.items.create({ payload: { type: 'goal', title } })),
-  )
-  const [adding, setAdding] = useState(false)
 
   if (query.isPending) return <div className="app-page app-muted">Loading…</div>
   if (query.isError) {
@@ -126,13 +168,18 @@ export function GoalsPage() {
   const groups = groupByArea(query.data.goals)
   return (
     <div className="app-page app-page--wide">
-      <h1 className="app-title">Goals</h1>
+      <Crumbs>
+        <h1 className="goal-crumb-title">Goals</h1>
+      </Crumbs>
       {groups.length === 0 && (
-        <EmptyState
-          icon="track_changes"
-          title="No goals yet"
-          description="A goal is something you want to reach. Projects and tasks hang from it."
-        />
+        <>
+          <EmptyState
+            icon="track_changes"
+            title="No goals yet"
+            description="A goal is something you want to reach. Projects and tasks hang from it."
+          />
+          <NewGoal area={undefined} />
+        </>
       )}
       <div className="goals-columns">
         {groups.map(({ area, goals }) => {
@@ -141,26 +188,17 @@ export function GoalsPage() {
             <section key={area} className="goals-area" aria-label={area}>
               <header className="goals-area-head">
                 <h2 className="goals-area-title">{area}</h2>
-                <ProgressRing done={total.done} total={total.total} size={56} label={area} />
+                <ProgressRing done={total.done} total={total.total} size={58} label={area} />
               </header>
               {goals.map((goal) => (
                 <GoalCard key={goal.id} goal={goal} />
               ))}
+              <NewGoal area={area === noArea ? undefined : area} />
             </section>
           )
         })}
+        <NewArea areas={groups.map((g) => g.area).filter((a) => a !== noArea)} />
       </div>
-      {adding ? (
-        <TitleForm
-          label="Goal title"
-          onCancel={() => setAdding(false)}
-          onSubmit={(title) => create.mutate(title, { onSuccess: () => setAdding(false) })}
-        />
-      ) : (
-        <button type="button" className="goals-new" onClick={() => setAdding(true)}>
-          <Icon name="add" /> New goal
-        </button>
-      )}
     </div>
   )
 }
@@ -168,41 +206,34 @@ export function GoalsPage() {
 function ProjectCard({ project }: { readonly project: ProjectRow }) {
   const progress = project.progress ?? { done: 0, total: 0 }
   return (
-    <Link to="/items/$id" params={{ id: project.id }} className="app-row-link">
+    <Link to="/projects/$id" params={{ id: project.id }} className="app-row-link">
       <Card interactive>
         <div className="goal-card">
-          <div className="goal-card-title">{project.title}</div>
-          <Progress done={progress.done} total={progress.total} />
-          <code className="app-id">{project.id}</code>
+          {project.goals.length > 0 && (
+            <span className="goal-overline">{project.goals.map((g) => g.title).join(' · ')}</span>
+          )}
+          <span className="goal-card-title">{project.title}</span>
+          <Tags tags={project.tags} />
+          <Bar done={progress.done} total={progress.total} />
         </div>
       </Card>
     </Link>
   )
 }
 
-function FocusedGraph({
-  goal,
-}: {
-  readonly goal: { id: string; title: string; projectRows: ReadonlyArray<ProjectRow> }
-}) {
+function FocusedGraph({ goal }: { readonly goal: { id: string; title: string } }) {
   const api = useApi()
   const query = useQuery(graphQuery(api))
-  if (!query.data) return <div className="goal-graph app-muted">Loading graph…</div>
-  const { edges, nodes } = query.data
-  const tasksOf = (id: string) =>
-    edges
-      .filter((e) => e.kind === 'belongs_to' && e.to === id)
-      .map((e) => ({ id: e.from, type: 'task' as ItemTypeName, title: nodeTitle(nodes, e.from) }))
+  if (!query.data) return <div className="gv app-muted">Loading graph…</div>
   return (
-    <RadialGraph
+    <GraphView
+      data={query.data}
+      variant="embedded"
+      focus={goal.id}
+      labels="neighbors"
+      nodeScale={1.25}
+      pad={96}
       label={`${goal.title}: projects and tasks`}
-      root={{ id: goal.id, type: 'goal', title: goal.title }}
-      branches={goal.projectRows.map((p) => ({
-        id: p.id,
-        type: 'project' as ItemTypeName,
-        title: p.title,
-        leaves: tasksOf(p.id),
-      }))}
     />
   )
 }
@@ -233,28 +264,25 @@ export function GoalPage({ id }: { readonly id: string }) {
   return (
     <div className="app-page app-page--wide goal-detail">
       <div className="goal-detail-main">
-        <nav className="goal-crumbs" aria-label="Breadcrumb">
+        <Crumbs>
           <Link to="/goals">Goals</Link>
           {goal.area && <span> / {goal.area}</span>}
-          <span> / {goal.title}</span>
-        </nav>
-        <h1 className="app-title">{goal.title}</h1>
-        <div className="goal-rings">
+          <span> / </span>
+          <strong>{goal.title}</strong>
+        </Crumbs>
+        <header className="goal-head">
+          <h1 className="app-title goal-title">{goal.title}</h1>
           <div className="goal-ring">
             <ProgressRing done={progress.done} total={progress.total} size={64} label="Progress" />
             <span className="app-muted">Progress</span>
           </div>
-          <div className="goal-ring">
-            <span className="goal-horizon">{goal.due ?? 'Ongoing'}</span>
-            <span className="app-muted">Horizon</span>
-          </div>
-        </div>
+        </header>
         <header className="goal-projects-head">
-          <h2 className="goals-area-title">Projects</h2>
+          <h2 className="goal-projects-title">Projects</h2>
           <span className="goal-count">{goal.projectRows.length}</span>
-          <Button size="sm" icon="add" onClick={() => setAdding(true)}>
-            New project
-          </Button>
+          <button type="button" className="goal-link-button" onClick={() => setAdding(true)}>
+            <Icon name="add" /> New project
+          </button>
         </header>
         {adding && (
           <TitleForm

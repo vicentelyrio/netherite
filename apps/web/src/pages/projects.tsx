@@ -1,6 +1,7 @@
 import {
   DndContext,
   type DragEndEvent,
+  DragOverlay,
   KeyboardSensor,
   PointerSensor,
   useDraggable,
@@ -11,108 +12,59 @@ import {
 import type { Board, BoardCard } from '@netherite/api'
 import { NotFound } from '@netherite/api'
 import {
+  Avatar,
   Banner,
   Card,
-  EmptyState,
   Icon,
   type ItemTypeName,
-  Progress,
   type StateCategory,
-  Tabs,
   TaskStatePill,
   TypeBadge,
 } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
+import { GraphView } from '../graph/GraphView'
 import { useApi } from '../lib/app-context'
-import { boardQuery, projectsQuery } from '../lib/queries'
+import { Bar, Tags } from '../lib/bits'
+import { boardQuery, graphQuery } from '../lib/queries'
+import { TitleForm } from '../lib/title-form'
 import { useWrite } from '../lib/writes'
-import { RadialGraph } from './radial-graph'
+import { Crumbs } from './goals'
+import { rememberProject } from './projects-entry'
 import { TaskDrawer } from './task-drawer'
 
-export function ProjectsPage() {
-  const api = useApi()
-  const query = useQuery(projectsQuery(api))
-  if (query.isPending) return <div className="app-page app-muted">Loading…</div>
-  if (query.isError) {
-    return (
-      <div className="app-page app-page--wide">
-        <Banner variant="danger" title="Could not load projects">
-          Check that `netherite serve` is still running.
-        </Banner>
-      </div>
-    )
-  }
-  const { projects } = query.data
-  return (
-    <div className="app-page app-page--wide">
-      <h1 className="app-title">Projects</h1>
-      {projects.length === 0 && (
-        <EmptyState
-          icon="task_alt"
-          title="No projects yet"
-          description="A project groups tasks under one or more goals."
-        />
-      )}
-      <div className="goals-columns">
-        {projects.map((project) => {
-          const progress = project.progress ?? { done: 0, total: 0 }
-          return (
-            <Link
-              key={project.id}
-              to="/projects/$id"
-              params={{ id: project.id }}
-              className="app-row-link"
-            >
-              <Card interactive>
-                <div className="goal-card">
-                  <div className="goal-card-title">{project.title}</div>
-                  <Progress done={progress.done} total={progress.total} />
-                  <code className="app-id">{project.id}</code>
-                </div>
-              </Card>
-            </Link>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
-function CardBody({ card, projectId }: { readonly card: BoardCard; readonly projectId: string }) {
+function CardBody({
+  card,
+  projectId,
+  overline,
+}: {
+  readonly card: BoardCard
+  readonly projectId: string
+  readonly overline?: string | undefined
+}) {
+  const assignee = card.assignees[0]
   return (
     <div className="board-card">
-      <Link
-        to="/projects/$id"
-        params={{ id: projectId }}
-        search={{ task: card.id }}
-        className="board-card-title"
-      >
-        {card.title}
-      </Link>
-      {card.labels.length > 0 && (
-        <div className="goal-tags">
-          {card.labels.map((label) => (
-            <span key={label} className="goal-tag">
-              {label}
-            </span>
-          ))}
-        </div>
-      )}
-      {card.checklist && <Progress done={card.checklist.done} total={card.checklist.total} />}
+      {overline && <span className="goal-overline">{overline}</span>}
+      <div className="board-card-top">
+        <Link
+          to="/projects/$id"
+          params={{ id: projectId }}
+          search={{ task: card.id }}
+          className="board-card-title"
+        >
+          {card.title}
+        </Link>
+        {assignee !== undefined && <Avatar name={assignee} size={24} />}
+      </div>
+      <Tags tags={card.labels} />
       {card.waitingOn.length > 0 && (
         <div className="board-waiting">
-          <Icon name="hourglass_empty" /> Waiting on {card.waitingOn.map((d) => d.id).join(', ')}
+          <Icon name="link" /> Waiting on {card.waitingOn.map((d) => d.title).join(', ')}
         </div>
       )}
-      <div className="board-card-foot">
-        <code className="app-id">{card.id}</code>
-        {card.assignees.map((a) => (
-          <span key={a} className="app-muted">
-            {a}
-          </span>
-        ))}
-      </div>
+      {card.checklist && <Bar done={card.checklist.done} total={card.checklist.total} />}
     </div>
   )
 }
@@ -120,9 +72,15 @@ function CardBody({ card, projectId }: { readonly card: BoardCard; readonly proj
 function DraggableCard({
   card,
   projectId,
+  category,
+  selected,
+  overline,
 }: {
   readonly card: BoardCard
   readonly projectId: string
+  readonly category: string
+  readonly selected: boolean
+  readonly overline?: string | undefined
 }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: card.id })
   return (
@@ -130,13 +88,36 @@ function DraggableCard({
       ref={setNodeRef}
       className="board-draggable"
       data-dragging={isDragging || undefined}
+      data-category={category}
+      data-selected={selected || undefined}
       {...attributes}
       {...listeners}
     >
       <Card interactive>
-        <CardBody card={card} projectId={projectId} />
+        <CardBody card={card} projectId={projectId} overline={overline} />
       </Card>
     </div>
+  )
+}
+
+function NewTask({ projectId, state }: { readonly projectId: string; readonly state: string }) {
+  const api = useApi()
+  const [adding, setAdding] = useState(false)
+  const create = useWrite(api, (a, title: string) =>
+    a.call((c) =>
+      c.items.create({ payload: { type: 'task', title, fields: { project: projectId, state } } }),
+    ),
+  )
+  return adding ? (
+    <TitleForm
+      label={`New ${state} task`}
+      onCancel={() => setAdding(false)}
+      onSubmit={(title) => create.mutate(title, { onSuccess: () => setAdding(false) })}
+    />
+  ) : (
+    <button type="button" className="board-new" onClick={() => setAdding(true)}>
+      <Icon name="add" /> New task
+    </button>
   )
 }
 
@@ -145,18 +126,26 @@ function Column({
   category,
   cards,
   projectId,
+  selected,
+  overline,
+  dragging,
 }: {
   readonly projectId: string
   readonly name: string
   readonly category: string
   readonly cards: ReadonlyArray<BoardCard>
+  readonly selected: string | undefined
+  readonly overline?: string | undefined
+  /** The task being dragged, if any. */
+  readonly dragging: BoardCard | undefined
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: name })
+  const target = isOver && dragging !== undefined && dragging.state !== name
   return (
     <section
       ref={setNodeRef}
       className="board-column"
-      data-over={isOver || undefined}
+      data-over={target || undefined}
       aria-label={name}
     >
       <header className="board-column-head">
@@ -164,8 +153,17 @@ function Column({
         <span className="goal-count">{cards.length}</span>
       </header>
       {cards.map((card) => (
-        <DraggableCard key={card.id} card={card} projectId={projectId} />
+        <DraggableCard
+          key={card.id}
+          card={card}
+          projectId={projectId}
+          category={category}
+          selected={card.id === selected}
+          overline={overline}
+        />
       ))}
+      {target && <div className="board-drop">Drop to move to {name}</div>}
+      <NewTask projectId={projectId} state={name} />
     </section>
   )
 }
@@ -182,16 +180,25 @@ export const moveFor = (
     : { id: taskId, state: columnName }
 }
 
-function TasksView({ board }: { readonly board: Board }) {
+function TasksView({
+  board,
+  selected,
+}: {
+  readonly board: Board
+  readonly selected: string | undefined
+}) {
   const api = useApi()
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor),
   )
+  const [dragging, setDragging] = useState<BoardCard | undefined>()
   const move = useWrite(api, (a, v: { id: string; state: string }) =>
     a.call((c) => c.items.setState({ params: { id: v.id }, payload: { state: v.state } })),
   )
+  const overline = board.goals[0]?.title.toLowerCase()
   const onDragEnd = ({ active, over }: DragEndEvent) => {
+    setDragging(undefined)
     const change = moveFor(
       board.tasks,
       String(active.id),
@@ -200,7 +207,12 @@ function TasksView({ board }: { readonly board: Board }) {
     if (change !== undefined) move.mutate(change)
   }
   return (
-    <DndContext sensors={sensors} onDragEnd={onDragEnd}>
+    <DndContext
+      sensors={sensors}
+      onDragStart={({ active }) => setDragging(board.tasks.find((t) => t.id === active.id))}
+      onDragCancel={() => setDragging(undefined)}
+      onDragEnd={onDragEnd}
+    >
       <div className="board">
         {board.columns.map((column) => (
           <Column
@@ -208,10 +220,22 @@ function TasksView({ board }: { readonly board: Board }) {
             name={column.name}
             category={column.category}
             projectId={board.id}
+            selected={selected}
+            overline={overline}
+            dragging={dragging}
             cards={board.tasks.filter((t) => t.state === column.name)}
           />
         ))}
       </div>
+      <DragOverlay dropAnimation={null}>
+        {dragging && (
+          <div className="board-overlay">
+            <Card>
+              <CardBody card={dragging} projectId={board.id} overline={overline} />
+            </Card>
+          </div>
+        )}
+      </DragOverlay>
     </DndContext>
   )
 }
@@ -244,16 +268,56 @@ function LinkedView({
   )
 }
 
+function ProjectGraph({ board }: { readonly board: Board }) {
+  const api = useApi()
+  const query = useQuery(graphQuery(api))
+  return (
+    <section className="project-graph" aria-label="Graph">
+      <header className="project-graph-head">
+        <h2 className="project-graph-title">Graph</h2>
+        <Link to="/graph" search={{ focus: board.id }} aria-label="Open the graph">
+          <Icon name="open_in_full" />
+        </Link>
+      </header>
+      {query.data ? (
+        <GraphView
+          data={query.data}
+          variant="embedded"
+          legend="row"
+          labels="focus"
+          nodeScale={0.85}
+          pad={20}
+          padBottom={56}
+          focus={board.id}
+          label={`${board.title}: tasks`}
+        />
+      ) : (
+        <p className="app-muted">Loading graph…</p>
+      )}
+    </section>
+  )
+}
+
+const views = [
+  { id: 'tasks', label: 'Tasks', icon: 'view_kanban' },
+  { id: 'docs', label: 'Docs', icon: 'description' },
+  { id: 'knowledge', label: 'Knowledge', icon: 'menu_book' },
+] as const
+
 export function BoardPage({
   id,
   task,
+  mode,
 }: {
   readonly id: string
   readonly task?: string | undefined
+  readonly mode?: 'split'
 }) {
   const api = useApi()
   const navigate = useNavigate()
   const query = useQuery(boardQuery(api, id))
+  useEffect(() => rememberProject(id), [id])
+  const [view, setView] = useState<(typeof views)[number]['id']>('tasks')
   if (query.isPending) return <div className="app-page app-muted">Loading…</div>
   if (query.isError) {
     const missing = query.error instanceof NotFound
@@ -263,67 +327,68 @@ export function BoardPage({
           variant={missing ? 'warning' : 'danger'}
           title={missing ? `No project ${id}` : 'Could not load this project'}
         >
-          <Link to="/projects">Back to projects</Link>
+          <Link to="/goals">Back to goals</Link>
         </Banner>
       </div>
     )
   }
   const board = query.data
-  const progress = board.progress ?? { done: 0, total: 0 }
+  const goal = board.goals[0]
   return (
-    <div className="app-page app-page--wide">
-      <nav className="goal-crumbs" aria-label="Breadcrumb">
-        <Link to="/projects">Projects</Link>
-        <span> / {board.title}</span>
-      </nav>
-      <h1 className="app-title">{board.title}</h1>
-      <div className="board-summary">
-        <Progress done={progress.done} total={progress.total} />
-        {board.goals.map((g) => (
-          <Link key={g.id} to="/goals/$id" params={{ id: g.id }} className="goal-tag">
-            {g.title}
-          </Link>
-        ))}
-      </div>
-      <Tabs defaultValue="tasks">
-        <Tabs.List>
-          <Tabs.Tab value="tasks">Tasks</Tabs.Tab>
-          <Tabs.Tab value="docs">Docs</Tabs.Tab>
-          <Tabs.Tab value="knowledge">Knowledge</Tabs.Tab>
-        </Tabs.List>
-        <Tabs.Panel value="tasks" pt="md">
-          <div className="board-with-graph">
-            <TasksView board={board} />
-            <RadialGraph
-              label={`${board.title}: tasks`}
-              root={{ id: board.id, type: 'project', title: board.title }}
-              branches={board.tasks.map((t) => ({
-                id: t.id,
-                type: 'task' as ItemTypeName,
-                title: t.title,
-                leaves: [],
-              }))}
-            />
-          </div>
-        </Tabs.Panel>
-        <Tabs.Panel value="docs" pt="md">
+    <div className="app-page app-page--wide project-page">
+      <aside className="project-side">
+        <Crumbs>
+          <Link to="/goals">Goals</Link>
+          {goal && (
+            <>
+              <span> / </span>
+              <Link to="/goals/$id" params={{ id: goal.id }}>
+                {goal.title}
+              </Link>
+            </>
+          )}
+        </Crumbs>
+        <h1 className="app-title project-title">{board.title}</h1>
+        <div className="project-views" role="tablist" aria-label="Views">
+          {views.map((v) => (
+            <button
+              key={v.id}
+              type="button"
+              role="tab"
+              aria-selected={view === v.id}
+              aria-label={v.label}
+              data-active={view === v.id || undefined}
+              onClick={() => setView(v.id)}
+            >
+              <Icon name={v.icon} />
+            </button>
+          ))}
+          <span className="app-muted">{views.find((v) => v.id === view)?.label}</span>
+        </div>
+        <ProjectGraph board={board} />
+      </aside>
+      <div className="project-main" role="tabpanel">
+        {view === 'tasks' && <TasksView board={board} selected={task} />}
+        {view === 'docs' && (
           <LinkedView
             board={board}
             types={['doc', 'runbook']}
             empty="No docs or runbooks link to this project."
           />
-        </Tabs.Panel>
-        <Tabs.Panel value="knowledge" pt="md">
+        )}
+        {view === 'knowledge' && (
           <LinkedView
             board={board}
             types={['adr', 'context']}
             empty="No decisions or context link to this project."
           />
-        </Tabs.Panel>
-      </Tabs>
+        )}
+      </div>
       <TaskDrawer
         id={task}
         columns={board.columns}
+        projectTitle={board.title}
+        {...(mode ? { initial: 'code' as const } : {})}
         onClose={() => void navigate({ to: '/projects/$id', params: { id }, search: {} })}
       />
     </div>

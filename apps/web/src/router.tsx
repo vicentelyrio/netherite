@@ -9,10 +9,12 @@ import {
 } from '@tanstack/react-router'
 import { DecisionsPage } from './pages/decisions'
 import { GoalPage, GoalsPage } from './pages/goals'
+import { GraphPage } from './pages/graph'
 import { ItemPage } from './pages/item'
 import { KnowledgePage } from './pages/knowledge'
 import { type PageProps, Placeholder } from './pages/lists'
-import { BoardPage, ProjectsPage } from './pages/projects'
+import { BoardPage } from './pages/projects'
+import { ProjectsEntry } from './pages/projects-entry'
 import { Shell } from './shell'
 
 const root = createRootRoute({
@@ -52,17 +54,19 @@ const goal = createRoute({
 const projects = createRoute({
   getParentRoute: () => root,
   path: '/projects',
-  component: ProjectsPage,
+  component: ProjectsEntry,
 })
 const project = createRoute({
   getParentRoute: () => root,
   path: '/projects/$id',
-  validateSearch: (search: Record<string, unknown>): { task?: string } =>
-    typeof search.task === 'string' && search.task !== '' ? { task: search.task } : {},
+  validateSearch: (search: Record<string, unknown>): { task?: string; mode?: 'split' } => ({
+    ...(typeof search.task === 'string' && search.task !== '' ? { task: search.task } : {}),
+    ...(search.mode === 'split' ? { mode: 'split' as const } : {}),
+  }),
   component: function ProjectRoute() {
     const { id } = project.useParams()
-    const { task } = project.useSearch()
-    return <BoardPage id={id} task={task} />
+    const { task, mode } = project.useSearch()
+    return <BoardPage id={id} task={task} {...(mode ? { mode } : {})} />
   },
 })
 const knowledge = createRoute({
@@ -85,18 +89,26 @@ const tags = screen('/tags', {
   icon: 'sell',
   arrives: 'Every label and tag, with counts, and renaming across files (TASK-00047).',
 })
-const graph = screen('/graph', {
-  title: 'Graph',
-  icon: 'hub',
-  arrives: 'Typed nodes and edges, hover details and focus (TASK-00043).',
+const graph = createRoute({
+  getParentRoute: () => root,
+  path: '/graph',
+  validateSearch: (search: Record<string, unknown>): { focus?: string } =>
+    typeof search.focus === 'string' && search.focus !== '' ? { focus: search.focus } : {},
+  component: function GraphRoute() {
+    const { focus } = graph.useSearch()
+    return <GraphPage focus={focus} />
+  },
 })
 
 const item = createRoute({
   getParentRoute: () => root,
   path: '/items/$id',
+  validateSearch: (search: Record<string, unknown>): { mode?: 'split' } =>
+    search.mode === 'split' ? { mode: 'split' } : {},
   component: function ItemRoute() {
     const { id } = item.useParams()
-    return <ItemPage id={id} />
+    const { mode } = item.useSearch()
+    return <ItemPage id={id} {...(mode ? { mode } : {})} />
   },
 })
 

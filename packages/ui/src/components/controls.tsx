@@ -7,7 +7,6 @@ import {
   Card as MantineCard,
   type CardProps as MantineCardProps,
   Progress as MantineProgress,
-  RingProgress as MantineRingProgress,
   Tooltip,
 } from '@mantine/core'
 import {
@@ -215,7 +214,10 @@ export interface ProgressRingProps extends ProgressProps {
   readonly showCount?: boolean
 }
 
-/** A ring, for goals and projects overviews. */
+/**
+ * A ring, for goals and projects overviews: a conic fill over the track with the canvas showing
+ * through the middle, and the percentage (or, with `showCount`, the count) in green.
+ */
 export function ProgressRing({
   done,
   total,
@@ -224,17 +226,31 @@ export function ProgressRing({
   showCount,
 }: ProgressRingProps) {
   const percent = percentOf(done, total)
+  const inset = Math.max(3, Math.round(size * 0.09))
+  const text = Math.max(11, Math.round(size * 0.32))
   return (
-    <MantineRingProgress
-      size={size}
-      sections={[{ value: percent, color: progressColor() }]}
-      label={
-        <span className="nt-ring-text" aria-hidden="true">
-          {showCount ? `${done}/${total}` : `${percent}%`}
-        </span>
-      }
+    <div
+      className="nt-ring"
       role="img"
       aria-label={`${label}: ${done} of ${total} done`}
-    />
+      style={{
+        width: size,
+        height: size,
+        background: `conic-gradient(var(--nt-color-status-success) 0 ${percent}%, var(--nt-color-bg-track) 0)`,
+      }}
+    >
+      <div className="nt-ring-inner" style={{ inset }} aria-hidden="true">
+        {showCount ? (
+          <span className="nt-ring-count" style={{ fontSize: Math.round(text * 0.7) }}>
+            {done}/{total}
+          </span>
+        ) : (
+          <span className="nt-ring-text">
+            <span style={{ fontSize: text }}>{percent}</span>
+            <span className="nt-ring-unit">%</span>
+          </span>
+        )}
+      </div>
+    </div>
   )
 }

@@ -1,7 +1,15 @@
 import { EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { Banner, Button, Icon, SegmentedControl } from '@netherite/ui'
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import {
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from 'react'
 import { Markdown } from '../lib/markdown'
 import type { LinkTarget } from './complete'
 import { counts, type Problem, placeProblems, type ServerDiagnostic } from './diagnostics'
@@ -24,6 +32,14 @@ export interface ItemEditorProps {
   readonly onModeChange?: (mode: EditorMode) => void
   /** Called with the view once it exists, for tests and tools. */
   readonly onReady?: (view: EditorView) => void
+  /** `drawer` fills its frame with no margins or borders of its own. */
+  readonly variant?: 'page' | 'drawer'
+  /** What to show beside the code instead of the rendered text. */
+  readonly preview?: ReactNode
+  /** Told how many lines differ from the last commit, as the buffer changes. */
+  readonly onStats?: (stats: { readonly changedLines: number }) => void
+  /** The checked-out branch, shown in the status bar. */
+  readonly branch?: string | undefined
 }
 
 /** The text after the frontmatter, which is what the rendered view shows. */
@@ -45,6 +61,10 @@ export function ItemEditor({
   mode: controlled,
   onModeChange,
   onReady,
+  variant = 'page',
+  preview,
+  onStats,
+  branch,
 }: ItemEditorProps) {
   const host = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
@@ -56,6 +76,7 @@ export function ItemEditor({
   const [problems, setProblemsState] = useState<ReadonlyArray<Problem>>([])
   const [position, setPosition] = useState({ line: 1, column: 1 })
   const [changed, setChanged] = useState(false)
+  const [changedLines, setChangedLines] = useState(0)
   const [saving, setSaving] = useState(false)
   const [localMode, setLocalMode] = useState<EditorMode>('split')
   const mode = controlled ?? localMode
@@ -125,7 +146,9 @@ export function ItemEditor({
           const line = update.state.doc.lineAt(head)
           setPosition({ line: line.number, column: head - line.from + 1 })
         }
-        setChanged(hasChanges(update.state.field(changesField)))
+        const lines = update.state.field(changesField)
+        setChanged(hasChanges(lines))
+        setChangedLines(lines.added.size + lines.modified.size + lines.deleted.size)
       }),
     ],
     [runLint],
@@ -164,11 +187,15 @@ export function ItemEditor({
     }
   }, [session.buffer])
 
+  const statsRef = useRef(onStats)
+  statsRef.current = onStats
+  useEffect(() => statsRef.current?.({ changedLines }), [changedLines])
+
   const { errors, warnings } = counts(problems)
   const dirty = isDirty(session)
 
   return (
-    <section className="ed" data-mode={mode} aria-label="Source editor">
+    <section className="ed" data-mode={mode} data-variant={variant} aria-label="Source editor">
       {session.conflict !== undefined && (
         <div className="ed-conflict">
           <Banner
@@ -190,9 +217,7 @@ export function ItemEditor({
       )}
       <div className="ed-panes">
         {mode === 'split' && <div className="ed-code" ref={host} data-testid="editor" />}
-        <div className="ed-rendered">
-          <Markdown source={bodyOf(session.buffer)} />
-        </div>
+        <div className="ed-rendered">{preview ?? <Markdown source={bodyOf(session.buffer)} />}</div>
       </div>
       <footer className="ed-status">
         <span className="ed-count" data-kind="error" title={`${errors} errors`}>
@@ -215,6 +240,11 @@ export function ItemEditor({
         <span className="app-muted">Markdown · YAML</span>
         {changed && <span className="ed-changed">Changed since the last commit</span>}
         <span className="ed-spacer" />
+        {branch !== undefined && (
+          <span className="ed-branch">
+            <Icon name="commit" size={15} /> {branch}
+          </span>
+        )}
         {dirty && <span className="ed-dirty">Unsaved</span>}
         <Button
           icon="save"
