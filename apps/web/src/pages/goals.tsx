@@ -4,7 +4,7 @@ import { Banner, Button, Card, EmptyState, Icon, ProgressRing } from '@netherite
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { type FormEvent, useState } from 'react'
-import { Breadcrumbs, ProgressBar, TagList, TitleForm } from '@/components'
+import { Breadcrumbs, ProgressBar, TagList, TextField, TitleForm } from '@/components'
 import { GraphView } from '../graph/GraphView'
 import { useApi } from '../lib/app-context'
 import { goalQuery, goalsQuery, graphQuery } from '../lib/queries'
@@ -115,24 +115,21 @@ function NewArea({ areas }: { readonly areas: ReadonlyArray<string> }) {
   }
   return (
     <form className="goals-area-form" onSubmit={submit} aria-label="New area">
-      <input
-        className="goal-title-input"
-        aria-label="Area name"
+      <TextField
+        label="Area name"
         placeholder="Area name"
         value={area}
-        // biome-ignore lint/a11y/noAutofocus: the form appears because the person asked for it
+        onChange={setArea}
+        onEscape={() => setAdding(false)}
         autoFocus
-        onChange={(e) => setArea(e.currentTarget.value)}
-        onKeyDown={(e) => e.key === 'Escape' && setAdding(false)}
       />
       {clash && <span className="app-muted">That area exists: the goal will join it.</span>}
-      <input
-        className="goal-title-input"
-        aria-label="First goal"
+      <TextField
+        label="First goal"
         placeholder="First goal"
         value={title}
-        onChange={(e) => setTitle(e.currentTarget.value)}
-        onKeyDown={(e) => e.key === 'Escape' && setAdding(false)}
+        onChange={setTitle}
+        onEscape={() => setAdding(false)}
       />
       <Button variant="primary" type="submit">
         Create area

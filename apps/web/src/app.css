@@ -455,15 +455,6 @@ body,
   gap: 4px;
   font-size: 13px;
 }
-.goal-title-input {
-  flex: 1;
-  height: 36px;
-  background: #212336;
-  color: inherit;
-  border: 1px solid #2f3250;
-  border-radius: 8px;
-  padding: 0 10px;
-}
 
 /* ---- project board ---- */
 .board-summary {

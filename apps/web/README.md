@@ -12,4 +12,6 @@ The Netherite app. Layers in `src/` (ADR-00024), each importing only from the on
 
 Rules, enforced by Biome (`noRestrictedImports`): a layer never imports upward; cross-folder imports use the `@/` alias (`@/components/ProgressBar`), not `../../`; only `@netherite/ui` imports Mantine. Tests sit next to the code. A new thing goes in the lowest layer that can hold it.
 
+Each component, feature and template lives in its own folder: `Name/Name.tsx`, `Name.css`, `Name.test.tsx` and an `index.ts`; the layer's `index.ts` re-exports them.
+
 `lib/`, `editor/`, `graph/`, `shell.tsx` and `search.tsx` are the old layout; they move into the layers under TASK-00080 to TASK-00084.

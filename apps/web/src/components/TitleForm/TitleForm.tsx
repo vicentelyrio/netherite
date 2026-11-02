@@ -1,5 +1,6 @@
 import { Button } from '@netherite/ui'
 import { type FormEvent, useState } from 'react'
+import { TextField } from '../TextField'
 import './TitleForm.css'
 
 export interface TitleFormProps {
@@ -19,15 +20,13 @@ export function TitleForm({ label, onSubmit, onCancel }: TitleFormProps) {
   }
   return (
     <form className="title-form" onSubmit={submit}>
-      <input
-        className="title-form-input"
-        aria-label={label}
+      <TextField
+        label={label}
         placeholder={label}
         value={title}
-        // biome-ignore lint/a11y/noAutofocus: the form appears because the person asked for it
+        onChange={setTitle}
+        onEscape={onCancel}
         autoFocus
-        onChange={(e) => setTitle(e.currentTarget.value)}
-        onKeyDown={(e) => e.key === 'Escape' && onCancel()}
       />
       <Button variant="primary" type="submit">
         Create

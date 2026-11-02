@@ -3,7 +3,7 @@ import { Banner, Button, EmptyState, Icon, type ItemTypeName, TypeGlyph } from '
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { type FormEvent, useState } from 'react'
-import { Breadcrumbs, FilterTabs, GroupCard, SearchField } from '@/components'
+import { Breadcrumbs, FilterTabs, GroupCard, SearchField, TextField } from '@/components'
 import { useApi } from '../lib/app-context'
 import { useNotices } from '../lib/notices'
 import { tagsQuery } from '../lib/queries'
@@ -72,14 +72,12 @@ function RenameForm({
   }
   return (
     <form className="tg-rename" onSubmit={submit} aria-label={`Rename ${tag.name}`}>
-      <input
-        className="goal-title-input"
-        aria-label={`New name for ${tag.name}`}
+      <TextField
+        label={`New name for ${tag.name}`}
         value={name}
-        // biome-ignore lint/a11y/noAutofocus: the form appears because the person asked for it
+        onChange={setName}
+        onEscape={onDone}
         autoFocus
-        onChange={(e) => setName(e.currentTarget.value)}
-        onKeyDown={(e) => e.key === 'Escape' && onDone()}
       />
       <Button
         variant="primary"
