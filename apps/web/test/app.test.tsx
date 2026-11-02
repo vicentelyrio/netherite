@@ -781,11 +781,52 @@ describe('the graph view', () => {
     expect(node).toHaveAttribute('aria-pressed', 'true')
   })
 
-  test('the goal page embeds the graph with its legend but without zoom controls', async () => {
+  test('the goal page embeds the graph with its legend and zoom buttons, and it pans and zooms', async () => {
     renderApp('/goals/GOAL-00001')
     expect(await screen.findByRole('img', { name: /projects and tasks/ })).toBeInTheDocument()
     expect(await screen.findByRole('complementary', { name: 'Legend' })).toBeInTheDocument()
-    expect(screen.queryByRole('toolbar', { name: 'Zoom' })).toBeNull()
+    expect(screen.getByRole('toolbar', { name: 'Zoom' })).toBeInTheDocument()
+    const graph = screen.getByRole('img', { name: /projects and tasks/ })
+    const node = await nodeButton('GOAL-00001')
+    const shape = () => node.querySelector('circle:not(.gv-glow), rect') as SVGElement
+    const at = () => Number(shape().getAttribute('cx') ?? shape().getAttribute('x'))
+    const start = at()
+    // Dragging the background pans.
+    fireEvent.pointerDown(graph, { clientX: 10, clientY: 10, button: 0 })
+    fireEvent.pointerMove(graph, { clientX: 80, clientY: 50 })
+    fireEvent.pointerUp(graph)
+    await waitFor(() => expect(at()).not.toBe(start))
+    // The wheel zooms.
+    const panned = at()
+    fireEvent.wheel(graph, { deltaY: -100, clientX: 0, clientY: 0 })
+    await waitFor(() => expect(at()).not.toBe(panned))
+  })
+
+  test('a node can be dragged, letting go on the node ends the drag, and the drop is not a click', async () => {
+    renderApp('/graph')
+    const node = await nodeButton('PRJ-00001')
+    const shape = () => node.querySelector('circle:not(.gv-glow), rect') as SVGElement
+    const at = () => Number(shape().getAttribute('cx') ?? shape().getAttribute('x'))
+    const before = at()
+    fireEvent.pointerDown(node, { clientX: 100, clientY: 100, button: 0 })
+    fireEvent.pointerMove(window, { clientX: 220, clientY: 180 })
+    fireEvent.pointerMove(window, { clientX: 260, clientY: 200 })
+    await waitFor(() => expect(at()).not.toBe(before))
+    // The pointer comes up on the node itself, as it does when you drop where you are.
+    fireEvent.pointerUp(node)
+    fireEvent.click(node)
+    expect(node).toHaveAttribute('aria-pressed', 'false')
+
+    // The drag is over: moving the pointer now does not move the node.
+    await new Promise((r) => setTimeout(r, 600))
+    const dropped = at()
+    fireEvent.pointerMove(window, { clientX: 600, clientY: 600 })
+    await new Promise((r) => setTimeout(r, 300))
+    expect(Math.abs(at() - dropped)).toBeLessThan(5)
+
+    // And the next click on it is a click again.
+    await userEvent.click(node)
+    expect(node).toHaveAttribute('aria-pressed', 'true')
   })
 
   test('Fit and the zoom buttons are there', async () => {
@@ -866,5 +907,45 @@ describe('opening as a split', () => {
     await userEvent.keyboard('{Control>}{Enter}{/Control}')
     expect(await screen.findByRole('article', { name: 'Promises' })).toBeInTheDocument()
     expect(await screen.findByTestId('editor')).toBeInTheDocument()
+  })
+})
+
+describe('the Inbox', () => {
+  test('lists what waits for you: a proposed ADR under decisions to make, with the count in the header', async () => {
+    renderApp('/inbox')
+    const group = await screen.findByRole('region', { name: 'Decisions to make' })
+    expect(within(group).getByText('ADR-00003')).toBeInTheDocument()
+    expect(within(group).getByText('Proposed')).toBeInTheDocument()
+    expect(screen.getByText(/things? need(s)? you/)).toBeInTheDocument()
+    expect(within(group).getByRole('link', { name: /ADR-00003/ })).toHaveAttribute(
+      'href',
+      '/items/ADR-00003',
+    )
+  })
+
+  test('shows uncommitted changes to items, and Mark as seen moves the since-line forward', async () => {
+    const api = other()
+    const doc = await api.call((c) => c.items.get({ params: { id: 'DOC-00001' } }))
+    await api.call((c) =>
+      c.items.update({
+        params: { id: 'DOC-00001' },
+        payload: { set: { tags: ['inbox-test'] }, baseHash: doc.hash },
+      }),
+    )
+    renderApp('/inbox')
+    const changes = await screen.findByRole('region', { name: 'Uncommitted changes' })
+    expect(within(changes).getByText('DOC-00001')).toBeInTheDocument()
+    expect(screen.getByText(/changes since the beginning/)).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: /Mark as seen/ }))
+    expect(await screen.findByText(/changes since today/)).toBeInTheDocument()
+    localStorage.removeItem('netherite:inbox-seen')
+  })
+
+  test('the rail badge counts the same things the page lists', async () => {
+    renderApp('/inbox')
+    await screen.findByRole('region', { name: 'Decisions to make' })
+    expect(
+      await within(nav()).findByRole('button', { name: /^Inbox, \d+ waiting$/ }),
+    ).toBeInTheDocument()
   })
 })

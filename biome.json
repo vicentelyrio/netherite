@@ -11,6 +11,10 @@
   },
   "overrides": [
     {
+      "includes": ["**/*.css"],
+      "linter": { "rules": { "style": { "noDescendingSpecificity": "off" } } }
+    },
+    {
       "includes": ["packages/schema/**"],
       "linter": {
         "rules": {

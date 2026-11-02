@@ -6,6 +6,7 @@ import { useApi } from './lib/app-context'
 import { type Connection, useLiveUpdates } from './lib/live'
 import { useNotices } from './lib/notices'
 import { useHealth, useInbox } from './lib/queries'
+import { waitingCount } from './pages/inbox'
 import { SearchPalette } from './search'
 
 /** The rail's items and where each goes (Rail.dc.html). Command-K opens search instead of a page. */
@@ -114,12 +115,7 @@ export function Shell() {
   const health = useHealth(api)
   const inbox = useInbox(api)
   // What waits for a person: decisions to make, docs gone stale, problems to fix, blocked work.
-  const waiting = inbox.data
-    ? inbox.data.proposed.length +
-      inbox.data.freshness.length +
-      inbox.data.errors.length +
-      inbox.data.blocked.length
-    : 0
+  const waiting = inbox.data ? waitingCount(inbox.data) : 0
 
   const items = railItems.map(({ to: _to, ...item }) =>
     item.id === 'inbox' ? { ...item, badge: waiting } : item,

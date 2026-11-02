@@ -58,10 +58,10 @@ export const itemQuery = (api: Api, id: string) =>
     retry: false,
   })
 
-export const inboxQuery = (api: Api) =>
+export const inboxQuery = (api: Api, since?: string) =>
   queryOptions({
-    queryKey: keys.inbox,
-    queryFn: () => api.call((c) => c.inbox.inbox({ query: {} })),
+    queryKey: since === undefined ? keys.inbox : [...keys.inbox, since],
+    queryFn: () => api.call((c) => c.inbox.inbox({ query: since === undefined ? {} : { since } })),
   })
 
 export const useHealth = (api: Api) => useQuery(healthQuery(api))

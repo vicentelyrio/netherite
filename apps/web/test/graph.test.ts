@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { fitTo, layout, neighbourhood, subgraph, toGraphology } from '../src/graph/layout'
+import { fitTo, layout, live, neighbourhood, subgraph, toGraphology } from '../src/graph/layout'
 
 const data = {
   nodes: [
@@ -95,5 +95,45 @@ describe('fitting a view', () => {
 
   test('with no points, centres the origin', () => {
     expect(fitTo([], view)).toEqual({ x: 500, y: 350, k: 1 })
+  })
+})
+
+describe('dragging a node', () => {
+  test('holds it where it is put, and the nodes linked to it come along', async () => {
+    const start = layout(data)
+    const sim = live(data, start)
+    const task = start.find((p) => p.id === 'TASK-00001') as { x: number; y: number }
+    const doc = start.find((p) => p.id === 'DOC-00001') as { x: number; y: number }
+    let at: ReadonlyMap<string, { x: number; y: number }> = new Map()
+    sim.onTick((positions) => {
+      at = positions
+    })
+    sim.hold('PRJ-00001', 900, 900)
+    await new Promise((r) => setTimeout(r, 400))
+    sim.release('PRJ-00001')
+    const project = at.get('PRJ-00001')
+    expect(project?.x).toBeCloseTo(900, 0)
+    expect(project?.y).toBeCloseTo(900, 0)
+    const now = at.get('TASK-00001') as { x: number; y: number }
+    // A task of the project is pulled toward it; a doc with no links to it hardly moves.
+    const closer = (a: { x: number; y: number }) => Math.hypot(a.x - 900, a.y - 900)
+    expect(closer(now)).toBeLessThan(closer(task))
+    expect(closer(at.get('DOC-00001') as { x: number; y: number })).toBeGreaterThan(closer(now))
+    expect(doc).toBeDefined()
+    sim.stop()
+  })
+
+  test('letting go leaves it where it was dropped, free to settle', async () => {
+    const sim = live(data, layout(data))
+    let at: ReadonlyMap<string, { x: number; y: number }> = new Map()
+    sim.onTick((positions) => {
+      at = positions
+    })
+    sim.hold('GOAL-00001', 300, 300)
+    await new Promise((r) => setTimeout(r, 100))
+    sim.release('GOAL-00001')
+    await new Promise((r) => setTimeout(r, 200))
+    expect(at.size).toBe(data.nodes.length)
+    sim.stop()
   })
 })

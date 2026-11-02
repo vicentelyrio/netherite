@@ -14,7 +14,9 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   fitTo,
   type GraphData,
+  type Live,
   layout,
+  live,
   neighbourhood,
   type Placed,
   subgraph,
@@ -157,7 +159,7 @@ export interface GraphViewProps {
   readonly scope?: ReadonlySet<string> | undefined
   /** What a screen reader hears for the picture. */
   readonly label: string
-  /** `embedded` sits inside a page: it does not zoom or pan, and has no hint or buttons. */
+  /** `embedded` sits inside a page: it pans and zooms, but has no hint, and small ones no buttons. */
   readonly variant?: 'full' | 'embedded'
   /** The node to start focused on. */
   readonly focus?: string | undefined
@@ -212,7 +214,13 @@ export function GraphView({
 
   const shown = useMemo(() => subgraph(data, scope), [data, scope])
   const graph = useMemo(() => toGraphology(shown), [shown])
-  const placed = useMemo(() => layout(shown), [shown])
+  const laid = useMemo(() => layout(shown), [shown])
+  // Where nodes have been dragged to, and the ones that moved to make room.
+  const [moved, setMoved] = useState<ReadonlyMap<string, { x: number; y: number }>>(new Map())
+  const placed = useMemo(
+    () => (moved.size === 0 ? laid : laid.map((p) => ({ ...p, ...(moved.get(p.id) ?? {}) }))),
+    [laid, moved],
+  )
   const at = useMemo(() => new Map(placed.map((p) => [p.id, p])), [placed])
   const parents = useMemo(() => {
     const map = new Map<string, string>()
@@ -230,6 +238,71 @@ export function GraphView({
   const [hover, setHover] = useState<Placed | undefined>()
   const [view, setView] = useState({ x: 0, y: 0, k: 1 })
   const drag = useRef<{ x: number; y: number; moved: boolean } | undefined>(undefined)
+  const viewRef = useRef(view)
+  viewRef.current = view
+  const placedRef = useRef(placed)
+  placedRef.current = placed
+  const sim = useRef<Live | undefined>(undefined)
+  const nodeDrag = useRef<{ id: string; x: number; y: number; moved: boolean } | undefined>(
+    undefined,
+  )
+  const swallowClick = useRef(false)
+
+  // A new layout (another graph, or items added) starts again from rest.
+  useEffect(() => {
+    sim.current?.stop()
+    sim.current = undefined
+    setMoved(new Map())
+  }, [laid])
+  useEffect(() => () => sim.current?.stop(), [])
+
+  /** Picks a node up: it follows the pointer, and the nodes linked to it follow it. */
+  const startNodeDrag = (id: string, e: React.PointerEvent) => {
+    e.stopPropagation()
+    if (e.button !== 0) return
+    nodeDrag.current = { id, x: e.clientX, y: e.clientY, moved: false }
+    const onMove = (m: PointerEvent) => {
+      const d = nodeDrag.current
+      const el = svg.current
+      if (d === undefined || el === null) return
+      if (!d.moved && Math.abs(m.clientX - d.x) + Math.abs(m.clientY - d.y) < 4) return
+      if (!d.moved) {
+        d.moved = true
+        if (sim.current === undefined) {
+          sim.current = live(shown, placedRef.current)
+          sim.current.onTick((at) => setMoved(at))
+        }
+      }
+      const rect = el.getBoundingClientRect()
+      const v = viewRef.current
+      sim.current?.hold(
+        d.id,
+        (m.clientX - rect.left - v.x) / v.k,
+        (m.clientY - rect.top - v.y) / v.k,
+      )
+    }
+    // Capture phase: a pointer-up on a node is stopped before it bubbles to the window, and the
+    // drag must still end.
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove, true)
+      window.removeEventListener('pointerup', onUp, true)
+      window.removeEventListener('pointercancel', onUp, true)
+      const d = nodeDrag.current
+      nodeDrag.current = undefined
+      if (d?.moved) {
+        sim.current?.release(d.id)
+        // The click that ends a drag is not a click on the node.
+        swallowClick.current = true
+        // If the pointer came up off the node there is no click to swallow.
+        setTimeout(() => {
+          swallowClick.current = false
+        }, 0)
+      }
+    }
+    window.addEventListener('pointermove', onMove, true)
+    window.addEventListener('pointerup', onUp, true)
+    window.addEventListener('pointercancel', onUp, true)
+  }
   // Nodes and labels keep their pixel size at any zoom, as in the design: only positions scale.
   const sat = useMemo(
     () =>
@@ -264,8 +337,7 @@ export function GraphView({
   const doFit = (points: ReadonlyArray<Placed>) =>
     fitTo(fitPoints(points), box, pad, padBottom ?? pad, embedded ? 3 : 2)
   // Fit again when what is drawn, or the room it has, changes.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: refit on layout and size only
-  useEffect(() => setView(doFit(placed)), [placed, box])
+  useEffect(() => setView(doFit(laid)), [laid, box])
 
   const zoom = (factor: number, cx = box.width / 2, cy = box.height / 2) =>
     setView((v) => {
@@ -275,7 +347,7 @@ export function GraphView({
     })
   useEffect(() => {
     const el = svg.current
-    if (el === null || embedded) return
+    if (el === null) return
     const onWheel = (e: WheelEvent) => {
       e.preventDefault()
       const rect = el.getBoundingClientRect()
@@ -329,7 +401,6 @@ export function GraphView({
         role="img"
         aria-label={label}
         onPointerDown={(e) => {
-          if (embedded) return
           drag.current = { x: e.clientX, y: e.clientY, moved: false }
         }}
         onPointerMove={(e) => {
@@ -435,10 +506,14 @@ export function GraphView({
                 data-node={p.id}
                 className="gv-node"
                 opacity={dim(p.id) ? graphMetrics.dimmedOpacity : 1}
-                onPointerDown={(e) => e.stopPropagation()}
+                onPointerDown={(e) => startNodeDrag(p.id, e)}
                 onPointerUp={(e) => e.stopPropagation()}
                 onClick={(e) => {
                   e.stopPropagation()
+                  if (swallowClick.current) {
+                    swallowClick.current = false
+                    return
+                  }
                   setFocus(focus === p.id ? undefined : p.id)
                 }}
                 onKeyDown={(e) => {
@@ -618,44 +693,45 @@ export function GraphView({
       )}
 
       {!embedded && (
-        <>
-          <div className="gv-hint">
-            <Icon name="mouse" /> Hover for details · click to focus
-          </div>
-          <div className="gv-controls" role="toolbar" aria-label="Zoom">
-            <button type="button" aria-label="Zoom in" title="Zoom in" onClick={() => zoom(1.3)}>
-              <Icon name="add" />
-            </button>
-            <button
-              type="button"
-              aria-label="Zoom out"
-              title="Zoom out"
-              onClick={() => zoom(1 / 1.3)}
-            >
-              <Icon name="remove" />
-            </button>
-            <span className="gv-controls-rule" />
-            <button
-              type="button"
-              aria-label="Fit to view"
-              title="Fit to screen"
-              onClick={() => setView(doFit(visible))}
-            >
-              <Icon name="fit_screen" />
-            </button>
-          </div>
-          {focused !== undefined && (
-            <div className="gv-focus" role="status">
-              <strong>{focused.id}</strong> {focused.title}{' '}
-              <Link to="/items/$id" params={{ id: focused.id }}>
-                Open
-              </Link>{' '}
-              <button type="button" onClick={() => setFocus(undefined)}>
-                Clear focus
-              </button>
-            </div>
-          )}
-        </>
+        <div className="gv-hint">
+          <Icon name="mouse" /> Hover for details · click to focus
+        </div>
+      )}
+      {/* Small embedded graphs (the project page) pan and zoom too, but have no room for buttons. */}
+      {(!embedded || box.width > 500) && (
+        <div className="gv-controls" role="toolbar" aria-label="Zoom">
+          <button type="button" aria-label="Zoom in" title="Zoom in" onClick={() => zoom(1.3)}>
+            <Icon name="add" />
+          </button>
+          <button
+            type="button"
+            aria-label="Zoom out"
+            title="Zoom out"
+            onClick={() => zoom(1 / 1.3)}
+          >
+            <Icon name="remove" />
+          </button>
+          <span className="gv-controls-rule" />
+          <button
+            type="button"
+            aria-label="Fit to view"
+            title="Fit to screen"
+            onClick={() => setView(doFit(visible))}
+          >
+            <Icon name="fit_screen" />
+          </button>
+        </div>
+      )}
+      {!embedded && focused !== undefined && (
+        <div className="gv-focus" role="status">
+          <strong>{focused.id}</strong> {focused.title}{' '}
+          <Link to="/items/$id" params={{ id: focused.id }}>
+            Open
+          </Link>{' '}
+          <button type="button" onClick={() => setFocus(undefined)}>
+            Clear focus
+          </button>
+        </div>
       )}
     </div>
   )

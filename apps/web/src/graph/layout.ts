@@ -67,30 +67,15 @@ interface SimNode extends SimulationNodeDatum {
 const linkStrength = (kind: string) =>
   kind === 'belongs_to' ? 0.9 : kind === 'reference' ? 0.1 : 0.35
 
-/**
- * Places the nodes with a force simulation run to rest, so the picture is the same every time the
- * same graph is drawn and does not move under the pointer. Nodes start on a circle, in order.
- */
-export const layout = (
-  data: GraphData,
-  options: { readonly ticks?: number } = {},
-): ReadonlyArray<Placed> => {
-  const count = data.nodes.length
-  if (count === 0) return []
-  const radius = 40 * Math.sqrt(count)
-  const nodes: SimNode[] = data.nodes.map((n, i) => ({
-    id: n.id,
-    type: n.type,
-    x: Math.cos((2 * Math.PI * i) / count) * radius,
-    y: Math.sin((2 * Math.PI * i) / count) * radius,
-  }))
+const bigger = (type: string) => (type === 'goal' ? 34 : type === 'project' ? 26 : 18)
+
+/** The forces over some nodes: links pull, nodes push apart, and everything drifts to the middle. */
+const buildSimulation = (data: GraphData, nodes: SimNode[]) => {
   const known = new Set(nodes.map((n) => n.id))
   const links: Array<SimulationLinkDatum<SimNode> & { kind: string }> = data.edges
     .filter((e) => known.has(e.from) && known.has(e.to) && e.from !== e.to)
     .map((e) => ({ source: e.from, target: e.to, kind: e.kind }))
-
-  const bigger = (type: string) => (type === 'goal' ? 34 : type === 'project' ? 26 : 18)
-  const simulation = forceSimulation(nodes)
+  return forceSimulation(nodes)
     .randomSource(() => 0.5)
     .force(
       'link',
@@ -110,7 +95,26 @@ export const layout = (
     .force('x', forceX(0).strength(0.09))
     .force('y', forceY(0).strength(0.09))
     .force('center', forceCenter(0, 0))
-    .stop()
+}
+
+/**
+ * Places the nodes with a force simulation run to rest, so the picture is the same every time the
+ * same graph is drawn and does not move under the pointer. Nodes start on a circle, in order.
+ */
+export const layout = (
+  data: GraphData,
+  options: { readonly ticks?: number } = {},
+): ReadonlyArray<Placed> => {
+  const count = data.nodes.length
+  if (count === 0) return []
+  const radius = 40 * Math.sqrt(count)
+  const nodes: SimNode[] = data.nodes.map((n, i) => ({
+    id: n.id,
+    type: n.type,
+    x: Math.cos((2 * Math.PI * i) / count) * radius,
+    y: Math.sin((2 * Math.PI * i) / count) * radius,
+  }))
+  const simulation = buildSimulation(data, nodes).stop()
   simulation.tick(options.ticks ?? Math.min(400, 120 + count))
 
   const byId = new Map(nodes.map((n) => [n.id, n]))
@@ -118,6 +122,54 @@ export const layout = (
     const placed = byId.get(n.id) as SimNode
     return { ...n, x: placed.x ?? 0, y: placed.y ?? 0 }
   })
+}
+
+export interface Live {
+  /** Holds a node at a place in layout space; the others move to make room. */
+  readonly hold: (id: string, x: number, y: number) => void
+  /** Lets the node go, and the picture settle. */
+  readonly release: (id: string) => void
+  /** Called after every step with where each node is now. */
+  readonly onTick: (listener: (at: ReadonlyMap<string, { x: number; y: number }>) => void) => void
+  readonly stop: () => void
+}
+
+/**
+ * A simulation that runs while a node is being dragged, starting from where the nodes are now.
+ * Dragging a node pulls the ones linked to it, and letting go lets them settle.
+ */
+export const live = (data: GraphData, from: ReadonlyArray<Placed>): Live => {
+  const nodes: SimNode[] = from.map((p) => ({ id: p.id, type: p.type, x: p.x, y: p.y }))
+  const byId = new Map(nodes.map((n) => [n.id, n]))
+  const simulation = buildSimulation(data, nodes).alphaDecay(0.05).stop()
+  let listener: ((at: ReadonlyMap<string, { x: number; y: number }>) => void) | undefined
+  simulation.on('tick', () => {
+    listener?.(new Map(nodes.map((n) => [n.id, { x: n.x ?? 0, y: n.y ?? 0 }])))
+  })
+  return {
+    hold: (id, x, y) => {
+      const node = byId.get(id)
+      if (node === undefined) return
+      node.fx = x
+      node.fy = y
+      simulation.alphaTarget(0.3).restart()
+    },
+    release: (id) => {
+      const node = byId.get(id)
+      if (node !== undefined) {
+        node.fx = null
+        node.fy = null
+      }
+      simulation.alphaTarget(0)
+    },
+    onTick: (l) => {
+      listener = l
+    },
+    stop: () => {
+      simulation.stop()
+      listener = undefined
+    },
+  }
 }
 
 export interface Box {

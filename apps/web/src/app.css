@@ -1250,7 +1250,7 @@ body,
   cursor: grab;
 }
 .gv-node {
-  cursor: pointer;
+  cursor: grab;
   outline: none;
   transition: opacity 160ms;
 }
@@ -1615,7 +1615,9 @@ body,
 .drawer-frame.drawer-frame {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 60px);
+  flex: 1;
+  min-height: 0;
+  height: auto;
   padding: 0;
 }
 .ed[data-variant="drawer"] {
@@ -2691,4 +2693,103 @@ body,
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.gv-node:active {
+  cursor: grabbing;
+}
+
+/* The drawer is a column: header, body, and the status bar fixed at the bottom. */
+.drawer-content {
+  display: flex;
+  flex-direction: column;
+}
+.ed[data-variant="drawer"] .ed-status {
+  height: 32px;
+  flex: none;
+  box-sizing: border-box;
+  padding-right: 4px;
+  background: #1b1c2d;
+  border-top: 1px solid #33364f;
+}
+.ed[data-variant="drawer"] .ed-status .nt-segmented {
+  --sc-padding: 2px;
+  min-height: 0;
+  height: 26px;
+  padding: 2px;
+  background: #121322;
+  border: 0;
+  border-radius: 6px;
+}
+.ed[data-variant="drawer"] .ed-status .nt-segmented label,
+.ed[data-variant="drawer"] .ed-status .nt-segmented [data-active] {
+  min-height: 0;
+  height: 22px;
+  padding: 0 9px;
+  line-height: 22px;
+  font-size: 12px;
+}
+.ed[data-variant="drawer"] .ed-status .nt-segmented-indicator {
+  border-radius: 4px;
+  background: #34365a;
+}
+.ed[data-variant="drawer"] .ed-status .nt-button {
+  height: 24px;
+}
+
+/* ---- inbox ---- */
+.ib-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 1160px;
+}
+.ib-group .kn-group-head {
+  height: 36px;
+}
+.ib-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-top: 1px solid #2a2c42;
+  color: #e8e9f3;
+  text-decoration: none;
+  font-size: 14px;
+}
+a.ib-row:hover {
+  background: #25273c;
+}
+.ib-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+.ib-chip {
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgba(150, 154, 184, 0.16);
+  color: #b9bcd3;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.ib-chip[data-s="proposed"] {
+  background: rgba(165, 167, 255, 0.14);
+  color: #a5a7ff;
+}
+.ib-more {
+  align-self: flex-start;
+  margin-top: 8px;
+  background: none;
+  border: 0;
+  color: #a5a7ff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
 }

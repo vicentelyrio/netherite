@@ -10,6 +10,7 @@ import {
 import { DecisionsPage } from './pages/decisions'
 import { GoalPage, GoalsPage } from './pages/goals'
 import { GraphPage } from './pages/graph'
+import { InboxPage } from './pages/inbox'
 import { ItemPage } from './pages/item'
 import { KnowledgePage } from './pages/knowledge'
 import { type PageProps, Placeholder } from './pages/lists'
@@ -36,12 +37,7 @@ const index = createRoute({
 const screen = (path: string, props: PageProps) =>
   createRoute({ getParentRoute: () => root, path, component: () => <Placeholder {...props} /> })
 
-const inbox = screen('/inbox', {
-  title: 'Inbox',
-  icon: 'inbox',
-  arrives:
-    'What agents changed, ADRs waiting for a decision, stale docs, orphans, lint errors and blocked tasks (TASK-00045).',
-})
+const inbox = createRoute({ getParentRoute: () => root, path: '/inbox', component: InboxPage })
 const goals = createRoute({ getParentRoute: () => root, path: '/goals', component: GoalsPage })
 const goal = createRoute({
   getParentRoute: () => root,
