@@ -56,6 +56,11 @@ export function ThroughputCard() {
             />
           </div>
         ))}
+        <ol className="tp-axis" aria-hidden="true">
+          {data.throughput.map((b) => (
+            <li key={b.start}>{period === 'year' ? b.start.slice(5, 7) : formatDay(b.start)}</li>
+          ))}
+        </ol>
         {hovered !== undefined && at !== undefined && (
           <div
             className="tp-tip"

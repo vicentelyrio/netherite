@@ -3,6 +3,9 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { useStats } from '../StatsProvider'
 import './AreasCard.css'
 
+/** The core's name for goals that have no `area`. */
+const noArea = '—'
+
 /** Goal areas: how much of each is done, the points gained in the period, achieved and idle goals. */
 export function AreasCard() {
   const { LL } = useI18nContext()
@@ -15,7 +18,9 @@ export function AreasCard() {
         <ul className="ar-list">
           {data.areas.map((a) => (
             <li key={a.area} className="ar-row">
-              <span className="ar-name">{a.area}</span>
+              <span className="ar-name">
+                {a.area === noArea ? LL.stats.areas.noArea() : a.area}
+              </span>
               <span className="ar-bar" aria-hidden="true">
                 <span style={{ width: `${Math.round(a.share * 100)}%` }} />
               </span>

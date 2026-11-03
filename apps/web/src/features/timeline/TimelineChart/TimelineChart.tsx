@@ -34,6 +34,7 @@ export function TimelineChart() {
         <div className="tl-axis-track">
           {ticks.map((t) => {
             const at = pointOf(t.day, from, to)
+            if (today !== undefined && at !== undefined && Math.abs(at - today) < 3) return null
             return at === undefined ? null : (
               <span
                 key={t.day}

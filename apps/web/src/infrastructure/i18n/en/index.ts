@@ -368,6 +368,7 @@ const en = {
     areas: {
       title: 'Goal areas',
       none: 'No goals yet.',
+      noArea: 'No area',
       gained: '{points} pts',
       goals: '{count:number} {{goal|goals}}',
       achieved: '{count:number} achieved',
@@ -396,6 +397,7 @@ const en = {
   },
   search: {
     stale: 'Stale: the code it covers has changed',
+    loadError: 'Could not search',
     title: 'Search',
     placeholder: 'Search goals, projects, tasks and knowledge',
     results: 'Results',

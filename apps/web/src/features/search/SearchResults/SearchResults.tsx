@@ -9,6 +9,7 @@ export function SearchResults({
   flat,
   q,
   pending,
+  failed,
   highlight,
   onHighlight,
   onOpen,
@@ -18,6 +19,7 @@ export function SearchResults({
   /** What was searched for (after the typing pause). */
   readonly q: string
   readonly pending: boolean
+  readonly failed: boolean
   readonly highlight: number
   readonly onHighlight: (index: number) => void
   readonly onOpen: (hit: SearchHit) => void
@@ -47,7 +49,12 @@ export function SearchResults({
           })}
         </div>
       ))}
-      {q.trim() !== '' && !pending && flat.length === 0 && (
+      {failed && (
+        <div className="sp-empty" role="alert">
+          {LL.search.loadError()}
+        </div>
+      )}
+      {q.trim() !== '' && !pending && !failed && flat.length === 0 && (
         <div className="sp-empty">{LL.search.none()}</div>
       )}
     </div>

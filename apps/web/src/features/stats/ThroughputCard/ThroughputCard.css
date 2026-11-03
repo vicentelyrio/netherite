@@ -27,7 +27,7 @@
   align-items: flex-end;
   gap: 6px;
   height: 180px;
-  padding-top: 24px;
+  padding: 24px 0 20px;
 }
 .tp-col {
   flex: 1;
@@ -51,6 +51,27 @@
 }
 .tp-bar[data-kind="done"] {
   background: #2cc27e;
+}
+.tp-axis {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 11px;
+  color: #8a8fad;
+}
+.tp-axis li {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .tp-tip {
   position: absolute;

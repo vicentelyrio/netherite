@@ -127,6 +127,7 @@ export function SearchPalette({
           flat={flat}
           q={debounced}
           pending={query.isPending}
+          failed={query.isError}
           highlight={hi}
           onHighlight={setHi}
           onOpen={(hit) => open(hit)}

@@ -1371,6 +1371,10 @@ type RootTranslation = {
 			 */
 			none: string
 			/**
+			 * N​o​ ​a​r​e​a
+			 */
+			noArea: string
+			/**
 			 * {​p​o​i​n​t​s​}​ ​p​t​s
 			 * @param {unknown} points
 			 */
@@ -1464,6 +1468,10 @@ type RootTranslation = {
 		 * S​t​a​l​e​:​ ​t​h​e​ ​c​o​d​e​ ​i​t​ ​c​o​v​e​r​s​ ​h​a​s​ ​c​h​a​n​g​e​d
 		 */
 		stale: string
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​s​e​a​r​c​h
+		 */
+		loadError: string
 		/**
 		 * S​e​a​r​c​h
 		 */
@@ -3733,6 +3741,10 @@ export type TranslationFunctions = {
 			 */
 			none: () => LocalizedString
 			/**
+			 * No area
+			 */
+			noArea: () => LocalizedString
+			/**
 			 * {points} pts
 			 */
 			gained: (arg: { points: unknown }) => LocalizedString
@@ -3817,6 +3829,10 @@ export type TranslationFunctions = {
 		 * Stale: the code it covers has changed
 		 */
 		stale: () => LocalizedString
+		/**
+		 * Could not search
+		 */
+		loadError: () => LocalizedString
 		/**
 		 * Search
 		 */
