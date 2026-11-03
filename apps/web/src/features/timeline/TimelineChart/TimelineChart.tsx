@@ -48,7 +48,7 @@ export function TimelineChart() {
           })}
           {today !== undefined && (
             <span className="tl-today-badge" style={{ left: `${today}%` }}>
-              {LL.timeline.today()}
+              {LL.timeline.todayOn({ day: formatDay(data.today) })}
             </span>
           )}
         </div>
@@ -61,7 +61,15 @@ export function TimelineChart() {
               <span key={t.day} className="tl-grid" style={{ left: `${at}%` }} />
             )
           })}
-          {today !== undefined && <span className="tl-today" style={{ left: `${today}%` }} />}
+          {today !== undefined && (
+            <>
+              <span className="tl-after" style={{ left: `${today}%` }} />
+              <span className="tl-today" style={{ left: `${today}%` }} />
+              <span className="tl-planned-label" style={{ left: `${Math.min(92, today + 1)}%` }}>
+                {LL.timeline.planned()}
+              </span>
+            </>
+          )}
         </div>
         {rows.map((row) => (
           <TimelineRow

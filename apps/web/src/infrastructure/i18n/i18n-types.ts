@@ -1750,6 +1750,43 @@ type RootTranslation = {
 		 */
 		today: string
 		/**
+		 * T​o​d​a​y​ ​·​ ​{​d​a​y​}
+		 * @param {unknown} day
+		 */
+		todayOn: RequiredParams<'day'>
+		/**
+		 * d​u​e​ ​{​d​a​t​e​}​ ​·​ ​{​d​a​y​s​}​d​ ​l​e​f​t
+		 * @param {unknown} date
+		 * @param {number} days
+		 */
+		dueIn: RequiredParams<'date' | 'days'>
+		legend: {
+			/**
+			 * A​c​t​i​v​e
+			 */
+			active: string
+			/**
+			 * O​n​ ​h​o​l​d
+			 */
+			hold: string
+			/**
+			 * W​a​i​t​i​n​g
+			 */
+			waiting: string
+			/**
+			 * P​l​a​n​n​e​d
+			 */
+			planned: string
+			/**
+			 * O​v​e​r​d​u​e
+			 */
+			overdue: string
+			/**
+			 * P​r​o​p​o​s​e​d​ ​→​ ​a​c​c​e​p​t​e​d
+			 */
+			decision: string
+		}
+		/**
 		 * S​h​o​w​ ​t​a​s​k​s
 		 */
 		showTasks: string
@@ -4119,6 +4156,40 @@ export type TranslationFunctions = {
 		 * Today
 		 */
 		today: () => LocalizedString
+		/**
+		 * Today · {day}
+		 */
+		todayOn: (arg: { day: unknown }) => LocalizedString
+		/**
+		 * due {date} · {days}d left
+		 */
+		dueIn: (arg: { date: unknown, days: number }) => LocalizedString
+		legend: {
+			/**
+			 * Active
+			 */
+			active: () => LocalizedString
+			/**
+			 * On hold
+			 */
+			hold: () => LocalizedString
+			/**
+			 * Waiting
+			 */
+			waiting: () => LocalizedString
+			/**
+			 * Planned
+			 */
+			planned: () => LocalizedString
+			/**
+			 * Overdue
+			 */
+			overdue: () => LocalizedString
+			/**
+			 * Proposed → accepted
+			 */
+			decision: () => LocalizedString
+		}
 		/**
 		 * Show tasks
 		 */

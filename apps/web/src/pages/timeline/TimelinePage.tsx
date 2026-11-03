@@ -10,7 +10,7 @@ import { PageTemplate } from '@/templates'
 export function TimelinePage() {
   return (
     <TimelineProvider>
-      <PageTemplate header={<TimelineHeading />} toolbar={<TimelineControls />}>
+      <PageTemplate header={<TimelineHeading />} actions={<TimelineControls />}>
         <TimelineChart />
       </PageTemplate>
     </TimelineProvider>

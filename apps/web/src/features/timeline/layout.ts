@@ -109,6 +109,8 @@ export type Row =
       readonly kind: 'project'
       readonly item: TimelineProject
       readonly tasks: number
+      readonly done: number
+      readonly decisions: ReadonlyArray<TimelineDecision>
       readonly expanded: boolean
     }
   | { readonly kind: 'task'; readonly item: TimelineTask }
@@ -129,7 +131,14 @@ export const rowsOf = (timeline: Timeline, options: RowOptions): ReadonlyArray<R
   const project = (item: TimelineProject) => {
     const tasks = timeline.tasks.filter((t) => t.project === item.id)
     const expanded = options.showTasks && options.expanded.has(item.id)
-    rows.push({ kind: 'project', item, tasks: tasks.length, expanded })
+    rows.push({
+      kind: 'project',
+      item,
+      tasks: tasks.length,
+      done: tasks.filter((t) => t.status === 'done').length,
+      decisions: options.showDecisions ? decisionsOf(timeline, item.id) : [],
+      expanded,
+    })
     if (expanded) for (const t of tasks) rows.push({ kind: 'task', item: t })
   }
   const goalIds = new Set(timeline.goals.map((g) => g.id))
@@ -140,10 +149,20 @@ export const rowsOf = (timeline: Timeline, options: RowOptions): ReadonlyArray<R
   for (const p of timeline.projects.filter((x) => x.goal === undefined || !goalIds.has(x.goal))) {
     project(p)
   }
+  // A decision of a project is drawn in that project's row; the rest stand on rows of their own.
+  const projectIds = new Set(timeline.projects.map((p) => p.id))
   if (options.showDecisions)
-    for (const item of timeline.decisions) rows.push({ kind: 'decision', item })
+    for (const item of timeline.decisions) {
+      if (item.project === undefined || !projectIds.has(item.project)) {
+        rows.push({ kind: 'decision', item })
+      }
+    }
   return rows
 }
+
+/** The decisions of a project, drawn above its bar. */
+export const decisionsOf = (timeline: Timeline, projectId: string) =>
+  timeline.decisions.filter((d) => d.project === projectId && d.proposed !== undefined)
 
 export interface Piece {
   readonly kind: 'wait' | 'active' | 'planned' | 'hold' | 'overdue'

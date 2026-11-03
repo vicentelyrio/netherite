@@ -2,7 +2,7 @@ import { Icon, StatusGlyph } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
 import { formatDay } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
-import { daysBetween, piecesOf, pointOf, type Row, spanOf } from '../layout'
+import { daysBetween, piecesOf, pointOf, type Row, spanOf, type TimelineDecision } from '../layout'
 
 interface Props {
   readonly row: Row
@@ -81,8 +81,29 @@ export function TimelineRow({ row, today, from, to, onToggle }: Props) {
   const lived =
     item.started === undefined ? undefined : daysBetween(item.started, item.finished ?? today)
   const barEnd = bar === undefined ? undefined : bar.span.left + bar.span.width
+  const decisions = row.kind === 'project' ? row.decisions : []
+  const left = item.due === undefined ? undefined : daysBetween(today, item.due)
+  const dueLabel =
+    row.kind === 'project' && item.status !== 'done' && dueAt !== undefined && left !== undefined
+      ? left >= 0
+        ? LL.timeline.dueIn({ date: formatDay(item.due as string), days: left })
+        : undefined
+      : undefined
   return (
-    <div className="tl-row" data-kind={type} data-overdue={item.overdue || undefined}>
+    <div
+      className="tl-row"
+      data-kind={type}
+      data-lane={decisions.length > 0 || undefined}
+      data-overdue={item.overdue || undefined}
+      style={
+        decisions.length === 0
+          ? undefined
+          : ({
+              '--tl-row': `${36 + 20 * decisions.length}px`,
+              '--tl-shift': `${10 * decisions.length}px`,
+            } as React.CSSProperties)
+      }
+    >
       <div className={`tl-label tl-indent-${type}`}>
         {row.kind === 'project' ? (
           <button
@@ -123,6 +144,12 @@ export function TimelineRow({ row, today, from, to, onToggle }: Props) {
           </Link>
         )}
         {item.overdue && <span className="tl-flag">{LL.timeline.overdue()}</span>}
+        {row.kind === 'goal' && (
+          <span className="tl-share">{Math.round(item.progress * 100)}%</span>
+        )}
+        {row.kind === 'project' && (
+          <span className="tl-sub">{row.tasks === 0 ? '' : `${row.done}/${row.tasks}`}</span>
+        )}
       </div>
       <div className="tl-track" style={{ '--tl-hue': hue(type) } as React.CSSProperties}>
         {pieces.map((p) => (
@@ -163,12 +190,76 @@ export function TimelineRow({ row, today, from, to, onToggle }: Props) {
             <Icon name="check" size="pill" weight={500} />
           </span>
         )}
+        {dueLabel !== undefined && dueAt !== undefined && (
+          <span className="tl-days" style={{ left: `calc(${dueAt}% + 8px)` }}>
+            {dueLabel}
+          </span>
+        )}
+        {decisions.map((d, lane) => (
+          <DecisionLane key={d.id} decision={d} lane={lane} today={today} from={from} to={to} />
+        ))}
         {type === 'task' && lived !== undefined && barEnd !== undefined && (
           <span className="tl-days" style={{ left: `calc(${barEnd}% + 8px)` }}>
             {LL.timeline.days({ days: lived })}
           </span>
         )}
       </div>
+    </div>
+  )
+}
+
+/** A decision of a project: proposed as a ring, accepted as a filled diamond, joined by a line. */
+function DecisionLane({
+  decision: d,
+  lane,
+  today,
+  from,
+  to,
+}: {
+  readonly decision: TimelineDecision
+  readonly lane: number
+  readonly today: string
+  readonly from: string
+  readonly to: string
+}) {
+  const { LL } = useI18nContext()
+  const start = d.proposed as string
+  const decided = d.accepted ?? d.ended
+  const line = spanOf(start, decided ?? today, from, to)
+  const at = (day: string | undefined) => (day === undefined ? undefined : pointOf(day, from, to))
+  const after = at(decided ?? today)
+  return (
+    <div className="tl-lane" style={{ '--lane': lane } as React.CSSProperties}>
+      {line !== undefined && (
+        <span
+          className="tl-lane-line"
+          data-open={decided === undefined || undefined}
+          style={{ left: `${line.left}%`, width: `${line.width}%` }}
+        />
+      )}
+      {[
+        ['proposed', d.proposed],
+        ['accepted', d.accepted],
+        ['ended', d.ended],
+      ].map(([kind, day]) => {
+        const x = at(day)
+        return x === undefined ? null : (
+          <span
+            key={kind}
+            className="tl-lane-marker"
+            data-kind={kind}
+            style={{ left: `${x}%` }}
+            title={`${d.id} ${kind} ${formatDay(day as string)}`}
+          />
+        )
+      })}
+      {after !== undefined && (
+        <span className="tl-lane-label" style={{ left: `calc(${after}% + 10px)` }}>
+          {decided === undefined
+            ? `${d.id} · ${LL.timeline.openFor({ days: daysBetween(start, today) })}`
+            : d.id}
+        </span>
+      )}
     </div>
   )
 }
