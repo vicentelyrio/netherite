@@ -1461,6 +1461,10 @@ type RootTranslation = {
 	}
 	search: {
 		/**
+		 * S​t​a​l​e​:​ ​t​h​e​ ​c​o​d​e​ ​i​t​ ​c​o​v​e​r​s​ ​h​a​s​ ​c​h​a​n​g​e​d
+		 */
+		stale: string
+		/**
 		 * S​e​a​r​c​h
 		 */
 		title: string
@@ -3809,6 +3813,10 @@ export type TranslationFunctions = {
 		}
 	}
 	search: {
+		/**
+		 * Stale: the code it covers has changed
+		 */
+		stale: () => LocalizedString
 		/**
 		 * Search
 		 */

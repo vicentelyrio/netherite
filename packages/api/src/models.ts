@@ -43,6 +43,8 @@ export const SearchHit = Schema.Struct({
   score: N,
   /** Where the words were found in the text, when they were not in the title. */
   snippet: opt(S),
+  /** A doc or runbook that is drifting or stale against the code it covers. */
+  stale: opt(Schema.Boolean),
 })
 export const SearchResult = Schema.Struct({ total: N, results: Schema.Array(SearchHit) })
 

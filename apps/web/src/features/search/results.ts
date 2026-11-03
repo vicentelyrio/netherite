@@ -4,6 +4,8 @@ import type { ItemSummary } from '@netherite/api'
 export type SearchHit = ItemSummary & {
   readonly score: number
   readonly snippet?: string | undefined
+  /** A doc that is drifting or stale against the code it covers. */
+  readonly stale?: boolean | undefined
 }
 
 export type Group = 'adr' | 'task' | 'doc' | 'context' | 'project' | 'goal'

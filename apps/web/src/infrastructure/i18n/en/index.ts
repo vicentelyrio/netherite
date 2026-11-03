@@ -395,6 +395,7 @@ const en = {
     },
   },
   search: {
+    stale: 'Stale: the code it covers has changed',
     title: 'Search',
     placeholder: 'Search goals, projects, tasks and knowledge',
     results: 'Results',

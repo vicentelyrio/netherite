@@ -1,5 +1,6 @@
-import { type ItemTypeName, TypeGlyph } from '@netherite/ui'
+import { Icon, type ItemTypeName, TypeGlyph } from '@netherite/ui'
 import { Highlight } from '@/components'
+import { useI18nContext } from '@/infrastructure/i18n'
 import type { SearchHit } from '../results'
 import './SearchResultRow.css'
 
@@ -17,6 +18,7 @@ export function SearchResultRow({
   readonly onHover: () => void
   readonly onOpen: () => void
 }) {
+  const { LL } = useI18nContext()
   const status = hit.status ?? hit.state
   return (
     // biome-ignore lint/a11y/useFocusableInteractive: the input keeps focus; arrows move the highlight
@@ -39,8 +41,22 @@ export function SearchResultRow({
             <Highlight text={hit.title} q={q} />
           </span>
         </div>
-        {hit.snippet && <span className="sp-snip">{hit.snippet}</span>}
+        {hit.snippet && (
+          <span className="sp-snip">
+            <Highlight text={hit.snippet} q={q} />
+          </span>
+        )}
       </div>
+      {hit.stale && (
+        <span
+          className="sp-stale"
+          title={LL.search.stale()}
+          role="img"
+          aria-label={LL.search.stale()}
+        >
+          <Icon name="warning" size={15} filled />
+        </span>
+      )}
       {status && (
         <span className="sp-status" data-s={status}>
           {status}
