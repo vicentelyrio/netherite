@@ -2,6 +2,7 @@ import { Banner, EmptyState, Grid } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { CardColumn } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { goalsQuery } from '@/infrastructure/query'
 import { AreaColumn } from '../AreaColumn'
 import { NewArea } from '../NewArea'
@@ -10,21 +11,22 @@ import { groupByArea, noArea, sum } from './areas'
 
 /** Every goal, one column per area, with a way to start a goal or a whole new area. */
 export function GoalAreas() {
+  const { LL } = useI18nContext()
   const api = useApi()
   const query = useQuery(goalsQuery(api))
 
   if (query.isPending) {
     return (
       <Grid.Col span={12}>
-        <div className="app-muted">Loading…</div>
+        <div className="app-muted">{LL.common.loading()}</div>
       </Grid.Col>
     )
   }
   if (query.isError) {
     return (
       <Grid.Col span={12}>
-        <Banner variant="danger" title="Could not load goals">
-          Check that `netherite serve` is still running.
+        <Banner variant="danger" title={LL.goals.loadError()}>
+          {LL.common.serveHint()}
         </Banner>
       </Grid.Col>
     )
@@ -35,8 +37,8 @@ export function GoalAreas() {
       <Grid.Col span={12}>
         <EmptyState
           icon="track_changes"
-          title="No goals yet"
-          description="A goal is something you want to reach. Projects and tasks hang from it."
+          title={LL.goals.empty.title()}
+          description={LL.goals.empty.text()}
         />
         <NewGoal area={undefined} />
       </Grid.Col>

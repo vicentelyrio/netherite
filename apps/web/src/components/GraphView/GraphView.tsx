@@ -11,6 +11,7 @@ import {
 } from '@netherite/ui'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useI18nContext } from '@/infrastructure/i18n'
 import {
   fitTo,
   type GraphData,
@@ -26,27 +27,6 @@ import { graphTarget } from './target'
 import './GraphView.css'
 
 const NODE_SCALE = 1.25
-
-const edgeLabels: Record<string, string> = {
-  belongs_to: 'Belongs to',
-  implements: 'Implements',
-  explains: 'Explains',
-  supersedes: 'Supersedes',
-  co_changes: 'Co-changes',
-  depends_on: 'Depends on',
-  related: 'Related',
-  reference: 'Mentions',
-}
-
-const typePlurals: Record<string, string> = {
-  goal: 'Goals',
-  project: 'Projects',
-  task: 'Tasks',
-  adr: 'ADRs',
-  doc: 'Docs',
-  context: 'Contexts',
-  runbook: 'Runbooks',
-}
 
 const styleOf = (kind: string) => edgeStyle[kind as EdgeKind] ?? edgeStyle.reference
 const canvas = '#282A3F'
@@ -196,6 +176,9 @@ export function GraphView({
   padBottom,
   zoomButtons,
 }: GraphViewProps) {
+  const { LL } = useI18nContext()
+  const edgeLabel = (kind: string) =>
+    (LL.components.graph.edges as Record<string, (() => string) | undefined>)[kind]?.() ?? kind
   const embedded = variant === 'embedded'
   const navigate = useNavigate()
   /** Opens a node's page: double-click or Enter. */
@@ -616,22 +599,26 @@ export function GraphView({
             <span style={{ background: designColor.type[hover.type as ItemTypeName] }} />
             {typeLabels[hover.type as ItemTypeName]}
             {parents.has(hover.id) && at.get(parents.get(hover.id) as string)
-              ? ` · in ${at.get(parents.get(hover.id) as string)?.title}`
+              ? LL.components.graph.tooltipIn({
+                  parent: at.get(parents.get(hover.id) as string)?.title ?? '',
+                })
               : ''}
           </div>
           <div className="gv-tooltip-title">
             {hover.id} {hover.title}
           </div>
           <div className="gv-tooltip-meta">
-            {graph.hasNode(hover.id) ? graph.degree(hover.id) : 0} links
+            {LL.components.graph.links({
+              count: graph.hasNode(hover.id) ? graph.degree(hover.id) : 0,
+            })}
           </div>
         </div>
       )}
 
       {showTypeLegend && legend === 'panel' && (
-        <aside className="gv-legend" aria-label="Legend">
+        <aside className="gv-legend" aria-label={LL.components.graph.legend()}>
           <div>
-            <h2 className="gv-legend-h">Nodes</h2>
+            <h2 className="gv-legend-h">{LL.components.graph.nodes()}</h2>
             {typesPresent.map((t) => (
               <label key={t} className="gv-legend-row" data-off={hiddenTypes.has(t) || undefined}>
                 <input
@@ -645,13 +632,13 @@ export function GraphView({
                     <Shape type={t} x={7} y={7} scale={0.7} />
                   </svg>
                 </span>
-                <span className="gv-legend-name">{typePlurals[t]}</span>
+                <span className="gv-legend-name">{LL.components.graph.types[t]()}</span>
                 <span className="gv-count">{typeCount(t)}</span>
               </label>
             ))}
           </div>
           <div>
-            <h2 className="gv-legend-h">Edges</h2>
+            <h2 className="gv-legend-h">{LL.components.graph.edgesTitle()}</h2>
             {kindsPresent.map((k) => {
               const style = styleOf(k)
               return (
@@ -677,20 +664,20 @@ export function GraphView({
                       <path d="M17,1 L23,4 L17,7 z" fill={designColor.graph.sample} />
                     )}
                   </svg>
-                  <span className="gv-legend-name">{edgeLabels[k] ?? k}</span>
+                  <span className="gv-legend-name">{edgeLabel(k)}</span>
                   <span className="gv-count">{kindCount(k)}</span>
                 </label>
               )
             })}
             <div className="gv-legend-row gv-legend-stale">
               <span className="gv-stale-dot" />
-              <span className="gv-legend-name">Stale doc</span>
+              <span className="gv-legend-name">{LL.components.graph.staleDoc()}</span>
             </div>
           </div>
         </aside>
       )}
       {showTypeLegend && legend === 'row' && (
-        <aside className="gv-legend gv-legend--row" aria-label="Legend">
+        <aside className="gv-legend gv-legend--row" aria-label={LL.components.graph.legend()}>
           {typesPresent.map((t) => (
             <label key={t} data-off={hiddenTypes.has(t) || undefined}>
               <input
@@ -712,19 +699,24 @@ export function GraphView({
 
       {!embedded && (
         <div className="gv-hint">
-          <Icon name="mouse" /> Hover for details · click to focus · double-click or Enter to open
+          <Icon name="mouse" /> {LL.components.graph.hint()}
         </div>
       )}
       {/* Small embedded graphs (the project page) pan and zoom too, but have no room for buttons. */}
       {(zoomButtons ?? (!embedded || box.width > 500)) && (
-        <div className="gv-controls" role="toolbar" aria-label="Zoom">
-          <button type="button" aria-label="Zoom in" title="Zoom in" onClick={() => zoom(1.3)}>
+        <div className="gv-controls" role="toolbar" aria-label={LL.components.graph.zoom()}>
+          <button
+            type="button"
+            aria-label={LL.components.graph.zoomIn()}
+            title={LL.components.graph.zoomIn()}
+            onClick={() => zoom(1.3)}
+          >
             <Icon name="add" />
           </button>
           <button
             type="button"
-            aria-label="Zoom out"
-            title="Zoom out"
+            aria-label={LL.components.graph.zoomOut()}
+            title={LL.components.graph.zoomOut()}
             onClick={() => zoom(1 / 1.3)}
           >
             <Icon name="remove" />
@@ -732,8 +724,8 @@ export function GraphView({
           <span className="gv-controls-rule" />
           <button
             type="button"
-            aria-label="Fit to view"
-            title="Fit to screen"
+            aria-label={LL.components.graph.fit()}
+            title={LL.components.graph.fitTitle()}
             onClick={() => setView(doFit(visible))}
           >
             <Icon name="fit_screen" />
@@ -744,10 +736,10 @@ export function GraphView({
         <div className="gv-focus" role="status">
           <strong>{focused.id}</strong> {focused.title}{' '}
           <Link to="/items/$id" params={{ id: focused.id }}>
-            Open
+            {LL.components.graph.open()}
           </Link>{' '}
           <button type="button" onClick={() => setFocus(undefined)}>
-            Clear focus
+            {LL.components.graph.clearFocus()}
           </button>
         </div>
       )}

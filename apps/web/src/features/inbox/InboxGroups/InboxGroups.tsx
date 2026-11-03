@@ -4,17 +4,19 @@ import { ago } from '@/infrastructure/datetime'
 import { InboxItemRow } from '../InboxItemRow'
 import { useInboxState } from '../InboxProvider'
 import '../shared.css'
+import { useI18nContext } from '@/infrastructure/i18n'
 import './InboxGroups.css'
 
 /** What waits for you and what changed, in a group each; "All clear" when there is nothing. */
 export function InboxGroups() {
+  const { LL } = useI18nContext()
   const { inbox, waiting, changed, all, showAll } = useInboxState()
   if (waiting === 0 && changed === 0 && inbox.orphans.length === 0) {
     return (
       <EmptyState
         icon="inbox"
-        title="All clear"
-        description="No decisions to make, no stale docs, no lint errors and nothing blocked. Changes by agents and in your working tree show up here."
+        title={LL.inbox.allClear.title()}
+        description={LL.inbox.allClear.text()}
       />
     )
   }
@@ -22,7 +24,7 @@ export function InboxGroups() {
     <div className="ib-groups">
       <GroupCard
         className="ib-group"
-        title="Decisions to make"
+        title={LL.inbox.groups.decisions()}
         icon="gavel"
         count={inbox.proposed.length}
       >
@@ -34,7 +36,7 @@ export function InboxGroups() {
             type="adr"
             meta={
               <span className="ib-chip" data-s="proposed">
-                Proposed
+                {LL.inbox.proposed()}
               </span>
             }
           />
@@ -42,7 +44,7 @@ export function InboxGroups() {
       </GroupCard>
       <GroupCard
         className="ib-group"
-        title="Docs gone stale"
+        title={LL.inbox.groups.stale()}
         icon="warning"
         count={inbox.freshness.length}
       >
@@ -55,7 +57,12 @@ export function InboxGroups() {
           />
         ))}
       </GroupCard>
-      <GroupCard className="ib-group" title="Lint errors" icon="error" count={inbox.errors.length}>
+      <GroupCard
+        className="ib-group"
+        title={LL.inbox.groups.lint()}
+        icon="error"
+        count={inbox.errors.length}
+      >
         {inbox.errors.map((d) => (
           <div key={`${d.path}:${d.line}:${d.rule}`} className="ib-row">
             <code className="kn-mono">
@@ -69,7 +76,7 @@ export function InboxGroups() {
       </GroupCard>
       <GroupCard
         className="ib-group"
-        title="Blocked tasks"
+        title={LL.inbox.groups.blocked()}
         icon="pause_circle"
         count={inbox.blocked.length}
       >
@@ -83,14 +90,19 @@ export function InboxGroups() {
           />
         ))}
       </GroupCard>
-      <GroupCard className="ib-group" title="Orphans" icon="link_off" count={inbox.orphans.length}>
+      <GroupCard
+        className="ib-group"
+        title={LL.inbox.groups.orphans()}
+        icon="link_off"
+        count={inbox.orphans.length}
+      >
         {inbox.orphans.map((o) => (
           <InboxItemRow key={o.id} id={o.id} title={o.title} type={o.type} />
         ))}
       </GroupCard>
       <GroupCard
         className="ib-group"
-        title="Agent activity"
+        title={LL.inbox.groups.activity()}
         icon="smart_toy"
         count={inbox.activity.length}
       >
@@ -98,7 +110,7 @@ export function InboxGroups() {
           <InboxItemRow
             key={a.id}
             id={a.id}
-            title={a.deleted ? 'Deleted' : `${a.count} ${a.count === 1 ? 'change' : 'changes'}`}
+            title={a.deleted ? LL.inbox.deleted() : LL.inbox.changeCount({ count: a.count })}
             note={a.tools.join(', ')}
             meta={<span className="app-muted">{ago(a.last)}</span>}
           />
@@ -106,7 +118,7 @@ export function InboxGroups() {
       </GroupCard>
       <GroupCard
         className="ib-group"
-        title="Uncommitted changes"
+        title={LL.inbox.groups.changes()}
         icon="difference"
         count={inbox.changes.length}
       >
@@ -130,7 +142,7 @@ export function InboxGroups() {
       </GroupCard>
       {!all && (inbox.activity.length > 8 || inbox.changes.length > 8) && (
         <button type="button" className="ib-more" onClick={showAll}>
-          Show all {inbox.activity.length + inbox.changes.length} changes
+          {LL.inbox.showAll({ count: inbox.activity.length + inbox.changes.length })}
         </button>
       )}
     </div>

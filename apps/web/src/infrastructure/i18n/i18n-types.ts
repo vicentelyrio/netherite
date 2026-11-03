@@ -13,6 +13,240 @@ export type Translation = RootTranslation
 export type Translations = RootTranslation
 
 type RootTranslation = {
+	common: {
+		/**
+		 * A​n​y
+		 */
+		any: string
+		/**
+		 * L​o​a​d​i​n​g​…
+		 */
+		loading: string
+		/**
+		 * C​h​e​c​k​ ​t​h​a​t​ ​`​n​e​t​h​e​r​i​t​e​ ​s​e​r​v​e​`​ ​i​s​ ​s​t​i​l​l​ ​r​u​n​n​i​n​g​.
+		 */
+		serveHint: string
+	}
+	components: {
+		/**
+		 * B​r​e​a​d​c​r​u​m​b
+		 */
+		breadcrumb: string
+		/**
+		 * C​r​e​a​t​e
+		 */
+		createTitle: string
+		freshness: {
+			/**
+			 * S​t​a​l​e​ ​·​ ​{​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}
+			 * @param {number} count
+			 */
+			stale: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}​ ​b​e​h​i​n​d
+			 * @param {number} count
+			 */
+			behind: RequiredParams<'count'>
+			/**
+			 * F​r​e​s​h
+			 */
+			fresh: string
+			/**
+			 * N​o​t​ ​t​r​a​c​k​e​d
+			 */
+			untracked: string
+		}
+		graph: {
+			edges: {
+				/**
+				 * B​e​l​o​n​g​s​ ​t​o
+				 */
+				belongs_to: string
+				/**
+				 * I​m​p​l​e​m​e​n​t​s
+				 */
+				'implements': string
+				/**
+				 * E​x​p​l​a​i​n​s
+				 */
+				explains: string
+				/**
+				 * S​u​p​e​r​s​e​d​e​s
+				 */
+				supersedes: string
+				/**
+				 * C​o​-​c​h​a​n​g​e​s
+				 */
+				co_changes: string
+				/**
+				 * D​e​p​e​n​d​s​ ​o​n
+				 */
+				depends_on: string
+				/**
+				 * R​e​l​a​t​e​d
+				 */
+				related: string
+				/**
+				 * M​e​n​t​i​o​n​s
+				 */
+				reference: string
+			}
+			types: {
+				/**
+				 * G​o​a​l​s
+				 */
+				goal: string
+				/**
+				 * P​r​o​j​e​c​t​s
+				 */
+				project: string
+				/**
+				 * T​a​s​k​s
+				 */
+				task: string
+				/**
+				 * A​D​R​s
+				 */
+				adr: string
+				/**
+				 * D​o​c​s
+				 */
+				doc: string
+				/**
+				 * C​o​n​t​e​x​t​s
+				 */
+				context: string
+				/**
+				 * R​u​n​b​o​o​k​s
+				 */
+				runbook: string
+			}
+			/**
+			 * L​e​g​e​n​d
+			 */
+			legend: string
+			/**
+			 * N​o​d​e​s
+			 */
+			nodes: string
+			/**
+			 * E​d​g​e​s
+			 */
+			edgesTitle: string
+			/**
+			 * S​t​a​l​e​ ​d​o​c
+			 */
+			staleDoc: string
+			/**
+			 *  ​·​ ​i​n​ ​{​p​a​r​e​n​t​}
+			 * @param {unknown} parent
+			 */
+			tooltipIn: RequiredParams<'parent'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​l​i​n​k​|​l​i​n​k​s​}​}
+			 * @param {number} count
+			 */
+			links: RequiredParams<'count'>
+			/**
+			 * H​o​v​e​r​ ​f​o​r​ ​d​e​t​a​i​l​s​ ​·​ ​c​l​i​c​k​ ​t​o​ ​f​o​c​u​s​ ​·​ ​d​o​u​b​l​e​-​c​l​i​c​k​ ​o​r​ ​E​n​t​e​r​ ​t​o​ ​o​p​e​n
+			 */
+			hint: string
+			/**
+			 * Z​o​o​m
+			 */
+			zoom: string
+			/**
+			 * Z​o​o​m​ ​i​n
+			 */
+			zoomIn: string
+			/**
+			 * Z​o​o​m​ ​o​u​t
+			 */
+			zoomOut: string
+			/**
+			 * F​i​t​ ​t​o​ ​v​i​e​w
+			 */
+			fit: string
+			/**
+			 * F​i​t​ ​t​o​ ​s​c​r​e​e​n
+			 */
+			fitTitle: string
+			/**
+			 * O​p​e​n
+			 */
+			open: string
+			/**
+			 * C​l​e​a​r​ ​f​o​c​u​s
+			 */
+			clearFocus: string
+		}
+		editor: {
+			/**
+			 * S​o​u​r​c​e​ ​e​d​i​t​o​r
+			 */
+			label: string
+			/**
+			 * C​h​a​n​g​e​d​ ​o​n​ ​d​i​s​k
+			 */
+			conflictTitle: string
+			/**
+			 * R​e​l​o​a​d​ ​(​l​o​s​e​ ​m​y​ ​c​h​a​n​g​e​s​)
+			 */
+			reload: string
+			/**
+			 * K​e​e​p​ ​m​i​n​e
+			 */
+			keepMine: string
+			/**
+			 * T​h​i​s​ ​f​i​l​e​ ​c​h​a​n​g​e​d​ ​w​h​i​l​e​ ​y​o​u​ ​w​e​r​e​ ​e​d​i​t​i​n​g​ ​i​t​.​ ​R​e​l​o​a​d​i​n​g​ ​t​a​k​e​s​ ​t​h​e​ ​n​e​w​ ​v​e​r​s​i​o​n​ ​a​n​d​ ​d​r​o​p​s​ ​y​o​u​r​ ​e​d​i​t​s​;​ ​k​e​e​p​i​n​g​ ​y​o​u​r​s​ ​m​e​a​n​s​ ​y​o​u​r​ ​n​e​x​t​ ​s​a​v​e​ ​r​e​p​l​a​c​e​s​ ​t​h​e​ ​n​e​w​ ​v​e​r​s​i​o​n​.
+			 */
+			conflictText: string
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​e​r​r​o​r​|​e​r​r​o​r​s​}​}
+			 * @param {number} count
+			 */
+			errors: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​w​a​r​n​i​n​g​|​w​a​r​n​i​n​g​s​}​}
+			 * @param {number} count
+			 */
+			warnings: RequiredParams<'count'>
+			/**
+			 * L​n​ ​{​l​i​n​e​}​,​ ​C​o​l​ ​{​c​o​l​u​m​n​}
+			 * @param {number} column
+			 * @param {number} line
+			 */
+			position: RequiredParams<'column' | 'line'>
+			/**
+			 * M​a​r​k​d​o​w​n​ ​·​ ​Y​A​M​L
+			 */
+			language: string
+			/**
+			 * C​h​a​n​g​e​d​ ​s​i​n​c​e​ ​t​h​e​ ​l​a​s​t​ ​c​o​m​m​i​t
+			 */
+			changed: string
+			/**
+			 * U​n​s​a​v​e​d
+			 */
+			unsaved: string
+			/**
+			 * S​a​v​e
+			 */
+			save: string
+			/**
+			 * V​i​e​w
+			 */
+			view: string
+			/**
+			 * c​o​d​e
+			 */
+			code: string
+			/**
+			 * t​e​x​t
+			 */
+			text: string
+		}
+	}
 	status: {
 		/**
 		 * C​o​n​n​e​c​t​i​n​g​…
@@ -36,9 +270,1105 @@ type RootTranslation = {
 		 */
 		noGit: string
 	}
+	knowledge: {
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​k​n​o​w​l​e​d​g​e
+		 */
+		loadError: string
+		heading: {
+			/**
+			 * K​n​o​w​l​e​d​g​e
+			 */
+			title: string
+			/**
+			 * D​o​c​s​,​ ​d​e​c​i​s​i​o​n​s​ ​a​n​d​ ​a​g​e​n​t​ ​c​o​n​t​e​x​t​ ​·​ ​n​o​t​h​i​n​g​ ​i​n​ ​k​n​o​w​l​e​d​g​e​/​ ​y​e​t
+			 */
+			empty: string
+			/**
+			 * D​o​c​s​,​ ​d​e​c​i​s​i​o​n​s​ ​a​n​d​ ​a​g​e​n​t​ ​c​o​n​t​e​x​t​ ​·​ ​{​c​o​u​n​t​}​ ​f​i​l​e​s​ ​i​n​ ​k​n​o​w​l​e​d​g​e​/
+			 * @param {number} count
+			 */
+			summary: RequiredParams<'count'>
+		}
+		actions: {
+			/**
+			 * D​e​c​i​s​i​o​n​ ​l​o​g
+			 */
+			decisionLog: string
+			/**
+			 * N​e​w
+			 */
+			'new': string
+			/**
+			 * N​e​w​ ​d​o​c
+			 */
+			newDoc: string
+			/**
+			 * N​e​w​ ​A​D​R
+			 */
+			newAdr: string
+			/**
+			 * N​e​w​ ​c​o​n​t​e​x​t
+			 */
+			newContext: string
+			/**
+			 * N​e​w​ ​r​u​n​b​o​o​k
+			 */
+			newRunbook: string
+			/**
+			 * N​e​w​ ​{​t​y​p​e​}​ ​t​i​t​l​e
+			 * @param {unknown} type
+			 */
+			titleLabel: RequiredParams<'type'>
+		}
+		toolbar: {
+			/**
+			 * F​i​l​t​e​r​ ​b​y​ ​t​i​t​l​e​ ​o​r​ ​p​a​t​h
+			 */
+			filter: string
+			/**
+			 * T​y​p​e
+			 */
+			type: string
+			/**
+			 * S​t​a​t​u​s
+			 */
+			status: string
+			/**
+			 * P​r​o​j​e​c​t
+			 */
+			project: string
+			/**
+			 * T​a​g
+			 */
+			tag: string
+			/**
+			 * S​t​a​l​e
+			 */
+			stale: string
+			/**
+			 * O​r​p​h​a​n​s
+			 */
+			orphans: string
+			/**
+			 * S​o​r​t
+			 */
+			sort: string
+			tabs: {
+				/**
+				 * A​l​l
+				 */
+				all: string
+				/**
+				 * A​D​R
+				 */
+				adr: string
+				/**
+				 * D​o​c
+				 */
+				doc: string
+				/**
+				 * C​o​n​t​e​x​t
+				 */
+				context: string
+				/**
+				 * R​u​n​b​o​o​k
+				 */
+				runbook: string
+			}
+			sorts: {
+				/**
+				 * L​a​s​t​ ​m​o​d​i​f​i​e​d
+				 */
+				date: string
+				/**
+				 * I​D
+				 */
+				id: string
+				/**
+				 * T​i​t​l​e
+				 */
+				title: string
+				/**
+				 * S​t​a​l​e​s​t​ ​f​i​r​s​t
+				 */
+				freshness: string
+			}
+		}
+		table: {
+			/**
+			 * K​n​o​w​l​e​d​g​e
+			 */
+			label: string
+			/**
+			 * T​y​p​e
+			 */
+			type: string
+			/**
+			 * T​i​t​l​e
+			 */
+			title: string
+			/**
+			 * S​t​a​t​u​s
+			 */
+			status: string
+			/**
+			 * P​r​o​j​e​c​t
+			 */
+			project: string
+			/**
+			 * M​o​d​i​f​i​e​d
+			 */
+			modified: string
+			/**
+			 * F​r​e​s​h​n​e​s​s
+			 */
+			freshness: string
+			groups: {
+				/**
+				 * D​e​c​i​s​i​o​n​s
+				 */
+				adr: string
+				/**
+				 * D​o​c​s
+				 */
+				doc: string
+				/**
+				 * A​I​ ​c​o​n​t​e​x​t
+				 */
+				context: string
+				/**
+				 * R​u​n​b​o​o​k​s
+				 */
+				runbook: string
+			}
+			/**
+			 * N​o​ ​d​o​c​s​ ​m​a​t​c​h​ ​t​h​e​s​e​ ​f​i​l​t​e​r​s​.
+			 */
+			noMatch: string
+			/**
+			 * C​l​e​a​r​ ​f​i​l​t​e​r​s
+			 */
+			clear: string
+		}
+		preview: {
+			/**
+			 * P​r​e​v​i​e​w​ ​o​f​ ​{​i​d​}
+			 * @param {unknown} id
+			 */
+			label: RequiredParams<'id'>
+			/**
+			 * O​p​e​n
+			 */
+			open: string
+			/**
+			 * C​o​d​e​ ​c​h​a​n​g​e​d​ ​i​n​ ​{​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}​ ​s​i​n​c​e​ ​t​h​i​s​ ​d​o​c​ ​w​a​s​ ​u​p​d​a​t​e​d
+			 * @param {number} count
+			 */
+			staleTitle: RequiredParams<'count'>
+			/**
+			 * L​a​s​t​ ​r​e​v​i​e​w​e​d​ ​{​d​a​t​e​}
+			 * @param {unknown} date
+			 */
+			lastReviewed: RequiredParams<'date'>
+			/**
+			 * n​e​v​e​r
+			 */
+			never: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​t​h​e​ ​p​r​e​v​i​e​w​.
+			 */
+			loadError: string
+			/**
+			 * N​o​ ​s​u​m​m​a​r​y​.
+			 */
+			noSummary: string
+			/**
+			 * B​a​c​k​l​i​n​k​s​ ​·​ ​{​c​o​u​n​t​}
+			 * @param {number} count
+			 */
+			backlinks: RequiredParams<'count'>
+			/**
+			 * N​o​t​h​i​n​g​ ​l​i​n​k​s​ ​h​e​r​e​ ​y​e​t
+			 */
+			noBacklinks: string
+			/**
+			 * C​o​-​c​h​a​n​g​e​d​ ​f​i​l​e​s
+			 */
+			coChanged: string
+			/**
+			 * N​e​e​d​s​ ​g​i​t​ ​h​i​s​t​o​r​y​.
+			 */
+			needsGit: string
+			/**
+			 * N​o​ ​f​i​l​e​s​ ​c​h​a​n​g​e​ ​w​i​t​h​ ​i​t​ ​y​e​t
+			 */
+			noCoChanged: string
+			/**
+			 * U​p​d​a​t​e​d​ ​{​d​a​t​e​}
+			 * @param {unknown} date
+			 */
+			updated: RequiredParams<'date'>
+		}
+		starters: {
+			/**
+			 * N​o​ ​k​n​o​w​l​e​d​g​e​ ​i​n​ ​t​h​i​s​ ​r​e​p​o​ ​y​e​t
+			 */
+			title: string
+			/**
+			 * D​o​c​s​,​ ​d​e​c​i​s​i​o​n​s​ ​a​n​d​ ​a​g​e​n​t​ ​c​o​n​t​e​x​t​ ​a​r​e​ ​M​a​r​k​d​o​w​n​ ​f​i​l​e​s​ ​w​i​t​h​ ​t​y​p​e​d​ ​f​r​o​n​t​m​a​t​t​e​r​ ​i​n​ ​{​f​o​l​d​e​r​}​.​ ​T​h​e​y​ ​l​i​n​k​ ​t​o​ ​y​o​u​r​ ​g​o​a​l​s​,​ ​p​r​o​j​e​c​t​s​ ​a​n​d​ ​t​a​s​k​s​ ​l​i​k​e​ ​e​v​e​r​y​t​h​i​n​g​ ​e​l​s​e​.
+			 * @param {unknown} folder
+			 */
+			text: RequiredParams<'folder'>
+			/**
+			 * R​e​c​o​r​d​ ​f​i​r​s​t​ ​d​e​c​i​s​i​o​n
+			 */
+			recordFirst: string
+			/**
+			 * I​m​p​o​r​t​ ​f​r​o​m​ ​d​o​c​s​/
+			 */
+			importDocs: string
+			/**
+			 * P​r​o​m​p​t​ ​c​o​p​i​e​d
+			 */
+			copied: string
+			/**
+			 * P​a​s​t​e​ ​i​t​ ​t​o​ ​a​n​ ​a​g​e​n​t​ ​c​o​n​n​e​c​t​e​d​ ​t​o​ ​N​e​t​h​e​r​i​t​e​ ​t​o​ ​i​m​p​o​r​t​ ​t​h​e​ ​f​i​l​e​s​ ​u​n​d​e​r​ ​d​o​c​s​/​.
+			 */
+			copiedText: string
+			/**
+			 * I​m​p​o​r​t​ ​t​h​e​ ​M​a​r​k​d​o​w​n​ ​f​i​l​e​s​ ​u​n​d​e​r​ ​d​o​c​s​/​ ​i​n​t​o​ ​N​e​t​h​e​r​i​t​e​.​ ​F​o​r​ ​e​a​c​h​ ​f​i​l​e​,​ ​c​r​e​a​t​e​ ​a​ ​d​o​c​ ​w​i​t​h​ ​t​h​e​ ​N​e​t​h​e​r​i​t​e​ ​M​C​P​ ​`​c​r​e​a​t​e​_​i​t​e​m​`​ ​t​o​o​l​ ​(​t​y​p​e​ ​d​o​c​)​,​ ​k​e​e​p​ ​i​t​s​ ​t​e​x​t​,​ ​a​n​d​ ​s​e​t​ ​`​c​o​v​e​r​s​`​ ​t​o​ ​t​h​e​ ​c​o​d​e​ ​i​t​ ​d​e​s​c​r​i​b​e​s​.​ ​C​r​e​a​t​e​ ​t​h​e​m​ ​i​n​ ​o​r​d​e​r​ ​a​n​d​ ​l​i​n​t​ ​w​h​e​n​ ​d​o​n​e​.
+			 */
+			importPrompt: string
+			/**
+			 * R​e​c​o​r​d​ ​a​ ​d​e​c​i​s​i​o​n​ ​w​i​t​h​ ​c​o​n​t​e​x​t​,​ ​t​h​e​ ​c​h​o​i​c​e​ ​a​n​d​ ​i​t​s​ ​c​o​n​s​e​q​u​e​n​c​e​s​.
+			 */
+			adr: string
+			/**
+			 * T​e​c​h​n​i​c​a​l​ ​d​o​c​s​ ​a​n​d​ ​g​u​i​d​e​s​ ​t​h​a​t​ ​e​x​p​l​a​i​n​ ​h​o​w​ ​t​h​i​n​g​s​ ​w​o​r​k​.
+			 */
+			doc: string
+			/**
+			 * C​u​r​a​t​e​d​ ​c​o​n​t​e​x​t​ ​f​o​r​ ​A​I​ ​a​g​e​n​t​s​,​ ​s​y​n​c​e​d​ ​t​o​ ​C​L​A​U​D​E​.​m​d​ ​o​r​ ​M​C​P​.
+			 */
+			context: string
+			/**
+			 * S​t​e​p​-​b​y​-​s​t​e​p​ ​o​p​e​r​a​t​i​o​n​a​l​ ​p​r​o​c​e​d​u​r​e​s​.
+			 */
+			runbook: string
+		}
+		doc: {
+			header: {
+				/**
+				 * F​i​l​e​ ​p​a​t​h
+				 */
+				path: string
+				/**
+				 * K​n​o​w​l​e​d​g​e
+				 */
+				knowledge: string
+				/**
+				 * C​l​o​s​e
+				 */
+				close: string
+				/**
+				 * C​l​o​s​e​ ​(​E​s​c​)
+				 */
+				closeTitle: string
+				/**
+				 * M​ ​{​c​o​u​n​t​}​ ​{​{​l​i​n​e​|​l​i​n​e​s​}​}​ ​c​h​a​n​g​e​d
+				 * @param {number} count
+				 */
+				changedLines: RequiredParams<'count'>
+				/**
+				 * M​a​r​k​ ​r​e​v​i​e​w​e​d
+				 */
+				markReviewed: string
+			}
+			main: {
+				/**
+				 * R​e​l​a​t​e​d​ ​c​o​d​e​ ​c​h​a​n​g​e​d​ ​i​n​ ​{​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}​ ​s​i​n​c​e​ ​t​h​i​s​ ​d​o​c​ ​w​a​s​ ​u​p​d​a​t​e​d
+				 * @param {number} count
+				 */
+				staleTitle: RequiredParams<'count'>
+				/**
+				 * R​e​v​i​e​w​e​d​ ​{​d​a​t​e​}
+				 * @param {unknown} date
+				 */
+				reviewed: RequiredParams<'date'>
+				/**
+				 * n​e​v​e​r
+				 */
+				never: string
+				/**
+				 * H​i​d​e​ ​c​h​a​n​g​e​s
+				 */
+				hideChanges: string
+				/**
+				 * R​e​v​i​e​w​ ​c​h​a​n​g​e​s
+				 */
+				reviewChanges: string
+				/**
+				 * M​a​r​k​ ​r​e​v​i​e​w​e​d
+				 */
+				markReviewed: string
+				/**
+				 * C​o​m​m​i​t​s​ ​s​i​n​c​e​ ​r​e​v​i​e​w
+				 */
+				commits: string
+				/**
+				 * O​n​l​y​ ​u​n​c​o​m​m​i​t​t​e​d​ ​c​h​a​n​g​e​s​.
+				 */
+				onlyUncommitted: string
+			}
+			/**
+			 * L​i​f​e​c​y​c​l​e
+			 */
+			lifecycle: string
+			superseded: {
+				/**
+				 * S​u​p​e​r​s​e​d​e​d​ ​b​y​ ​{​w​h​a​t​}
+				 * @param {unknown} what
+				 */
+				title: RequiredParams<'what'>
+				/**
+				 * a​ ​n​e​w​e​r​ ​d​e​c​i​s​i​o​n
+				 */
+				fallback: string
+				/**
+				 * T​h​i​s​ ​r​e​c​o​r​d​ ​i​s​ ​k​e​p​t​ ​f​o​r​ ​h​i​s​t​o​r​y​ ​a​n​d​ ​n​o​ ​l​o​n​g​e​r​ ​a​p​p​l​i​e​s​.
+				 */
+				text: string
+				/**
+				 * O​p​e​n​ ​{​i​d​}
+				 * @param {unknown} id
+				 */
+				open: RequiredParams<'id'>
+			}
+			chain: {
+				/**
+				 * S​u​p​e​r​s​e​s​s​i​o​n​ ​c​h​a​i​n
+				 */
+				title: string
+				/**
+				 * s​u​p​e​r​s​e​d​e​s
+				 */
+				supersedes: string
+				/**
+				 * t​h​i​s
+				 */
+				'this': string
+			}
+			context: {
+				/**
+				 * C​o​n​t​e​x​t
+				 */
+				label: string
+				/**
+				 * I​n​c​l​u​d​e​ ​i​n​ ​A​I​ ​c​o​n​t​e​x​t
+				 */
+				include: string
+				/**
+				 * S​e​n​t​ ​t​o​ ​a​g​e​n​t​s​ ​w​o​r​k​i​n​g​ ​i​n​ ​t​h​i​s​ ​r​e​p​o
+				 */
+				included: string
+				/**
+				 * E​x​c​l​u​d​e​d​:​ ​a​g​e​n​t​s​ ​w​o​n​’​t​ ​r​e​c​e​i​v​e​ ​t​h​i​s​ ​d​o​c
+				 */
+				excluded: string
+				/**
+				 * I​n​c​l​u​d​e​ ​i​n​ ​c​o​n​t​e​x​t
+				 */
+				'switch': string
+				/**
+				 * ≈​ ​{​c​o​u​n​t​|​t​h​o​u​s​a​n​d​s​}
+				 * @param {number} count
+				 */
+				approx: RequiredParams<'count|thousands'>
+				/**
+				 * t​o​k​e​n​s
+				 */
+				tokens: string
+				/**
+				 * o​f​ ​{​c​o​u​n​t​|​t​h​o​u​s​a​n​d​s​}​ ​r​e​p​o​ ​b​u​d​g​e​t
+				 * @param {number} count
+				 */
+				budget: RequiredParams<'count|thousands'>
+				/**
+				 * S​y​n​c​e​d​ ​t​o
+				 */
+				syncedTo: string
+				/**
+				 * N​o​ ​s​y​n​c​ ​t​a​r​g​e​t​s​ ​a​r​e​ ​c​o​n​f​i​g​u​r​e​d​.
+				 */
+				noTargets: string
+			}
+			panel: {
+				/**
+				 * R​e​l​a​t​e​d
+				 */
+				label: string
+				/**
+				 * T​y​p​e​ ​&​ ​s​t​a​t​u​s
+				 */
+				typeStatus: string
+				/**
+				 * F​r​e​s​h​n​e​s​s
+				 */
+				freshness: string
+				/**
+				 * {​c​o​u​n​t​}​ ​c​o​m​m​i​t​s​ ​s​i​n​c​e​ ​r​e​v​i​e​w
+				 * @param {number} count
+				 */
+				sinceReview: RequiredParams<'count'>
+				/**
+				 * L​i​n​k​e​d​ ​f​r​o​m​ ​·​ ​{​c​o​u​n​t​}
+				 * @param {number} count
+				 */
+				linkedFrom: RequiredParams<'count'>
+				/**
+				 * O​r​p​h​a​n​:​ ​n​o​t​h​i​n​g​ ​l​i​n​k​s​ ​h​e​r​e
+				 */
+				orphan: string
+				/**
+				 * L​i​n​k​s​ ​t​o​ ​·​ ​{​c​o​u​n​t​}
+				 * @param {number} count
+				 */
+				linksTo: RequiredParams<'count'>
+				/**
+				 * N​o​ ​o​u​t​g​o​i​n​g​ ​l​i​n​k​s
+				 */
+				noLinks: string
+				/**
+				 * C​h​a​n​g​e​s​ ​w​i​t​h
+				 */
+				changesWith: string
+				/**
+				 * N​e​e​d​s​ ​g​i​t​ ​h​i​s​t​o​r​y​.
+				 */
+				needsGit: string
+				/**
+				 * N​o​ ​f​i​l​e​s​ ​c​h​a​n​g​e​ ​w​i​t​h​ ​i​t​ ​y​e​t
+				 */
+				noCoChanged: string
+			}
+		}
+	}
+	goals: {
+		/**
+		 * G​o​a​l​s
+		 */
+		title: string
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​g​o​a​l​s
+		 */
+		loadError: string
+		empty: {
+			/**
+			 * N​o​ ​g​o​a​l​s​ ​y​e​t
+			 */
+			title: string
+			/**
+			 * A​ ​g​o​a​l​ ​i​s​ ​s​o​m​e​t​h​i​n​g​ ​y​o​u​ ​w​a​n​t​ ​t​o​ ​r​e​a​c​h​.​ ​P​r​o​j​e​c​t​s​ ​a​n​d​ ​t​a​s​k​s​ ​h​a​n​g​ ​f​r​o​m​ ​i​t​.
+			 */
+			text: string
+		}
+		/**
+		 * A​c​h​i​e​v​e​d
+		 */
+		achieved: string
+		/**
+		 * D​u​e​ ​{​d​a​t​e​}
+		 * @param {unknown} date
+		 */
+		due: RequiredParams<'date'>
+		/**
+		 * N​e​w​ ​g​o​a​l
+		 */
+		newGoal: string
+		/**
+		 * G​o​a​l​ ​t​i​t​l​e
+		 */
+		goalTitle: string
+		/**
+		 * N​e​w​ ​a​r​e​a
+		 */
+		newArea: string
+		/**
+		 * A​r​e​a​ ​n​a​m​e
+		 */
+		areaName: string
+		/**
+		 * F​i​r​s​t​ ​g​o​a​l
+		 */
+		firstGoal: string
+		/**
+		 * T​h​a​t​ ​a​r​e​a​ ​e​x​i​s​t​s​:​ ​t​h​e​ ​g​o​a​l​ ​w​i​l​l​ ​j​o​i​n​ ​i​t​.
+		 */
+		areaExists: string
+		/**
+		 * C​r​e​a​t​e​ ​a​r​e​a
+		 */
+		createArea: string
+		detail: {
+			/**
+			 * N​o​ ​g​o​a​l​ ​{​i​d​}
+			 * @param {unknown} id
+			 */
+			none: RequiredParams<'id'>
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​t​h​i​s​ ​g​o​a​l
+			 */
+			loadError: string
+			/**
+			 * B​a​c​k​ ​t​o​ ​g​o​a​l​s
+			 */
+			back: string
+			/**
+			 * P​r​o​g​r​e​s​s
+			 */
+			progress: string
+			/**
+			 * P​r​o​j​e​c​t​s
+			 */
+			projects: string
+			/**
+			 * N​e​w​ ​p​r​o​j​e​c​t
+			 */
+			newProject: string
+			/**
+			 * P​r​o​j​e​c​t​ ​t​i​t​l​e
+			 */
+			projectTitle: string
+			/**
+			 * N​o​ ​p​r​o​j​e​c​t​s​ ​y​e​t​.
+			 */
+			noProjects: string
+			/**
+			 * L​o​a​d​i​n​g​ ​g​r​a​p​h​…
+			 */
+			graphLoading: string
+			/**
+			 * {​t​i​t​l​e​}​:​ ​p​r​o​j​e​c​t​s​ ​a​n​d​ ​t​a​s​k​s
+			 * @param {unknown} title
+			 */
+			graphLabel: RequiredParams<'title'>
+			/**
+			 * G​r​a​p​h
+			 */
+			graph: string
+		}
+	}
+	projects: {
+		views: {
+			/**
+			 * V​i​e​w​s
+			 */
+			label: string
+			/**
+			 * T​a​s​k​s
+			 */
+			tasks: string
+			/**
+			 * D​o​c​s
+			 */
+			docs: string
+			/**
+			 * K​n​o​w​l​e​d​g​e
+			 */
+			knowledge: string
+		}
+		/**
+		 * N​o​ ​p​r​o​j​e​c​t​ ​{​i​d​}
+		 * @param {unknown} id
+		 */
+		none: RequiredParams<'id'>
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​t​h​i​s​ ​p​r​o​j​e​c​t
+		 */
+		loadError: string
+		/**
+		 * B​a​c​k​ ​t​o​ ​g​o​a​l​s
+		 */
+		back: string
+		/**
+		 * G​o​a​l​s
+		 */
+		goals: string
+		/**
+		 * N​e​w​ ​t​a​s​k
+		 */
+		newTask: string
+		/**
+		 * N​e​w​ ​{​s​t​a​t​e​}​ ​t​a​s​k
+		 * @param {unknown} state
+		 */
+		newTaskIn: RequiredParams<'state'>
+		/**
+		 * D​r​o​p​ ​t​o​ ​m​o​v​e​ ​t​o​ ​{​n​a​m​e​}
+		 * @param {unknown} name
+		 */
+		dropTo: RequiredParams<'name'>
+		/**
+		 * W​a​i​t​i​n​g​ ​o​n​ ​{​n​a​m​e​s​}
+		 * @param {unknown} names
+		 */
+		waitingOn: RequiredParams<'names'>
+		/**
+		 * N​o​ ​d​o​c​s​ ​o​r​ ​r​u​n​b​o​o​k​s​ ​l​i​n​k​ ​t​o​ ​t​h​i​s​ ​p​r​o​j​e​c​t​.
+		 */
+		noDocs: string
+		/**
+		 * N​o​ ​d​e​c​i​s​i​o​n​s​ ​o​r​ ​c​o​n​t​e​x​t​ ​l​i​n​k​ ​t​o​ ​t​h​i​s​ ​p​r​o​j​e​c​t​.
+		 */
+		noKnowledge: string
+		/**
+		 * G​r​a​p​h
+		 */
+		graph: string
+		/**
+		 * O​p​e​n​ ​t​h​e​ ​g​r​a​p​h
+		 */
+		openGraph: string
+		/**
+		 * L​o​a​d​i​n​g​ ​g​r​a​p​h​…
+		 */
+		graphLoading: string
+		/**
+		 * {​t​i​t​l​e​}​:​ ​t​a​s​k​s
+		 * @param {unknown} title
+		 */
+		graphLabel: RequiredParams<'title'>
+		entry: {
+			/**
+			 * N​o​ ​p​r​o​j​e​c​t​s​ ​y​e​t
+			 */
+			title: string
+			/**
+			 * C​r​e​a​t​e​ ​o​n​e​ ​f​r​o​m​ ​a​ ​g​o​a​l​,​ ​a​n​d​ ​i​t​s​ ​t​a​s​k​s​ ​s​h​o​w​ ​u​p​ ​h​e​r​e​ ​a​s​ ​a​ ​b​o​a​r​d​.
+			 */
+			text: string
+		}
+	}
+	tasks: {
+		drawer: {
+			/**
+			 * T​a​s​k​ ​p​a​t​h
+			 */
+			path: string
+			/**
+			 * P​r​o​j​e​c​t​s
+			 */
+			projects: string
+			/**
+			 * T​a​s​k​s
+			 */
+			tasks: string
+			/**
+			 * M​ ​{​c​o​u​n​t​}​ ​{​{​l​i​n​e​|​l​i​n​e​s​}​}​ ​c​h​a​n​g​e​d
+			 * @param {number} count
+			 */
+			changedLines: RequiredParams<'count'>
+			/**
+			 * O​p​e​n​ ​f​u​l​l​ ​p​a​g​e
+			 */
+			openFull: string
+		}
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​t​h​i​s​ ​t​a​s​k
+		 */
+		loadError: string
+		/**
+		 * S​u​m​m​a​r​y
+		 */
+		summary: string
+		fields: {
+			/**
+			 * S​t​a​t​e
+			 */
+			state: string
+			/**
+			 * C​h​a​n​g​e​ ​s​t​a​t​e
+			 */
+			changeState: string
+			/**
+			 * C​r​e​a​t​e​d
+			 */
+			created: string
+			/**
+			 * b​y​ ​{​n​a​m​e​}
+			 * @param {unknown} name
+			 */
+			by: RequiredParams<'name'>
+			/**
+			 * A​s​s​i​g​n​e​e​s
+			 */
+			assignees: string
+			/**
+			 * L​a​b​e​l​s
+			 */
+			labels: string
+		}
+		decisions: {
+			/**
+			 * D​e​c​i​s​i​o​n​s
+			 */
+			title: string
+			/**
+			 * N​o​n​e​ ​l​i​n​k​e​d
+			 */
+			none: string
+			/**
+			 * L​i​n​k​ ​A​D​R
+			 */
+			link: string
+		}
+		checklist: {
+			/**
+			 * T​a​s​k​l​i​s​t
+			 */
+			title: string
+			/**
+			 * C​h​e​c​k​l​i​s​t
+			 */
+			label: string
+			/**
+			 * N​o​ ​c​h​e​c​k​l​i​s​t
+			 */
+			none: string
+		}
+		related: {
+			/**
+			 * R​e​l​a​t​e​d
+			 */
+			title: string
+			/**
+			 * N​o​ ​r​e​l​a​t​e​d​ ​i​t​e​m​s​.
+			 */
+			none: string
+		}
+	}
+	inbox: {
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​t​h​e​ ​i​n​b​o​x
+		 */
+		loadError: string
+		heading: {
+			/**
+			 * I​n​b​o​x
+			 */
+			title: string
+			/**
+			 * N​o​t​h​i​n​g​ ​n​e​e​d​s​ ​y​o​u
+			 */
+			clear: string
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​t​h​i​n​g​ ​n​e​e​d​s​|​t​h​i​n​g​s​ ​n​e​e​d​}​}​ ​y​o​u
+			 * @param {number} count
+			 */
+			waiting: RequiredParams<'count'>
+			/**
+			 * c​h​a​n​g​e​s​ ​s​i​n​c​e​ ​{​w​h​e​n​}
+			 * @param {unknown} when
+			 */
+			since: RequiredParams<'when'>
+			/**
+			 * c​h​a​n​g​e​s​ ​s​i​n​c​e​ ​t​h​e​ ​b​e​g​i​n​n​i​n​g
+			 */
+			sinceStart: string
+		}
+		/**
+		 * M​a​r​k​ ​a​s​ ​s​e​e​n
+		 */
+		markSeen: string
+		allClear: {
+			/**
+			 * A​l​l​ ​c​l​e​a​r
+			 */
+			title: string
+			/**
+			 * N​o​ ​d​e​c​i​s​i​o​n​s​ ​t​o​ ​m​a​k​e​,​ ​n​o​ ​s​t​a​l​e​ ​d​o​c​s​,​ ​n​o​ ​l​i​n​t​ ​e​r​r​o​r​s​ ​a​n​d​ ​n​o​t​h​i​n​g​ ​b​l​o​c​k​e​d​.​ ​C​h​a​n​g​e​s​ ​b​y​ ​a​g​e​n​t​s​ ​a​n​d​ ​i​n​ ​y​o​u​r​ ​w​o​r​k​i​n​g​ ​t​r​e​e​ ​s​h​o​w​ ​u​p​ ​h​e​r​e​.
+			 */
+			text: string
+		}
+		groups: {
+			/**
+			 * D​e​c​i​s​i​o​n​s​ ​t​o​ ​m​a​k​e
+			 */
+			decisions: string
+			/**
+			 * D​o​c​s​ ​g​o​n​e​ ​s​t​a​l​e
+			 */
+			stale: string
+			/**
+			 * L​i​n​t​ ​e​r​r​o​r​s
+			 */
+			lint: string
+			/**
+			 * B​l​o​c​k​e​d​ ​t​a​s​k​s
+			 */
+			blocked: string
+			/**
+			 * O​r​p​h​a​n​s
+			 */
+			orphans: string
+			/**
+			 * A​g​e​n​t​ ​a​c​t​i​v​i​t​y
+			 */
+			activity: string
+			/**
+			 * U​n​c​o​m​m​i​t​t​e​d​ ​c​h​a​n​g​e​s
+			 */
+			changes: string
+		}
+		/**
+		 * P​r​o​p​o​s​e​d
+		 */
+		proposed: string
+		/**
+		 * D​e​l​e​t​e​d
+		 */
+		deleted: string
+		/**
+		 * {​c​o​u​n​t​}​ ​{​{​c​h​a​n​g​e​|​c​h​a​n​g​e​s​}​}
+		 * @param {number} count
+		 */
+		changeCount: RequiredParams<'count'>
+		/**
+		 * S​h​o​w​ ​a​l​l​ ​{​c​o​u​n​t​}​ ​c​h​a​n​g​e​s
+		 * @param {number} count
+		 */
+		showAll: RequiredParams<'count'>
+	}
 }
 
 export type TranslationFunctions = {
+	common: {
+		/**
+		 * Any
+		 */
+		any: () => LocalizedString
+		/**
+		 * Loading…
+		 */
+		loading: () => LocalizedString
+		/**
+		 * Check that `netherite serve` is still running.
+		 */
+		serveHint: () => LocalizedString
+	}
+	components: {
+		/**
+		 * Breadcrumb
+		 */
+		breadcrumb: () => LocalizedString
+		/**
+		 * Create
+		 */
+		createTitle: () => LocalizedString
+		freshness: {
+			/**
+			 * Stale · {count} {{commit|commits}}
+			 */
+			stale: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{commit|commits}} behind
+			 */
+			behind: (arg: { count: number }) => LocalizedString
+			/**
+			 * Fresh
+			 */
+			fresh: () => LocalizedString
+			/**
+			 * Not tracked
+			 */
+			untracked: () => LocalizedString
+		}
+		graph: {
+			edges: {
+				/**
+				 * Belongs to
+				 */
+				belongs_to: () => LocalizedString
+				/**
+				 * Implements
+				 */
+				'implements': () => LocalizedString
+				/**
+				 * Explains
+				 */
+				explains: () => LocalizedString
+				/**
+				 * Supersedes
+				 */
+				supersedes: () => LocalizedString
+				/**
+				 * Co-changes
+				 */
+				co_changes: () => LocalizedString
+				/**
+				 * Depends on
+				 */
+				depends_on: () => LocalizedString
+				/**
+				 * Related
+				 */
+				related: () => LocalizedString
+				/**
+				 * Mentions
+				 */
+				reference: () => LocalizedString
+			}
+			types: {
+				/**
+				 * Goals
+				 */
+				goal: () => LocalizedString
+				/**
+				 * Projects
+				 */
+				project: () => LocalizedString
+				/**
+				 * Tasks
+				 */
+				task: () => LocalizedString
+				/**
+				 * ADRs
+				 */
+				adr: () => LocalizedString
+				/**
+				 * Docs
+				 */
+				doc: () => LocalizedString
+				/**
+				 * Contexts
+				 */
+				context: () => LocalizedString
+				/**
+				 * Runbooks
+				 */
+				runbook: () => LocalizedString
+			}
+			/**
+			 * Legend
+			 */
+			legend: () => LocalizedString
+			/**
+			 * Nodes
+			 */
+			nodes: () => LocalizedString
+			/**
+			 * Edges
+			 */
+			edgesTitle: () => LocalizedString
+			/**
+			 * Stale doc
+			 */
+			staleDoc: () => LocalizedString
+			/**
+			 *  · in {parent}
+			 */
+			tooltipIn: (arg: { parent: unknown }) => LocalizedString
+			/**
+			 * {count} {{link|links}}
+			 */
+			links: (arg: { count: number }) => LocalizedString
+			/**
+			 * Hover for details · click to focus · double-click or Enter to open
+			 */
+			hint: () => LocalizedString
+			/**
+			 * Zoom
+			 */
+			zoom: () => LocalizedString
+			/**
+			 * Zoom in
+			 */
+			zoomIn: () => LocalizedString
+			/**
+			 * Zoom out
+			 */
+			zoomOut: () => LocalizedString
+			/**
+			 * Fit to view
+			 */
+			fit: () => LocalizedString
+			/**
+			 * Fit to screen
+			 */
+			fitTitle: () => LocalizedString
+			/**
+			 * Open
+			 */
+			open: () => LocalizedString
+			/**
+			 * Clear focus
+			 */
+			clearFocus: () => LocalizedString
+		}
+		editor: {
+			/**
+			 * Source editor
+			 */
+			label: () => LocalizedString
+			/**
+			 * Changed on disk
+			 */
+			conflictTitle: () => LocalizedString
+			/**
+			 * Reload (lose my changes)
+			 */
+			reload: () => LocalizedString
+			/**
+			 * Keep mine
+			 */
+			keepMine: () => LocalizedString
+			/**
+			 * This file changed while you were editing it. Reloading takes the new version and drops your edits; keeping yours means your next save replaces the new version.
+			 */
+			conflictText: () => LocalizedString
+			/**
+			 * {count} {{error|errors}}
+			 */
+			errors: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{warning|warnings}}
+			 */
+			warnings: (arg: { count: number }) => LocalizedString
+			/**
+			 * Ln {line}, Col {column}
+			 */
+			position: (arg: { column: number, line: number }) => LocalizedString
+			/**
+			 * Markdown · YAML
+			 */
+			language: () => LocalizedString
+			/**
+			 * Changed since the last commit
+			 */
+			changed: () => LocalizedString
+			/**
+			 * Unsaved
+			 */
+			unsaved: () => LocalizedString
+			/**
+			 * Save
+			 */
+			save: () => LocalizedString
+			/**
+			 * View
+			 */
+			view: () => LocalizedString
+			/**
+			 * code
+			 */
+			code: () => LocalizedString
+			/**
+			 * text
+			 */
+			text: () => LocalizedString
+		}
+	}
 	status: {
 		/**
 		 * Connecting…
@@ -61,6 +1391,846 @@ export type TranslationFunctions = {
 		 */
 		noGit: () => LocalizedString
 	}
+	knowledge: {
+		/**
+		 * Could not load knowledge
+		 */
+		loadError: () => LocalizedString
+		heading: {
+			/**
+			 * Knowledge
+			 */
+			title: () => LocalizedString
+			/**
+			 * Docs, decisions and agent context · nothing in knowledge/ yet
+			 */
+			empty: () => LocalizedString
+			/**
+			 * Docs, decisions and agent context · {count} files in knowledge/
+			 */
+			summary: (arg: { count: number }) => LocalizedString
+		}
+		actions: {
+			/**
+			 * Decision log
+			 */
+			decisionLog: () => LocalizedString
+			/**
+			 * New
+			 */
+			'new': () => LocalizedString
+			/**
+			 * New doc
+			 */
+			newDoc: () => LocalizedString
+			/**
+			 * New ADR
+			 */
+			newAdr: () => LocalizedString
+			/**
+			 * New context
+			 */
+			newContext: () => LocalizedString
+			/**
+			 * New runbook
+			 */
+			newRunbook: () => LocalizedString
+			/**
+			 * New {type} title
+			 */
+			titleLabel: (arg: { type: unknown }) => LocalizedString
+		}
+		toolbar: {
+			/**
+			 * Filter by title or path
+			 */
+			filter: () => LocalizedString
+			/**
+			 * Type
+			 */
+			type: () => LocalizedString
+			/**
+			 * Status
+			 */
+			status: () => LocalizedString
+			/**
+			 * Project
+			 */
+			project: () => LocalizedString
+			/**
+			 * Tag
+			 */
+			tag: () => LocalizedString
+			/**
+			 * Stale
+			 */
+			stale: () => LocalizedString
+			/**
+			 * Orphans
+			 */
+			orphans: () => LocalizedString
+			/**
+			 * Sort
+			 */
+			sort: () => LocalizedString
+			tabs: {
+				/**
+				 * All
+				 */
+				all: () => LocalizedString
+				/**
+				 * ADR
+				 */
+				adr: () => LocalizedString
+				/**
+				 * Doc
+				 */
+				doc: () => LocalizedString
+				/**
+				 * Context
+				 */
+				context: () => LocalizedString
+				/**
+				 * Runbook
+				 */
+				runbook: () => LocalizedString
+			}
+			sorts: {
+				/**
+				 * Last modified
+				 */
+				date: () => LocalizedString
+				/**
+				 * ID
+				 */
+				id: () => LocalizedString
+				/**
+				 * Title
+				 */
+				title: () => LocalizedString
+				/**
+				 * Stalest first
+				 */
+				freshness: () => LocalizedString
+			}
+		}
+		table: {
+			/**
+			 * Knowledge
+			 */
+			label: () => LocalizedString
+			/**
+			 * Type
+			 */
+			type: () => LocalizedString
+			/**
+			 * Title
+			 */
+			title: () => LocalizedString
+			/**
+			 * Status
+			 */
+			status: () => LocalizedString
+			/**
+			 * Project
+			 */
+			project: () => LocalizedString
+			/**
+			 * Modified
+			 */
+			modified: () => LocalizedString
+			/**
+			 * Freshness
+			 */
+			freshness: () => LocalizedString
+			groups: {
+				/**
+				 * Decisions
+				 */
+				adr: () => LocalizedString
+				/**
+				 * Docs
+				 */
+				doc: () => LocalizedString
+				/**
+				 * AI context
+				 */
+				context: () => LocalizedString
+				/**
+				 * Runbooks
+				 */
+				runbook: () => LocalizedString
+			}
+			/**
+			 * No docs match these filters.
+			 */
+			noMatch: () => LocalizedString
+			/**
+			 * Clear filters
+			 */
+			clear: () => LocalizedString
+		}
+		preview: {
+			/**
+			 * Preview of {id}
+			 */
+			label: (arg: { id: unknown }) => LocalizedString
+			/**
+			 * Open
+			 */
+			open: () => LocalizedString
+			/**
+			 * Code changed in {count} {{commit|commits}} since this doc was updated
+			 */
+			staleTitle: (arg: { count: number }) => LocalizedString
+			/**
+			 * Last reviewed {date}
+			 */
+			lastReviewed: (arg: { date: unknown }) => LocalizedString
+			/**
+			 * never
+			 */
+			never: () => LocalizedString
+			/**
+			 * Could not load the preview.
+			 */
+			loadError: () => LocalizedString
+			/**
+			 * No summary.
+			 */
+			noSummary: () => LocalizedString
+			/**
+			 * Backlinks · {count}
+			 */
+			backlinks: (arg: { count: number }) => LocalizedString
+			/**
+			 * Nothing links here yet
+			 */
+			noBacklinks: () => LocalizedString
+			/**
+			 * Co-changed files
+			 */
+			coChanged: () => LocalizedString
+			/**
+			 * Needs git history.
+			 */
+			needsGit: () => LocalizedString
+			/**
+			 * No files change with it yet
+			 */
+			noCoChanged: () => LocalizedString
+			/**
+			 * Updated {date}
+			 */
+			updated: (arg: { date: unknown }) => LocalizedString
+		}
+		starters: {
+			/**
+			 * No knowledge in this repo yet
+			 */
+			title: () => LocalizedString
+			/**
+			 * Docs, decisions and agent context are Markdown files with typed frontmatter in {folder}. They link to your goals, projects and tasks like everything else.
+			 */
+			text: (arg: { folder: unknown }) => LocalizedString
+			/**
+			 * Record first decision
+			 */
+			recordFirst: () => LocalizedString
+			/**
+			 * Import from docs/
+			 */
+			importDocs: () => LocalizedString
+			/**
+			 * Prompt copied
+			 */
+			copied: () => LocalizedString
+			/**
+			 * Paste it to an agent connected to Netherite to import the files under docs/.
+			 */
+			copiedText: () => LocalizedString
+			/**
+			 * Import the Markdown files under docs/ into Netherite. For each file, create a doc with the Netherite MCP `create_item` tool (type doc), keep its text, and set `covers` to the code it describes. Create them in order and lint when done.
+			 */
+			importPrompt: () => LocalizedString
+			/**
+			 * Record a decision with context, the choice and its consequences.
+			 */
+			adr: () => LocalizedString
+			/**
+			 * Technical docs and guides that explain how things work.
+			 */
+			doc: () => LocalizedString
+			/**
+			 * Curated context for AI agents, synced to CLAUDE.md or MCP.
+			 */
+			context: () => LocalizedString
+			/**
+			 * Step-by-step operational procedures.
+			 */
+			runbook: () => LocalizedString
+		}
+		doc: {
+			header: {
+				/**
+				 * File path
+				 */
+				path: () => LocalizedString
+				/**
+				 * Knowledge
+				 */
+				knowledge: () => LocalizedString
+				/**
+				 * Close
+				 */
+				close: () => LocalizedString
+				/**
+				 * Close (Esc)
+				 */
+				closeTitle: () => LocalizedString
+				/**
+				 * M {count} {{line|lines}} changed
+				 */
+				changedLines: (arg: { count: number }) => LocalizedString
+				/**
+				 * Mark reviewed
+				 */
+				markReviewed: () => LocalizedString
+			}
+			main: {
+				/**
+				 * Related code changed in {count} {{commit|commits}} since this doc was updated
+				 */
+				staleTitle: (arg: { count: number }) => LocalizedString
+				/**
+				 * Reviewed {date}
+				 */
+				reviewed: (arg: { date: unknown }) => LocalizedString
+				/**
+				 * never
+				 */
+				never: () => LocalizedString
+				/**
+				 * Hide changes
+				 */
+				hideChanges: () => LocalizedString
+				/**
+				 * Review changes
+				 */
+				reviewChanges: () => LocalizedString
+				/**
+				 * Mark reviewed
+				 */
+				markReviewed: () => LocalizedString
+				/**
+				 * Commits since review
+				 */
+				commits: () => LocalizedString
+				/**
+				 * Only uncommitted changes.
+				 */
+				onlyUncommitted: () => LocalizedString
+			}
+			/**
+			 * Lifecycle
+			 */
+			lifecycle: () => LocalizedString
+			superseded: {
+				/**
+				 * Superseded by {what}
+				 */
+				title: (arg: { what: unknown }) => LocalizedString
+				/**
+				 * a newer decision
+				 */
+				fallback: () => LocalizedString
+				/**
+				 * This record is kept for history and no longer applies.
+				 */
+				text: () => LocalizedString
+				/**
+				 * Open {id}
+				 */
+				open: (arg: { id: unknown }) => LocalizedString
+			}
+			chain: {
+				/**
+				 * Supersession chain
+				 */
+				title: () => LocalizedString
+				/**
+				 * supersedes
+				 */
+				supersedes: () => LocalizedString
+				/**
+				 * this
+				 */
+				'this': () => LocalizedString
+			}
+			context: {
+				/**
+				 * Context
+				 */
+				label: () => LocalizedString
+				/**
+				 * Include in AI context
+				 */
+				include: () => LocalizedString
+				/**
+				 * Sent to agents working in this repo
+				 */
+				included: () => LocalizedString
+				/**
+				 * Excluded: agents won’t receive this doc
+				 */
+				excluded: () => LocalizedString
+				/**
+				 * Include in context
+				 */
+				'switch': () => LocalizedString
+				/**
+				 * ≈ {count|thousands}
+				 */
+				approx: (arg: { count: number }) => LocalizedString
+				/**
+				 * tokens
+				 */
+				tokens: () => LocalizedString
+				/**
+				 * of {count|thousands} repo budget
+				 */
+				budget: (arg: { count: number }) => LocalizedString
+				/**
+				 * Synced to
+				 */
+				syncedTo: () => LocalizedString
+				/**
+				 * No sync targets are configured.
+				 */
+				noTargets: () => LocalizedString
+			}
+			panel: {
+				/**
+				 * Related
+				 */
+				label: () => LocalizedString
+				/**
+				 * Type & status
+				 */
+				typeStatus: () => LocalizedString
+				/**
+				 * Freshness
+				 */
+				freshness: () => LocalizedString
+				/**
+				 * {count} commits since review
+				 */
+				sinceReview: (arg: { count: number }) => LocalizedString
+				/**
+				 * Linked from · {count}
+				 */
+				linkedFrom: (arg: { count: number }) => LocalizedString
+				/**
+				 * Orphan: nothing links here
+				 */
+				orphan: () => LocalizedString
+				/**
+				 * Links to · {count}
+				 */
+				linksTo: (arg: { count: number }) => LocalizedString
+				/**
+				 * No outgoing links
+				 */
+				noLinks: () => LocalizedString
+				/**
+				 * Changes with
+				 */
+				changesWith: () => LocalizedString
+				/**
+				 * Needs git history.
+				 */
+				needsGit: () => LocalizedString
+				/**
+				 * No files change with it yet
+				 */
+				noCoChanged: () => LocalizedString
+			}
+		}
+	}
+	goals: {
+		/**
+		 * Goals
+		 */
+		title: () => LocalizedString
+		/**
+		 * Could not load goals
+		 */
+		loadError: () => LocalizedString
+		empty: {
+			/**
+			 * No goals yet
+			 */
+			title: () => LocalizedString
+			/**
+			 * A goal is something you want to reach. Projects and tasks hang from it.
+			 */
+			text: () => LocalizedString
+		}
+		/**
+		 * Achieved
+		 */
+		achieved: () => LocalizedString
+		/**
+		 * Due {date}
+		 */
+		due: (arg: { date: unknown }) => LocalizedString
+		/**
+		 * New goal
+		 */
+		newGoal: () => LocalizedString
+		/**
+		 * Goal title
+		 */
+		goalTitle: () => LocalizedString
+		/**
+		 * New area
+		 */
+		newArea: () => LocalizedString
+		/**
+		 * Area name
+		 */
+		areaName: () => LocalizedString
+		/**
+		 * First goal
+		 */
+		firstGoal: () => LocalizedString
+		/**
+		 * That area exists: the goal will join it.
+		 */
+		areaExists: () => LocalizedString
+		/**
+		 * Create area
+		 */
+		createArea: () => LocalizedString
+		detail: {
+			/**
+			 * No goal {id}
+			 */
+			none: (arg: { id: unknown }) => LocalizedString
+			/**
+			 * Could not load this goal
+			 */
+			loadError: () => LocalizedString
+			/**
+			 * Back to goals
+			 */
+			back: () => LocalizedString
+			/**
+			 * Progress
+			 */
+			progress: () => LocalizedString
+			/**
+			 * Projects
+			 */
+			projects: () => LocalizedString
+			/**
+			 * New project
+			 */
+			newProject: () => LocalizedString
+			/**
+			 * Project title
+			 */
+			projectTitle: () => LocalizedString
+			/**
+			 * No projects yet.
+			 */
+			noProjects: () => LocalizedString
+			/**
+			 * Loading graph…
+			 */
+			graphLoading: () => LocalizedString
+			/**
+			 * {title}: projects and tasks
+			 */
+			graphLabel: (arg: { title: unknown }) => LocalizedString
+			/**
+			 * Graph
+			 */
+			graph: () => LocalizedString
+		}
+	}
+	projects: {
+		views: {
+			/**
+			 * Views
+			 */
+			label: () => LocalizedString
+			/**
+			 * Tasks
+			 */
+			tasks: () => LocalizedString
+			/**
+			 * Docs
+			 */
+			docs: () => LocalizedString
+			/**
+			 * Knowledge
+			 */
+			knowledge: () => LocalizedString
+		}
+		/**
+		 * No project {id}
+		 */
+		none: (arg: { id: unknown }) => LocalizedString
+		/**
+		 * Could not load this project
+		 */
+		loadError: () => LocalizedString
+		/**
+		 * Back to goals
+		 */
+		back: () => LocalizedString
+		/**
+		 * Goals
+		 */
+		goals: () => LocalizedString
+		/**
+		 * New task
+		 */
+		newTask: () => LocalizedString
+		/**
+		 * New {state} task
+		 */
+		newTaskIn: (arg: { state: unknown }) => LocalizedString
+		/**
+		 * Drop to move to {name}
+		 */
+		dropTo: (arg: { name: unknown }) => LocalizedString
+		/**
+		 * Waiting on {names}
+		 */
+		waitingOn: (arg: { names: unknown }) => LocalizedString
+		/**
+		 * No docs or runbooks link to this project.
+		 */
+		noDocs: () => LocalizedString
+		/**
+		 * No decisions or context link to this project.
+		 */
+		noKnowledge: () => LocalizedString
+		/**
+		 * Graph
+		 */
+		graph: () => LocalizedString
+		/**
+		 * Open the graph
+		 */
+		openGraph: () => LocalizedString
+		/**
+		 * Loading graph…
+		 */
+		graphLoading: () => LocalizedString
+		/**
+		 * {title}: tasks
+		 */
+		graphLabel: (arg: { title: unknown }) => LocalizedString
+		entry: {
+			/**
+			 * No projects yet
+			 */
+			title: () => LocalizedString
+			/**
+			 * Create one from a goal, and its tasks show up here as a board.
+			 */
+			text: () => LocalizedString
+		}
+	}
+	tasks: {
+		drawer: {
+			/**
+			 * Task path
+			 */
+			path: () => LocalizedString
+			/**
+			 * Projects
+			 */
+			projects: () => LocalizedString
+			/**
+			 * Tasks
+			 */
+			tasks: () => LocalizedString
+			/**
+			 * M {count} {{line|lines}} changed
+			 */
+			changedLines: (arg: { count: number }) => LocalizedString
+			/**
+			 * Open full page
+			 */
+			openFull: () => LocalizedString
+		}
+		/**
+		 * Could not load this task
+		 */
+		loadError: () => LocalizedString
+		/**
+		 * Summary
+		 */
+		summary: () => LocalizedString
+		fields: {
+			/**
+			 * State
+			 */
+			state: () => LocalizedString
+			/**
+			 * Change state
+			 */
+			changeState: () => LocalizedString
+			/**
+			 * Created
+			 */
+			created: () => LocalizedString
+			/**
+			 * by {name}
+			 */
+			by: (arg: { name: unknown }) => LocalizedString
+			/**
+			 * Assignees
+			 */
+			assignees: () => LocalizedString
+			/**
+			 * Labels
+			 */
+			labels: () => LocalizedString
+		}
+		decisions: {
+			/**
+			 * Decisions
+			 */
+			title: () => LocalizedString
+			/**
+			 * None linked
+			 */
+			none: () => LocalizedString
+			/**
+			 * Link ADR
+			 */
+			link: () => LocalizedString
+		}
+		checklist: {
+			/**
+			 * Tasklist
+			 */
+			title: () => LocalizedString
+			/**
+			 * Checklist
+			 */
+			label: () => LocalizedString
+			/**
+			 * No checklist
+			 */
+			none: () => LocalizedString
+		}
+		related: {
+			/**
+			 * Related
+			 */
+			title: () => LocalizedString
+			/**
+			 * No related items.
+			 */
+			none: () => LocalizedString
+		}
+	}
+	inbox: {
+		/**
+		 * Could not load the inbox
+		 */
+		loadError: () => LocalizedString
+		heading: {
+			/**
+			 * Inbox
+			 */
+			title: () => LocalizedString
+			/**
+			 * Nothing needs you
+			 */
+			clear: () => LocalizedString
+			/**
+			 * {count} {{thing needs|things need}} you
+			 */
+			waiting: (arg: { count: number }) => LocalizedString
+			/**
+			 * changes since {when}
+			 */
+			since: (arg: { when: unknown }) => LocalizedString
+			/**
+			 * changes since the beginning
+			 */
+			sinceStart: () => LocalizedString
+		}
+		/**
+		 * Mark as seen
+		 */
+		markSeen: () => LocalizedString
+		allClear: {
+			/**
+			 * All clear
+			 */
+			title: () => LocalizedString
+			/**
+			 * No decisions to make, no stale docs, no lint errors and nothing blocked. Changes by agents and in your working tree show up here.
+			 */
+			text: () => LocalizedString
+		}
+		groups: {
+			/**
+			 * Decisions to make
+			 */
+			decisions: () => LocalizedString
+			/**
+			 * Docs gone stale
+			 */
+			stale: () => LocalizedString
+			/**
+			 * Lint errors
+			 */
+			lint: () => LocalizedString
+			/**
+			 * Blocked tasks
+			 */
+			blocked: () => LocalizedString
+			/**
+			 * Orphans
+			 */
+			orphans: () => LocalizedString
+			/**
+			 * Agent activity
+			 */
+			activity: () => LocalizedString
+			/**
+			 * Uncommitted changes
+			 */
+			changes: () => LocalizedString
+		}
+		/**
+		 * Proposed
+		 */
+		proposed: () => LocalizedString
+		/**
+		 * Deleted
+		 */
+		deleted: () => LocalizedString
+		/**
+		 * {count} {{change|changes}}
+		 */
+		changeCount: (arg: { count: number }) => LocalizedString
+		/**
+		 * Show all {count} changes
+		 */
+		showAll: (arg: { count: number }) => LocalizedString
+	}
 }
 
-export type Formatters = {}
+export type Formatters = {
+	thousands: (value: number) => unknown
+}

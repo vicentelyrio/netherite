@@ -3,6 +3,7 @@ import type { BoardCard } from '@netherite/api'
 import { Avatar, Card, Icon } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
 import { ProgressBar, TagList } from '@/components'
+import { useI18nContext } from '@/infrastructure/i18n'
 
 /** What a task card shows: where it is from, its title, labels, who has it and how far it is. */
 export function TaskCardBody({
@@ -14,6 +15,7 @@ export function TaskCardBody({
   readonly projectId: string
   readonly overline?: string | undefined
 }) {
+  const { LL } = useI18nContext()
   const assignee = card.assignees[0]
   return (
     <div className="board-card">
@@ -32,7 +34,8 @@ export function TaskCardBody({
       <TagList tags={card.labels} />
       {card.waitingOn.length > 0 && (
         <div className="board-waiting">
-          <Icon name="link" /> Waiting on {card.waitingOn.map((d) => d.title).join(', ')}
+          <Icon name="link" />{' '}
+          {LL.projects.waitingOn({ names: card.waitingOn.map((d) => d.title).join(', ') })}
         </div>
       )}
       {card.checklist && <ProgressBar done={card.checklist.done} total={card.checklist.total} />}

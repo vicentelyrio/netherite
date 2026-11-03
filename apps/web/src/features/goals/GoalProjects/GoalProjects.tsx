@@ -3,6 +3,7 @@ import { Icon } from '@netherite/ui'
 import { useState } from 'react'
 import { TitleForm } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { useWrite } from '@/infrastructure/query'
 import { ProjectCard } from '../ProjectCard'
 import './GoalProjects.css'
@@ -15,6 +16,7 @@ export function GoalProjects({
   readonly goalId: string
   readonly projects: ReadonlyArray<ProjectRow>
 }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const [adding, setAdding] = useState(false)
   const createProject = useWrite(api, (a, title: string) =>
@@ -25,20 +27,20 @@ export function GoalProjects({
   return (
     <>
       <header className="goal-projects-head">
-        <h2 className="goal-projects-title">Projects</h2>
+        <h2 className="goal-projects-title">{LL.goals.detail.projects()}</h2>
         <span className="goal-count">{projects.length}</span>
         <button type="button" className="goal-link-button" onClick={() => setAdding(true)}>
-          <Icon name="add" /> New project
+          <Icon name="add" /> {LL.goals.detail.newProject()}
         </button>
       </header>
       {adding && (
         <TitleForm
-          label="Project title"
+          label={LL.goals.detail.projectTitle()}
           onCancel={() => setAdding(false)}
           onSubmit={(title) => createProject.mutate(title, { onSuccess: () => setAdding(false) })}
         />
       )}
-      {projects.length === 0 && <p className="app-muted">No projects yet.</p>}
+      {projects.length === 0 && <p className="app-muted">{LL.goals.detail.noProjects()}</p>}
       {projects.map((project) => (
         <ProjectCard key={project.id} project={project} />
       ))}

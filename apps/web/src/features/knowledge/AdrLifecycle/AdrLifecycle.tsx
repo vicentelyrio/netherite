@@ -1,5 +1,6 @@
 import { Icon } from '@netherite/ui'
 import { formatDate } from '@/infrastructure/datetime'
+import { useI18nContext } from '@/infrastructure/i18n'
 import './AdrLifecycle.css'
 
 /** The steps an ADR goes through: where it has been and where it is. */
@@ -10,6 +11,7 @@ export function AdrLifecycle({
   readonly status: string
   readonly steps: ReadonlyArray<{ status: string; date?: string; sha?: string }>
 }) {
+  const { LL } = useI18nContext()
   const order =
     status === 'deprecated'
       ? ['proposed', 'accepted', 'deprecated']
@@ -18,7 +20,7 @@ export function AdrLifecycle({
         : ['proposed', 'accepted']
   const at = order.indexOf(status)
   return (
-    <ol className="kn-lifecycle" aria-label="Lifecycle">
+    <ol className="kn-lifecycle" aria-label={LL.knowledge.doc.lifecycle()}>
       {order.map((step, i) => {
         const record = steps.filter((s) => s.status === step).at(-1)
         return (

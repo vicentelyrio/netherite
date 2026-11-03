@@ -1,6 +1,7 @@
 import type { ItemDetail } from '@netherite/api'
 import { Button, Icon, type ItemTypeName, TypeBadge } from '@netherite/ui'
 import { useNavigate } from '@tanstack/react-router'
+import { useI18nContext } from '@/infrastructure/i18n'
 import type { ReviewAction } from '../DocMain'
 import './DocHeader.css'
 
@@ -16,6 +17,7 @@ export function DocHeader({
   readonly changedLines: number
   readonly review: ReviewAction
 }) {
+  const { LL } = useI18nContext()
   const navigate = useNavigate()
   const type = item.type as ItemTypeName
   const folder = item.path.split('/').slice(-2, -1)[0] ?? ''
@@ -23,27 +25,28 @@ export function DocHeader({
   return (
     <header className="kf-head">
       <Icon name="stacks" size={16} />
-      <nav className="kf-path" aria-label="File path">
-        <span>Knowledge</span> › <span>{folder}</span> › <strong>{file}</strong>
+      <nav className="kf-path" aria-label={LL.knowledge.doc.header.path()}>
+        <span>{LL.knowledge.doc.header.knowledge()}</span> › <span>{folder}</span> ›{' '}
+        <strong>{file}</strong>
       </nav>
       <TypeBadge type={type} />
       {changedLines > 0 && (
         <span className="kf-lines">
-          M {changedLines} {changedLines === 1 ? 'line' : 'lines'} changed
+          {LL.knowledge.doc.header.changedLines({ count: changedLines })}
         </span>
       )}
       <code className="app-id kf-id">{item.id}</code>
       <span className="kf-spacer" />
       {!stale && (type === 'doc' || type === 'runbook' || type === 'context') && (
         <Button size="sm" icon="done_all" loading={review.pending} onClick={review.run}>
-          Mark reviewed
+          {LL.knowledge.doc.header.markReviewed()}
         </Button>
       )}
       <button
         type="button"
         className="kf-close"
-        aria-label="Close"
-        title="Close (Esc)"
+        aria-label={LL.knowledge.doc.header.close()}
+        title={LL.knowledge.doc.header.closeTitle()}
         onClick={() => void navigate({ to: '/knowledge' })}
       >
         <Icon name="close" size={20} />

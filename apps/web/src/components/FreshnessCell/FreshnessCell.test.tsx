@@ -1,12 +1,15 @@
 import { NetheriteProvider } from '@netherite/ui'
 import { render, screen } from '@testing-library/react'
 import { describe, expect, test } from 'vitest'
+import { I18nProvider } from '@/infrastructure/i18n'
 import { FreshnessCell } from './FreshnessCell'
 
 const show = (freshness: Parameters<typeof FreshnessCell>[0]['freshness'], commits = 0) =>
   render(
     <NetheriteProvider env="test">
-      <FreshnessCell freshness={freshness} commits={commits} />
+      <I18nProvider>
+        <FreshnessCell freshness={freshness} commits={commits} />
+      </I18nProvider>
     </NetheriteProvider>,
   )
 

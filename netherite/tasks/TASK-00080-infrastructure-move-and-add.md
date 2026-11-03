@@ -19,6 +19,8 @@ depends_on: [TASK-00079]
 
 ## i18n
 
-Engine: typesafe-i18n (infrastructure/i18n, see its README). Base language is en/index.ts; types are generated with pnpm --filter @netherite/web i18n; I18nProvider wraps the app; the connection status is the first screen on it.
+Engine: typesafe-i18n (infrastructure/i18n, see its README). Base language is en/index.ts; types are generated with pnpm --filter @netherite/web i18n; I18nProvider wraps the app (component tests wrap in it too).
 
-Left: move the user-facing strings of every feature and component into en/, one screen at a time, starting with the ones in features/knowledge and features/inbox. The generator needs its own TypeScript 5 (typescript5 devDependency and scripts/i18n.mjs) because TypeScript 7 has no JS compiler API.
+Moved to the catalog: the connection status, the shared components (FreshnessCell, TitleForm, SelectField, Breadcrumbs, GraphView, ItemEditor) and features knowledge, inbox, goals, projects and tasks.
+
+Left: features decisions, tags, stats, search, items and navigation (rail labels), the templates, the error and loading text of the infrastructure notices, the CodeMirror gutter titles (extensions.ts, not React), and the type names that come from @netherite/ui (typeLabels). The generator needs its own TypeScript 5 (typescript5 devDependency and scripts/i18n.mjs) because TypeScript 7 has no JS compiler API.

@@ -11,6 +11,7 @@ import { LinkRow } from '@/components'
 import { isoDay } from '@/infrastructure/datetime'
 import { SupersessionChain } from '../SupersessionChain'
 import '../shared.css'
+import { useI18nContext } from '@/infrastructure/i18n'
 import './DocPanel.css'
 
 /** What the item is connected to: its type and status, freshness, links both ways, co-changes. */
@@ -25,12 +26,13 @@ export function DocPanel({
   readonly preview: KnowledgePreview | undefined
   readonly stale: boolean
 }) {
+  const { LL } = useI18nContext()
   const type = item.type as ItemTypeName
   const fresh = item.freshness
   return (
-    <aside className="kf-panel" aria-label="Related">
+    <aside className="kf-panel" aria-label={LL.knowledge.doc.panel.label()}>
       <section className="kf-section">
-        <h2 className="kf-h">Type &amp; status</h2>
+        <h2 className="kf-h">{LL.knowledge.doc.panel.typeStatus()}</h2>
         <div className="kf-status-row">
           <TypeBadge type={type} />
           {type === 'adr' && item.status !== undefined && (
@@ -42,9 +44,10 @@ export function DocPanel({
       {type === 'adr' && data && <SupersessionChain id={item.id} chain={data.chain} />}
       {stale && type !== 'adr' && fresh !== null && data?.changes && (
         <section className="kf-section">
-          <h2 className="kf-h">Freshness</h2>
+          <h2 className="kf-h">{LL.knowledge.doc.panel.freshness()}</h2>
           <span className="kf-stale-line">
-            <Icon name="warning" size={15} filled /> {fresh.commits} commits since review
+            <Icon name="warning" size={15} filled />{' '}
+            {LL.knowledge.doc.panel.sinceReview({ count: fresh.commits })}
           </span>
           {data.changes.commits.slice(0, 3).map((c) => (
             <div key={c.hash} className="kf-commit">
@@ -56,29 +59,31 @@ export function DocPanel({
         </section>
       )}
       <section className="kf-section">
-        <h2 className="kf-h">Linked from · {item.backlinks.length}</h2>
+        <h2 className="kf-h">
+          {LL.knowledge.doc.panel.linkedFrom({ count: item.backlinks.length })}
+        </h2>
         {item.backlinks.map((l) => (
           <LinkRow key={`${l.kind}:${l.path}`} link={l} />
         ))}
         {item.backlinks.length === 0 && (
           <div className="kn-none">
-            <Icon name="link_off" size={15} /> Orphan: nothing links here
+            <Icon name="link_off" size={15} /> {LL.knowledge.doc.panel.orphan()}
           </div>
         )}
       </section>
       <section className="kf-section">
-        <h2 className="kf-h">Links to · {item.links.length}</h2>
+        <h2 className="kf-h">{LL.knowledge.doc.panel.linksTo({ count: item.links.length })}</h2>
         {item.links.map((l) => (
           <LinkRow key={`${l.kind}:${l.path}`} link={l} />
         ))}
-        {item.links.length === 0 && <p className="app-muted">No outgoing links</p>}
+        {item.links.length === 0 && <p className="app-muted">{LL.knowledge.doc.panel.noLinks()}</p>}
       </section>
       <section className="kf-section">
         <h2 className="kf-h">
-          <Icon name="commit" size={15} /> Changes with
+          <Icon name="commit" size={15} /> {LL.knowledge.doc.panel.changesWith()}
         </h2>
         {preview?.coChanged === null ? (
-          <p className="app-muted">Needs git history.</p>
+          <p className="app-muted">{LL.knowledge.doc.panel.needsGit()}</p>
         ) : (
           preview?.coChanged?.files.map((f) => (
             <div key={f.path} className="kn-file-row">
@@ -91,7 +96,7 @@ export function DocPanel({
           ))
         )}
         {preview?.coChanged?.files.length === 0 && (
-          <p className="app-muted">No files change with it yet</p>
+          <p className="app-muted">{LL.knowledge.doc.panel.noCoChanged()}</p>
         )}
       </section>
     </aside>

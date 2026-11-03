@@ -1,7 +1,7 @@
 export const projectViews = [
-  { id: 'tasks', label: 'Tasks', icon: 'view_kanban' },
-  { id: 'docs', label: 'Docs', icon: 'description' },
-  { id: 'knowledge', label: 'Knowledge', icon: 'menu_book' },
+  { id: 'tasks', icon: 'view_kanban' },
+  { id: 'docs', icon: 'description' },
+  { id: 'knowledge', icon: 'menu_book' },
 ] as const
 
 export type ProjectViewId = (typeof projectViews)[number]['id']

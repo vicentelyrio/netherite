@@ -3,6 +3,7 @@ import type { ItemTypeName } from '@netherite/ui'
 import { useState } from 'react'
 import { Markdown } from '@/components/Markdown'
 import { isoDay } from '@/infrastructure/datetime'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { AdrLifecycle } from '../AdrLifecycle'
 import { ContextCard } from '../ContextCard'
 import { StaleWarning } from '../StaleWarning'
@@ -32,6 +33,7 @@ export function DocMain({
   readonly steps: ReadonlyArray<{ status: string; date?: string; sha?: string }>
   readonly review: ReviewAction
 }) {
+  const { LL } = useI18nContext()
   const [showChanges, setShowChanges] = useState(false)
   const type = item.type as ItemTypeName
   const fresh = item.freshness
@@ -40,8 +42,10 @@ export function DocMain({
     <div className="kf-main">
       {stale && type !== 'adr' && fresh !== null && (
         <StaleWarning
-          title={`Related code changed in ${fresh.commits} ${fresh.commits === 1 ? 'commit' : 'commits'} since this doc was updated`}
-          detail={`Reviewed ${fresh.since ?? 'never'}`}
+          title={LL.knowledge.doc.main.staleTitle({ count: fresh.commits })}
+          detail={LL.knowledge.doc.main.reviewed({
+            date: fresh.since ?? LL.knowledge.doc.main.never(),
+          })}
           actions={
             <div className="kf-warning-actions">
               <button
@@ -49,7 +53,9 @@ export function DocMain({
                 className="kf-amber"
                 onClick={() => setShowChanges(!showChanges)}
               >
-                {showChanges ? 'Hide changes' : 'Review changes'}
+                {showChanges
+                  ? LL.knowledge.doc.main.hideChanges()
+                  : LL.knowledge.doc.main.reviewChanges()}
               </button>
               <button
                 type="button"
@@ -57,14 +63,14 @@ export function DocMain({
                 disabled={review.pending}
                 onClick={review.run}
               >
-                Mark reviewed
+                {LL.knowledge.doc.main.markReviewed()}
               </button>
             </div>
           }
         />
       )}
       {showChanges && data?.changes && (
-        <ul className="kn-commits" aria-label="Commits since review">
+        <ul className="kn-commits" aria-label={LL.knowledge.doc.main.commits()}>
           {data.changes.commits.map((c) => (
             <li key={c.hash}>
               <code>{c.hash.slice(0, 7)}</code> {c.subject}{' '}
@@ -74,7 +80,7 @@ export function DocMain({
             </li>
           ))}
           {data.changes.commits.length === 0 && (
-            <li className="app-muted">Only uncommitted changes.</li>
+            <li className="app-muted">{LL.knowledge.doc.main.onlyUncommitted()}</li>
           )}
         </ul>
       )}

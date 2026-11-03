@@ -4,6 +4,7 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import { describe, expect, test, vi } from 'vitest'
+import { I18nProvider } from '@/infrastructure/i18n'
 import { changesField, problemsField } from './extensions'
 import { bodyOf, ItemEditor, type ItemEditorProps } from './ItemEditor'
 
@@ -35,14 +36,16 @@ const setup = (props: Partial<ItemEditorProps> = {}) => {
   const lint = vi.fn(async () => [])
   const ui = (p: Partial<ItemEditorProps>) => (
     <NetheriteProvider>
-      <ItemEditor
-        source={source()}
-        onSave={onSave}
-        lint={lint}
-        targets={[]}
-        onReady={(v) => (view = v)}
-        {...p}
-      />
+      <I18nProvider>
+        <ItemEditor
+          source={source()}
+          onSave={onSave}
+          lint={lint}
+          targets={[]}
+          onReady={(v) => (view = v)}
+          {...p}
+        />
+      </I18nProvider>
     </NetheriteProvider>
   )
   const result = render(ui(props))
@@ -166,7 +169,7 @@ describe('problems', () => {
     expect(document.querySelector('.cm-problem-error')).not.toBeNull()
     expect(document.querySelector('.cm-hint')?.textContent).toContain('Expected one of')
     expect(document.querySelector('.cm-lint-mark')).not.toBeNull()
-    expect(screen.getByTitle('1 errors')).toHaveTextContent('1')
+    expect(screen.getByTitle('1 error')).toHaveTextContent('1')
   })
 
   test('typing asks again, after a pause, with the new text', async () => {
@@ -315,14 +318,16 @@ describe('views', () => {
       const [mode, setMode] = useState<'split' | 'text'>('split')
       return (
         <NetheriteProvider>
-          <ItemEditor
-            source={source()}
-            onSave={async (t) => ({ text: t, hash: 'x' })}
-            lint={async () => []}
-            targets={[]}
-            mode={mode}
-            onModeChange={setMode}
-          />
+          <I18nProvider>
+            <ItemEditor
+              source={source()}
+              onSave={async (t) => ({ text: t, hash: 'x' })}
+              lint={async () => []}
+              targets={[]}
+              mode={mode}
+              onModeChange={setMode}
+            />
+          </I18nProvider>
         </NetheriteProvider>
       )
     }
@@ -340,15 +345,17 @@ describe('views', () => {
       const [mode, setMode] = useState<'split' | 'text'>('split')
       return (
         <NetheriteProvider>
-          <ItemEditor
-            source={source()}
-            onSave={async (t) => ({ text: t, hash: 'x' })}
-            lint={async () => []}
-            targets={[]}
-            mode={mode}
-            onModeChange={setMode}
-            onReady={(v) => (current = v)}
-          />
+          <I18nProvider>
+            <ItemEditor
+              source={source()}
+              onSave={async (t) => ({ text: t, hash: 'x' })}
+              lint={async () => []}
+              targets={[]}
+              mode={mode}
+              onModeChange={setMode}
+              onReady={(v) => (current = v)}
+            />
+          </I18nProvider>
         </NetheriteProvider>
       )
     }

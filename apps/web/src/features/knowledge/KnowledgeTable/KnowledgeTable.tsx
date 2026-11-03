@@ -2,33 +2,30 @@ import { GroupCard } from '@/components'
 import { useKnowledgeIndex } from '../KnowledgeProvider'
 import { KnowledgeRow } from '../KnowledgeRow'
 import '../shared.css'
+import { useI18nContext } from '@/infrastructure/i18n'
 import './KnowledgeTable.css'
 
-const groupNames: ReadonlyArray<readonly [string, string]> = [
-  ['adr', 'Decisions'],
-  ['doc', 'Docs'],
-  ['context', 'AI context'],
-  ['runbook', 'Runbooks'],
-]
+const groupNames = ['adr', 'doc', 'context', 'runbook'] as const
 
 /** The files that pass the filters, grouped by type under a row of column names. */
 export function KnowledgeTable() {
+  const { LL } = useI18nContext()
   const { shown, current, select, clear } = useKnowledgeIndex()
   return (
-    <section aria-label="Knowledge">
+    <section aria-label={LL.knowledge.table.label()}>
       <div className="kn-cols">
-        <span>Type</span>
-        <span>Title</span>
-        <span>Status</span>
-        <span>Project</span>
-        <span>Modified</span>
-        <span>Freshness</span>
+        <span>{LL.knowledge.table.type()}</span>
+        <span>{LL.knowledge.table.title()}</span>
+        <span>{LL.knowledge.table.status()}</span>
+        <span>{LL.knowledge.table.project()}</span>
+        <span>{LL.knowledge.table.modified()}</span>
+        <span>{LL.knowledge.table.freshness()}</span>
       </div>
-      {groupNames.map(([type, name]) => {
+      {groupNames.map((type) => {
         const inGroup = shown.filter((r) => r.type === type)
         if (inGroup.length === 0) return null
         return (
-          <GroupCard key={type} title={name} count={inGroup.length}>
+          <GroupCard key={type} title={LL.knowledge.table.groups[type]()} count={inGroup.length}>
             {inGroup.map((row) => (
               <KnowledgeRow
                 key={row.id}
@@ -42,9 +39,9 @@ export function KnowledgeTable() {
       })}
       {shown.length === 0 && (
         <div className="kn-nomatch">
-          No docs match these filters.{' '}
+          {LL.knowledge.table.noMatch()}{' '}
           <button type="button" onClick={clear}>
-            Clear filters
+            {LL.knowledge.table.clear()}
           </button>
         </div>
       )}

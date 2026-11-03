@@ -5,6 +5,7 @@ import { Link } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { Breadcrumbs } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { boardQuery } from '@/infrastructure/query'
 import { ProjectGraph } from '../ProjectGraph'
 import { rememberProject } from '../ProjectsEntry/remember'
@@ -21,18 +22,19 @@ export function ProjectSide({
   readonly view: ProjectViewId
   readonly onViewChange: (view: ProjectViewId) => void
 }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const query = useQuery(boardQuery(api, id))
   useEffect(() => rememberProject(id), [id])
-  if (query.isPending) return <div className="app-muted">Loading…</div>
+  if (query.isPending) return <div className="app-muted">{LL.common.loading()}</div>
   if (query.isError) {
     const missing = query.error instanceof NotFound
     return (
       <Banner
         variant={missing ? 'warning' : 'danger'}
-        title={missing ? `No project ${id}` : 'Could not load this project'}
+        title={missing ? LL.projects.none({ id }) : LL.projects.loadError()}
       >
-        <Link to="/goals">Back to goals</Link>
+        <Link to="/goals">{LL.projects.back()}</Link>
       </Banner>
     )
   }
@@ -41,7 +43,7 @@ export function ProjectSide({
   return (
     <>
       <Breadcrumbs>
-        <Link to="/goals">Goals</Link>
+        <Link to="/goals">{LL.projects.goals()}</Link>
         {goal && (
           <>
             <span> / </span>
@@ -52,21 +54,21 @@ export function ProjectSide({
         )}
       </Breadcrumbs>
       <h1 className="app-title project-title">{board.title}</h1>
-      <div className="project-views" role="tablist" aria-label="Views">
+      <div className="project-views" role="tablist" aria-label={LL.projects.views.label()}>
         {projectViews.map((v) => (
           <button
             key={v.id}
             type="button"
             role="tab"
             aria-selected={view === v.id}
-            aria-label={v.label}
+            aria-label={LL.projects.views[v.id]()}
             data-active={view === v.id || undefined}
             onClick={() => onViewChange(v.id)}
           >
             <Icon name={v.icon} />
           </button>
         ))}
-        <span className="app-muted">{projectViews.find((v) => v.id === view)?.label}</span>
+        <span className="app-muted">{LL.projects.views[view]()}</span>
       </div>
       <ProjectGraph board={board} />
     </>

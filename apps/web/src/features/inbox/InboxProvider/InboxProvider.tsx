@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createContext, type ReactNode, useContext, useState } from 'react'
 import { useApi } from '@/infrastructure/api'
 import { nowIso } from '@/infrastructure/datetime'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { inboxQuery, keys, waitingCount } from '@/infrastructure/query'
 import { lastSeen, markSeen } from '../waiting'
 
@@ -32,18 +33,19 @@ export const useInboxState = (): InboxState => {
 
 /** Loads the Inbox since the last time it was seen; shows loading and error instead of children. */
 export function InboxProvider({ children }: { readonly children: ReactNode }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const client = useQueryClient()
   const [since, setSince] = useState(lastSeen)
   const [all, setAll] = useState(false)
   const query = useQuery(inboxQuery(api, since))
 
-  if (query.isPending) return <div className="app-page app-muted">Loading…</div>
+  if (query.isPending) return <div className="app-page app-muted">{LL.common.loading()}</div>
   if (query.isError) {
     return (
       <div className="app-page">
-        <Banner variant="danger" title="Could not load the inbox">
-          Check that `netherite serve` is still running.
+        <Banner variant="danger" title={LL.inbox.loadError()}>
+          {LL.common.serveHint()}
         </Banner>
       </div>
     )

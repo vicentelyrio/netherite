@@ -1,6 +1,7 @@
 import type { ItemDetail } from '@netherite/api'
 import { Icon, Switch } from '@netherite/ui'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { useWrite } from '@/infrastructure/query'
 import './ContextCard.css'
 
@@ -25,6 +26,7 @@ export function ContextCard({
   readonly item: ItemDetail
   readonly context: ContextInfo
 }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const toggle = useWrite(api, (a, include: boolean) =>
     a.call((c) =>
@@ -38,41 +40,47 @@ export function ContextCard({
   const pct =
     first && first.budget > 0 ? Math.min(100, Math.round((first.tokens / first.budget) * 100)) : 0
   return (
-    <section aria-label="Context" className="kf-context" data-on={context.include || undefined}>
+    <section
+      aria-label={LL.knowledge.doc.context.label()}
+      className="kf-context"
+      data-on={context.include || undefined}
+    >
       <div className="kf-context-top">
         <Icon name="smart_toy" size={20} />
         <div>
-          <strong>Include in AI context</strong>
+          <strong>{LL.knowledge.doc.context.include()}</strong>
           <span>
             {context.include
-              ? 'Sent to agents working in this repo'
-              : 'Excluded: agents won’t receive this doc'}
+              ? LL.knowledge.doc.context.included()
+              : LL.knowledge.doc.context.excluded()}
           </span>
         </div>
         <Switch
           checked={context.include}
           disabled={toggle.isPending}
           onChange={(e) => toggle.mutate(e.currentTarget.checked)}
-          label={<span className="nt-visually-hidden">Include in context</span>}
+          label={<span className="nt-visually-hidden">{LL.knowledge.doc.context.switch()}</span>}
         />
       </div>
       {first && (
         <div className="kf-context-tokens" data-off={!context.include || undefined}>
-          <span className="kf-context-number">≈ {first.tokens.toLocaleString('en-US')}</span>
-          <span>tokens</span>
+          <span className="kf-context-number">
+            {LL.knowledge.doc.context.approx({ count: first.tokens })}
+          </span>
+          <span>{LL.knowledge.doc.context.tokens()}</span>
           <span className="kf-context-bar">
             <span style={{ width: `${pct}%` }} />
           </span>
-          <span>of {first.budget.toLocaleString('en-US')} repo budget</span>
+          <span>{LL.knowledge.doc.context.budget({ count: first.budget })}</span>
         </div>
       )}
       <div className="kf-context-targets" data-off={!context.include || undefined}>
-        <span>Synced to</span>
+        <span>{LL.knowledge.doc.context.syncedTo()}</span>
         {context.targets.map((t) => (
           <code key={t.target}>{t.path}</code>
         ))}
         {context.targets.length === 0 && (
-          <span className="app-muted">No sync targets are configured.</span>
+          <span className="app-muted">{LL.knowledge.doc.context.noTargets()}</span>
         )}
       </div>
     </section>

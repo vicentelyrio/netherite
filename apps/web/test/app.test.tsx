@@ -303,7 +303,7 @@ describe('editing the source of an item', () => {
       timeout: 8000,
     })
     expect(document.querySelector('.cm-hint')?.textContent).toMatch(/state/i)
-    expect(screen.getByTitle(/errors/)).not.toHaveTextContent('0')
+    expect(screen.getByTitle(/errors?/)).not.toHaveTextContent('0')
     // Nothing was saved by linting.
     expect(taskFile()).toBe(before)
   })

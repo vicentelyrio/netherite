@@ -1,6 +1,7 @@
 import { useDroppable } from '@dnd-kit/core'
 import type { BoardCard } from '@netherite/api'
 import { type StateCategory, TaskStatePill } from '@netherite/ui'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { NewTask } from '../NewTask'
 import { TaskCard } from '../TaskCard'
 
@@ -23,6 +24,7 @@ export function BoardColumn({
   /** The task being dragged, if any. */
   readonly dragging: BoardCard | undefined
 }) {
+  const { LL } = useI18nContext()
   const { setNodeRef, isOver } = useDroppable({ id: name })
   const target = isOver && dragging !== undefined && dragging.state !== name
   return (
@@ -46,7 +48,7 @@ export function BoardColumn({
           overline={overline}
         />
       ))}
-      {target && <div className="board-drop">Drop to move to {name}</div>}
+      {target && <div className="board-drop">{LL.projects.dropTo({ name })}</div>}
       <NewTask projectId={projectId} state={name} />
     </section>
   )

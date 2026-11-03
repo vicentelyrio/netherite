@@ -11,6 +11,7 @@ import {
   useState,
 } from 'react'
 import { Markdown } from '@/components/Markdown'
+import { useI18nContext } from '@/infrastructure/i18n'
 import type { LinkTarget } from './complete'
 import { counts, type Problem, placeProblems, type ServerDiagnostic } from './diagnostics'
 import { hasChanges } from './diff'
@@ -67,6 +68,7 @@ export function ItemEditor({
   onStats,
   branch,
 }: ItemEditorProps) {
+  const { LL } = useI18nContext()
   const host = useRef<HTMLDivElement>(null)
   const viewRef = useRef<EditorView | null>(null)
   const [session, dispatch] = useReducer(
@@ -196,23 +198,29 @@ export function ItemEditor({
   const dirty = isDirty(session)
 
   return (
-    <section className="ed" data-mode={mode} data-variant={variant} aria-label="Source editor">
+    <section
+      className="ed"
+      data-mode={mode}
+      data-variant={variant}
+      aria-label={LL.components.editor.label()}
+    >
       {session.conflict !== undefined && (
         <div className="ed-conflict">
           <Banner
             variant="danger"
-            title="Changed on disk"
+            title={LL.components.editor.conflictTitle()}
             actions={
               <>
                 <Button onClick={() => dispatch({ type: 'reload' })}>
-                  Reload (lose my changes)
+                  {LL.components.editor.reload()}
                 </Button>
-                <Button onClick={() => dispatch({ type: 'keep-mine' })}>Keep mine</Button>
+                <Button onClick={() => dispatch({ type: 'keep-mine' })}>
+                  {LL.components.editor.keepMine()}
+                </Button>
               </>
             }
           >
-            This file changed while you were editing it. Reloading takes the new version and drops
-            your edits; keeping yours means your next save replaces the new version.
+            {LL.components.editor.conflictText()}
           </Banner>
         </div>
       )}
@@ -221,7 +229,11 @@ export function ItemEditor({
         <div className="ed-rendered">{preview ?? <Markdown source={bodyOf(session.buffer)} />}</div>
       </div>
       <footer className="ed-status">
-        <span className="ed-count" data-kind="error" title={`${errors} errors`}>
+        <span
+          className="ed-count"
+          data-kind="error"
+          title={LL.components.editor.errors({ count: errors })}
+        >
           <Icon name="error" size={15} />
           {errors}
         </span>
@@ -229,40 +241,40 @@ export function ItemEditor({
           className="ed-count"
           data-kind="warning"
           data-on={warnings > 0 || undefined}
-          title={`${warnings} warnings`}
+          title={LL.components.editor.warnings({ count: warnings })}
         >
           <Icon name="warning" size={15} filled={warnings > 0} />
           {warnings}
         </span>
         <span className="ed-divider" aria-hidden="true" />
         <span className="ed-position">
-          Ln {position.line}, Col {position.column}
+          {LL.components.editor.position({ line: position.line, column: position.column })}
         </span>
-        <span className="app-muted">Markdown · YAML</span>
-        {changed && <span className="ed-changed">Changed since the last commit</span>}
+        <span className="app-muted">{LL.components.editor.language()}</span>
+        {changed && <span className="ed-changed">{LL.components.editor.changed()}</span>}
         <span className="ed-spacer" />
         {branch !== undefined && (
           <span className="ed-branch">
             <Icon name="commit" size={15} /> {branch}
           </span>
         )}
-        {dirty && <span className="ed-dirty">Unsaved</span>}
+        {dirty && <span className="ed-dirty">{LL.components.editor.unsaved()}</span>}
         <Button
           icon="save"
           loading={saving}
           disabled={!dirty || session.conflict !== undefined}
           onClick={() => void save()}
         >
-          Save
+          {LL.components.editor.save()}
         </Button>
         <SegmentedControl
           value={mode}
           onChange={(value) => (onModeChange ?? setLocalMode)(value as EditorMode)}
           data={[
-            { value: 'split', label: 'code' },
-            { value: 'text', label: 'text' },
+            { value: 'split', label: LL.components.editor.code() },
+            { value: 'text', label: LL.components.editor.text() },
           ]}
-          aria-label="View"
+          aria-label={LL.components.editor.view()}
         />
       </footer>
     </section>

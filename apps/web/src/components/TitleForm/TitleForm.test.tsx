@@ -1,12 +1,15 @@
 import { NetheriteProvider } from '@netherite/ui'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, test, vi } from 'vitest'
+import { I18nProvider } from '@/infrastructure/i18n'
 import { TitleForm } from './TitleForm'
 
 const show = (onSubmit = vi.fn(), onCancel = vi.fn()) => {
   render(
     <NetheriteProvider env="test">
-      <TitleForm label="New goal" onSubmit={onSubmit} onCancel={onCancel} />
+      <I18nProvider>
+        <TitleForm label="New goal" onSubmit={onSubmit} onCancel={onCancel} />
+      </I18nProvider>
     </NetheriteProvider>,
   )
   return { onSubmit, onCancel, input: screen.getByLabelText('New goal') }

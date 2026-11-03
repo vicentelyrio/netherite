@@ -2,10 +2,12 @@ import type { GoalRow } from '@netherite/api'
 import { Card } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
 import { ProgressBar, TagList } from '@/components'
+import { useI18nContext } from '@/infrastructure/i18n'
 import './GoalCard.css'
 
 /** A goal as a card: title, due date, tags and how much of it is done. */
 export function GoalCard({ goal }: { readonly goal: GoalRow }) {
+  const { LL } = useI18nContext()
   const achieved = goal.status === 'achieved'
   const progress = goal.progress ?? { done: 0, total: 0 }
   return (
@@ -14,9 +16,9 @@ export function GoalCard({ goal }: { readonly goal: GoalRow }) {
         <div className="goal-card">
           <div className="goal-card-top">
             <span className="goal-card-title">{goal.title}</span>
-            {achieved && <span className="goal-achieved">Achieved</span>}
+            {achieved && <span className="goal-achieved">{LL.goals.achieved()}</span>}
           </div>
-          {goal.due && <span className="app-muted">Due {goal.due}</span>}
+          {goal.due && <span className="app-muted">{LL.goals.due({ date: goal.due })}</span>}
           <TagList tags={goal.tags} />
           <ProgressBar
             done={achieved ? progress.total || 1 : progress.done}

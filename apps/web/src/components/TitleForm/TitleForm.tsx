@@ -1,5 +1,6 @@
 import { Button } from '@netherite/ui'
 import { type FormEvent, useState } from 'react'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { TextField } from '../TextField'
 import './TitleForm.css'
 
@@ -11,6 +12,7 @@ export interface TitleFormProps {
 
 /** Asks for a title in place, then hands it over. Escape or an empty title cancels. */
 export function TitleForm({ label, onSubmit, onCancel }: TitleFormProps) {
+  const { LL } = useI18nContext()
   const [title, setTitle] = useState('')
   const submit = (e: FormEvent) => {
     e.preventDefault()
@@ -29,7 +31,7 @@ export function TitleForm({ label, onSubmit, onCancel }: TitleFormProps) {
         autoFocus
       />
       <Button variant="primary" type="submit">
-        Create
+        {LL.components.createTitle()}
       </Button>
     </form>
   )

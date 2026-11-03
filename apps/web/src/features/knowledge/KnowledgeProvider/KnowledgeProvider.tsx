@@ -3,6 +3,7 @@ import { Banner } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { createContext, type ReactNode, useContext, useMemo, useState } from 'react'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { knowledgeQuery, useWrite } from '@/infrastructure/query'
 import { type Filters, filterKnowledge, noFilters, typeCounts } from '../filters'
 
@@ -37,6 +38,7 @@ export const useKnowledgeIndex = (): KnowledgeIndexState => {
  * title being asked for. Shows the loading and error states instead of its children.
  */
 export function KnowledgeProvider({ children }: { readonly children: ReactNode }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const query = useQuery(knowledgeQuery(api))
   const [filters, setFilters] = useState<Filters>(noFilters)
@@ -65,12 +67,12 @@ export function KnowledgeProvider({ children }: { readonly children: ReactNode }
     }
   }, [rows, filters, selected, creating, createItem])
 
-  if (query.isPending) return <div className="app-page app-muted">Loading…</div>
+  if (query.isPending) return <div className="app-page app-muted">{LL.common.loading()}</div>
   if (query.isError || value === undefined) {
     return (
       <div className="app-page">
-        <Banner variant="danger" title="Could not load knowledge">
-          Check that `netherite serve` is still running.
+        <Banner variant="danger" title={LL.knowledge.loadError()}>
+          {LL.common.serveHint()}
         </Banner>
       </div>
     )

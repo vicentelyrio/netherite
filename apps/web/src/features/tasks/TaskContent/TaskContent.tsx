@@ -1,6 +1,7 @@
 import { Banner } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { itemQuery, itemsQuery, useWrite } from '@/infrastructure/query'
 import { summaryOf } from '@/infrastructure/text'
 import type { BoardColumnInfo } from '../fields'
@@ -18,6 +19,7 @@ export function TaskContent({
   readonly id: string
   readonly columns: ReadonlyArray<BoardColumnInfo>
 }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const query = useQuery(itemQuery(api, id))
   const adrs = useQuery(itemsQuery(api, { type: 'adr' }))
@@ -53,8 +55,8 @@ export function TaskContent({
     { reload },
   )
 
-  if (query.isPending) return <p className="app-muted">Loading…</p>
-  if (query.isError) return <Banner variant="danger" title="Could not load this task" />
+  if (query.isPending) return <p className="app-muted">{LL.common.loading()}</p>
+  if (query.isError) return <Banner variant="danger" title={LL.tasks.loadError()} />
   const task = query.data
   const decisions = task.links.filter((l) => l.kind === 'implements')
   const linked = new Set(decisions.map((d) => d.id))
@@ -73,7 +75,7 @@ export function TaskContent({
         choices={choices}
         onLink={(to) => linkAdr.mutate({ to, hash: task.hash })}
       />
-      <section className="drawer-title-block" aria-label="Summary">
+      <section className="drawer-title-block" aria-label={LL.tasks.summary()}>
         <h2 className="drawer-task-title">{task.title}</h2>
         {summary !== '' && <p>{summary}</p>}
       </section>

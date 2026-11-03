@@ -6,6 +6,7 @@ import { useApi } from '@/infrastructure/api'
 import { boardQuery, itemQuery, useHealth } from '@/infrastructure/query'
 import './TaskDrawer.css'
 import { SourceEditor } from '@/features/editor'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { TaskContent } from '../TaskContent'
 
 /** A task in a drawer: its fields and checklist, and with `code` the file beside them. */
@@ -22,6 +23,7 @@ export function TaskDrawer({
   readonly initial?: 'code'
   readonly onClose: () => void
 }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const board = useQuery(boardQuery(api, projectId))
   const columns = board.data?.columns ?? []
@@ -36,7 +38,7 @@ export function TaskDrawer({
       <div className="drawer-preview">
         <TaskContent id={id} columns={columns} />
         <Link to="/items/$id" params={{ id }} className="drawer-full">
-          Open full page
+          {LL.tasks.drawer.openFull()}
         </Link>
       </div>
     )
@@ -56,13 +58,14 @@ export function TaskDrawer({
       }}
       title={
         id === undefined ? undefined : (
-          <nav className="drawer-crumbs" aria-label="Task path">
+          <nav className="drawer-crumbs" aria-label={LL.tasks.drawer.path()}>
             <Icon name="description" />
-            <span>Projects</span> › <span>{projectTitle ?? task.data?.project}</span> ›{' '}
-            <span>Tasks</span> › <strong>{file || id}</strong>
+            <span>{LL.tasks.drawer.projects()}</span> ›{' '}
+            <span>{projectTitle ?? task.data?.project}</span> ›{' '}
+            <span>{LL.tasks.drawer.tasks()}</span> › <strong>{file || id}</strong>
             {changedLines > 0 && (
               <span className="drawer-lines">
-                M {changedLines} {changedLines === 1 ? 'line' : 'lines'} changed
+                {LL.tasks.drawer.changedLines({ count: changedLines })}
               </span>
             )}
           </nav>

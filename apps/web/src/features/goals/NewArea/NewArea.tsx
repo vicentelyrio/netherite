@@ -2,6 +2,7 @@ import { Button, Icon } from '@netherite/ui'
 import { type FormEvent, useState } from 'react'
 import { TextField } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { useWrite } from '@/infrastructure/query'
 import '../NewGoal/NewGoal.css'
 import './NewArea.css'
@@ -11,6 +12,7 @@ import './NewArea.css'
  * for both. Areas already in use are offered so a typo does not make a second one.
  */
 export function NewArea({ areas }: { readonly areas: ReadonlyArray<string> }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const [adding, setAdding] = useState(false)
   const [area, setArea] = useState('')
@@ -38,30 +40,30 @@ export function NewArea({ areas }: { readonly areas: ReadonlyArray<string> }) {
   if (!adding) {
     return (
       <button type="button" className="goals-new goals-new-area" onClick={() => setAdding(true)}>
-        <Icon name="add" /> New area
+        <Icon name="add" /> {LL.goals.newArea()}
       </button>
     )
   }
   return (
-    <form className="goals-area-form" onSubmit={submit} aria-label="New area">
+    <form className="goals-area-form" onSubmit={submit} aria-label={LL.goals.newArea()}>
       <TextField
-        label="Area name"
-        placeholder="Area name"
+        label={LL.goals.areaName()}
+        placeholder={LL.goals.areaName()}
         value={area}
         onChange={setArea}
         onEscape={() => setAdding(false)}
         autoFocus
       />
-      {clash && <span className="app-muted">That area exists: the goal will join it.</span>}
+      {clash && <span className="app-muted">{LL.goals.areaExists()}</span>}
       <TextField
-        label="First goal"
-        placeholder="First goal"
+        label={LL.goals.firstGoal()}
+        placeholder={LL.goals.firstGoal()}
         value={title}
         onChange={setTitle}
         onEscape={() => setAdding(false)}
       />
       <Button variant="primary" type="submit">
-        Create area
+        {LL.goals.createArea()}
       </Button>
     </form>
   )

@@ -2,6 +2,7 @@ import type { ItemDetail } from '@netherite/api'
 import { Avatar, Icon, Menu, type StateCategory, TaskStatePill } from '@netherite/ui'
 import { TagList } from '@/components'
 import { formatDateTime } from '@/infrastructure/datetime'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { type BoardColumnInfo, field, strings } from '../fields'
 import './TaskFields.css'
 import '../shared.css'
@@ -16,6 +17,7 @@ export function TaskFields({
   readonly columns: ReadonlyArray<BoardColumnInfo>
   readonly onState: (state: string) => void
 }) {
+  const { LL } = useI18nContext()
   const fm = task.frontmatter
   const category = (columns.find((c) => c.name === task.state)?.category ?? 'todo') as StateCategory
   const createdRaw = field(fm, 'created') ?? field(fm, 'created_at')
@@ -29,10 +31,14 @@ export function TaskFields({
   return (
     <div className="drawer-meta">
       <div className="drawer-cell">
-        <span className="drawer-cell-label">State</span>
+        <span className="drawer-cell-label">{LL.tasks.fields.state()}</span>
         <Menu>
           <Menu.Target>
-            <button type="button" className="drawer-state" aria-label="Change state">
+            <button
+              type="button"
+              className="drawer-state"
+              aria-label={LL.tasks.fields.changeState()}
+            >
               <TaskStatePill state={task.state ?? ''} category={category} />
               <Icon name="expand_more" />
             </button>
@@ -47,12 +53,14 @@ export function TaskFields({
         </Menu>
       </div>
       <div className="drawer-cell">
-        <span className="drawer-cell-label">Created</span>
+        <span className="drawer-cell-label">{LL.tasks.fields.created()}</span>
         <span>{created ?? '—'}</span>
-        {typeof by === 'string' && <span className="app-muted">by {by.replace(/^@/, '')}</span>}
+        {typeof by === 'string' && (
+          <span className="app-muted">{LL.tasks.fields.by({ name: by.replace(/^@/, '') })}</span>
+        )}
       </div>
       <div className="drawer-cell">
-        <span className="drawer-cell-label">Assignees</span>
+        <span className="drawer-cell-label">{LL.tasks.fields.assignees()}</span>
         <span className="drawer-people">
           {assignees.map((a) => (
             <span key={a} className="drawer-person">
@@ -63,7 +71,7 @@ export function TaskFields({
         </span>
       </div>
       <div className="drawer-cell">
-        <span className="drawer-cell-label">Labels</span>
+        <span className="drawer-cell-label">{LL.tasks.fields.labels()}</span>
         <span className="drawer-labels">
           <TagList tags={labels} />
           {labels.length === 0 && '—'}

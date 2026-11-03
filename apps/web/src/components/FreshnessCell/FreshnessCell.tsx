@@ -1,4 +1,5 @@
 import { Icon } from '@netherite/ui'
+import { useI18nContext } from '@/infrastructure/i18n'
 import './FreshnessCell.css'
 
 export interface FreshnessCellProps {
@@ -10,26 +11,28 @@ export interface FreshnessCellProps {
 
 /** How current a doc is: fresh, a dot and the commits it is behind, or stale with a warning. */
 export function FreshnessCell({ freshness, commits }: FreshnessCellProps) {
+  const { LL } = useI18nContext()
   if (freshness === 'stale') {
     return (
       <span className="kn-fresh kn-fresh--stale">
-        <Icon name="warning" size={15} filled /> Stale · {commits} commits
+        <Icon name="warning" size={15} filled /> {LL.components.freshness.stale({ count: commits })}
       </span>
     )
   }
   if (freshness === 'drifting') {
     return (
       <span className="kn-fresh kn-fresh--drift">
-        <span className="kn-dot kn-dot--ring" /> {commits} commits behind
+        <span className="kn-dot kn-dot--ring" />{' '}
+        {LL.components.freshness.behind({ count: commits })}
       </span>
     )
   }
   if (freshness === 'fresh') {
     return (
       <span className="kn-fresh">
-        <span className="kn-dot" /> Fresh
+        <span className="kn-dot" /> {LL.components.freshness.fresh()}
       </span>
     )
   }
-  return <span className="kn-fresh kn-fresh--na">Not tracked</span>
+  return <span className="kn-fresh kn-fresh--na">{LL.components.freshness.untracked()}</span>
 }
