@@ -18,6 +18,7 @@ export {
   readActivity,
 } from './activity'
 export { type AsOfGraph, type AsOfNode, type AsOfOptions, graphAsOf } from './asof'
+export { addCapture, type Capture, capturesFile, readCaptures, removeCapture } from './captures'
 export {
   type CoChange,
   type CoChanged,

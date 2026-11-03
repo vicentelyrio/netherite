@@ -1,0 +1,23 @@
+.cb {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.cb-input {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #3a3d5c;
+  border-radius: 8px;
+  background: #18192a;
+  color: #e8e9f3;
+  font: inherit;
+  font-size: 14px;
+}
+
+.cb-input:focus {
+  border-color: #8b8cf6;
+  outline: 0;
+}

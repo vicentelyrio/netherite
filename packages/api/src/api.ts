@@ -3,6 +3,10 @@ import { HttpApi, HttpApiEndpoint, HttpApiGroup, HttpApiSchema } from 'effect/ht
 import { Conflict, Failure, Invalid, NotFound, Refused, Unavailable } from './errors'
 import {
   Board,
+  CapturePayload,
+  CaptureQuery,
+  CaptureRemoved,
+  CaptureResult,
   CheckPayload,
   CreatePayload,
   DecisionLog,
@@ -204,6 +208,16 @@ export class InboxGroup extends HttpApiGroup.make('inbox').add(
     query: InboxQuery,
     success: Inbox,
     error: [Invalid, Failure],
+  }),
+  HttpApiEndpoint.post('capture', '/inbox/captures', {
+    payload: CapturePayload,
+    success: CaptureResult,
+    error: writes,
+  }),
+  HttpApiEndpoint.delete('release', '/inbox/captures', {
+    query: CaptureQuery,
+    success: CaptureRemoved,
+    error: writes,
   }),
 ) {}
 

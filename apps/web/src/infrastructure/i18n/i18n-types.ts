@@ -2172,6 +2172,10 @@ type RootTranslation = {
 			 */
 			label: string
 			/**
+			 * C​a​p​t​u​r​e​d
+			 */
+			captured: string
+			/**
 			 * N​e​e​d​s​ ​r​e​v​i​e​w
 			 */
 			review: string
@@ -2185,6 +2189,10 @@ type RootTranslation = {
 			changes: string
 		}
 		rules: {
+			/**
+			 * C​a​p​t​u​r​e
+			 */
+			capture: string
 			/**
 			 * S​t​a​l​e​ ​d​o​c
 			 */
@@ -2213,6 +2221,20 @@ type RootTranslation = {
 			 * S​i​m​i​l​a​r​ ​t​a​g​s
 			 */
 			'similar-tag': string
+		}
+		capture: {
+			/**
+			 * C​a​p​t​u​r​e​ ​a​ ​t​h​o​u​g​h​t
+			 */
+			label: string
+			/**
+			 * C​a​p​t​u​r​e​ ​a​ ​t​h​o​u​g​h​t​,​ ​p​r​e​s​s​ ​E​n​t​e​r
+			 */
+			placeholder: string
+			/**
+			 * C​a​p​t​u​r​e
+			 */
+			add: string
 		}
 		zero: {
 			/**
@@ -2279,6 +2301,40 @@ type RootTranslation = {
 			 */
 			mergeTags: RequiredParams<'from' | 'to'>
 			/**
+			 * T​u​r​n​ ​i​n​t​o
+			 */
+			turnInto: string
+			/**
+			 * P​r​o​j​e​c​t
+			 */
+			project: string
+			/**
+			 * N​o​ ​p​r​o​j​e​c​t
+			 */
+			noProject: string
+			asType: {
+				/**
+				 * T​a​s​k
+				 */
+				task: string
+				/**
+				 * D​o​c
+				 */
+				doc: string
+				/**
+				 * A​D​R
+				 */
+				adr: string
+				/**
+				 * R​u​n​b​o​o​k
+				 */
+				runbook: string
+				/**
+				 * C​o​n​t​e​x​t
+				 */
+				context: string
+			}
+			/**
 			 * S​n​o​o​z​e
 			 */
 			snooze: string
@@ -2304,6 +2360,10 @@ type RootTranslation = {
 			 * T​a​s​k​ ​c​r​e​a​t​e​d
 			 */
 			madeTask: string
+			/**
+			 * I​t​e​m​ ​c​r​e​a​t​e​d​ ​f​r​o​m​ ​t​h​e​ ​c​a​p​t​u​r​e
+			 */
+			turned: string
 			/**
 			 * D​u​e​ ​d​a​t​e​ ​m​o​v​e​d
 			 */
@@ -4380,6 +4440,10 @@ export type TranslationFunctions = {
 			 */
 			label: () => LocalizedString
 			/**
+			 * Captured
+			 */
+			captured: () => LocalizedString
+			/**
 			 * Needs review
 			 */
 			review: () => LocalizedString
@@ -4393,6 +4457,10 @@ export type TranslationFunctions = {
 			changes: () => LocalizedString
 		}
 		rules: {
+			/**
+			 * Capture
+			 */
+			capture: () => LocalizedString
 			/**
 			 * Stale doc
 			 */
@@ -4421,6 +4489,20 @@ export type TranslationFunctions = {
 			 * Similar tags
 			 */
 			'similar-tag': () => LocalizedString
+		}
+		capture: {
+			/**
+			 * Capture a thought
+			 */
+			label: () => LocalizedString
+			/**
+			 * Capture a thought, press Enter
+			 */
+			placeholder: () => LocalizedString
+			/**
+			 * Capture
+			 */
+			add: () => LocalizedString
 		}
 		zero: {
 			/**
@@ -4484,6 +4566,40 @@ export type TranslationFunctions = {
 			 */
 			mergeTags: (arg: { from: unknown, to: unknown }) => LocalizedString
 			/**
+			 * Turn into
+			 */
+			turnInto: () => LocalizedString
+			/**
+			 * Project
+			 */
+			project: () => LocalizedString
+			/**
+			 * No project
+			 */
+			noProject: () => LocalizedString
+			asType: {
+				/**
+				 * Task
+				 */
+				task: () => LocalizedString
+				/**
+				 * Doc
+				 */
+				doc: () => LocalizedString
+				/**
+				 * ADR
+				 */
+				adr: () => LocalizedString
+				/**
+				 * Runbook
+				 */
+				runbook: () => LocalizedString
+				/**
+				 * Context
+				 */
+				context: () => LocalizedString
+			}
+			/**
 			 * Snooze
 			 */
 			snooze: () => LocalizedString
@@ -4509,6 +4625,10 @@ export type TranslationFunctions = {
 			 * Task created
 			 */
 			madeTask: () => LocalizedString
+			/**
+			 * Item created from the capture
+			 */
+			turned: () => LocalizedString
 			/**
 			 * Due date moved
 			 */

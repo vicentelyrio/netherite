@@ -71,6 +71,7 @@ describe('meta', () => {
             '/api/graph',
             '/api/lint',
             '/api/inbox',
+            '/api/inbox/captures',
             '/api/stats',
             '/api/history/decisions',
           ]),
@@ -643,6 +644,27 @@ describe('inbox', () => {
         expect(inbox.freshness).toEqual([])
         expect(inbox.errors).toEqual([])
         expect(inbox.blocked).toEqual([])
+      }),
+    )
+  })
+
+  test('captures: added at the bottom of inbox.md, listed oldest first, released one by one', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        expect((yield* s.client.inbox.inbox({ query: {} })).captures).toEqual([])
+        yield* s.client.inbox.capture({ payload: { text: 'try the new idea' } })
+        yield* s.client.inbox.capture({ payload: { text: 'second one' } })
+        const listed = yield* s.client.inbox.inbox({ query: {} })
+        expect(listed.captures.map((c) => c.text)).toEqual(['try the new idea', 'second one'])
+        const gone = yield* s.client.inbox.release({ query: { text: 'try the new idea' } })
+        expect(gone.removed).toBe(true)
+        const again = yield* s.client.inbox.release({ query: { text: 'try the new idea' } })
+        expect(again.removed).toBe(false)
+        const bad = yield* Effect.flip(s.client.inbox.capture({ payload: { text: '   ' } }))
+        expect(bad._tag).toBe('Invalid')
+        expect((yield* s.client.inbox.inbox({ query: {} })).captures.map((c) => c.text)).toEqual([
+          'second one',
+        ])
       }),
     )
   })

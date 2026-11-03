@@ -4,7 +4,7 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { useInboxState } from '../InboxProvider'
 import type { Tab } from '../triage'
 
-const tabs = ['review', 'commits', 'changes'] as const satisfies ReadonlyArray<Tab>
+const tabs = ['captured', 'review', 'commits', 'changes'] as const satisfies ReadonlyArray<Tab>
 
 /** Tabs for what needs review, what commits point at and what changed; J K E H work the list. */
 export function InboxToolbar() {

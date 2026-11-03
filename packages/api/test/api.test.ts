@@ -47,6 +47,7 @@ describe('the API definition', () => {
         '/api/history/decisions',
         '/api/history/items/{id}',
         '/api/inbox',
+        '/api/inbox/captures',
         '/api/items',
         '/api/items/{id}',
         '/api/items/{id}/checks',

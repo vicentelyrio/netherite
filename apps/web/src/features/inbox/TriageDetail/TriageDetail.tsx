@@ -1,13 +1,18 @@
 import { Button } from '@netherite/ui'
+import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-import type { Effect } from 'effect'
+import { Effect } from 'effect'
+import { useState } from 'react'
+import { SelectField } from '@/components'
 import { type Client, useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
-import { useWrite } from '@/infrastructure/query'
+import { projectsQuery, useWrite } from '@/infrastructure/query'
 import { useInboxState } from '../InboxProvider'
-import { type Raised, tabOf, tagPair, todoTitle, weekAfter } from '../triage'
+import { type Entry, tabOf, tagPair, todoTitle, weekAfter } from '../triage'
 import './TriageDetail.css'
+
+const captureTypes = ['task', 'doc', 'adr', 'runbook', 'context'] as const
 
 type Act = (client: Client) => Effect.Effect<unknown, unknown>
 
@@ -17,7 +22,11 @@ export function TriageDetail() {
   const api = useApi()
   const notices = useNotices()
   const { selected, archive, snooze, tab } = useInboxState()
-  const done = (title: string) => (item: Raised) =>
+  const projects = useQuery(projectsQuery(api)).data?.projects ?? []
+  const [chosen, setChosen] = useState<string | undefined>(undefined)
+  // Tasks belong to a project, so a capture turned into one needs it: the first, until picked.
+  const project = chosen ?? projects[0]?.id ?? ''
+  const done = (title: string) => (item: Entry) =>
     notices.notify({ variant: 'success', title, text: item.title })
   const run = useWrite(api, (a, act: Act) => a.call(act))
   if (tab === 'changes' || selected === undefined) {
@@ -30,7 +39,7 @@ export function TriageDetail() {
   const item = selected
   const go = (act: Act, title: string) => run.mutate(act, { onSuccess: () => done(title)(item) })
   const id = item.id ?? ''
-  const primary: Record<Raised['rule'], { label: string; run: () => void } | undefined> = {
+  const primary: Record<Entry['rule'], { label: string; run: () => void } | undefined> = {
     'stale-doc': {
       label: LL.inbox.actions.reviewed(),
       run: () =>
@@ -44,6 +53,7 @@ export function TriageDetail() {
           LL.inbox.done.accepted(),
         ),
     },
+    capture: undefined,
     orphan: undefined,
     'overdue-task': {
       label: LL.inbox.actions.taskDone(),
@@ -126,6 +136,42 @@ export function TriageDetail() {
             {LL.inbox.actions.moveDue()}
           </Button>
         )}
+        {item.rule === 'capture' && (
+          <SelectField
+            label={LL.inbox.actions.project()}
+            value={project}
+            options={projects.map((p) => p.id)}
+            anyLabel={LL.inbox.actions.noProject()}
+            onChange={setChosen}
+          />
+        )}
+        {item.rule === 'capture' &&
+          captureTypes.map((type) => (
+            <Button
+              key={type}
+              variant={type === 'task' ? 'primary' : 'secondary'}
+              disabled={run.isPending || (type === 'task' && project === '')}
+              onClick={() =>
+                go(
+                  (c) =>
+                    c.items
+                      .create({
+                        payload: {
+                          type,
+                          title: item.title,
+                          ...(project !== '' && (type === 'task' || type === 'adr')
+                            ? { fields: { project } }
+                            : {}),
+                        },
+                      })
+                      .pipe(Effect.andThen(() => c.inbox.release({ query: { text: item.title } }))),
+                  LL.inbox.done.turned(),
+                )
+              }
+            >
+              {LL.inbox.actions.turnInto()} {LL.inbox.actions.asType[type]()}
+            </Button>
+          ))}
         {item.rule === 'orphan' && item.id && (
           <Link to="/items/$id" params={{ id: item.id }} className="trd-link-button">
             {LL.inbox.actions.link()}

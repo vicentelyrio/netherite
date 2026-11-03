@@ -1,12 +1,27 @@
 import type { Inbox } from '@netherite/api'
 
 export type Raised = (typeof Inbox.Type)['raised'][number]
-export type Rule = Raised['rule']
-export type Tab = 'review' | 'commits' | 'changes'
+/** What an entry is about: a rule the repo raised, or a line captured in `inbox.md`. */
+export type Rule = Raised['rule'] | 'capture'
+/** A line of the Inbox: something the repo raised or a capture, in one shape. */
+export type Entry = Omit<Raised, 'rule'> & { readonly rule: Rule }
+export type Tab = 'captured' | 'review' | 'commits' | 'changes'
+
+/** A capture as an entry, keyed by its text so the selection survives a refresh. */
+export const captureEntry = (text: string): Entry => ({
+  key: `capture:${text}`,
+  rule: 'capture',
+  title: text,
+  detail: '',
+})
 
 /** What each tab holds: the repo raising work to review, or work that commits point at. */
 export const tabOf = (rule: Rule): Tab =>
-  rule === 'closing-commit' || rule === 'new-todo' ? 'commits' : 'review'
+  rule === 'capture'
+    ? 'captured'
+    : rule === 'closing-commit' || rule === 'new-todo'
+      ? 'commits'
+      : 'review'
 
 export type Hidden = Readonly<
   Record<string, { readonly kind: 'archive' } | { readonly kind: 'snooze'; readonly until: string }>
@@ -46,7 +61,7 @@ export const snoozeUntil = (now: Date) => {
 }
 
 /** The two tags of a `similar-tag` item: the second is merged into the first. */
-export const tagPair = (item: Raised) => {
+export const tagPair = (item: Pick<Entry, 'key'>) => {
   const m = /^similar-tag:(tags|labels):(.*)\|(.*)$/.exec(item.key)
   return m === null
     ? undefined

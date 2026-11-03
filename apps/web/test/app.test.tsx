@@ -971,6 +971,22 @@ describe('the Inbox', () => {
     )
   })
 
+  test('a capture goes in inbox.md, shows under Captured and turns into a task', async () => {
+    renderApp('/inbox')
+    await userEvent.type(
+      await screen.findByRole('textbox', { name: 'Capture a thought' }),
+      'look at caching{Enter}',
+    )
+    const list = await screen.findByRole('list', { name: 'Captured' })
+    expect(within(list).getByText('look at caching')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'look at caching' })).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Turn into Task' }))
+    await waitFor(() => expect(screen.queryByRole('list', { name: 'Captured' })).toBeNull())
+    const api = other()
+    const tasks = await api.call((c) => c.items.list({ query: { type: 'task', limit: 200 } }))
+    expect(tasks.items.some((t) => t.title === 'look at caching')).toBe(true)
+  })
+
   test('E archives the picked item and Undo brings it back', async () => {
     localStorage.removeItem('netherite:inbox-hidden')
     renderApp('/inbox')

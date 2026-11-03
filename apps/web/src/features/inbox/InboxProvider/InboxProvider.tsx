@@ -6,11 +6,12 @@ import { useApi } from '@/infrastructure/api'
 import { nowIso } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
-import { inboxQuery, keys, waitingCount } from '@/infrastructure/query'
+import { inboxQuery, keys, useWrite, waitingCount } from '@/infrastructure/query'
 import {
+  captureEntry,
+  type Entry,
   type Hidden,
   isHidden,
-  type Raised,
   readHidden,
   snoozeUntil,
   step,
@@ -36,17 +37,17 @@ export interface InboxState {
   readonly tab: Tab
   readonly setTab: (tab: Tab) => void
   /** What the repo raises and nobody has archived or snoozed. */
-  readonly open: ReadonlyArray<Raised>
+  readonly open: ReadonlyArray<Entry>
   /** The open items on the current tab. */
-  readonly shown: ReadonlyArray<Raised>
+  readonly shown: ReadonlyArray<Entry>
   readonly countOf: (tab: Tab) => number
   readonly snoozed: number
-  readonly selected: Raised | undefined
+  readonly selected: Entry | undefined
   readonly select: (key: string | undefined) => void
   /** J and K: move the selection down (1) or up (-1). */
   readonly move: (delta: number) => void
-  readonly archive: (item: Raised) => void
-  readonly snooze: (item: Raised) => void
+  readonly archive: (item: Entry) => void
+  readonly snooze: (item: Entry) => void
 }
 
 const Context = createContext<InboxState | undefined>(undefined)
@@ -66,13 +67,19 @@ export function InboxProvider({ children }: { readonly children: ReactNode }) {
   const [all, setAll] = useState(false)
   const notices = useNotices()
   const query = useQuery(inboxQuery(api, since))
-  const [tab, setTab] = useState<Tab>('review')
+  const [picked, setTab] = useState<Tab | undefined>(undefined)
   const [hidden, setHidden] = useState<Hidden>(readHidden)
   const [pick, select] = useState<string | undefined>(undefined)
+  const release = useWrite(api, (a, text: string) =>
+    a.call((c) => c.inbox.release({ query: { text } })),
+  )
   const data = query.data
   const triage = useMemo(() => {
     const now = Date.now()
-    const raised = data?.raised ?? []
+    const raised: ReadonlyArray<Entry> = [
+      ...(data?.captures ?? []).map((c) => captureEntry(c.text)),
+      ...(data?.raised ?? []),
+    ]
     return {
       open: raised.filter((r) => !isHidden(hidden, r.key, now)),
       snoozed: raised.filter(
@@ -92,8 +99,9 @@ export function InboxProvider({ children }: { readonly children: ReactNode }) {
     )
   }
   const inbox = query.data
+  const tab: Tab = picked ?? (triage.open.some((r) => r.rule === 'capture') ? 'captured' : 'review')
   const shown = triage.open.filter((r) => tabOf(r.rule) === tab)
-  const hide = (item: Raised, how: Hidden[string], label: string) => {
+  const hide = (item: Entry, how: Hidden[string], label: string) => {
     const before = hidden
     const next = { ...hidden, [item.key]: how }
     writeHidden(next)
@@ -146,7 +154,11 @@ export function InboxProvider({ children }: { readonly children: ReactNode }) {
           delta,
         ),
       ),
-    archive: (item) => hide(item, { kind: 'archive' }, LL.inbox.archived()),
+    archive: (item) => {
+      // A capture is a line in a file: archiving takes it out of the file.
+      if (item.rule === 'capture') release.mutate(item.title)
+      else hide(item, { kind: 'archive' }, LL.inbox.archived())
+    },
     snooze: (item) =>
       hide(item, { kind: 'snooze', until: snoozeUntil(new Date()) }, LL.inbox.snoozedUntil()),
   }

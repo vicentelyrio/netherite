@@ -251,7 +251,13 @@ export const Raised = Schema.Struct({
   date: opt(S),
   commit: opt(S),
 })
+export const CapturePayload = Schema.Struct({ text: S })
+export const CaptureQuery = { text: S }
+export const CaptureResult = Schema.Struct({ text: S })
+export const CaptureRemoved = Schema.Struct({ removed: Schema.Boolean })
 export const Inbox = Schema.Struct({
+  /** Lines in `inbox.md`, oldest first, waiting to become items. */
+  captures: Schema.Array(CaptureResult),
   /** What the repo raises, newest cause first. Rules can be switched off with `inbox.rules` in the config. */
   raised: Schema.Array(Raised),
   /** Uncommitted changes to items, from `git status`. Empty without git. */

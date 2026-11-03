@@ -1,4 +1,5 @@
 import {
+  CaptureBox,
   InboxActions,
   InboxGroups,
   InboxHeading,
@@ -12,7 +13,13 @@ import { SplitTemplate } from '@/templates'
 
 function Main() {
   const { tab } = useInboxState()
-  return tab === 'changes' ? <InboxGroups /> : <TriageList />
+  if (tab === 'changes') return <InboxGroups />
+  return (
+    <>
+      <CaptureBox />
+      <TriageList />
+    </>
+  )
 }
 
 /** The Inbox: what the repo raises for you to triage, and what changed since you last looked. */
