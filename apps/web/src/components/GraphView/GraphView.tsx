@@ -252,6 +252,8 @@ export interface GraphViewProps {
   readonly padBottom?: number
   /** Show the zoom buttons. By default the full view and wide embedded ones have them. */
   readonly zoomButtons?: boolean
+  /** Nodes that just appeared (while scrubbing time): they pulse once. */
+  readonly glow?: ReadonlySet<string> | undefined
 }
 
 /**
@@ -271,6 +273,7 @@ export function GraphView({
   pad = 60,
   padBottom,
   zoomButtons,
+  glow,
 }: GraphViewProps) {
   const { LL } = useI18nContext()
   const edgeLabel = (kind: string) =>
@@ -643,6 +646,17 @@ export function GraphView({
                 onFocus={() => setHover(p)}
                 onBlur={() => setHover(undefined)}
               >
+                {glow?.has(p.id) === true && (
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r={r + 4}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth={2}
+                    className="gv-new"
+                  />
+                )}
                 {p.id === focus ? (
                   <>
                     <circle

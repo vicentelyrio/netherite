@@ -23,6 +23,8 @@ export interface Workspace {
   readonly read: (path: string) => string
   /** `git diff` of the working tree: what the app changed since the fixture was committed. */
   readonly diff: (path?: string) => string
+  /** Runs `git` in the workspace; `date` sets both the author and committer date of a commit. */
+  readonly git: (args: string[], date?: string) => string
 }
 
 /**
@@ -70,6 +72,15 @@ export const test = base.extend<{ workspace: Workspace }>({
       dir,
       read: (path) => readFileSync(join(dir, path), 'utf8'),
       diff: (path) => git('diff', '--no-color', '-U0', ...(path ? ['--', path] : [])),
+      git: (args, date) =>
+        execFileSync('git', args, {
+          cwd: dir,
+          env: {
+            ...env,
+            ...(date ? { GIT_AUTHOR_DATE: date, GIT_COMMITTER_DATE: date } : {}),
+          },
+          encoding: 'utf8',
+        }),
     })
 
     child.kill('SIGINT')

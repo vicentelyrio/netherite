@@ -87,10 +87,12 @@ export const goalQuery = (api: Api, id: string) =>
     retry: false,
   })
 
-export const graphQuery = (api: Api) =>
+/** The graph now, or as it stood on a day (`YYYY-MM-DD`). A past day never changes, so it is kept. */
+export const graphQuery = (api: Api, asOf?: string) =>
   queryOptions({
-    queryKey: keys.graph,
-    queryFn: () => api.call((c) => c.graph.graph({ query: {} })),
+    queryKey: asOf === undefined ? keys.graph : ([...keys.graph, asOf] as const),
+    queryFn: () => api.call((c) => c.graph.graph({ query: asOf === undefined ? {} : { asOf } })),
+    ...(asOf === undefined ? {} : { staleTime: 5 * 60_000 }),
   })
 
 export const projectsQuery = (api: Api) =>

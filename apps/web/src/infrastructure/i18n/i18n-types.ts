@@ -1356,6 +1356,33 @@ type RootTranslation = {
 		 * A​l​l​ ​i​t​e​m​s​ ​a​n​d​ ​t​h​e​ ​l​i​n​k​s​ ​b​e​t​w​e​e​n​ ​t​h​e​m
 		 */
 		label: string
+		scrubber: {
+			/**
+			 * T​i​m​e
+			 */
+			label: string
+			/**
+			 * D​a​t​e
+			 */
+			date: string
+			/**
+			 * P​l​a​y
+			 */
+			play: string
+			/**
+			 * P​a​u​s​e
+			 */
+			pause: string
+			/**
+			 * T​o​d​a​y
+			 */
+			today: string
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}
+			 * @param {number} count
+			 */
+			commits: RequiredParams<'count'>
+		}
 	}
 	editor: {
 		/**
@@ -3055,6 +3082,32 @@ export type TranslationFunctions = {
 		 * All items and the links between them
 		 */
 		label: () => LocalizedString
+		scrubber: {
+			/**
+			 * Time
+			 */
+			label: () => LocalizedString
+			/**
+			 * Date
+			 */
+			date: () => LocalizedString
+			/**
+			 * Play
+			 */
+			play: () => LocalizedString
+			/**
+			 * Pause
+			 */
+			pause: () => LocalizedString
+			/**
+			 * Today
+			 */
+			today: () => LocalizedString
+			/**
+			 * {count} {{commit|commits}}
+			 */
+			commits: (arg: { count: number }) => LocalizedString
+		}
 	}
 	editor: {
 		/**

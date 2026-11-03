@@ -1,12 +1,15 @@
-import { GraphCanvas, GraphHeading } from '@/features/graph'
+import { GraphCanvas, GraphHeading, GraphScrubber, GraphTimeProvider } from '@/features/graph'
 import { CanvasTemplate } from '@/templates'
 
-/** The graph: every item and its links, over the whole screen. */
+/** The graph: every item and its links, over the whole screen, with a slider through time. */
 export function GraphPage({ focus }: { readonly focus?: string | undefined }) {
   return (
-    <CanvasTemplate
-      header={<GraphHeading focus={focus} />}
-      canvas={<GraphCanvas focus={focus} />}
-    />
+    <GraphTimeProvider>
+      <CanvasTemplate
+        header={<GraphHeading focus={focus} />}
+        canvas={<GraphCanvas focus={focus} />}
+        footer={<GraphScrubber />}
+      />
+    </GraphTimeProvider>
   )
 }

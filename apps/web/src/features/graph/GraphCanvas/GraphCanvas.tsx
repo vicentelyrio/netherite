@@ -1,15 +1,26 @@
 import { Banner, EmptyState } from '@netherite/ui'
-import { useQuery } from '@tanstack/react-query'
+import { useEffect, useMemo, useRef } from 'react'
 import { GraphView } from '@/components'
-import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
-import { graphQuery } from '@/infrastructure/query'
+import { useGraphAt, useGraphTime } from '../GraphTime'
 
 /** Every item and the links between them, full size; or why there is nothing to show. */
 export function GraphCanvas({ focus }: { readonly focus?: string | undefined }) {
   const { LL } = useI18nContext()
-  const api = useApi()
-  const query = useQuery(graphQuery(api))
+  const query = useGraphAt()
+  const { asOf } = useGraphTime()
+
+  // Nodes that were not in the picture before this date pulse once.
+  const seen = useRef<ReadonlySet<string> | undefined>(undefined)
+  const glow = useMemo(() => {
+    const before = seen.current
+    if (before === undefined || query.data === undefined || asOf === undefined) return undefined
+    return new Set(query.data.nodes.filter((n) => !before.has(n.id)).map((n) => n.id))
+  }, [query.data, asOf])
+  useEffect(() => {
+    if (query.data !== undefined) seen.current = new Set(query.data.nodes.map((n) => n.id))
+  }, [query.data])
+
   if (query.isPending) return <div className="app-page app-muted">{LL.common.loading()}</div>
   if (query.isError) {
     return (
@@ -20,7 +31,7 @@ export function GraphCanvas({ focus }: { readonly focus?: string | undefined }) 
       </div>
     )
   }
-  if (query.data.nodes.length === 0) {
+  if (query.data.nodes.length === 0 && asOf === undefined) {
     return (
       <div className="app-page">
         <EmptyState icon="hub" title={LL.graph.empty.title()} description={LL.graph.empty.text()} />
@@ -36,6 +47,7 @@ export function GraphCanvas({ focus }: { readonly focus?: string | undefined }) 
       pad={150}
       padBottom={70}
       label={LL.graph.label()}
+      glow={glow}
     />
   )
 }

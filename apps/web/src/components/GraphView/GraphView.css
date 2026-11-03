@@ -326,3 +326,27 @@
 .gv-filter label:has(:focus-visible) {
   outline: 1px solid #a5a7ff;
 }
+
+/* A node that just appeared pulses once, so growth can be followed while the date moves. */
+.gv-new {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gv-new 900ms ease-out 1;
+  pointer-events: none;
+}
+@keyframes gv-new {
+  from {
+    opacity: 1;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gv-new {
+    animation: none;
+    opacity: 0;
+  }
+}

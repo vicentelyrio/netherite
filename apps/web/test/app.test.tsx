@@ -1067,3 +1067,13 @@ describe('Tags', () => {
     expect(within(row).getAllByRole('button', { name: 'Rename' }).at(-1)).toBeDisabled()
   })
 })
+
+describe('the graph scrubber', () => {
+  test('is shown over the graph, on today', async () => {
+    renderApp('/graph')
+    const date = await screen.findByRole('slider', { name: 'Date' })
+    expect(date).toBeTruthy()
+    expect((screen.getByRole('button', { name: 'Today' }) as HTMLButtonElement).disabled).toBe(true)
+    expect(screen.getByRole('button', { name: 'Play' })).toBeTruthy()
+  })
+})

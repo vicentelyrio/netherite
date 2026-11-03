@@ -382,6 +382,14 @@ const en = {
       text: 'Add goals, projects and tasks and they show up here.',
     },
     label: 'All items and the links between them',
+    scrubber: {
+      label: 'Time',
+      date: 'Date',
+      play: 'Play',
+      pause: 'Pause',
+      today: 'Today',
+      commits: '{count:number} {{commit|commits}}',
+    },
   },
   editor: { loadError: 'Could not load the source', loading: 'Loading the source…' },
   goals: {
