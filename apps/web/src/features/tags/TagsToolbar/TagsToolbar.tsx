@@ -53,6 +53,23 @@ export function TagsToolbar() {
         value={view}
         onChange={setView}
       />
+      {view === 'map' && (
+        <ul className="tgt-legend" aria-label={LL.tags.legend.label()}>
+          <li>
+            <span className="tgt-key" data-kind="small" />
+            <span className="tgt-key" data-kind="big" />
+            {LL.tags.legend.size()}
+          </li>
+          <li>
+            <span className="tgt-key" data-kind="thick" />
+            {LL.tags.legend.thickness()}
+          </li>
+          <li>
+            <span className="tgt-key" data-kind="dup" />
+            {LL.tags.legend.duplicate()}
+          </li>
+        </ul>
+      )}
     </>
   )
 }

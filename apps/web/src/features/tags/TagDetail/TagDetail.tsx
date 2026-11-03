@@ -11,6 +11,13 @@ import { grepFor, groupsOf, keyOf, recentIds } from '../rules'
 import { useTags } from '../TagsProvider'
 import './TagDetail.css'
 
+const usedKinds = [
+  { key: 'goals', color: '#8f91f2' },
+  { key: 'projects', color: '#3ba474' },
+  { key: 'tasks', color: '#d9a646' },
+  { key: 'docs', color: '#8fc3f2' },
+] as const
+
 /** The tag picked on the map or in the list: where it is used, what it goes with, and what to do with it. */
 export function TagDetail() {
   const { LL } = useI18nContext()
@@ -41,11 +48,36 @@ export function TagDetail() {
       </header>
 
       <h3 className="td-h">{LL.tags.detail.usedIn()}</h3>
+      <div className="td-bar" aria-hidden="true">
+        {usedKinds.map((k) =>
+          g[k.key] === 0 ? null : (
+            <span
+              key={k.key}
+              style={{
+                width: `${(g[k.key] / Math.max(1, selected.total)) * 100}%`,
+                background: k.color,
+              }}
+            />
+          ),
+        )}
+      </div>
       <ul className="td-used">
-        <li>{LL.tags.detail.goals({ count: g.goals })}</li>
-        <li>{LL.tags.detail.projects({ count: g.projects })}</li>
-        <li>{LL.tags.detail.tasks({ count: g.tasks })}</li>
-        <li>{LL.tags.detail.docs({ count: g.docs })}</li>
+        <li style={{ opacity: g.goals ? 1 : 0.45 }}>
+          <i style={{ background: usedKinds[0]?.color }} />
+          {LL.tags.detail.goals({ count: g.goals })}
+        </li>
+        <li style={{ opacity: g.projects ? 1 : 0.45 }}>
+          <i style={{ background: usedKinds[1]?.color }} />
+          {LL.tags.detail.projects({ count: g.projects })}
+        </li>
+        <li style={{ opacity: g.tasks ? 1 : 0.45 }}>
+          <i style={{ background: usedKinds[2]?.color }} />
+          {LL.tags.detail.tasks({ count: g.tasks })}
+        </li>
+        <li style={{ opacity: g.docs ? 1 : 0.45 }}>
+          <i style={{ background: usedKinds[3]?.color }} />
+          {LL.tags.detail.docs({ count: g.docs })}
+        </li>
       </ul>
 
       {selected.often.length > 0 && (
@@ -59,7 +91,15 @@ export function TagDetail() {
                 className="td-chip"
                 onClick={() => select(keyOf(o))}
               >
-                {o.name} <span>{o.count}</span>
+                <span className="td-chip-name">{o.name}</span>
+                <span className="td-chip-bar" aria-hidden="true">
+                  <span
+                    style={{
+                      width: `${(o.count / Math.max(1, ...selected.often.map((x) => x.count))) * 100}%`,
+                    }}
+                  />
+                </span>
+                <span className="td-chip-n">{LL.tags.detail.shared({ count: o.count })}</span>
               </button>
             ))}
           </div>

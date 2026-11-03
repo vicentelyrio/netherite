@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { createContext, type ReactNode, useContext, useState } from 'react'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
-import { decisionsQuery, knowledgeQuery } from '@/infrastructure/query'
+import { decisionsQuery, knowledgeQuery, projectsQuery } from '@/infrastructure/query'
 import { type Lane, lanesOf } from '../lanes'
 
 export interface DecisionState {
@@ -34,6 +34,7 @@ export function DecisionProvider({ children }: { readonly children: ReactNode })
   const api = useApi()
   const knowledge = useQuery(knowledgeQuery(api))
   const decisions = useQuery(decisionsQuery(api))
+  const projects = useQuery(projectsQuery(api))
   const [project, setProject] = useState('')
 
   if (knowledge.isPending || decisions.isPending) {
@@ -49,9 +50,10 @@ export function DecisionProvider({ children }: { readonly children: ReactNode })
     )
   }
   const transitions = decisions.data?.transitions ?? []
+  const titles = new Map((projects.data?.projects ?? []).map((p) => [p.id, p.title]))
   const value: DecisionState = {
-    all: lanesOf(knowledge.data.items, transitions),
-    lanes: lanesOf(knowledge.data.items, transitions, project),
+    all: lanesOf(knowledge.data.items, transitions, '', titles),
+    lanes: lanesOf(knowledge.data.items, transitions, project, titles),
     project,
     setProject,
     noGit: decisions.isError && decisions.error instanceof Unavailable,

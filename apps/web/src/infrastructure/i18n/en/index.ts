@@ -314,6 +314,12 @@ const en = {
       zoomOut: 'Zoom out',
       fit: 'Fit to screen',
     },
+    legend: {
+      label: 'How to read the map',
+      size: 'Size = items tagged',
+      thickness: 'Thickness = tagged together',
+      duplicate: 'Likely duplicate',
+    },
     detail: {
       title: 'Tag details',
       pick: 'Pick a tag to see where it is used.',
@@ -323,6 +329,7 @@ const en = {
       tasks: '{count:number} {{task|tasks}}',
       docs: '{count:number} {{doc|docs}}',
       often: 'Often tagged with',
+      shared: '{count:number} shared',
       recent: 'Recent items',
       grep: 'The same search by hand',
       mergeInto: 'Merge into',

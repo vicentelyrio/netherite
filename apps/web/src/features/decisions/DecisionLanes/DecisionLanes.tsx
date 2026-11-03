@@ -73,7 +73,7 @@ export function DecisionLanes() {
         <section key={lane.project} className="dl-lane" aria-label={lane.project}>
           <h2 className="dl-lane-head">
             <span className="dl-lane-dot" />
-            {lane.project}
+            {lane.title}
             <span className="app-muted">
               {LL.decisions.adrs({ count: lane.adrs })}
               {lane.chains > 0 ? ` · ${LL.decisions.chains({ count: lane.chains })}` : ''}

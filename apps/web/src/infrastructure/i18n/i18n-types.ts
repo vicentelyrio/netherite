@@ -1159,6 +1159,24 @@ type RootTranslation = {
 			 */
 			fit: string
 		}
+		legend: {
+			/**
+			 * H​o​w​ ​t​o​ ​r​e​a​d​ ​t​h​e​ ​m​a​p
+			 */
+			label: string
+			/**
+			 * S​i​z​e​ ​=​ ​i​t​e​m​s​ ​t​a​g​g​e​d
+			 */
+			size: string
+			/**
+			 * T​h​i​c​k​n​e​s​s​ ​=​ ​t​a​g​g​e​d​ ​t​o​g​e​t​h​e​r
+			 */
+			thickness: string
+			/**
+			 * L​i​k​e​l​y​ ​d​u​p​l​i​c​a​t​e
+			 */
+			duplicate: string
+		}
 		detail: {
 			/**
 			 * T​a​g​ ​d​e​t​a​i​l​s
@@ -1196,6 +1214,11 @@ type RootTranslation = {
 			 * O​f​t​e​n​ ​t​a​g​g​e​d​ ​w​i​t​h
 			 */
 			often: string
+			/**
+			 * {​c​o​u​n​t​}​ ​s​h​a​r​e​d
+			 * @param {number} count
+			 */
+			shared: RequiredParams<'count'>
 			/**
 			 * R​e​c​e​n​t​ ​i​t​e​m​s
 			 */
@@ -3753,6 +3776,24 @@ export type TranslationFunctions = {
 			 */
 			fit: () => LocalizedString
 		}
+		legend: {
+			/**
+			 * How to read the map
+			 */
+			label: () => LocalizedString
+			/**
+			 * Size = items tagged
+			 */
+			size: () => LocalizedString
+			/**
+			 * Thickness = tagged together
+			 */
+			thickness: () => LocalizedString
+			/**
+			 * Likely duplicate
+			 */
+			duplicate: () => LocalizedString
+		}
 		detail: {
 			/**
 			 * Tag details
@@ -3786,6 +3827,10 @@ export type TranslationFunctions = {
 			 * Often tagged with
 			 */
 			often: () => LocalizedString
+			/**
+			 * {count} shared
+			 */
+			shared: (arg: { count: number }) => LocalizedString
 			/**
 			 * Recent items
 			 */

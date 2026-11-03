@@ -31,6 +31,8 @@ export interface CommitCardData {
 
 export interface Lane {
   readonly project: string
+  /** The project's name, for the lane's heading; its id when the name is not known. */
+  readonly title: string
   readonly adrs: number
   readonly chains: number
   /** Newest first. */
@@ -47,6 +49,7 @@ export const lanesOf = (
   rows: ReadonlyArray<KnowledgeRow>,
   transitions: ReadonlyArray<Transition>,
   only = '',
+  titles: ReadonlyMap<string, string> = new Map(),
 ): Lane[] => {
   const adrs = rows.filter((r) => r.type === 'adr')
   const byId = new Map(adrs.map((r) => [r.id, r]))
@@ -92,7 +95,13 @@ export const lanesOf = (
         })
         .sort((a, b) => b.date.localeCompare(a.date))
       const chains = list.filter((a) => a.supersedes.length > 0).length
-      return { project, adrs: list.length, chains, commits: cards }
+      return {
+        project,
+        title: titles.get(project) ?? project,
+        adrs: list.length,
+        chains,
+        commits: cards,
+      }
     })
 }
 
