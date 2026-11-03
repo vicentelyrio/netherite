@@ -1,0 +1,1 @@
+export { GoalsHeading } from './GoalsHeading'

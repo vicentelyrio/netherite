@@ -1,5 +1,5 @@
 import '@netherite/ui/styles.css'
-import './app.css'
+import '@/infrastructure/styles/base.css'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { readConfig } from '@/infrastructure/config'

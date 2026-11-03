@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { diffLines, hasChanges } from '@/components/ItemEditor/diff'
+import { diffLines, hasChanges } from './diff'
 
 const set = (c: ReadonlySet<number>) => [...c].sort((a, b) => a - b)
 const diff = (a: string, b: string) => {

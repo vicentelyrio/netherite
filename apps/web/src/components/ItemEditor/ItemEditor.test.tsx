@@ -4,8 +4,8 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import { describe, expect, test, vi } from 'vitest'
-import { changesField, problemsField } from '@/components/ItemEditor/extensions'
-import { bodyOf, ItemEditor, type ItemEditorProps } from '@/components/ItemEditor/ItemEditor'
+import { changesField, problemsField } from './extensions'
+import { bodyOf, ItemEditor, type ItemEditorProps } from './ItemEditor'
 
 const text = `---
 id: TASK-00001

@@ -1,0 +1,20 @@
+.app-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nt-layout-card-gap-list);
+  margin-bottom: var(--nt-space-6);
+}
+
+.app-row {
+  display: flex;
+  align-items: center;
+  gap: var(--nt-space-3);
+}
+
+.app-row-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

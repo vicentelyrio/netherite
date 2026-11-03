@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { counts, placeProblems, type ServerDiagnostic } from '@/components/ItemEditor/diagnostics'
+import { counts, placeProblems, type ServerDiagnostic } from './diagnostics'
 
 const text = '---\nid: TASK-00001\nstate: nonsense\nrelated: \n---\n\nSee [[TASK-09999]] here.\n'
 const d = (

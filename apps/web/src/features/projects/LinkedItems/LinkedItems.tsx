@@ -1,6 +1,7 @@
 import type { Board } from '@netherite/api'
 import { Card, type ItemTypeName, TypeBadge } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
+import './LinkedItems.css'
 
 /** The items of some types that link to a project: its docs, or its decisions and context. */
 export function LinkedItems({

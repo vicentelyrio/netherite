@@ -21,7 +21,7 @@ export function ProjectsEntry() {
     [...projects].sort((a, b) => open(b) - open(a) || a.id.localeCompare(b.id))[0]
   if (target === undefined) {
     return (
-      <div className="app-page app-page--wide">
+      <div className="app-page">
         <EmptyState
           icon="task_alt"
           title="No projects yet"

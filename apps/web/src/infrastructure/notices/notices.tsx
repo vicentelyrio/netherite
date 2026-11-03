@@ -1,5 +1,6 @@
 import { Banner, type BannerVariant, Button } from '@netherite/ui'
 import { createContext, type ReactNode, useCallback, useContext, useMemo, useState } from 'react'
+import './notices.css'
 
 export interface Notice {
   readonly id: number

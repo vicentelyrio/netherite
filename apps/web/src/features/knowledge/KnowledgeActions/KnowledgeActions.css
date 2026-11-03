@@ -14,3 +14,10 @@
 .kn-link-button:hover {
   background: #34365a;
 }
+
+.kn-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 40px;
+}

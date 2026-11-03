@@ -1,12 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import {
-  fitTo,
-  layout,
-  live,
-  neighbourhood,
-  subgraph,
-  toGraphology,
-} from '@/components/GraphView/layout'
+import { fitTo, layout, live, neighbourhood, subgraph, toGraphology } from './layout'
 
 const data = {
   nodes: [

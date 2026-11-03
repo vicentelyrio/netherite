@@ -1,6 +1,6 @@
 import { QueryClient } from '@tanstack/react-query'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-import { followServer, invalidationsFor } from '@/infrastructure/live'
+import { followServer, invalidationsFor } from './live'
 
 describe('what each event makes stale', () => {
   test('item changes refresh lists, those items, and everything derived from items', () => {

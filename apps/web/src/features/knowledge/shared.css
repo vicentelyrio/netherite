@@ -90,3 +90,8 @@
   line-height: 18px;
   color: #b9bcd3;
 }
+
+.kn-file-row .kn-mono {
+  flex: 1;
+  color: #e8e9f3;
+}
