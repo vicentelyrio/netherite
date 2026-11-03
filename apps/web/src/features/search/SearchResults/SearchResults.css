@@ -1,0 +1,29 @@
+.sp-results {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 8px 8px;
+  max-height: 640px;
+  overflow: auto;
+}
+
+.sp-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+  padding: 6px 10px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #969ab8;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.sp-empty {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #969ab8;
+  font-size: 14px;
+}

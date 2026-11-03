@@ -1,0 +1,98 @@
+.sp-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sp-row[data-hi] {
+  background: #2e3148;
+}
+
+.sp-glyph {
+  width: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.sp-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sp-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sp-id {
+  font-family: var(--nt-font-mono, monospace);
+  font-size: 12px;
+  color: #d2a8f0;
+}
+
+.sp-name {
+  font-size: 15px;
+  line-height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sp-name[data-old] {
+  color: #b9bcd3;
+  text-decoration: line-through;
+}
+
+.sp-name mark {
+  background: rgba(165, 167, 255, 0.22);
+  color: #e8e9f3;
+  border-radius: 3px;
+  padding: 0 1px;
+}
+
+.sp-snip {
+  font-size: 13px;
+  line-height: 18px;
+  color: #b9bcd3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sp-status {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgba(150, 154, 184, 0.16);
+  color: #b9bcd3;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.sp-status[data-s="accepted"],
+.sp-status[data-s="done"] {
+  background: rgba(44, 194, 126, 0.14);
+  color: #2cc27e;
+}
+
+.sp-status[data-s="proposed"] {
+  background: rgba(165, 167, 255, 0.14);
+  color: #a5a7ff;
+}
+
+.sp-meta {
+  min-width: 84px;
+  text-align: right;
+  font-size: 12px;
+  color: #969ab8;
+}

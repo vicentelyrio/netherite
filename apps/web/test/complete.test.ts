@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { linkOptions, openWikiLink } from '../src/editor/complete'
+import { linkOptions, openWikiLink } from '@/components/ItemEditor/complete'
 
 const targets = [
   { id: 'ADR-00001', title: 'Callbacks', type: 'adr' },

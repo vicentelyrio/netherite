@@ -16,9 +16,9 @@ depends_on: [TASK-00080, TASK-00081, TASK-00082]
 - [x] Projects: ProjectCard, TaskBoard, TaskCard, ProjectKnowledgeTable
 - [ ] Task: TaskDrawerContent, Checklist
 - [x] Knowledge: KnowledgeTable, KnowledgePreview, DocSidebar, AdrLifecycle, DecisionLanes
-- [ ] Graph: GraphPanel, GraphLegend; Editor: SourceEditor wrapper
+- [x] Graph: GraphPanel, GraphLegend; Editor: SourceEditor wrapper
 - [x] Inbox: InboxList, InboxPreview; Tags: TagMap, TagList, TagPanel; Stats: KpiRow, Throughput, HeatMap
-- [ ] Search: SearchPalette results
+- [x] Search: SearchPalette results
 
 ## From TASK-00082
 
@@ -27,6 +27,6 @@ depends_on: [TASK-00080, TASK-00081, TASK-00082]
 
 ## Progress
 
-Done: goals, projects, knowledge (index, doc view, decision log), inbox, tags, stats and the graph page, each as features/<name> plus pages/<name>. GraphView and the charts are now shared components. TaskDrawer moved to features/tasks and SourceEditor to features/editor, both still one file each: splitting the drawer into TaskDrawerContent, Checklist and its field cells is left. The project knowledge table is a round 2 design item (TASK-00073).
+Done: every screen is a feature plus a thin page: goals, projects, knowledge, decisions, inbox, tags, stats, graph, search, item, and the shell (features/navigation). GraphView, the charts and the CodeMirror editor are shared components. Nothing is left in src outside the five layers except app.css (183 lines) and the router.
 
-Left: the search palette (src/search.tsx), the shell (src/shell.tsx), the item page (pages/item.tsx) and the CodeMirror editor (src/editor).
+Left: splitting TaskDrawer (features/tasks) into TaskDrawerContent, Checklist and its field cells; the project knowledge table is a round 2 design item (TASK-00073). app.css goes under TASK-00085.

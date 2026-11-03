@@ -4,8 +4,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createContext, type ReactNode, useContext, useState } from 'react'
 import { useApi } from '@/infrastructure/api'
 import { nowIso } from '@/infrastructure/datetime'
-import { inboxQuery, keys } from '@/infrastructure/query'
-import { lastSeen, markSeen, waitingCount } from '../waiting'
+import { inboxQuery, keys, waitingCount } from '@/infrastructure/query'
+import { lastSeen, markSeen } from '../waiting'
 
 export interface InboxState {
   readonly inbox: typeof Inbox.Type

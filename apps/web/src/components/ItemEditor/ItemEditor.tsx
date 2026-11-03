@@ -16,6 +16,7 @@ import { counts, type Problem, placeProblems, type ServerDiagnostic } from './di
 import { hasChanges } from './diff'
 import { changesField, editorExtensions, setHead, setProblems } from './extensions'
 import { isDirty, reduce, startSession, type Version } from './session'
+import './ItemEditor.css'
 
 export type EditorMode = 'split' | 'text'
 

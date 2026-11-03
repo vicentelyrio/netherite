@@ -7,6 +7,8 @@ export { type FilterOption, FilterTabs, type FilterTabsProps } from './FilterTab
 export { FreshnessCell, type FreshnessCellProps } from './FreshnessCell'
 export { GraphView, type GraphViewProps } from './GraphView'
 export { GroupCard, type GroupCardProps } from './GroupCard'
+export { Highlight } from './Highlight'
+export { bodyOf, ItemEditor, type ItemEditorProps } from './ItemEditor'
 export { LinkRow, type LinkRowProps } from './LinkRow'
 export * from './Markdown'
 export { ProgressBar, type ProgressBarProps } from './ProgressBar'

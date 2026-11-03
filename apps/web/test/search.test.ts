@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { arrange, groupOf, type SearchHit, targetOf } from '../src/search'
+import { arrange, groupOf, type SearchHit, targetOf } from '@/features/search'
 
 const hit = (id: string, type: string, extra: Partial<SearchHit> = {}): SearchHit => ({
   id,

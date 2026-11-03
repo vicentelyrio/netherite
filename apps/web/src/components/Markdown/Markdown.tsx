@@ -5,6 +5,7 @@ import { toJsxRuntime } from 'hast-util-to-jsx-runtime'
 import type { ComponentProps, MouseEvent, ReactElement } from 'react'
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime'
 import remarkRehype from 'remark-rehype'
+import './Markdown.css'
 
 const itemId = /^[A-Z]{2,8}-\d{3,}$/
 

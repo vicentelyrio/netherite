@@ -1,7 +1,7 @@
 import { Banner } from '@netherite/ui'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { type ReactNode, useMemo } from 'react'
-import { ItemEditor, type ItemEditorProps } from '@/editor/ItemEditor'
+import { ItemEditor, type ItemEditorProps } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useNotices } from '@/infrastructure/notices'
 import { itemsQuery, keys, noticeFor, sourceQuery } from '@/infrastructure/query'

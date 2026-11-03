@@ -14,12 +14,12 @@ import { InboxPage } from './pages/inbox'
 import { ItemPage } from './pages/item'
 import { KnowledgePage } from './pages/knowledge'
 import { ProjectPage, ProjectsEntryPage } from './pages/projects'
+import { ShellPage } from './pages/shell'
 import { StatsPage } from './pages/stats'
 import { TagsPage } from './pages/tags'
-import { Shell } from './shell'
 
 const root = createRootRoute({
-  component: Shell,
+  component: ShellPage,
   notFoundComponent: () => (
     <EmptyState icon="search_off" title="Nothing here" description="That page does not exist." />
   ),

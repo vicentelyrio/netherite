@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { isDirty, reduce, startSession, type Version } from '../src/editor/session'
+import { isDirty, reduce, startSession, type Version } from '@/components/ItemEditor/session'
 
 const v = (text: string, hash = `h-${text}`): Version => ({ text, hash })
 
