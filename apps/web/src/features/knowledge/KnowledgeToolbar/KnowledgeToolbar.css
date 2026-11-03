@@ -1,0 +1,55 @@
+.kn-sort select {
+  background: transparent;
+  border: 0;
+  color: #e8e9f3;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.kn-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px 0 10px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid #3a3d58;
+  color: #b9bcd3;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.kn-pill span {
+  font-weight: 500;
+  color: #969ab8;
+}
+
+.kn-pill[aria-pressed="true"] {
+  background: #34365a;
+  border-color: #7f82ea;
+}
+
+.kn-pill--stale {
+  color: #e2ae4c;
+}
+
+.kn-pill--stale span {
+  color: #ddb168;
+}
+
+.kn-pill--stale[aria-pressed="true"] {
+  background: rgba(226, 174, 76, 0.16);
+  border-color: #e2ae4c;
+}
+
+.kn-sort {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #969ab8;
+}

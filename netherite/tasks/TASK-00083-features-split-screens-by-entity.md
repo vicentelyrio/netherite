@@ -27,6 +27,6 @@ depends_on: [TASK-00080, TASK-00081, TASK-00082]
 
 ## Progress
 
-Done: goals and projects (features/goals, features/projects, pages/goals, pages/projects). TaskDrawer moved to features/tasks and SourceEditor to features/editor, both still one file each: splitting the drawer into TaskDrawerContent, Checklist and its field cells is left. The project knowledge table is a round 2 design item (TASK-00073).
+Done: goals, projects and the knowledge index (features/goals, features/projects, features/knowledge, matching pages). TaskDrawer moved to features/tasks and SourceEditor to features/editor, both still one file each: splitting the drawer into TaskDrawerContent, Checklist and its field cells is left. The project knowledge table is a round 2 design item (TASK-00073).
 
-Left: knowledge (index, preview, doc view, decision log), graph, inbox, tags, stats, search, item page.
+Left: knowledge doc view (pages/knowledge-item.tsx: Lifecycle, SupersessionChain, ContextCard, KnowledgeFrame) and decision log (pages/decisions.tsx), item page, graph, inbox, tags, stats, search.

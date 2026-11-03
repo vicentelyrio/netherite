@@ -1,0 +1,70 @@
+import type { KnowledgeRow as Row } from '@netherite/api'
+import {
+  type AdrStatus,
+  AdrStatusPill,
+  type ItemTypeName,
+  OrphanTag,
+  TypeBadge,
+} from '@netherite/ui'
+import { Link } from '@tanstack/react-router'
+import { FreshnessCell } from '@/components'
+import { ago } from '@/infrastructure/datetime'
+import '../shared.css'
+import './KnowledgeRow.css'
+
+/** One file in the index: type, title and path, status, project, age and freshness. */
+export function KnowledgeRow({
+  row,
+  selected,
+  onSelect,
+}: {
+  readonly row: Row
+  readonly selected: boolean
+  readonly onSelect: () => void
+}) {
+  const superseded = row.status === 'superseded'
+  return (
+    // biome-ignore lint/a11y/useSemanticElements: the row holds links, so it cannot be a button
+    <div
+      className="kn-row"
+      role="button"
+      tabIndex={0}
+      aria-pressed={selected}
+      data-selected={selected || undefined}
+      onClick={onSelect}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onSelect()}
+    >
+      <TypeBadge type={row.type as ItemTypeName} />
+      <div className="kn-title-cell">
+        <div className="kn-title-line">
+          <Link
+            to="/items/$id"
+            params={{ id: row.id }}
+            className="kn-id"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {row.id}
+          </Link>
+          <span className="kn-title" data-superseded={superseded || undefined}>
+            {row.title}
+          </span>
+          {row.orphan && <OrphanTag />}
+        </div>
+        <span className="kn-mono">{row.path}</span>
+      </div>
+      <div>
+        {row.type === 'adr' && row.status !== undefined ? (
+          <AdrStatusPill status={row.status as AdrStatus} />
+        ) : (
+          <span className="app-muted">—</span>
+        )}
+      </div>
+      <span className="kn-project">
+        {row.projects[0] !== undefined && <span className="kn-project-dot" />}
+        {row.projects[0] ?? '—'}
+      </span>
+      <span className="kn-modified">{ago(row.date)}</span>
+      <FreshnessCell freshness={row.freshness} commits={row.commits} />
+    </div>
+  )
+}

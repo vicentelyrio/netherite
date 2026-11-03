@@ -2,7 +2,7 @@ import { Banner, Button, EmptyState, type ItemTypeName, TypeBadge } from '@nethe
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Breadcrumbs, GroupCard } from '@/components'
+import { Breadcrumbs, FreshnessCell, GroupCard } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { ago, nowIso } from '@/infrastructure/datetime'
 import { inboxQuery, keys } from '@/infrastructure/query'
@@ -152,13 +152,7 @@ export function InboxPage() {
                 key={f.id}
                 id={f.id}
                 title={f.title}
-                meta={
-                  <span className="kn-fresh kn-fresh--stale">
-                    {f.state === 'stale'
-                      ? `Stale · ${f.commits} commits`
-                      : `${f.commits} commits behind`}
-                  </span>
-                }
+                meta={<FreshnessCell freshness={f.state} commits={f.commits} />}
               />
             ))}
           </GroupCard>

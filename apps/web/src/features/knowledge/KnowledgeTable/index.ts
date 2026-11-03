@@ -1,0 +1,1 @@
+export { KnowledgeTable } from './KnowledgeTable'

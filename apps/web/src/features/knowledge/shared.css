@@ -1,0 +1,8 @@
+.kn-cols,
+.kn-row {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 140px 150px 100px 160px;
+  column-gap: 16px;
+  align-items: center;
+  padding: 0 16px;
+}

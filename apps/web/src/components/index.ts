@@ -1,6 +1,7 @@
 export { Breadcrumbs, type BreadcrumbsProps } from './Breadcrumbs'
 export { CardColumn } from './CardColumn'
 export { type FilterOption, FilterTabs, type FilterTabsProps } from './FilterTabs'
+export { FreshnessCell, type FreshnessCellProps } from './FreshnessCell'
 export { GroupCard, type GroupCardProps } from './GroupCard'
 export * from './Markdown'
 export { ProgressBar, type ProgressBarProps } from './ProgressBar'

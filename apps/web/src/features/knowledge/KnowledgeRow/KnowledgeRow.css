@@ -1,0 +1,66 @@
+.kn-row {
+  height: 48px;
+  border-top: 1px solid #2a2c42;
+  cursor: pointer;
+  outline: none;
+}
+
+.kn-row:hover {
+  background: #25273c;
+}
+
+.kn-row[data-selected] {
+  background: #2a2d48;
+}
+
+.kn-row:focus-visible {
+  outline: 1px solid #a5a7ff;
+  outline-offset: -1px;
+}
+
+.kn-title-cell {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.kn-title-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.kn-title {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kn-title[data-superseded] {
+  color: #b9bcd3;
+  text-decoration: line-through;
+}
+
+.kn-project {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #b9bcd3;
+}
+
+.kn-project-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3ba474;
+}
+
+.kn-modified {
+  font-size: 13px;
+  color: #b9bcd3;
+}

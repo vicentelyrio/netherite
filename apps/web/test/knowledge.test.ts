@@ -1,6 +1,6 @@
 import type { KnowledgeRow } from '@netherite/api'
 import { describe, expect, test } from 'vitest'
-import { filterKnowledge, noFilters, typeCounts } from '../src/pages/knowledge'
+import { filterKnowledge, noFilters, typeCounts } from '@/features/knowledge'
 
 const row = (id: string, extra: Partial<KnowledgeRow> = {}): KnowledgeRow => ({
   id,
