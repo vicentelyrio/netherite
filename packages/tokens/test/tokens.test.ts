@@ -23,6 +23,9 @@ import {
   scaleOf,
   space,
   stateCategories,
+  statusGlyph,
+  statusNames,
+  statusOfCategory,
   stylesheet,
   textStyle,
   tint,
@@ -349,6 +352,20 @@ describe('type, space and radii match T1', () => {
     expect(variables()['--nt-grid-columns']).toBe('12')
     expect(variables()['--nt-grid-gutter']).toBe('24px')
     expect(variables()['--nt-grid-margin-start']).toBe('96px')
+  })
+
+  test('status: four states, set by the state category, drawn by fill and never by hue', () => {
+    expect(statusNames).toEqual(['backlog', 'progress', 'hold', 'done'])
+    expect(statusOfCategory).toEqual({
+      todo: 'backlog',
+      active: 'progress',
+      blocked: 'hold',
+      done: 'done',
+    })
+    const v = variables()
+    expect(v['--nt-status-hold']).toBe(statusGlyph.holdFill)
+    expect(v['--nt-status-halo-gap']).toBe('1.5px')
+    expect(v['--nt-status-done-opacity']).toBe('0.8')
   })
 
   test('line heights leave room', () => {

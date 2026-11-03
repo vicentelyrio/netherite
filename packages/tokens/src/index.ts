@@ -44,3 +44,4 @@ export {
   textStyle,
   zIndex,
 } from './scale'
+export { type StatusName, statusGlyph, statusNames, statusOfCategory } from './status'

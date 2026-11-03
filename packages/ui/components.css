@@ -715,3 +715,13 @@
     var(--nt-font-mono);
   color: var(--nt-color-text-muted);
 }
+
+/* ---- status glyph (ADR-00021) ---- */
+.nt-status-glyph {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 50%;
+}

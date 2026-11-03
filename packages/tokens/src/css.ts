@@ -14,6 +14,7 @@ import {
   textStyle,
   zIndex,
 } from './scale'
+import { statusGlyph } from './status'
 
 /** Every CSS variable starts with this, so they cannot clash with a library's. */
 export const prefix = '--nt-'
@@ -90,6 +91,13 @@ export const variables = (): Record<string, string> => {
     ...Object.fromEntries(
       Object.entries(nodeSpec).map(([type, s]) => [`${prefix}node-radius-${type}`, px(s.radius)]),
     ),
+    [`${prefix}status-hold`]: statusGlyph.holdFill,
+    [`${prefix}status-track-share`]: `${statusGlyph.trackShare}%`,
+    [`${prefix}status-ring-thin`]: px(statusGlyph.ring.thin),
+    [`${prefix}status-ring-thick`]: px(statusGlyph.ring.thick),
+    [`${prefix}status-halo-gap`]: px(statusGlyph.halo.gap),
+    [`${prefix}status-halo-width`]: px(statusGlyph.halo.width),
+    [`${prefix}status-done-opacity`]: String(statusGlyph.doneOpacity),
     ...named('graph', graphMetrics, (v) => String(v)),
     ...edges,
   }

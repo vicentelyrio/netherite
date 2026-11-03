@@ -1,10 +1,18 @@
-export type { AdrStatus, EdgeKind, ItemTypeName, StateCategory } from '@netherite/tokens'
+export type {
+  AdrStatus,
+  EdgeKind,
+  ItemTypeName,
+  StateCategory,
+  StatusName,
+} from '@netherite/tokens'
 export {
   color as designColor,
   edgeStyle,
   graphMetrics,
   itemTypeNames,
   nodeSpec,
+  statusNames,
+  statusOfCategory,
 } from '@netherite/tokens'
 export {
   ActionIcon,
@@ -57,6 +65,7 @@ export {
   Tabs,
   Tooltip,
 } from './components/pickers'
+export { StatusGlyph, type StatusGlyphProps, type StatusType } from './components/status'
 export { Icon, type IconProps, type IconSize } from './icon'
 export { UiPreview } from './preview'
 export { NetheriteProvider, type NetheriteProviderProps } from './provider'
