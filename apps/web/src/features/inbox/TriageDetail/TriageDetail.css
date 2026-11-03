@@ -133,3 +133,70 @@
   font-size: 12px;
   color: #969ab8;
 }
+
+.trd-fields {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 6px 0;
+  margin: 0;
+  align-items: center;
+  font-size: 14px;
+}
+.trd-fields dt {
+  color: #969ab8;
+}
+.trd-fields dd {
+  margin: 0;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #b9bcd3;
+}
+.trd-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px 2px 8px;
+  border: 0;
+  border-radius: 4px;
+  background: #2e3149;
+  color: #b9bcd3;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.trd-tag:hover {
+  background: #3a3d58;
+}
+.trd-file {
+  border-radius: 10px;
+  background: #18192a;
+  border: 1px solid #2f3250;
+  overflow: hidden;
+}
+.trd-file-path {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 14px;
+  border-bottom: 1px solid #2a2c42;
+  font-family: var(--nt-font-mono, "Source Code Pro", monospace);
+  font-size: 12px;
+  color: #b9bcd3;
+}
+.trd-file-path .nt-icon {
+  color: #2cc27e;
+}
+.trd-file-body {
+  margin: 0;
+  padding: 12px 14px;
+  font-family: var(--nt-font-mono, "Source Code Pro", monospace);
+  font-size: 13px;
+  line-height: 21px;
+  color: #969ab8;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

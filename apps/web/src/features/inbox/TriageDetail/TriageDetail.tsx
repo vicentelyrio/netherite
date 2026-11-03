@@ -8,9 +8,19 @@ import { type Client, useApi } from '@/infrastructure/api'
 import { now } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
-import { projectsQuery, useWrite } from '@/infrastructure/query'
+import { projectsQuery, tagMapQuery, useWrite } from '@/infrastructure/query'
 import { useInboxState } from '../InboxProvider'
-import { type Entry, ruleLook, tabOf, tagPair, todoTitle, weekAfter } from '../triage'
+import {
+  type Entry,
+  folderOf,
+  ruleLook,
+  slugOf,
+  suggestFor,
+  tabOf,
+  tagPair,
+  todoTitle,
+  weekAfter,
+} from '../triage'
 import './TriageDetail.css'
 
 const captureTypes = ['task', 'doc', 'adr', 'runbook', 'context'] as const
@@ -25,10 +35,18 @@ export function TriageDetail() {
   const notices = useNotices()
   const { selected, archive, snooze, tab } = useInboxState()
   const projects = useQuery(projectsQuery(api)).data?.projects ?? []
+  const knownTags = (useQuery(tagMapQuery(api)).data?.tags ?? [])
+    .filter((t) => t.field === 'tags')
+    .map((t) => t.name)
+  const [dropped, setDropped] = useState<{ key: string; tags: ReadonlyArray<string> } | undefined>(
+    undefined,
+  )
   const [chosen, setChosen] = useState<string | undefined>(undefined)
   const [as, setAs] = useState<{ key: string; type: CaptureType } | undefined>(undefined)
   // Tasks belong to a project, so a capture turned into one needs it: the first, until picked.
-  const project = chosen ?? projects[0]?.id ?? ''
+  const guess =
+    selected?.rule === 'capture' ? suggestFor(selected.title, projects, knownTags) : undefined
+  const project = chosen ?? guess?.project ?? projects[0]?.id ?? ''
   const done = (title: string) => (item: Entry) =>
     notices.notify({ variant: 'success', title, text: item.title })
   const run = useWrite(api, (a, act: Act) => a.call(act))
@@ -103,6 +121,13 @@ export function TriageDetail() {
   const look = ruleLook[item.rule]
   // What a capture becomes: a task until another kind is picked for this capture.
   const type: CaptureType = as?.key === item.key ? as.type : 'task'
+  const goals = projects.find((p) => p.id === project)?.goals ?? []
+  const skipped = dropped?.key === item.key ? dropped.tags : []
+  const tags = (guess?.tags ?? []).filter((t) => !skipped.includes(t))
+  const fields = {
+    ...(project !== '' && (type === 'task' || type === 'adr') ? { project } : {}),
+    ...(tags.length > 0 ? { tags } : {}),
+  }
   const create = () =>
     go(
       (c) =>
@@ -111,9 +136,7 @@ export function TriageDetail() {
             payload: {
               type,
               title: item.title,
-              ...(project !== '' && (type === 'task' || type === 'adr')
-                ? { fields: { project } }
-                : {}),
+              ...(Object.keys(fields).length > 0 ? { fields } : {}),
             },
           })
           .pipe(Effect.andThen(() => c.inbox.release({ query: { text: item.title } }))),
@@ -167,6 +190,48 @@ export function TriageDetail() {
             anyLabel={LL.inbox.actions.noProject()}
             onChange={setChosen}
           />
+          <dl className="trd-fields">
+            <dt>{LL.inbox.fields.goal()}</dt>
+            <dd>
+              {goals.length === 0 ? '—' : goals.map((g) => g.title).join(' · ')}
+              {goals.length > 0 && (
+                <span className="app-muted"> {LL.inbox.fields.viaProject()}</span>
+              )}
+            </dd>
+            <dt>{LL.inbox.fields.tags()}</dt>
+            <dd className="trd-tags">
+              {tags.length === 0 && <span className="app-muted">—</span>}
+              {tags.map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  className="trd-tag"
+                  aria-label={LL.inbox.fields.dropTag({ name: t })}
+                  onClick={() => setDropped({ key: item.key, tags: [...skipped, t] })}
+                >
+                  {t}
+                  <Icon name="close" size={12} />
+                </button>
+              ))}
+            </dd>
+          </dl>
+          <section className="trd-file" aria-label={LL.inbox.fields.file()}>
+            <div className="trd-file-path">
+              <Icon name="note_add" size={15} />
+              {folderOf[type]}/…-{slugOf(item.title)}.md
+            </div>
+            <pre className="trd-file-body">
+              {[
+                '---',
+                `type: ${type}`,
+                `title: ${item.title}`,
+                ...Object.entries(fields).map(
+                  ([k, v]) => `${k}: ${Array.isArray(v) ? `[${v.join(', ')}]` : v}`,
+                ),
+                '---',
+              ].join('\n')}
+            </pre>
+          </section>
           <div className="trd-actions">
             <p className="trd-hint">{LL.inbox.createHint()}</p>
             <Button

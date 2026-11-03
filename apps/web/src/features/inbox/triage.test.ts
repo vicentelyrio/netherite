@@ -1,5 +1,15 @@
 import { describe, expect, test } from 'vitest'
-import { isHidden, snoozeUntil, step, tabOf, tagPair, todoTitle, weekAfter } from './triage'
+import {
+  isHidden,
+  slugOf,
+  snoozeUntil,
+  step,
+  suggestFor,
+  tabOf,
+  tagPair,
+  todoTitle,
+  weekAfter,
+} from './triage'
 
 const at = new Date(2026, 1, 15, 14, 0)
 
@@ -50,5 +60,26 @@ describe('triage', () => {
     expect(todoTitle('  // TODO: handle empty list')).toBe('handle empty list')
     expect(todoTitle('/* TODO(vicente) - cache this */')).toBe('cache this')
     expect(todoTitle('# todo retry')).toBe('retry')
+  })
+})
+
+describe('what a capture is probably about', () => {
+  const projects = [
+    { id: 'PRJ-00001', title: 'Local server' },
+    { id: 'PRJ-00002', title: 'Design system' },
+  ]
+
+  test('the project whose name shares a word, and the tags it mentions', () => {
+    const found = suggestFor('Cache the server responses', projects, ['cache', 'ui', 'server'])
+    expect(found).toEqual({ project: 'PRJ-00001', tags: ['cache', 'server'] })
+  })
+
+  test('short words do not pick a project, and nothing matching gives nothing', () => {
+    expect(suggestFor('Fix the UI', projects, ['api'])).toEqual({ project: undefined, tags: [] })
+  })
+
+  test('a file name is the first words, lower case, joined by dashes', () => {
+    expect(slugOf('Look at Caching, again!')).toBe('look-at-caching-again')
+    expect(slugOf('???')).toBe('untitled')
   })
 })

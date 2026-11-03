@@ -189,6 +189,8 @@ const en = {
         onlyUncommitted: 'Only uncommitted changes.',
       },
       lifecycle: 'Lifecycle',
+      notReached: 'deprecated',
+      notReachedHint: 'not reached',
       superseded: {
         title: 'Superseded by {what}',
         fallback: 'a newer decision',
@@ -681,6 +683,13 @@ const en = {
       'closing-commit': 'Closes task',
       'new-todo': 'TODO',
       'similar-tag': 'Tag',
+    },
+    fields: {
+      goal: 'Goal',
+      viaProject: 'via project',
+      tags: 'Tags',
+      dropTag: 'Leave out {name}',
+      file: 'The file it will write',
     },
     create: 'Create',
     createHint: 'Written to your working tree, not committed',

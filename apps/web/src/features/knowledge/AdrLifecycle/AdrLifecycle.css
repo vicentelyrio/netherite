@@ -55,3 +55,9 @@
 .kn-lifecycle li[data-state="next"] {
   opacity: 0.55;
 }
+
+.kn-lifecycle li[data-ghost] .kn-step-node {
+  border-style: dashed;
+  border-color: #6e7292;
+  background: transparent;
+}

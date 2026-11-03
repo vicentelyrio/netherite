@@ -106,3 +106,34 @@ export const todoTitle = (text: string) => {
     .trim()
   return title === '' ? text.trim() : title
 }
+
+const words = (text: string) => text.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []
+
+/**
+ * What a capture is probably about: the project whose name shares a word with it, and the existing
+ * tags it mentions. Only guesses for the person to confirm, never written without a click.
+ */
+export const suggestFor = (
+  text: string,
+  projects: ReadonlyArray<{ readonly id: string; readonly title: string }>,
+  tags: ReadonlyArray<string>,
+) => {
+  const said = new Set(words(text))
+  const project = projects.find((p) => words(p.title).some((w) => w.length > 3 && said.has(w)))
+  return {
+    project: project?.id,
+    tags: tags.filter((t) => said.has(t.toLowerCase())).slice(0, 3),
+  }
+}
+
+/** The folder a kind of item lives in, under the content folder. */
+export const folderOf = {
+  task: 'tasks',
+  doc: 'docs',
+  adr: 'adr',
+  runbook: 'runbooks',
+  context: 'context',
+} as const
+
+/** A file name from a title: lower case words joined by dashes, as the CLI and MCP write them. */
+export const slugOf = (title: string) => words(title).slice(0, 8).join('-') || 'untitled'

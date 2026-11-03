@@ -42,6 +42,14 @@ export function AdrLifecycle({
           </li>
         )
       })}
+      {status === 'superseded' && (
+        // A replaced decision is over: say what it never became, as the design does.
+        <li data-state="next" data-status="deprecated" data-ghost>
+          <span className="kn-step-node" />
+          <strong>{LL.knowledge.doc.notReached()}</strong>
+          <span className="app-muted">{LL.knowledge.doc.notReachedHint()}</span>
+        </li>
+      )}
     </ol>
   )
 }

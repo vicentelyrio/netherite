@@ -686,6 +686,14 @@ type RootTranslation = {
 			 * L​i​f​e​c​y​c​l​e
 			 */
 			lifecycle: string
+			/**
+			 * d​e​p​r​e​c​a​t​e​d
+			 */
+			notReached: string
+			/**
+			 * n​o​t​ ​r​e​a​c​h​e​d
+			 */
+			notReachedHint: string
 			superseded: {
 				/**
 				 * S​u​p​e​r​s​e​d​e​d​ ​b​y​ ​{​w​h​a​t​}
@@ -2548,6 +2556,29 @@ type RootTranslation = {
 			 */
 			'similar-tag': string
 		}
+		fields: {
+			/**
+			 * G​o​a​l
+			 */
+			goal: string
+			/**
+			 * v​i​a​ ​p​r​o​j​e​c​t
+			 */
+			viaProject: string
+			/**
+			 * T​a​g​s
+			 */
+			tags: string
+			/**
+			 * L​e​a​v​e​ ​o​u​t​ ​{​n​a​m​e​}
+			 * @param {unknown} name
+			 */
+			dropTag: RequiredParams<'name'>
+			/**
+			 * T​h​e​ ​f​i​l​e​ ​i​t​ ​w​i​l​l​ ​w​r​i​t​e
+			 */
+			file: string
+		}
 		/**
 		 * C​r​e​a​t​e
 		 */
@@ -3356,6 +3387,14 @@ export type TranslationFunctions = {
 			 * Lifecycle
 			 */
 			lifecycle: () => LocalizedString
+			/**
+			 * deprecated
+			 */
+			notReached: () => LocalizedString
+			/**
+			 * not reached
+			 */
+			notReachedHint: () => LocalizedString
 			superseded: {
 				/**
 				 * Superseded by {what}
@@ -5130,6 +5169,28 @@ export type TranslationFunctions = {
 			 * Tag
 			 */
 			'similar-tag': () => LocalizedString
+		}
+		fields: {
+			/**
+			 * Goal
+			 */
+			goal: () => LocalizedString
+			/**
+			 * via project
+			 */
+			viaProject: () => LocalizedString
+			/**
+			 * Tags
+			 */
+			tags: () => LocalizedString
+			/**
+			 * Leave out {name}
+			 */
+			dropTag: (arg: { name: unknown }) => LocalizedString
+			/**
+			 * The file it will write
+			 */
+			file: () => LocalizedString
 		}
 		/**
 		 * Create

@@ -6,7 +6,7 @@ title: Test the app against the designs
 created: 2026-11-02T20:20:04Z
 created_by: "@vicentelyrio"
 project: PRJ-00012
-state: doing
+state: done
 depends_on: [TASK-00062, TASK-00065, TASK-00068, TASK-00070, TASK-00071, TASK-00072, TASK-00073, TASK-00074, TASK-00075, TASK-00076, TASK-00077]
 ---
 
@@ -145,3 +145,5 @@ Fixed so far against the design: ADR timeline lanes now carry the project's name
 Also fixed: the goal card has the horizon on its own row with an icon (infinity for forever, hourglass otherwise) and "Achieved" at the right, then the title; the doc view's rail uses the design's headings (Backlinks, Outgoing, Co-changed files). Correction to the Knowledge index note: rows already strike through a superseded title and show the orphan chip; what is missing there is the avatar in the modified column and the AI-context chip with a token count. The Project board already has the design's column panels, drop zone and drag look; what differs is the column header (a state pill, where the design has an icon, name and count) and the goal breadcrumb.
 
 Still different, not built: the doc view's stale banner with Review changes, the ADR stepper's "Deprecated, not reached" step, the boxed Decision and two-column Consequences, the AI-context switch with token bar, and the "M N lines changed" badge in the top bar; the Knowledge views' "Linked to" column and filter chips on the Project board; Stats' "Commits linked to work".
+
+Correction on the doc view: the stale banner (Review changes, Mark reviewed), the superseded banner, the lifecycle stepper, the supersession chain and the AI-context card already exist; I judged them from one screenshot of a proposed ADR, which shows none of them. Added now: a dashed "deprecated, not reached" step after Superseded. Still different: the boxed Decision and two-column Consequences (they would need the markdown headings read as sections) and the "M N lines changed" badge.
