@@ -1,0 +1,299 @@
+/* ---- graph ---- */
+.gv {
+  position: relative;
+  height: calc(100vh - 220px);
+  min-height: 420px;
+}
+
+.gv-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+}
+
+.gv-node {
+  cursor: grab;
+  outline: none;
+  transition: opacity 160ms;
+}
+
+.gv-node:focus-visible {
+  outline: 1px solid #a5a7ff;
+}
+
+.gv-tooltip {
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 4;
+  min-width: 200px;
+  max-width: 280px;
+  background: #15162a;
+  border: 1px solid #393c58;
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.gv-tooltip-kind {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #969ab8;
+}
+
+.gv-tooltip-kind span {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.gv-tooltip-title {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  color: #e8e9f3;
+}
+
+.gv-tooltip-meta {
+  font-size: 12px;
+  line-height: 16px;
+  color: #b9bcd3;
+}
+
+.gv-hint {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: rgba(24, 25, 42, 0.92);
+  border: 1px solid #33364f;
+  font-size: 13px;
+  color: #b9bcd3;
+}
+
+.gv-controls {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: rgba(24, 25, 42, 0.92);
+  border: 1px solid #33364f;
+}
+
+.gv-controls button {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #b9bcd3;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gv-controls button:hover {
+  background: #2e3148;
+  color: #e8e9f3;
+}
+
+.gv-controls-rule {
+  height: 1px;
+  background: #33364f;
+  margin: 2px 4px;
+}
+
+.gv-focus {
+  position: absolute;
+  top: 44px;
+  right: 0;
+  background: rgba(24, 25, 42, 0.92);
+  border: 1px solid #33364f;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  color: #b9bcd3;
+}
+
+.gv-focus button {
+  background: none;
+  border: 0;
+  color: #a5a7ff;
+  cursor: pointer;
+}
+
+.gv-legend {
+  position: absolute;
+  left: var(--gv-legend-x, 24px);
+  bottom: var(--gv-legend-y, 24px);
+  z-index: 3;
+  width: 372px;
+  background: rgba(24, 25, 42, 0.94);
+  border: 1px solid #33364f;
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 20px;
+}
+
+.gv-legend-h {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: #969ab8;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.gv-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.gv-legend-row[data-off] {
+  opacity: 0.4;
+}
+
+.gv-legend-row[data-off] .gv-legend-name {
+  text-decoration: line-through;
+}
+
+.gv-legend-row:has(:focus-visible) {
+  outline: 1px solid #a5a7ff;
+}
+
+.gv-legend-name {
+  flex: 1;
+  font-size: 13px;
+  line-height: 18px;
+  color: #e8e9f3;
+}
+
+.gv-count {
+  font-size: 12px;
+  line-height: 16px;
+  color: #969ab8;
+  font-variant-numeric: tabular-nums;
+}
+
+.gv-glyph {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gv-glyph svg {
+  overflow: visible;
+}
+
+.gv-legend-stale {
+  cursor: default;
+  margin-top: 4px;
+}
+
+.gv-legend-stale .gv-legend-name {
+  color: #b9bcd3;
+}
+
+.gv-stale-dot {
+  width: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.gv-stale-dot::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e2ae4c;
+}
+
+.gv-legend--row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+
+.gv-legend--row label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 16px;
+  color: #b9bcd3;
+}
+
+.gv-legend--row label[data-off] {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.gv-glyph--small {
+  width: 10px;
+  height: 10px;
+}
+
+.gv-node:active {
+  cursor: grabbing;
+}
+
+/* The full view fills the canvas it is in, and keeps its panels clear of the screen's edges. */
+.gv:not(.gv--embedded) {
+  height: 100%;
+  min-height: 0;
+}
+.gv:not(.gv--embedded) .gv-hint {
+  top: 40px;
+  right: 40px;
+}
+.gv:not(.gv--embedded) .gv-controls {
+  right: 40px;
+  bottom: 40px;
+}
+.gv:not(.gv--embedded) .gv-focus {
+  top: 84px;
+  right: 40px;
+}
+.gv:not(.gv--embedded) .gv-legend {
+  --gv-legend-x: 96px;
+  --gv-legend-y: 40px;
+}

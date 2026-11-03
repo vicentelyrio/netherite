@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { niceMax, percent } from '../src/pages/stats'
+import { niceMax } from '@/components'
+import { percent } from '@/features/stats'
 
 describe('chart numbers', () => {
   test('percent is done over total, and 0 for a week with no tasks', () => {

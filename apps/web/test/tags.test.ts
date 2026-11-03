@@ -1,6 +1,6 @@
 import type { TagUse } from '@netherite/api'
 import { describe, expect, test } from 'vitest'
-import { filterTags, renameOutcome } from '../src/pages/tags'
+import { filterTags, renameOutcome } from '@/features/tags'
 
 const tag = (name: string, field: 'tags' | 'labels', total = 1): TagUse => ({
   name,

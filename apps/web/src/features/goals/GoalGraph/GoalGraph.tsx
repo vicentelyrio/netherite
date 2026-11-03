@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { GraphView } from '@/graph/GraphView'
+import { GraphView } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { goalQuery, graphQuery } from '@/infrastructure/query'
 import './GoalGraph.css'

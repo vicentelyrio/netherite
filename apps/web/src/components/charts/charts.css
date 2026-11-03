@@ -1,0 +1,20 @@
+.st-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 8px;
+}
+
+.st-grid {
+  stroke: #33364f;
+  stroke-width: 1;
+}
+
+.st-tick {
+  fill: #969ab8;
+  font-size: 11px;
+}
+
+.st-bar {
+  fill: #2cc27e;
+}

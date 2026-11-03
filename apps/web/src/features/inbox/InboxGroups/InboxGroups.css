@@ -1,0 +1,40 @@
+/* ---- inbox ---- */
+.ib-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 1160px;
+}
+
+.ib-group .group-card-head {
+  height: 36px;
+}
+
+.ib-chip {
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgba(150, 154, 184, 0.16);
+  color: #b9bcd3;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.ib-chip[data-s="proposed"] {
+  background: rgba(165, 167, 255, 0.14);
+  color: #a5a7ff;
+}
+
+.ib-more {
+  align-self: flex-start;
+  margin-top: 8px;
+  background: none;
+  border: 0;
+  color: #a5a7ff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}

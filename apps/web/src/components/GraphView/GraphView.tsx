@@ -23,6 +23,7 @@ import {
   toGraphology,
 } from './layout'
 import { graphTarget } from './target'
+import './GraphView.css'
 
 const NODE_SCALE = 1.25
 
