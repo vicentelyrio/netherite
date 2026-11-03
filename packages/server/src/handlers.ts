@@ -49,6 +49,7 @@ import {
   supersessionChain,
   syncContext,
   tagUsage,
+  timelineOf,
   toggleChecklistItem,
   unlink,
   updateItem,
@@ -659,6 +660,27 @@ const history = (state: ServerState) =>
       ),
   )
 
+const timeline = (state: ServerState) =>
+  HttpApiBuilder.group(NetheriteApi, 'timeline', (handlers) =>
+    handlers.handle('timeline', ({ query }) =>
+      withHistory(state, (h) => {
+        const date = /^\d{4}-\d{2}-\d{2}$/
+        for (const key of ['from', 'to'] as const) {
+          const v = query[key]
+          if (v !== undefined && !date.test(v))
+            return Effect.fail(invalid([key], 'Must be a date like 2026-03-05'))
+        }
+        return Effect.succeed(
+          timelineOf(state.repo, h, {
+            ...(query.from ? { from: query.from } : {}),
+            ...(query.to ? { to: query.to } : {}),
+            now: new Date().toISOString(),
+          }),
+        )
+      }),
+    ),
+  )
+
 const stats = (state: ServerState) =>
   HttpApiBuilder.group(NetheriteApi, 'stats', (handlers) =>
     handlers.handle('stats', ({ query }) =>
@@ -762,6 +784,7 @@ export const handlersLayer = (state: ServerState) =>
     inbox(state),
     history(state),
     stats(state),
+    timeline(state),
     events(state),
     meta(state),
   )

@@ -321,6 +321,49 @@ export const Stats = Schema.Struct({
 })
 export const StatsQuery = { from: opt(S), to: opt(S) }
 
+const TimelineHold = Schema.Struct({ from: S, to: opt(S) })
+const timelineItem = {
+  id: S,
+  title: S,
+  status: NodeStatus,
+  /** Done over all, 0 to 1. */
+  progress: N,
+  /** `YYYY-MM-DD` dates. */
+  created: opt(S),
+  started: opt(S),
+  finished: opt(S),
+  due: opt(S),
+  /** Not done, and due before today. */
+  overdue: Schema.Boolean,
+  /** Not started yet. */
+  planned: Schema.Boolean,
+  holds: Schema.Array(TimelineHold),
+  approximate: Schema.Boolean,
+}
+export const Timeline = Schema.Struct({
+  from: S,
+  to: S,
+  today: S,
+  goals: Schema.Array(Schema.Struct({ ...timelineItem, horizon: opt(S) })),
+  projects: Schema.Array(Schema.Struct({ ...timelineItem, goal: opt(S), milestone: opt(S) })),
+  tasks: Schema.Array(Schema.Struct({ ...timelineItem, project: opt(S) })),
+  decisions: Schema.Array(
+    Schema.Struct({
+      id: S,
+      title: S,
+      status: S,
+      project: opt(S),
+      proposed: opt(S),
+      accepted: opt(S),
+      ended: opt(S),
+    }),
+  ),
+  /** Commits per week over the window. */
+  activity: Schema.Array(Schema.Struct({ week: S, count: N })),
+  approximate: Schema.Boolean,
+})
+export const TimelineQuery = { from: opt(S), to: opt(S) }
+
 export const Health = Schema.Struct({
   name: Schema.Literal('netherite'),
   version: S,

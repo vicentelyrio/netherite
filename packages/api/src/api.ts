@@ -40,6 +40,8 @@ import {
   Stats,
   StatsQuery,
   TagList,
+  Timeline,
+  TimelineQuery,
   UnlinkQuery,
   UpdatePayload,
   WriteResult,
@@ -222,6 +224,14 @@ export class StatsGroup extends HttpApiGroup.make('stats').add(
   }),
 ) {}
 
+export class TimelineGroup extends HttpApiGroup.make('timeline').add(
+  HttpApiEndpoint.get('timeline', '/timeline', {
+    query: TimelineQuery,
+    success: Timeline,
+    error: [Invalid, Unavailable, Failure],
+  }),
+) {}
+
 /** Server-sent events: connect with `EventSource` or the typed client. */
 export class EventsGroup extends HttpApiGroup.make('events').add(
   HttpApiEndpoint.get('events', '/events', {
@@ -256,6 +266,7 @@ export class NetheriteApi extends HttpApi.make('netherite')
     InboxGroup,
     HistoryGroup,
     StatsGroup,
+    TimelineGroup,
     EventsGroup,
     MetaGroup,
   )

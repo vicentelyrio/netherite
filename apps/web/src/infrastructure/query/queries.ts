@@ -23,6 +23,7 @@ export const keys = {
   inbox: ['inbox'] as const,
   history: ['history'] as const,
   stats: ['stats'] as const,
+  timeline: ['timeline'] as const,
   tags: ['tags'] as const,
 }
 
@@ -145,6 +146,13 @@ export const statsQuery = (api: Api) =>
   queryOptions({
     queryKey: keys.stats,
     queryFn: () => api.call((c) => c.stats.stats({ query: {} })),
+    retry: false,
+  })
+
+export const timelineQuery = (api: Api, range: { from?: string; to?: string } = {}) =>
+  queryOptions({
+    queryKey: [...keys.timeline, range] as const,
+    queryFn: () => api.call((c) => c.timeline.timeline({ query: range })),
     retry: false,
   })
 

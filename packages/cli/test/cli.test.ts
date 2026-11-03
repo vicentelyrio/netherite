@@ -719,31 +719,36 @@ describe('usage', () => {
 describe('the built program', () => {
   const bin = join(__dirname, '..', 'dist', 'bin.mjs')
 
-  test.skipIf(!existsSync(bin))('runs from the command line with real exit codes', async () => {
-    await temp(async (dir) => {
-      const run = (...args: string[]) => {
-        try {
-          return {
-            code: 0,
-            out: execFileSync('node', [bin, ...args], {
-              cwd: dir,
-              encoding: 'utf8',
-              stdio: ['ignore', 'pipe', 'pipe'],
-            }),
+  test.skipIf(!existsSync(bin))(
+    'runs from the command line with real exit codes',
+    async () => {
+      await temp(async (dir) => {
+        const run = (...args: string[]) => {
+          try {
+            return {
+              code: 0,
+              out: execFileSync('node', [bin, ...args], {
+                cwd: dir,
+                encoding: 'utf8',
+                stdio: ['ignore', 'pipe', 'pipe'],
+              }),
+            }
+          } catch (error) {
+            const e = error as { status: number; stdout: string; stderr: string }
+            return { code: e.status, out: e.stdout + e.stderr }
           }
-        } catch (error) {
-          const e = error as { status: number; stdout: string; stderr: string }
-          return { code: e.status, out: e.stdout + e.stderr }
         }
-      }
-      expect(run('lint').code).toBe(2)
-      expect(run('init').code).toBe(0)
-      expect(run('new', 'doc', 'Hello').out).toContain('DOC-00001')
-      expect(run('lint', '--json').code).toBe(0)
-      expect(run('--version').out).toMatch(/netherite v/)
-      expect(run('bogus').code).toBe(2)
-    })
-  })
+        expect(run('lint').code).toBe(2)
+        expect(run('init').code).toBe(0)
+        expect(run('new', 'doc', 'Hello').out).toContain('DOC-00001')
+        expect(run('lint', '--json').code).toBe(0)
+        expect(run('--version').out).toMatch(/netherite v/)
+        expect(run('bogus').code).toBe(2)
+      })
+      // Each call starts a real process; with the other packages' tests running, 5 seconds is not enough.
+    },
+    30_000,
+  )
 })
 
 export type { Result }

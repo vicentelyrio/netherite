@@ -739,6 +739,31 @@ describe('inbox', () => {
 })
 
 describe('history and stats', () => {
+  test('the timeline needs git, takes a window, and counts commits per week', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const none = yield* failure(s.client.timeline.timeline({ query: {} }))
+        expect(none._tag).toBe('Unavailable')
+      }),
+    )
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const tl = yield* s.client.timeline.timeline({ query: {} })
+          expect(tl.tasks.length).toBeGreaterThan(0)
+          expect(tl.activity.reduce((n, w) => n + w.count, 0)).toBeGreaterThan(0)
+          expect(tl.goals[0]).toMatchObject({ id: 'GOAL-00001', overdue: false })
+          const bad = yield* failure(s.client.timeline.timeline({ query: { from: 'soon' } }))
+          expect(bad).toMatchObject({ _tag: 'Invalid', issues: [{ path: ['from'] }] })
+          const early = yield* s.client.timeline.timeline({
+            query: { from: '2000-01-01', to: '2000-02-01' },
+          })
+          expect(early.tasks).toEqual([])
+        }),
+      { git: true },
+    )
+  })
+
   test('the graph as of a date needs git and a valid date', async () => {
     await withServer((s) =>
       Effect.gen(function* () {

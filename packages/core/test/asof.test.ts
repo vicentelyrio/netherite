@@ -117,6 +117,7 @@ const history: History = {
     ],
   ]),
   commits: 10,
+  log: [],
   partial: false,
 }
 const now = '2026-03-01T00:00:00Z'

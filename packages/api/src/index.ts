@@ -14,6 +14,7 @@ export {
   SearchGroup,
   StatsGroup,
   TagsGroup,
+  TimelineGroup,
 } from './api'
 export { makeClient } from './client'
 export { Conflict, Failure, Invalid, type Issue, NotFound, Refused, Unavailable } from './errors'

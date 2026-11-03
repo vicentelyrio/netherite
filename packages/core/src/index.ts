@@ -92,6 +92,7 @@ export {
   type AuthorSummary,
   adrActivityByWeek,
   authorsOf,
+  commitsByWeek,
   completionsByWeek,
   decisionLog,
   defaultTrackedFields,
@@ -146,6 +147,16 @@ export {
 } from './resolve'
 export { scanItems } from './scan'
 export { type ScannedItem, scannedItemFrom, toScannedItem } from './scanned-item'
+export {
+  type Timeline,
+  type TimelineDecision,
+  type TimelineGoal,
+  type TimelineHold,
+  type TimelineOptions,
+  type TimelineProject,
+  type TimelineTask,
+  timelineOf,
+} from './timeline'
 export {
   type BoardCard,
   type BoardColumn,

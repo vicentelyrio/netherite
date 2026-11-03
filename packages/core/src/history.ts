@@ -56,6 +56,8 @@ export interface History {
   readonly items: ReadonlyMap<string, ItemHistory>
   /** Commits that touched the content folder. */
   readonly commits: number
+  /** Those commits, newest first, with their hash and date. */
+  readonly log: ReadonlyArray<{ readonly hash: string; readonly date: string }>
   /** `true` when old history is missing: a shallow clone, or a `limit` or `after` window. */
   readonly partial: boolean
 }
@@ -253,7 +255,12 @@ export const readHistory = (
         commits: b.commits,
       })
     }
-    return { items: result, commits: commits.length, partial: git.shallow || windowed }
+    return {
+      items: result,
+      commits: commits.length,
+      log: commits.map((c) => ({ hash: c.hash, date: c.committerDate })),
+      partial: git.shallow || windowed,
+    }
   })
 
 // ---------------------------------------------------------------------------------------------
@@ -322,6 +329,23 @@ export interface WeekCount {
   /** The Monday that starts the week. */
   readonly week: string
   readonly count: number
+}
+
+/** Commits to the content folder per week, empty weeks included. */
+export const commitsByWeek = (
+  history: History,
+  range: WeekRange = {},
+): ReadonlyArray<WeekCount> => {
+  const days = history.log.map((c) => utcDay(c.date)).sort()
+  const from = range.from ?? days[0]
+  const to = range.to ?? days.at(-1)
+  if (from === undefined || to === undefined) return []
+  const counts = new Map(weeksBetween(from, to).map((week) => [week, 0]))
+  for (const day of days) {
+    const week = weekStart(day)
+    if (counts.has(week)) counts.set(week, (counts.get(week) ?? 0) + 1)
+  }
+  return [...counts].map(([week, count]) => ({ week, count }))
 }
 
 /**
