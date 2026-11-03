@@ -1,7 +1,0 @@
-/* ---- stats ---- */
-.st-tiles {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 220px));
-  gap: 12px;
-  margin: 24px 0;
-}

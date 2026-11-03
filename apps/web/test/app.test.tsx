@@ -990,57 +990,95 @@ describe('the Inbox', () => {
 })
 
 describe('Stats', () => {
-  test('shows the tiles and the three charts from the git history', async () => {
+  test('shows the numbers, charts and cards from the git history', async () => {
     renderApp('/stats')
     expect(await screen.findByRole('heading', { name: 'Stats' })).toBeInTheDocument()
-    expect(await screen.findByRole('img', { name: 'Tasks done per week' })).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: /Progress of each goal/ })).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: /ADRs by the status/ })).toBeInTheDocument()
-    expect(screen.getByText('tasks done')).toBeInTheDocument()
-    expect(screen.getByText('ADRs accepted')).toBeInTheDocument()
+    expect(
+      await screen.findByRole('region', { name: 'Tasks created and done' }),
+    ).toBeInTheDocument()
+    expect(screen.getByText('median cycle time')).toBeInTheDocument()
+    expect(screen.getByText(/tasks done, of \d+ created/)).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'Goal areas' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'By project' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'Knowledge health' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /commits over the last 53 weeks/ })).toBeInTheDocument()
   })
 
-  test('progress can be shown per goal or per project, with each one named and its latest percent', async () => {
+  test('the period and the area can be changed, and the numbers follow', async () => {
     renderApp('/stats')
-    const progress = await screen.findByRole('region', { name: 'Progress over time' })
-    await userEvent.click(within(progress).getByRole('radio', { name: 'Projects' }))
-    expect(await screen.findByRole('img', { name: /Progress of each project/ })).toBeInTheDocument()
-    await waitFor(() => expect(within(progress).getAllByText('App').length).toBeGreaterThan(0))
-    expect(within(progress).getAllByText(/^\d+%$|^—$/).length).toBeGreaterThan(0)
+    await screen.findByRole('region', { name: 'Tasks created and done' })
+    await userEvent.click(screen.getByRole('radio', { name: 'Year' }))
+    await waitFor(() => expect(screen.getByRole('radio', { name: 'Year' })).toBeChecked())
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Area' }), '—')
+    expect(await screen.findByRole('region', { name: 'Goal areas' })).toBeInTheDocument()
+  })
+
+  test('hovering a bar shows what was created and done that week', async () => {
+    renderApp('/stats')
+    const card = await screen.findByRole('region', { name: 'Tasks created and done' })
+    const bars = within(card).getAllByRole('img')
+    fireEvent.pointerEnter(bars.at(-1) as HTMLElement)
+    expect(await within(card).findByRole('tooltip')).toBeInTheDocument()
   })
 })
 
 describe('Tags', () => {
-  test('lists labels with how many items of each type carry them', async () => {
+  const bubble = (name: string) =>
+    screen.findByRole('button', { name: new RegExp(`^${name}, \\d+ item`) })
+
+  test('the map has a bubble per tag and label, and the kind tabs narrow it', async () => {
     renderApp('/tags')
     expect(await screen.findByRole('heading', { name: 'Tags' })).toBeInTheDocument()
-    const list = await screen.findByRole('region', { name: 'Tags' })
-    expect(within(list).getByText('backend')).toBeInTheDocument()
+    expect(await bubble('backend')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('radio', { name: /^Tags/ }))
-    await waitFor(() => expect(within(list).queryByText('backend')).toBeNull())
+    await waitFor(() =>
+      expect(screen.queryByRole('button', { name: /^backend, \d+ item/ })).toBeNull(),
+    )
   })
 
-  test('expanding a tag lists the items that have it', async () => {
+  test('picking a tag shows where it is used and links to its recent items', async () => {
     renderApp('/tags')
-    const list = await screen.findByRole('region', { name: 'Tags' })
-    await userEvent.click(within(list).getByRole('button', { name: /backend/ }))
+    await userEvent.click(await bubble('backend'))
+    const panel = await screen.findByRole('region', { name: 'Tag details' })
+    expect(within(panel).getByRole('heading', { name: 'backend' })).toBeInTheDocument()
+    expect(within(panel).getByText('Used in')).toBeInTheDocument()
     expect(
-      within(await screen.findByRole('list', { name: 'Items with backend' })).getByRole('link', {
+      within(within(panel).getByRole('list', { name: 'Items with backend' })).getByRole('link', {
         name: 'TASK-00001',
       }),
     ).toHaveAttribute('href', '/items/TASK-00001')
+    expect(within(panel).getByText(/grep -rnE/)).toBeInTheDocument()
   })
 
-  test('renaming a label changes the file, tells you how many, and the list follows', async () => {
+  test('the list view shows usage and cluster, and a row opens the same panel', async () => {
     renderApp('/tags')
+    await userEvent.click(await screen.findByRole('radio', { name: 'List' }))
     const list = await screen.findByRole('region', { name: 'Tags' })
-    const row = within(list).getByText('backend').closest('.tg-row-wrap') as HTMLElement
-    await userEvent.click(within(row).getByRole('button', { name: 'Rename' }))
-    const input = within(row).getByLabelText('New name for backend')
+    await userEvent.click(within(list).getByRole('button', { name: /backend/ }))
+    expect(
+      within(await screen.findByRole('region', { name: 'Tag details' })).getByRole('heading', {
+        name: 'backend',
+      }),
+    ).toBeInTheDocument()
+  })
+
+  test('the slash key goes to the filter', async () => {
+    renderApp('/tags')
+    await bubble('backend')
+    await userEvent.keyboard('/')
+    expect(screen.getByRole('textbox', { name: 'Filter tags' })).toHaveFocus()
+  })
+
+  test('renaming a label changes the file, tells you how many, and the map follows', async () => {
+    renderApp('/tags')
+    await userEvent.click(await bubble('backend'))
+    const panel = await screen.findByRole('region', { name: 'Tag details' })
+    await userEvent.click(within(panel).getByRole('button', { name: 'Rename' }))
+    const input = within(panel).getByLabelText('New name for backend')
     await userEvent.clear(input)
     await userEvent.type(input, 'server')
     await userEvent.click(
-      within(row).getAllByRole('button', { name: 'Rename' }).at(-1) as HTMLElement,
+      within(panel).getAllByRole('button', { name: 'Rename' }).at(-1) as HTMLElement,
     )
     await waitFor(() =>
       expect(
@@ -1048,7 +1086,7 @@ describe('Tags', () => {
       ).toContain('labels: [server]'),
     )
     expect(await screen.findByText(/Changed in 1 file/)).toBeInTheDocument()
-    expect(await within(list).findByText('server')).toBeInTheDocument()
+    expect(await bubble('server')).toBeInTheDocument()
     // Put it back so other tests see the same workspace.
     await other().call((c) =>
       c.tags.rename({ payload: { field: 'labels', from: 'server', to: 'backend' } }),
@@ -1057,14 +1095,14 @@ describe('Tags', () => {
 
   test('says what a name already in use will do, and does not allow spaces', async () => {
     renderApp('/tags')
-    const list = await screen.findByRole('region', { name: 'Tags' })
-    const row = within(list).getByText('backend').closest('.tg-row-wrap') as HTMLElement
-    await userEvent.click(within(row).getByRole('button', { name: 'Rename' }))
-    const input = within(row).getByLabelText('New name for backend')
+    await userEvent.click(await bubble('backend'))
+    const panel = await screen.findByRole('region', { name: 'Tag details' })
+    await userEvent.click(within(panel).getByRole('button', { name: 'Rename' }))
+    const input = within(panel).getByLabelText('New name for backend')
     await userEvent.clear(input)
     await userEvent.type(input, 'two words')
-    expect(within(row).getByText('A tag cannot contain spaces')).toBeInTheDocument()
-    expect(within(row).getAllByRole('button', { name: 'Rename' }).at(-1)).toBeDisabled()
+    expect(within(panel).getByText('A tag cannot contain spaces')).toBeInTheDocument()
+    expect(within(panel).getAllByRole('button', { name: 'Rename' }).at(-1)).toBeDisabled()
   })
 })
 

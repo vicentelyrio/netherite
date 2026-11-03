@@ -144,17 +144,17 @@ export const searchQuery = (api: Api, q: string) =>
     retry: false,
   })
 
-export const statsQuery = (api: Api) =>
+export const periodStatsQuery = (
+  api: Api,
+  period: '30d' | 'quarter' | 'year' = '30d',
+  area?: string,
+) =>
   queryOptions({
-    queryKey: keys.stats,
-    queryFn: () => api.call((c) => c.stats.stats({ query: {} })),
-    retry: false,
-  })
-
-export const periodStatsQuery = (api: Api, period: '30d' | 'quarter' | 'year' = '30d') =>
-  queryOptions({
-    queryKey: [...keys.stats, 'period', period] as const,
-    queryFn: () => api.call((c) => c.stats.period({ query: { period } })),
+    queryKey: [...keys.stats, 'period', period, area ?? ''] as const,
+    queryFn: () =>
+      api.call((c) =>
+        c.stats.period({ query: { period, ...(area === undefined ? {} : { area }) } }),
+      ),
     retry: false,
   })
 
@@ -163,6 +163,12 @@ export const timelineQuery = (api: Api, range: { from?: string; to?: string } = 
     queryKey: [...keys.timeline, range] as const,
     queryFn: () => api.call((c) => c.timeline.timeline({ query: range })),
     retry: false,
+  })
+
+export const tagMapQuery = (api: Api) =>
+  queryOptions({
+    queryKey: [...keys.tags, 'map'] as const,
+    queryFn: () => api.call((c) => c.tags.map()),
   })
 
 export const tagsQuery = (api: Api) =>

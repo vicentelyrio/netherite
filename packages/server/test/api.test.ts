@@ -739,6 +739,19 @@ describe('inbox', () => {
 })
 
 describe('history and stats', () => {
+  test('the tag map has pairs, clusters and likely duplicates', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const map = yield* s.client.tags.map()
+        const backend = map.tags.find((t) => t.name === 'backend')
+        expect(backend?.total).toBeGreaterThan(0)
+        expect(map.clusters.reduce((n, c) => n + c.tags, 0)).toBe(map.tags.length)
+        expect(Array.isArray(map.edges)).toBe(true)
+        expect(Array.isArray(map.duplicates)).toBe(true)
+      }),
+    )
+  })
+
   test('period stats need git, take a period, and compare with the one before', async () => {
     await withServer((s) =>
       Effect.gen(function* () {

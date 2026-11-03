@@ -1,0 +1,22 @@
+.kpi-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.kpi-change {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.kpi-change[data-tone="good"] {
+  color: #2cc27e;
+}
+.kpi-change[data-tone="bad"] {
+  color: #f0717e;
+}
+.kpi-change[data-tone="flat"] {
+  color: #969ab8;
+}
+.kpi-prev {
+  color: #8a8fad;
+}

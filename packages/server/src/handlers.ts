@@ -49,6 +49,7 @@ import {
   summaryOf,
   supersessionChain,
   syncContext,
+  tagMap,
   tagUsage,
   timelineOf,
   toggleChecklistItem,
@@ -479,6 +480,7 @@ const tags = (state: ServerState) =>
   HttpApiBuilder.group(NetheriteApi, 'tags', (handlers) =>
     handlers
       .handle('list', () => Effect.sync(() => ({ tags: tagUsage(state.repo) })))
+      .handle('map', () => Effect.sync(() => tagMap(state.repo)))
       .handle('rename', ({ payload }) =>
         state.writes.withPermits(1)(
           renameTag(state.repo, payload).pipe(
@@ -696,6 +698,7 @@ const stats = (state: ServerState) =>
               periodStats(state.repo, h, {
                 period,
                 now: new Date().toISOString(),
+                ...(query.area === undefined || query.area === '' ? {} : { area: query.area }),
                 ...(fresh === undefined ? {} : { freshness: fresh }),
               }),
             ),

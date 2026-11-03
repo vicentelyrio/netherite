@@ -398,9 +398,10 @@ export const PeriodStats = Schema.Struct({
     freshness: Schema.Struct({ fresh: N, drifting: N, stale: N, notTracked: N }),
     decisions: Schema.Record(S, N),
   }),
+  areaNames: Schema.Array(S),
   approximate: Schema.Boolean,
 })
-export const PeriodStatsQuery = { period: opt(S) }
+export const PeriodStatsQuery = { period: opt(S), area: opt(S) }
 
 export const Health = Schema.Struct({
   name: Schema.Literal('netherite'),
@@ -606,6 +607,35 @@ export const TagUse = Schema.Struct({
 export type TagUse = typeof TagUse.Type
 
 export const TagList = Schema.Struct({ tags: Schema.Array(TagUse) })
+
+const TagRef = Schema.Struct({ field: TagField, name: S })
+export const TagMap = Schema.Struct({
+  tags: Schema.Array(
+    Schema.Struct({
+      field: TagField,
+      name: S,
+      total: N,
+      byType: Schema.Record(S, N),
+      ids: Schema.Array(S),
+      /** An area, or a group of tags used together. */
+      cluster: S,
+      /** Tags most often on the same items. */
+      often: Schema.Array(Schema.Struct({ field: TagField, name: S, count: N })),
+    }),
+  ),
+  /** Pairs on the same items, and how many items carry both. */
+  edges: Schema.Array(Schema.Struct({ a: TagRef, b: TagRef, count: N })),
+  clusters: Schema.Array(Schema.Struct({ name: S, tags: N })),
+  /** Pairs that are probably one tag spelled two ways. */
+  duplicates: Schema.Array(
+    Schema.Struct({
+      a: TagRef,
+      b: TagRef,
+      reason: Schema.Literals(['name', 'neighbours']),
+      score: N,
+    }),
+  ),
+})
 
 export const RenameTagPayload = Schema.Struct({ field: TagField, from: S, to: S })
 

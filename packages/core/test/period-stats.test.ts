@@ -38,6 +38,36 @@ describe('period stats', () => {
     expect(s.projects[0]).toMatchObject({ id: 'PRJ-00001', done: 1, cycleDays: 12 })
   })
 
+  test('freshness counts docs and runbooks only', async () => {
+    const w = await world({
+      ...files,
+      '/repo/netherite/docs/DOC-00001-d.md':
+        '---\nid: DOC-00001\naliases: [DOC-00001]\ntype: doc\ntitle: D\n---\n\n# D\n',
+    })
+    const state = (s: string) => ({ state: s }) as never
+    const freshness = new Map([
+      ['netherite/docs/DOC-00001-d.md', state('stale')],
+      ['netherite/tasks/TASK-00001-a.md', state('not-tracked')],
+    ])
+    const s = periodStats(w.repo, history, { period: '30d', now, freshness })
+    expect(s.knowledge.freshness).toEqual({ fresh: 0, drifting: 0, stale: 1, notTracked: 0 })
+    expect(s.kpis.staleDocs.value).toBe(1)
+  })
+
+  test('an area keeps only the work under its goals, and every area is listed', async () => {
+    const w = await world(files)
+    const all = periodStats(w.repo, history, { period: '30d', now })
+    expect(all.areaNames).toEqual(['—'])
+    const same = periodStats(w.repo, history, { period: '30d', now, area: '—' })
+    expect(same.kpis.done).toEqual(all.kpis.done)
+    const other = periodStats(w.repo, history, { period: '30d', now, area: 'Nothing' })
+    expect(other.kpis.done.value).toBe(0)
+    expect(other.projects).toEqual([])
+    expect(other.areaNames).toEqual(['—'])
+    // Commits are the workspace's, not an area's.
+    expect(other.kpis.commits).toEqual(all.kpis.commits)
+  })
+
   test('the heat map has the commits of the last 53 weeks, and knowledge counts its states', async () => {
     const w = await world(files)
     const s = periodStats(w.repo, history, { period: 'quarter', now })

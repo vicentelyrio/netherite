@@ -67,6 +67,8 @@ export interface PeriodStats {
     }
     readonly decisions: Readonly<Record<string, number>>
   }
+  /** Every area there is, for the filter, whatever area is chosen. */
+  readonly areaNames: ReadonlyArray<string>
   readonly approximate: boolean
 }
 
@@ -74,6 +76,8 @@ export interface PeriodOptions {
   readonly period: Period
   readonly now?: string
   readonly freshness?: ReadonlyMap<string, Freshness>
+  /** Only the work under goals in this area. Commits and knowledge are not filtered. */
+  readonly area?: string
 }
 
 const addDays = (date: string, days: number) => {
@@ -122,7 +126,32 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
   const inside = (iso: string | undefined, a: string, b: string) =>
     iso !== undefined && dayOf(iso) >= a && dayOf(iso) <= b
 
-  const tasks = [...life.values()].filter((l) => l.type === 'task')
+  // The graph at both ends of the period tells who belongs to whom, and goal progress.
+  const end = graphAsOf(repo, history, { asOf: nowIso, now: nowIso })
+  const start = new Map(
+    graphAsOf(repo, history, { asOf: from, now: nowIso }).nodes.map((n) => [n.id, n]),
+  )
+  const areaOf = (id: string) => {
+    const item = repo.index.findById(id)[0]
+    const area = item === undefined ? undefined : fieldsOf(item).area
+    return typeof area === 'string' && area !== '' ? area : '—'
+  }
+  const parentOf = new Map(end.nodes.map((n) => [n.id, n.parent]))
+  const goalOf = (id: string) => {
+    let at: string | undefined = id
+    for (let hops = 0; at !== undefined && hops < 4; hops++) {
+      if (end.nodes.find((n) => n.id === at)?.type === 'goal') return at
+      at = parentOf.get(at)
+    }
+    return undefined
+  }
+  const inArea = (id: string) => {
+    if (options.area === undefined) return true
+    const goal = goalOf(id)
+    return goal !== undefined && areaOf(goal) === options.area
+  }
+
+  const tasks = [...life.values()].filter((l) => l.type === 'task' && inArea(l.id))
   const finishes = (a: string, b: string) =>
     tasks.flatMap((l) =>
       l.events
@@ -140,7 +169,6 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
   const prevDone = finishes(prevFrom, prevTo)
   const cycleNow = median(nowDone.map((f) => f.cycle))
   const cyclePrev = median(prevDone.map((f) => f.cycle))
-  const stale = [...(options.freshness?.values() ?? [])].filter((f) => f.state === 'stale').length
 
   // Throughput by week or month.
   const buckets = new Map<string, { created: number; done: number }>()
@@ -157,16 +185,6 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
     if (row) row.done++
   }
 
-  // Goals by area, and projects, from the graph at both ends of the period.
-  const end = graphAsOf(repo, history, { asOf: nowIso, now: nowIso })
-  const start = new Map(
-    graphAsOf(repo, history, { asOf: from, now: nowIso }).nodes.map((n) => [n.id, n]),
-  )
-  const areaOf = (id: string) => {
-    const item = repo.index.findById(id)[0]
-    const area = item === undefined ? undefined : fieldsOf(item).area
-    return typeof area === 'string' && area !== '' ? area : '—'
-  }
   const byArea = new Map<
     string,
     { goals: number; share: number; was: number; achieved: number; idle: number }
@@ -194,9 +212,8 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
     }))
     .sort((a, b) => a.area.localeCompare(b.area))
 
-  const parentOf = new Map(end.nodes.map((n) => [n.id, n.parent]))
   const projects = end.nodes
-    .filter((n) => n.type === 'project')
+    .filter((n) => n.type === 'project' && inArea(n.id))
     .map((p) => {
       const done = nowDone.filter((f) => parentOf.get(f.task) === p.id)
       return {
@@ -216,8 +233,11 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
     if (d >= heatFrom && d <= to) counts.set(d, (counts.get(d) ?? 0) + 1)
   }
 
+  // Freshness is about knowledge: docs and runbooks, not every item.
   const freshness = { fresh: 0, drifting: 0, stale: 0, notTracked: 0 }
-  for (const f of options.freshness?.values() ?? []) {
+  for (const [path, f] of options.freshness ?? []) {
+    const type = repo.index.get(path)?.type
+    if (type !== 'doc' && type !== 'runbook') continue
     if (f.state === 'fresh') freshness.fresh++
     else if (f.state === 'drifting') freshness.drifting++
     else if (f.state === 'stale') freshness.stale++
@@ -242,7 +262,7 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
           ? null
           : { value: cycleNow, ...(cyclePrev === null ? {} : { previous: cyclePrev }) },
       commits: { value: commitsIn(from, to), previous: commitsIn(prevFrom, prevTo) },
-      staleDocs: { value: stale },
+      staleDocs: { value: freshness.stale },
     },
     throughput: [...buckets].map(([s, r]) => ({ start: s, ...r })),
     areas,
@@ -255,6 +275,7 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
         .sort((a, b) => a.date.localeCompare(b.date)),
     },
     knowledge: { freshness, decisions },
+    areaNames: [...byArea.keys()].sort(),
     approximate: history.partial,
   }
 }

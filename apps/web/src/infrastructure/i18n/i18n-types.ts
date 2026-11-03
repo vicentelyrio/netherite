@@ -1087,6 +1087,129 @@ type RootTranslation = {
 		 * @param {number} count
 		 */
 		changedIn: RequiredParams<'count'>
+		view: {
+			/**
+			 * V​i​e​w
+			 */
+			label: string
+			/**
+			 * M​a​p
+			 */
+			map: string
+			/**
+			 * L​i​s​t
+			 */
+			list: string
+		}
+		/**
+		 * {​g​o​a​l​s​}​ ​g​o​a​l​s​,​ ​{​p​r​o​j​e​c​t​s​}​ ​p​r​o​j​e​c​t​s​,​ ​{​t​a​s​k​s​}​ ​t​a​s​k​s​,​ ​{​d​o​c​s​}​ ​d​o​c​s
+		 * @param {number} docs
+		 * @param {number} goals
+		 * @param {number} projects
+		 * @param {number} tasks
+		 */
+		usage: RequiredParams<'docs' | 'goals' | 'projects' | 'tasks'>
+		map: {
+			/**
+			 * T​a​g​s​ ​a​s​ ​b​u​b​b​l​e​s​,​ ​g​r​o​u​p​e​d​ ​b​y​ ​c​l​u​s​t​e​r
+			 */
+			label: string
+			/**
+			 * {​n​a​m​e​}​,​ ​{​c​o​u​n​t​}​ ​{​{​i​t​e​m​|​i​t​e​m​s​}​}
+			 * @param {number} count
+			 * @param {unknown} name
+			 */
+			bubble: RequiredParams<'count' | 'name'>
+			/**
+			 * Z​o​o​m​ ​i​n
+			 */
+			zoomIn: string
+			/**
+			 * Z​o​o​m​ ​o​u​t
+			 */
+			zoomOut: string
+			/**
+			 * F​i​t​ ​t​o​ ​s​c​r​e​e​n
+			 */
+			fit: string
+		}
+		detail: {
+			/**
+			 * T​a​g​ ​d​e​t​a​i​l​s
+			 */
+			title: string
+			/**
+			 * P​i​c​k​ ​a​ ​t​a​g​ ​t​o​ ​s​e​e​ ​w​h​e​r​e​ ​i​t​ ​i​s​ ​u​s​e​d​.
+			 */
+			pick: string
+			/**
+			 * U​s​e​d​ ​i​n
+			 */
+			usedIn: string
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​g​o​a​l​|​g​o​a​l​s​}​}
+			 * @param {number} count
+			 */
+			goals: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​p​r​o​j​e​c​t​|​p​r​o​j​e​c​t​s​}​}
+			 * @param {number} count
+			 */
+			projects: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​t​a​s​k​|​t​a​s​k​s​}​}
+			 * @param {number} count
+			 */
+			tasks: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​d​o​c​|​d​o​c​s​}​}
+			 * @param {number} count
+			 */
+			docs: RequiredParams<'count'>
+			/**
+			 * O​f​t​e​n​ ​t​a​g​g​e​d​ ​w​i​t​h
+			 */
+			often: string
+			/**
+			 * R​e​c​e​n​t​ ​i​t​e​m​s
+			 */
+			recent: string
+			/**
+			 * T​h​e​ ​s​a​m​e​ ​s​e​a​r​c​h​ ​b​y​ ​h​a​n​d
+			 */
+			grep: string
+			/**
+			 * M​e​r​g​e​ ​i​n​t​o
+			 */
+			mergeInto: string
+			/**
+			 * C​h​o​o​s​e​ ​a​ ​t​a​g
+			 */
+			choose: string
+		}
+		duplicates: {
+			/**
+			 * P​o​s​s​i​b​l​e​ ​d​u​p​l​i​c​a​t​e​s
+			 */
+			title: string
+			/**
+			 * {​a​}​ ​a​n​d​ ​{​b​}​ ​l​o​o​k​ ​l​i​k​e​ ​t​h​e​ ​s​a​m​e​ ​t​a​g​.​ ​{​m​o​r​e​}​ ​m​o​r​e​ ​t​o​ ​c​h​e​c​k​.
+			 * @param {unknown} a
+			 * @param {unknown} b
+			 * @param {number} more
+			 */
+			text: RequiredParams<'a' | 'b' | 'more'>
+			/**
+			 * M​e​r​g​e​ ​{​f​r​o​m​}​ ​i​n​t​o​ ​{​i​n​t​o​}
+			 * @param {unknown} from
+			 * @param {unknown} into
+			 */
+			merge: RequiredParams<'from' | 'into'>
+			/**
+			 * K​e​e​p​ ​b​o​t​h
+			 */
+			keepBoth: string
+		}
 		messages: {
 			/**
 			 * A​ ​t​a​g​ ​n​e​e​d​s​ ​a​ ​n​a​m​e
@@ -1108,6 +1231,12 @@ type RootTranslation = {
 		 */
 		title: string
 		/**
+		 * {​f​r​o​m​}​ ​t​o​ ​{​t​o​}
+		 * @param {unknown} from
+		 * @param {unknown} to
+		 */
+		covers: RequiredParams<'from' | 'to'>
+		/**
 		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​s​t​a​t​s
 		 */
 		loadError: string
@@ -1116,7 +1245,7 @@ type RootTranslation = {
 		 */
 		noGit: string
 		/**
-		 * P​r​o​g​r​e​s​s​ ​o​v​e​r​ ​t​i​m​e​ ​i​s​ ​r​e​a​d​ ​f​r​o​m​ ​t​h​e​ ​c​o​m​m​i​t​s​ ​o​f​ ​t​h​i​s​ ​r​e​p​o​s​i​t​o​r​y​.​ ​P​u​t​ ​t​h​e​ ​w​o​r​k​s​p​a​c​e​ ​i​n​ ​a​ ​g​i​t​ ​r​e​p​o​s​i​t​o​r​y​ ​a​n​d​ ​t​h​e​ ​c​h​a​r​t​s​ ​f​i​l​l​ ​i​n​.
+		 * P​r​o​g​r​e​s​s​ ​o​v​e​r​ ​t​i​m​e​ ​i​s​ ​r​e​a​d​ ​f​r​o​m​ ​t​h​e​ ​c​o​m​m​i​t​s​ ​o​f​ ​t​h​i​s​ ​r​e​p​o​s​i​t​o​r​y​.​ ​P​u​t​ ​t​h​e​ ​w​o​r​k​s​p​a​c​e​ ​i​n​ ​a​ ​g​i​t​ ​r​e​p​o​s​i​t​o​r​y​ ​a​n​d​ ​t​h​e​ ​n​u​m​b​e​r​s​ ​f​i​l​l​ ​i​n​.
 		 */
 		noGitText: string
 		/**
@@ -1127,71 +1256,187 @@ type RootTranslation = {
 		 * T​h​i​s​ ​i​s​ ​a​ ​s​h​a​l​l​o​w​ ​c​l​o​n​e​,​ ​s​o​ ​t​h​e​ ​e​a​r​l​i​e​s​t​ ​w​e​e​k​s​ ​a​r​e​ ​m​i​s​s​i​n​g​.
 		 */
 		partialText: string
-		tiles: {
+		/**
+		 * A​r​e​a
+		 */
+		area: string
+		/**
+		 * A​l​l​ ​a​r​e​a​s
+		 */
+		allAreas: string
+		period: {
 			/**
-			 * t​a​s​k​s​ ​d​o​n​e
+			 * P​e​r​i​o​d
 			 */
-			done: string
+			label: string
 			/**
-			 * b​e​s​t​ ​w​e​e​k
+			 * 3​0​ ​d​a​y​s
 			 */
-			bestWeek: string
+			days: string
 			/**
-			 * b​e​s​t​ ​w​e​e​k​ ​·​ ​{​w​e​e​k​}
-			 * @param {unknown} week
+			 * Q​u​a​r​t​e​r
 			 */
-			bestWeekOn: RequiredParams<'week'>
+			quarter: string
 			/**
-			 * A​D​R​s​ ​a​c​c​e​p​t​e​d
+			 * Y​e​a​r
 			 */
-			adrs: string
+			year: string
+		}
+		kpi: {
 			/**
-			 * w​e​e​k​s​ ​o​f​ ​h​i​s​t​o​r​y
+			 * t​a​s​k​s​ ​d​o​n​e​,​ ​o​f​ ​{​c​r​e​a​t​e​d​}​ ​c​r​e​a​t​e​d
+			 * @param {number} created
 			 */
-			weeks: string
+			done: RequiredParams<'created'>
+			/**
+			 * m​e​d​i​a​n​ ​c​y​c​l​e​ ​t​i​m​e
+			 */
+			cycle: string
+			/**
+			 * c​o​m​m​i​t​s
+			 */
+			commits: string
+			/**
+			 * s​t​a​l​e​ ​d​o​c​s
+			 */
+			stale: string
+			/**
+			 * w​a​s​ ​{​v​a​l​u​e​}
+			 * @param {number} value
+			 */
+			previous: RequiredParams<'value'>
 		}
 		/**
-		 * T​a​s​k​s​ ​d​o​n​e​ ​p​e​r​ ​w​e​e​k
+		 * T​a​s​k​s​ ​c​r​e​a​t​e​d​ ​a​n​d​ ​d​o​n​e
 		 */
 		throughput: string
-		progress: {
+		/**
+		 * w​e​e​k​ ​o​f​ ​{​d​a​y​}
+		 * @param {unknown} day
+		 */
+		throughputWeek: RequiredParams<'day'>
+		/**
+		 * {​s​t​a​r​t​}​:​ ​{​c​r​e​a​t​e​d​}​ ​c​r​e​a​t​e​d​,​ ​{​d​o​n​e​}​ ​d​o​n​e
+		 * @param {number} created
+		 * @param {number} done
+		 * @param {unknown} start
+		 */
+		throughputBucket: RequiredParams<'created' | 'done' | 'start'>
+		/**
+		 * C​r​e​a​t​e​d
+		 */
+		created: string
+		/**
+		 * D​o​n​e
+		 */
+		done: string
+		/**
+		 * {​c​o​u​n​t​}​ ​c​r​e​a​t​e​d
+		 * @param {number} count
+		 */
+		createdCount: RequiredParams<'count'>
+		/**
+		 * {​c​o​u​n​t​}​ ​d​o​n​e
+		 * @param {number} count
+		 */
+		doneCount: RequiredParams<'count'>
+		areas: {
 			/**
-			 * P​r​o​g​r​e​s​s​ ​o​v​e​r​ ​t​i​m​e
+			 * G​o​a​l​ ​a​r​e​a​s
 			 */
 			title: string
 			/**
-			 * P​r​o​g​r​e​s​s​ ​o​f
-			 */
-			of: string
-			/**
-			 * G​o​a​l​s
-			 */
-			goals: string
-			/**
-			 * P​r​o​j​e​c​t​s
-			 */
-			projects: string
-			/**
-			 * P​r​o​g​r​e​s​s​ ​o​f​ ​e​a​c​h​ ​g​o​a​l
-			 */
-			eachGoal: string
-			/**
-			 * P​r​o​g​r​e​s​s​ ​o​f​ ​e​a​c​h​ ​p​r​o​j​e​c​t
-			 */
-			eachProject: string
-			/**
-			 * N​o​ ​p​r​o​g​r​e​s​s​ ​r​e​c​o​r​d​e​d​ ​y​e​t
+			 * N​o​ ​g​o​a​l​s​ ​y​e​t​.
 			 */
 			none: string
+			/**
+			 * {​p​o​i​n​t​s​}​ ​p​t​s
+			 * @param {unknown} points
+			 */
+			gained: RequiredParams<'points'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​g​o​a​l​|​g​o​a​l​s​}​}
+			 * @param {number} count
+			 */
+			goals: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​a​c​h​i​e​v​e​d
+			 * @param {number} count
+			 */
+			achieved: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​i​d​l​e
+			 * @param {number} count
+			 */
+			idle: RequiredParams<'count'>
 		}
-		/**
-		 * A​D​R​ ​a​c​t​i​v​i​t​y
-		 */
-		adrActivity: string
-		/**
-		 * A​D​R​s​ ​b​y​ ​t​h​e​ ​s​t​a​t​u​s​ ​t​h​e​y​ ​m​o​v​e​d​ ​t​o​,​ ​p​e​r​ ​w​e​e​k
-		 */
-		adrChart: string
+		projects: {
+			/**
+			 * B​y​ ​p​r​o​j​e​c​t
+			 */
+			title: string
+			/**
+			 * N​o​ ​t​a​s​k​s​ ​w​e​r​e​ ​f​i​n​i​s​h​e​d​ ​i​n​ ​t​h​i​s​ ​p​e​r​i​o​d​.
+			 */
+			none: string
+			/**
+			 * m​e​d​i​a​n​ ​{​d​a​y​s​}​d
+			 * @param {number} days
+			 */
+			median: RequiredParams<'days'>
+		}
+		heat: {
+			/**
+			 * C​o​m​m​i​t​s
+			 */
+			title: string
+			/**
+			 * {​c​o​u​n​t​}​ ​i​n​ ​5​3​ ​w​e​e​k​s
+			 * @param {number} count
+			 */
+			total: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​c​o​m​m​i​t​s​ ​o​v​e​r​ ​t​h​e​ ​l​a​s​t​ ​5​3​ ​w​e​e​k​s
+			 * @param {number} count
+			 */
+			label: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}​ ​o​n​ ​{​d​a​t​e​}
+			 * @param {number} count
+			 * @param {unknown} date
+			 */
+			day: RequiredParams<'count' | 'date'>
+		}
+		knowledge: {
+			/**
+			 * K​n​o​w​l​e​d​g​e​ ​h​e​a​l​t​h
+			 */
+			title: string
+			/**
+			 * D​o​c​s​ ​b​y​ ​h​o​w​ ​f​r​e​s​h​ ​t​h​e​y​ ​a​r​e
+			 */
+			label: string
+			/**
+			 * F​r​e​s​h
+			 */
+			fresh: string
+			/**
+			 * D​r​i​f​t​i​n​g
+			 */
+			drifting: string
+			/**
+			 * S​t​a​l​e
+			 */
+			stale: string
+			/**
+			 * N​o​t​ ​t​r​a​c​k​e​d
+			 */
+			notTracked: string
+			/**
+			 * D​e​c​i​s​i​o​n​s
+			 */
+			decisions: string
+		}
 	}
 	search: {
 		/**
@@ -2934,6 +3179,114 @@ export type TranslationFunctions = {
 		 * Changed in {count} {{file|files}}.
 		 */
 		changedIn: (arg: { count: number }) => LocalizedString
+		view: {
+			/**
+			 * View
+			 */
+			label: () => LocalizedString
+			/**
+			 * Map
+			 */
+			map: () => LocalizedString
+			/**
+			 * List
+			 */
+			list: () => LocalizedString
+		}
+		/**
+		 * {goals} goals, {projects} projects, {tasks} tasks, {docs} docs
+		 */
+		usage: (arg: { docs: number, goals: number, projects: number, tasks: number }) => LocalizedString
+		map: {
+			/**
+			 * Tags as bubbles, grouped by cluster
+			 */
+			label: () => LocalizedString
+			/**
+			 * {name}, {count} {{item|items}}
+			 */
+			bubble: (arg: { count: number, name: unknown }) => LocalizedString
+			/**
+			 * Zoom in
+			 */
+			zoomIn: () => LocalizedString
+			/**
+			 * Zoom out
+			 */
+			zoomOut: () => LocalizedString
+			/**
+			 * Fit to screen
+			 */
+			fit: () => LocalizedString
+		}
+		detail: {
+			/**
+			 * Tag details
+			 */
+			title: () => LocalizedString
+			/**
+			 * Pick a tag to see where it is used.
+			 */
+			pick: () => LocalizedString
+			/**
+			 * Used in
+			 */
+			usedIn: () => LocalizedString
+			/**
+			 * {count} {{goal|goals}}
+			 */
+			goals: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{project|projects}}
+			 */
+			projects: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{task|tasks}}
+			 */
+			tasks: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{doc|docs}}
+			 */
+			docs: (arg: { count: number }) => LocalizedString
+			/**
+			 * Often tagged with
+			 */
+			often: () => LocalizedString
+			/**
+			 * Recent items
+			 */
+			recent: () => LocalizedString
+			/**
+			 * The same search by hand
+			 */
+			grep: () => LocalizedString
+			/**
+			 * Merge into
+			 */
+			mergeInto: () => LocalizedString
+			/**
+			 * Choose a tag
+			 */
+			choose: () => LocalizedString
+		}
+		duplicates: {
+			/**
+			 * Possible duplicates
+			 */
+			title: () => LocalizedString
+			/**
+			 * {a} and {b} look like the same tag. {more} more to check.
+			 */
+			text: (arg: { a: unknown, b: unknown, more: number }) => LocalizedString
+			/**
+			 * Merge {from} into {into}
+			 */
+			merge: (arg: { from: unknown, into: unknown }) => LocalizedString
+			/**
+			 * Keep both
+			 */
+			keepBoth: () => LocalizedString
+		}
 		messages: {
 			/**
 			 * A tag needs a name
@@ -2955,6 +3308,10 @@ export type TranslationFunctions = {
 		 */
 		title: () => LocalizedString
 		/**
+		 * {from} to {to}
+		 */
+		covers: (arg: { from: unknown, to: unknown }) => LocalizedString
+		/**
 		 * Could not load stats
 		 */
 		loadError: () => LocalizedString
@@ -2963,7 +3320,7 @@ export type TranslationFunctions = {
 		 */
 		noGit: () => LocalizedString
 		/**
-		 * Progress over time is read from the commits of this repository. Put the workspace in a git repository and the charts fill in.
+		 * Progress over time is read from the commits of this repository. Put the workspace in a git repository and the numbers fill in.
 		 */
 		noGitText: () => LocalizedString
 		/**
@@ -2974,70 +3331,170 @@ export type TranslationFunctions = {
 		 * This is a shallow clone, so the earliest weeks are missing.
 		 */
 		partialText: () => LocalizedString
-		tiles: {
+		/**
+		 * Area
+		 */
+		area: () => LocalizedString
+		/**
+		 * All areas
+		 */
+		allAreas: () => LocalizedString
+		period: {
 			/**
-			 * tasks done
+			 * Period
 			 */
-			done: () => LocalizedString
+			label: () => LocalizedString
 			/**
-			 * best week
+			 * 30 days
 			 */
-			bestWeek: () => LocalizedString
+			days: () => LocalizedString
 			/**
-			 * best week · {week}
+			 * Quarter
 			 */
-			bestWeekOn: (arg: { week: unknown }) => LocalizedString
+			quarter: () => LocalizedString
 			/**
-			 * ADRs accepted
+			 * Year
 			 */
-			adrs: () => LocalizedString
+			year: () => LocalizedString
+		}
+		kpi: {
 			/**
-			 * weeks of history
+			 * tasks done, of {created} created
 			 */
-			weeks: () => LocalizedString
+			done: (arg: { created: number }) => LocalizedString
+			/**
+			 * median cycle time
+			 */
+			cycle: () => LocalizedString
+			/**
+			 * commits
+			 */
+			commits: () => LocalizedString
+			/**
+			 * stale docs
+			 */
+			stale: () => LocalizedString
+			/**
+			 * was {value}
+			 */
+			previous: (arg: { value: number }) => LocalizedString
 		}
 		/**
-		 * Tasks done per week
+		 * Tasks created and done
 		 */
 		throughput: () => LocalizedString
-		progress: {
+		/**
+		 * week of {day}
+		 */
+		throughputWeek: (arg: { day: unknown }) => LocalizedString
+		/**
+		 * {start}: {created} created, {done} done
+		 */
+		throughputBucket: (arg: { created: number, done: number, start: unknown }) => LocalizedString
+		/**
+		 * Created
+		 */
+		created: () => LocalizedString
+		/**
+		 * Done
+		 */
+		done: () => LocalizedString
+		/**
+		 * {count} created
+		 */
+		createdCount: (arg: { count: number }) => LocalizedString
+		/**
+		 * {count} done
+		 */
+		doneCount: (arg: { count: number }) => LocalizedString
+		areas: {
 			/**
-			 * Progress over time
+			 * Goal areas
 			 */
 			title: () => LocalizedString
 			/**
-			 * Progress of
-			 */
-			of: () => LocalizedString
-			/**
-			 * Goals
-			 */
-			goals: () => LocalizedString
-			/**
-			 * Projects
-			 */
-			projects: () => LocalizedString
-			/**
-			 * Progress of each goal
-			 */
-			eachGoal: () => LocalizedString
-			/**
-			 * Progress of each project
-			 */
-			eachProject: () => LocalizedString
-			/**
-			 * No progress recorded yet
+			 * No goals yet.
 			 */
 			none: () => LocalizedString
+			/**
+			 * {points} pts
+			 */
+			gained: (arg: { points: unknown }) => LocalizedString
+			/**
+			 * {count} {{goal|goals}}
+			 */
+			goals: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} achieved
+			 */
+			achieved: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} idle
+			 */
+			idle: (arg: { count: number }) => LocalizedString
 		}
-		/**
-		 * ADR activity
-		 */
-		adrActivity: () => LocalizedString
-		/**
-		 * ADRs by the status they moved to, per week
-		 */
-		adrChart: () => LocalizedString
+		projects: {
+			/**
+			 * By project
+			 */
+			title: () => LocalizedString
+			/**
+			 * No tasks were finished in this period.
+			 */
+			none: () => LocalizedString
+			/**
+			 * median {days}d
+			 */
+			median: (arg: { days: number }) => LocalizedString
+		}
+		heat: {
+			/**
+			 * Commits
+			 */
+			title: () => LocalizedString
+			/**
+			 * {count} in 53 weeks
+			 */
+			total: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} commits over the last 53 weeks
+			 */
+			label: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{commit|commits}} on {date}
+			 */
+			day: (arg: { count: number, date: unknown }) => LocalizedString
+		}
+		knowledge: {
+			/**
+			 * Knowledge health
+			 */
+			title: () => LocalizedString
+			/**
+			 * Docs by how fresh they are
+			 */
+			label: () => LocalizedString
+			/**
+			 * Fresh
+			 */
+			fresh: () => LocalizedString
+			/**
+			 * Drifting
+			 */
+			drifting: () => LocalizedString
+			/**
+			 * Stale
+			 */
+			stale: () => LocalizedString
+			/**
+			 * Not tracked
+			 */
+			notTracked: () => LocalizedString
+			/**
+			 * Decisions
+			 */
+			decisions: () => LocalizedString
+		}
 	}
 	search: {
 		/**

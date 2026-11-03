@@ -1,5 +1,6 @@
 export { type FieldFilter, filterTags, renameOutcome } from './rules'
+export { TagDetail } from './TagDetail'
 export { TagsHeading } from './TagsHeading'
-export { TagsList } from './TagsList'
 export { TagsProvider } from './TagsProvider'
 export { TagsToolbar } from './TagsToolbar'
+export { TagsView } from './TagsView'

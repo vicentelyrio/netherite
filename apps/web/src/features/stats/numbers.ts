@@ -1,27 +1,40 @@
-export interface Point {
-  readonly week: string
-  readonly done: number
-  readonly total: number
+export interface Change {
+  /** Signed text such as `+3` or `-2`; `=` when nothing changed. */
+  readonly text: string
+  readonly direction: 'up' | 'down' | 'same'
 }
 
-/** Done over total as a percentage, or 0 for a week with no tasks yet. */
-export const percent = (p: Point) => (p.total <= 0 ? 0 : Math.round((p.done / p.total) * 100))
+/** How a number moved against the period before. Without a previous value there is nothing to say. */
+export const changeOf = (value: number, previous: number | undefined): Change | undefined => {
+  if (previous === undefined) return undefined
+  const diff = Math.round((value - previous) * 10) / 10
+  if (diff === 0) return { text: '=', direction: 'same' }
+  return { text: `${diff > 0 ? '+' : ''}${diff}`, direction: diff > 0 ? 'up' : 'down' }
+}
 
-export const adrColors = {
-  proposed: '#a5a7ff',
-  accepted: '#2cc27e',
-  deprecated: '#f0717e',
-  superseded: '#969ab8',
-} as const
+/** Done over everything, as a whole percent; an empty set is 0. */
+export const percent = (done: number, total: number) =>
+  total <= 0 ? 0 : Math.round((done / total) * 100)
 
-export const adrOrder = ['proposed', 'accepted', 'deprecated', 'superseded'] as const
+/** Which of five shades a day's commits fall in, 0 for none, so the busiest day is the darkest. */
+export const heatLevel = (count: number, max: number): 0 | 1 | 2 | 3 | 4 => {
+  if (count <= 0 || max <= 0) return 0
+  return Math.min(4, Math.max(1, Math.ceil((count / max) * 4))) as 1 | 2 | 3 | 4
+}
 
-export const lineColors = [
-  '#8f91f2',
-  '#3ba474',
-  '#d9a646',
-  '#d2a8f0',
-  '#8fc3f2',
-  '#f0b397',
-  '#7ed6c8',
-]
+const DAY = 86_400_000
+
+/** Every day from `from` to `to`, with its commit count, for the heat map. */
+export const heatDays = (
+  from: string,
+  to: string,
+  counts: ReadonlyArray<{ readonly date: string; readonly count: number }>,
+): ReadonlyArray<{ readonly date: string; readonly count: number }> => {
+  const byDay = new Map(counts.map((c) => [c.date, c.count]))
+  const days: Array<{ date: string; count: number }> = []
+  for (let t = Date.parse(`${from}T00:00:00Z`); t <= Date.parse(`${to}T00:00:00Z`); t += DAY) {
+    const date = new Date(t).toISOString().slice(0, 10)
+    days.push({ date, count: byDay.get(date) ?? 0 })
+  }
+  return days
+}

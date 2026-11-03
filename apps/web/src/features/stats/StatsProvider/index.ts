@@ -1,1 +1,1 @@
-export { type ProgressBy, StatsProvider, type StatsState, useStats } from './StatsProvider'
+export { type Period, periods, StatsProvider, type StatsState, useStats } from './StatsProvider'

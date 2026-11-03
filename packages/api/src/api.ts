@@ -42,6 +42,7 @@ import {
   Stats,
   StatsQuery,
   TagList,
+  TagMap,
   Timeline,
   TimelineQuery,
   UnlinkQuery,
@@ -174,6 +175,7 @@ export class KnowledgeGroup extends HttpApiGroup.make('knowledge').add(
 
 export class TagsGroup extends HttpApiGroup.make('tags').add(
   HttpApiEndpoint.get('list', '/tags', { success: TagList }),
+  HttpApiEndpoint.get('map', '/tags/map', { success: TagMap }),
   HttpApiEndpoint.post('rename', '/tags/rename', {
     payload: RenameTagPayload,
     success: RenameTagResult,

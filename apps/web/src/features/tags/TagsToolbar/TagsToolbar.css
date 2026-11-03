@@ -1,0 +1,25 @@
+.tgt-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid #33364f;
+  border-radius: 8px;
+  background: #212336;
+}
+.tgt-search input {
+  width: 200px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+.tgt-search kbd {
+  padding: 0 6px;
+  border: 1px solid #33364f;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #969ab8;
+}

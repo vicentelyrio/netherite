@@ -66,6 +66,7 @@ describe('the API definition', () => {
         '/api/stats',
         '/api/stats/period',
         '/api/tags',
+        '/api/tags/map',
         '/api/tags/rename',
         '/api/timeline',
       ].sort(),

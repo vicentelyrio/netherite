@@ -1,1 +1,0 @@
-export { AdrActivityCard } from './AdrActivityCard'

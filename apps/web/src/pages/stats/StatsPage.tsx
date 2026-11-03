@@ -1,22 +1,12 @@
-import {
-  AdrActivityCard,
-  ProgressCard,
-  StatsHeading,
-  StatsProvider,
-  StatsTiles,
-  ThroughputCard,
-} from '@/features/stats'
+import { StatsBoard, StatsControls, StatsHeading, StatsProvider } from '@/features/stats'
 import { PageTemplate } from '@/templates'
 
-/** Stats: how work moved over time, from the git history. */
+/** Stats: what was created and done, how long it took, and how knowledge fares, from git. */
 export function StatsPage() {
   return (
     <StatsProvider>
-      <PageTemplate header={<StatsHeading />}>
-        <StatsTiles />
-        <ThroughputCard />
-        <ProgressCard />
-        <AdrActivityCard />
+      <PageTemplate header={<StatsHeading />} toolbar={<StatsControls />}>
+        <StatsBoard />
       </PageTemplate>
     </StatsProvider>
   )

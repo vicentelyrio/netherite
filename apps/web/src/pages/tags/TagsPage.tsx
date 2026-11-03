@@ -1,13 +1,16 @@
-import { TagsHeading, TagsList, TagsProvider, TagsToolbar } from '@/features/tags'
-import { PageTemplate } from '@/templates'
+import { TagDetail, TagsHeading, TagsProvider, TagsToolbar, TagsView } from '@/features/tags'
+import { SplitTemplate } from '@/templates'
 
-/** Tags: every tag and label with how many items carry it, and a way to rename one everywhere. */
+/** Tags: a map and a list of every tag and label, what goes with what, and how to merge them. */
 export function TagsPage() {
   return (
     <TagsProvider>
-      <PageTemplate header={<TagsHeading />} toolbar={<TagsToolbar />}>
-        <TagsList />
-      </PageTemplate>
+      <SplitTemplate
+        header={<TagsHeading />}
+        toolbar={<TagsToolbar />}
+        main={<TagsView />}
+        aside={<TagDetail />}
+      />
     </TagsProvider>
   )
 }

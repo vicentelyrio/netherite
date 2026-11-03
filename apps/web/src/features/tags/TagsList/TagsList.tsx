@@ -1,25 +1,64 @@
 import { EmptyState } from '@netherite/ui'
 import { GroupCard } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
-import { TagRow } from '../TagRow'
+import { groupsOf, keyOf, shareOf } from '../rules'
 import { useTags } from '../TagsProvider'
 import './TagsList.css'
 
-/** Every tag that passes the filters; a prompt to add some when there are none at all. */
+/** Every tag that passes the filters, with how much it is used, what it goes with, and its cluster. */
 export function TagsList() {
   const { LL } = useI18nContext()
-  const { all, shown } = useTags()
-  if (all.length === 0) {
-    return (
-      <EmptyState icon="sell" title={LL.tags.empty.title()} description={LL.tags.empty.text()} />
-    )
-  }
+  const { shown, selected, select } = useTags()
+  const max = Math.max(1, ...shown.map((t) => t.total))
   return (
     <GroupCard label={LL.tags.title()} className="tg-list">
-      {shown.map((tag) => (
-        <TagRow key={`${tag.field}:${tag.name}`} tag={tag} tags={all} />
-      ))}
+      {shown.map((tag) => {
+        const key = keyOf(tag)
+        const g = groupsOf(tag.byType)
+        return (
+          <button
+            key={key}
+            type="button"
+            className="tg-row"
+            aria-pressed={selected !== undefined && keyOf(selected) === key}
+            onClick={() => select(key)}
+          >
+            <span className="tg-name">{tag.name}</span>
+            <span className="tg-field">
+              {tag.field === 'tags' ? LL.tags.tag() : LL.tags.label()}
+            </span>
+            <span
+              className="tg-usage"
+              title={LL.tags.usage({
+                goals: g.goals,
+                projects: g.projects,
+                tasks: g.tasks,
+                docs: g.docs,
+              })}
+            >
+              <span className="tg-usage-bar" aria-hidden="true">
+                <span style={{ width: `${shareOf(tag.total, max) * 100}%` }} />
+              </span>
+              <strong className="tg-total">{tag.total}</strong>
+            </span>
+            <span className="tg-often">
+              {tag.often.slice(0, 3).map((o) => (
+                <span key={`${o.field}:${o.name}`} className="tg-chip">
+                  {o.name}
+                </span>
+              ))}
+            </span>
+            <span className="tg-cluster">{tag.cluster}</span>
+          </button>
+        )
+      })}
       {shown.length === 0 && <div className="kn-nomatch">{LL.tags.noMatch()}</div>}
     </GroupCard>
   )
+}
+
+/** Shown instead of the views when no item has a tag at all. */
+export function NoTags() {
+  const { LL } = useI18nContext()
+  return <EmptyState icon="sell" title={LL.tags.empty.title()} description={LL.tags.empty.text()} />
 }

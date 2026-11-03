@@ -154,6 +154,7 @@ export {
 } from './resolve'
 export { scanItems } from './scan'
 export { type ScannedItem, scannedItemFrom, toScannedItem } from './scanned-item'
+export { type TagDuplicate, type TagEdge, type TagMap, type TagNode, tagMap } from './tag-map'
 export {
   type Timeline,
   type TimelineDecision,

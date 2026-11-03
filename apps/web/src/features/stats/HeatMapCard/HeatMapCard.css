@@ -1,0 +1,25 @@
+.hm {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, 12px);
+  grid-auto-columns: 12px;
+  gap: 3px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.hm-cell {
+  border-radius: 2px;
+  background: #2a2c45;
+}
+.hm-cell[data-level="1"] {
+  background: #35506a;
+}
+.hm-cell[data-level="2"] {
+  background: #2d7f68;
+}
+.hm-cell[data-level="3"] {
+  background: #2cab72;
+}
+.hm-cell[data-level="4"] {
+  background: #57e0a0;
+}
