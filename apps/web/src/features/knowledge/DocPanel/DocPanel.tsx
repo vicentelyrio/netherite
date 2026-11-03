@@ -29,6 +29,8 @@ export function DocPanel({
   const { LL } = useI18nContext()
   const type = item.type as ItemTypeName
   const fresh = item.freshness
+  const front = (item.frontmatter ?? {}) as Record<string, unknown>
+  const owner = [front.owner, front.created_by].find((v) => typeof v === 'string' && v !== '')
   return (
     <aside className="kf-panel" aria-label={LL.knowledge.doc.panel.label()}>
       <section className="kf-section">
@@ -40,8 +42,21 @@ export function DocPanel({
           )}
           {item.orphan && <OrphanTag />}
         </div>
+        {typeof owner === 'string' && (
+          <p className="kf-owner">{LL.knowledge.doc.panel.owner({ name: owner })}</p>
+        )}
       </section>
       {type === 'adr' && data && <SupersessionChain id={item.id} chain={data.chain} />}
+      {!stale && type !== 'adr' && fresh !== null && fresh.state === 'fresh' && (
+        <section className="kf-section">
+          <h2 className="kf-h">{LL.knowledge.doc.panel.freshness()}</h2>
+          <span className="app-muted">
+            {fresh.commits === 0
+              ? LL.knowledge.doc.panel.upToDate()
+              : LL.knowledge.doc.panel.sinceReview({ count: fresh.commits })}
+          </span>
+        </section>
+      )}
       {stale && type !== 'adr' && fresh !== null && data?.changes && (
         <section className="kf-section">
           <h2 className="kf-h">{LL.knowledge.doc.panel.freshness()}</h2>

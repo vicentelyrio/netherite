@@ -569,6 +569,8 @@ export const KnowledgeList = Schema.Struct({ items: Schema.Array(KnowledgeRow) }
 
 export const CoChangedFile = Schema.Struct({ path: S, commits: N, share: N, last: S })
 
+export const CommitView = Schema.Struct({ hash: S, subject: S, date: S, author: S })
+
 export const KnowledgePreview = Schema.Struct({
   id: S,
   /** The first plain paragraph of the text. */
@@ -582,12 +584,12 @@ export const KnowledgePreview = Schema.Struct({
       partial: Schema.Boolean,
     }),
   ),
+  /** The commit that last changed the file; missing without git or before its first commit. */
+  lastCommit: opt(CommitView),
 })
 export type KnowledgePreview = typeof KnowledgePreview.Type
 
 export const ChainLink = Schema.Struct({ id: S, title: S, status: opt(S) })
-
-export const CommitView = Schema.Struct({ hash: S, subject: S, date: S, author: S })
 
 export const ContextTargetView = Schema.Struct({
   target: S,

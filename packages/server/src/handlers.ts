@@ -407,11 +407,27 @@ const knowledge = (state: ServerState) =>
                   contentRoot: state.repo.workspace.config.content,
                   minCommits: 1,
                 }).pipe(Effect.mapError(gitFailure))
+          const latest =
+            git === undefined
+              ? undefined
+              : (yield* git
+                  .log({ paths: [item.path], limit: 1 })
+                  .pipe(Effect.orElseSucceed(() => [])))[0]
           return {
             id: params.id,
             summary: summaryOf(detail.body),
             backlinks: detail.backlinks,
             coChanged: changed,
+            ...(latest === undefined
+              ? {}
+              : {
+                  lastCommit: {
+                    hash: latest.hash,
+                    subject: latest.subject,
+                    date: latest.date,
+                    author: latest.author.name,
+                  },
+                }),
           }
         }),
       )

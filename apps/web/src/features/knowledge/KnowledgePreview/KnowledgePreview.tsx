@@ -7,6 +7,7 @@ import { useApi } from '@/infrastructure/api'
 import { previewQuery } from '@/infrastructure/query'
 import { useKnowledgeIndex } from '../KnowledgeProvider'
 import '../shared.css'
+import { ago } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import './KnowledgePreview.css'
 
@@ -87,7 +88,15 @@ function Preview({ row }: { readonly row: KnowledgeRow }) {
         </>
       )}
       <footer className="kn-preview-foot">
-        {LL.knowledge.preview.updated({ date: row.date ?? '—' })}
+        {data?.lastCommit ? (
+          <>
+            <code>{data.lastCommit.hash.slice(0, 7)}</code> {data.lastCommit.subject}
+            {' · '}
+            {ago(data.lastCommit.date)}
+          </>
+        ) : (
+          LL.knowledge.preview.updated({ date: row.date ?? '—' })
+        )}
       </footer>
     </aside>
   )

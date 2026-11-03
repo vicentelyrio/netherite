@@ -114,6 +114,7 @@
 
 .nt-avatar {
   font-weight: var(--nt-font-weight-bold);
+  border-radius: 50%;
 }
 .nt-avatar-placeholder {
   font-size: var(--nt-text-micro-size);

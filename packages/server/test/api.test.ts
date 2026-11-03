@@ -241,6 +241,7 @@ describe('search, graph, lint', () => {
         expect(preview.summary).toBe('Text.')
         expect(preview.backlinks.map((b) => b.id)).toContain('PRJ-00001')
         expect(preview.coChanged).toBeNull()
+        expect(preview.lastCommit).toBeUndefined()
         const missing = yield* failure(s.client.knowledge.preview({ params: { id: 'ADR-09999' } }))
         expect(missing._tag).toBe('NotFound')
       }),
@@ -689,6 +690,18 @@ describe('inbox', () => {
             change: 'untracked',
             id: 'DOC-00002',
           })
+        }),
+      { git: true },
+    )
+  })
+
+  test('with git: a preview names the commit that last changed the file', async () => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const preview = yield* s.client.knowledge.preview({ params: { id: 'ADR-00002' } })
+          expect(preview.lastCommit?.hash).toMatch(/^[0-9a-f]{40}$/)
+          expect(preview.lastCommit?.subject).not.toBe('')
         }),
       { git: true },
     )

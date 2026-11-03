@@ -778,6 +778,15 @@ type RootTranslation = {
 				 */
 				sinceReview: RequiredParams<'count'>
 				/**
+				 * U​p​ ​t​o​ ​d​a​t​e​:​ ​n​o​ ​c​o​m​m​i​t​s​ ​s​i​n​c​e​ ​r​e​v​i​e​w
+				 */
+				upToDate: string
+				/**
+				 * O​w​n​e​r​ ​{​n​a​m​e​}
+				 * @param {unknown} name
+				 */
+				owner: RequiredParams<'name'>
+				/**
 				 * L​i​n​k​e​d​ ​f​r​o​m​ ​·​ ​{​c​o​u​n​t​}
 				 * @param {number} count
 				 */
@@ -3166,6 +3175,14 @@ export type TranslationFunctions = {
 				 * {count} commits since review
 				 */
 				sinceReview: (arg: { count: number }) => LocalizedString
+				/**
+				 * Up to date: no commits since review
+				 */
+				upToDate: () => LocalizedString
+				/**
+				 * Owner {name}
+				 */
+				owner: (arg: { name: unknown }) => LocalizedString
 				/**
 				 * Linked from · {count}
 				 */

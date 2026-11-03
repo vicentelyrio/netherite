@@ -212,6 +212,8 @@ const en = {
         typeStatus: 'Type & status',
         freshness: 'Freshness',
         sinceReview: '{count:number} commits since review',
+        upToDate: 'Up to date: no commits since review',
+        owner: 'Owner {name}',
         linkedFrom: 'Linked from · {count:number}',
         orphan: 'Orphan: nothing links here',
         linksTo: 'Links to · {count:number}',
