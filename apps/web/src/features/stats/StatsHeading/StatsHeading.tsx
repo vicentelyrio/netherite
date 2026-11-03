@@ -15,7 +15,12 @@ export function StatsHeading() {
       </Breadcrumbs>
       <h1 className="app-title">{LL.stats.title()}</h1>
       <p className="app-muted">
-        {LL.stats.covers({ from: formatDate(data.from), to: formatDate(data.to) })}
+        {[
+          LL.stats.subtitle.areas({ count: data.areaNames.length }),
+          LL.stats.subtitle.projects({ count: data.projects.length }),
+          LL.stats.subtitle.source(),
+          LL.stats.covers({ from: formatDate(data.from), to: formatDate(data.to) }),
+        ].join(' · ')}
       </p>
       {data.approximate && (
         <Banner variant="warning" title={LL.stats.partial()}>

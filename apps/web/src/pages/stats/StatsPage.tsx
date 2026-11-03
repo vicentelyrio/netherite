@@ -5,7 +5,7 @@ import { PageTemplate } from '@/templates'
 export function StatsPage() {
   return (
     <StatsProvider>
-      <PageTemplate header={<StatsHeading />} toolbar={<StatsControls />}>
+      <PageTemplate header={<StatsHeading />} actions={<StatsControls />}>
         <StatsBoard />
       </PageTemplate>
     </StatsProvider>

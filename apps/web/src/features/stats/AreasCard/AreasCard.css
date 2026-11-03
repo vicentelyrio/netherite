@@ -4,46 +4,59 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 .ar-row {
-  display: grid;
-  grid-template-columns: 120px minmax(80px, 1fr) 44px 80px;
-  align-items: center;
-  column-gap: 12px;
-  row-gap: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.ar-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }
 .ar-name {
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 600;
 }
-.ar-bar {
-  height: 8px;
-  border-radius: 4px;
-  background: #33364f;
-  overflow: hidden;
+.ar-goals {
+  font-size: 13px;
+  color: #969ab8;
 }
-.ar-bar > span {
-  display: block;
-  height: 100%;
-  background: #8f91f2;
-}
-.ar-share {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
+.ar-fill {
+  flex: 1;
 }
 .ar-gain {
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
   color: #969ab8;
   font-variant-numeric: tabular-nums;
 }
 .ar-gain[data-up] {
   color: #2cc27e;
 }
+.ar-share {
+  min-width: 44px;
+  text-align: right;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.ar-bar {
+  display: flex;
+  height: 6px;
+  border-radius: 3px;
+  background: #34374f;
+  overflow: hidden;
+}
+.ar-base {
+  background: rgba(44, 194, 126, 0.42);
+}
+.ar-add {
+  background: #2cc27e;
+}
 .ar-note {
-  grid-column: 2 / -1;
   font-size: 12px;
   color: #8a8fad;
 }

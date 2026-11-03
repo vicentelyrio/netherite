@@ -1035,8 +1035,8 @@ describe('Stats', () => {
     expect(
       await screen.findByRole('region', { name: 'Tasks created and done' }),
     ).toBeInTheDocument()
-    expect(screen.getByText('median cycle time')).toBeInTheDocument()
-    expect(screen.getByText(/tasks done, of \d+ created/)).toBeInTheDocument()
+    expect(screen.getByText('Median cycle time')).toBeInTheDocument()
+    expect(screen.getByText(/of \d+ created/)).toBeInTheDocument()
     expect(screen.getByRole('region', { name: 'Goal areas' })).toBeInTheDocument()
     expect(screen.getByRole('region', { name: 'By project' })).toBeInTheDocument()
     expect(screen.getByRole('region', { name: 'Knowledge health' })).toBeInTheDocument()

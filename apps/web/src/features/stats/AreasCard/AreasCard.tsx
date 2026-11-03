@@ -11,30 +11,45 @@ export function AreasCard() {
   const { LL } = useI18nContext()
   const { data } = useStats()
   return (
-    <ChartCard title={LL.stats.areas.title()}>
+    <ChartCard title={LL.stats.areas.title()} subtitle={LL.stats.areas.subtitle()}>
       {data.areas.length === 0 ? (
         <p className="app-muted">{LL.stats.areas.none()}</p>
       ) : (
         <ul className="ar-list">
-          {data.areas.map((a) => (
-            <li key={a.area} className="ar-row">
-              <span className="ar-name">
-                {a.area === noArea ? LL.stats.areas.noArea() : a.area}
-              </span>
-              <span className="ar-bar" aria-hidden="true">
-                <span style={{ width: `${Math.round(a.share * 100)}%` }} />
-              </span>
-              <span className="ar-share">{Math.round(a.share * 100)}%</span>
-              <span className="ar-gain" data-up={a.gained > 0 || undefined}>
-                {LL.stats.areas.gained({ points: `${a.gained > 0 ? '+' : ''}${a.gained}` })}
-              </span>
-              <span className="ar-note">
-                {LL.stats.areas.goals({ count: a.goals })}
-                {a.achieved > 0 && ` · ${LL.stats.areas.achieved({ count: a.achieved })}`}
-                {a.idle > 0 && ` · ${LL.stats.areas.idle({ count: a.idle })}`}
-              </span>
-            </li>
-          ))}
+          {data.areas.map((a) => {
+            const share = Math.round(a.share * 100)
+            // What was done before the period, then what the period added.
+            const gained = Math.max(0, Math.min(a.gained, share))
+            return (
+              <li key={a.area} className="ar-row">
+                <div className="ar-head">
+                  <span className="ar-name">
+                    {a.area === noArea ? LL.stats.areas.noArea() : a.area}
+                  </span>
+                  <span className="ar-goals">{LL.stats.areas.goals({ count: a.goals })}</span>
+                  <span className="ar-fill" />
+                  <span className="ar-gain" data-up={a.gained > 0 || undefined}>
+                    {LL.stats.areas.gained({ points: `${a.gained > 0 ? '+' : ''}${a.gained}` })}
+                  </span>
+                  <span className="ar-share">{share}%</span>
+                </div>
+                <span className="ar-bar" aria-hidden="true">
+                  <span className="ar-base" style={{ width: `${share - gained}%` }} />
+                  <span className="ar-add" style={{ width: `${gained}%` }} />
+                </span>
+                {(a.achieved > 0 || a.idle > 0) && (
+                  <span className="ar-note">
+                    {[
+                      a.achieved > 0 ? LL.stats.areas.achieved({ count: a.achieved }) : '',
+                      a.idle > 0 ? LL.stats.areas.idle({ count: a.idle }) : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </span>
+                )}
+              </li>
+            )
+          })}
         </ul>
       )}
     </ChartCard>

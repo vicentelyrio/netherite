@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { ChartCard } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useStats } from '../StatsProvider'
@@ -19,7 +20,14 @@ export function KnowledgeCard() {
   }
   const decisions = Object.entries(data.knowledge.decisions).sort(([a], [b]) => a.localeCompare(b))
   return (
-    <ChartCard title={LL.stats.knowledge.title()}>
+    <ChartCard
+      title={LL.stats.knowledge.title()}
+      aside={
+        <Link to="/knowledge" className="kn-open">
+          {LL.stats.knowledge.open()}
+        </Link>
+      }
+    >
       <div className="st-kbar" role="img" aria-label={LL.stats.knowledge.label()}>
         {order.map((k) =>
           f[k] === 0 ? null : (
@@ -41,10 +49,10 @@ export function KnowledgeCard() {
         ))}
       </ul>
       <h3 className="kn-h">{LL.stats.knowledge.decisions()}</h3>
-      <ul className="st-legend st-legend--row kn-legend">
+      <ul className="kn-pills">
         {decisions.map(([status, count]) => (
-          <li key={status}>
-            {status} <strong>{count}</strong>
+          <li key={status} className="kn-pill" data-status={status}>
+            {count} {status}
           </li>
         ))}
       </ul>

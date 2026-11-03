@@ -22,3 +22,18 @@
 .st-card-head .st-h {
   margin: 0;
 }
+
+.st-card-head {
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.st-card-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.st-sub {
+  font-size: 13px;
+  line-height: 18px;
+  color: #969ab8;
+}

@@ -1308,24 +1308,57 @@ type RootTranslation = {
 			 */
 			year: string
 		}
+		subtitle: {
+			/**
+			 * {​c​o​u​n​t​}​ ​g​o​a​l​ ​{​{​a​r​e​a​|​a​r​e​a​s​}​}
+			 * @param {number} count
+			 */
+			areas: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​p​r​o​j​e​c​t​|​p​r​o​j​e​c​t​s​}​}
+			 * @param {number} count
+			 */
+			projects: RequiredParams<'count'>
+			/**
+			 * c​o​m​p​u​t​e​d​ ​f​r​o​m​ ​g​i​t​ ​h​i​s​t​o​r​y
+			 */
+			source: string
+		}
 		kpi: {
 			/**
-			 * t​a​s​k​s​ ​d​o​n​e​,​ ​o​f​ ​{​c​r​e​a​t​e​d​}​ ​c​r​e​a​t​e​d
+			 * T​a​s​k​s​ ​d​o​n​e
+			 */
+			done: string
+			/**
+			 * o​f​ ​{​c​r​e​a​t​e​d​}​ ​c​r​e​a​t​e​d
 			 * @param {number} created
 			 */
-			done: RequiredParams<'created'>
+			ofCreated: RequiredParams<'created'>
 			/**
-			 * m​e​d​i​a​n​ ​c​y​c​l​e​ ​t​i​m​e
+			 * M​e​d​i​a​n​ ​c​y​c​l​e​ ​t​i​m​e
 			 */
 			cycle: string
 			/**
-			 * c​o​m​m​i​t​s
+			 * i​n​ ​p​r​o​g​r​e​s​s​ ​→​ ​d​o​n​e
+			 */
+			cycleCaption: string
+			/**
+			 * C​o​m​m​i​t​s
 			 */
 			commits: string
 			/**
-			 * s​t​a​l​e​ ​d​o​c​s
+			 * t​h​a​t​ ​t​o​u​c​h​e​d​ ​k​n​o​w​l​e​d​g​e
+			 */
+			commitsCaption: string
+			/**
+			 * S​t​a​l​e​ ​d​o​c​s
 			 */
 			stale: string
+			/**
+			 * o​f​ ​{​t​r​a​c​k​e​d​}​ ​t​r​a​c​k​e​d
+			 * @param {number} tracked
+			 */
+			ofTracked: RequiredParams<'tracked'>
 			/**
 			 * w​a​s​ ​{​v​a​l​u​e​}
 			 * @param {number} value
@@ -1336,6 +1369,16 @@ type RootTranslation = {
 		 * T​a​s​k​s​ ​c​r​e​a​t​e​d​ ​a​n​d​ ​d​o​n​e
 		 */
 		throughput: string
+		throughputSub: {
+			/**
+			 * C​r​e​a​t​e​d​ ​a​n​d​ ​d​o​n​e​ ​p​e​r​ ​w​e​e​k
+			 */
+			week: string
+			/**
+			 * C​r​e​a​t​e​d​ ​a​n​d​ ​d​o​n​e​ ​p​e​r​ ​m​o​n​t​h
+			 */
+			month: string
+		}
 		/**
 		 * w​e​e​k​ ​o​f​ ​{​d​a​y​}
 		 * @param {unknown} day
@@ -1380,6 +1423,10 @@ type RootTranslation = {
 			 */
 			noArea: string
 			/**
+			 * S​h​a​r​e​ ​o​f​ ​l​i​n​k​e​d​ ​t​a​s​k​s​ ​d​o​n​e​ ​·​ ​g​a​i​n​e​d​ ​t​h​i​s​ ​p​e​r​i​o​d​ ​h​i​g​h​l​i​g​h​t​e​d
+			 */
+			subtitle: string
+			/**
 			 * {​p​o​i​n​t​s​}​ ​p​t​s
 			 * @param {unknown} points
 			 */
@@ -1416,6 +1463,22 @@ type RootTranslation = {
 			median: RequiredParams<'days'>
 		}
 		heat: {
+			/**
+			 * C​o​m​m​i​t​s​ ​t​h​a​t​ ​t​o​u​c​h​e​d​ ​k​n​o​w​l​e​d​g​e​ ​·​ ​l​a​s​t​ ​1​2​ ​m​o​n​t​h​s
+			 */
+			subtitle: string
+			/**
+			 * H​o​v​e​r​ ​a​ ​d​a​y​ ​f​o​r​ ​i​t​s​ ​c​o​m​m​i​t​ ​c​o​u​n​t
+			 */
+			hover: string
+			/**
+			 * L​e​s​s
+			 */
+			less: string
+			/**
+			 * M​o​r​e
+			 */
+			more: string
 			/**
 			 * C​o​m​m​i​t​s
 			 */
@@ -1466,6 +1529,10 @@ type RootTranslation = {
 			 * D​e​c​i​s​i​o​n​s
 			 */
 			decisions: string
+			/**
+			 * O​p​e​n
+			 */
+			open: string
 			/**
 			 * C​h​a​n​g​e​d​ ​w​i​t​h​o​u​t​ ​a​ ​d​o​c​ ​u​p​d​a​t​e
 			 */
@@ -3736,23 +3803,53 @@ export type TranslationFunctions = {
 			 */
 			year: () => LocalizedString
 		}
+		subtitle: {
+			/**
+			 * {count} goal {{area|areas}}
+			 */
+			areas: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{project|projects}}
+			 */
+			projects: (arg: { count: number }) => LocalizedString
+			/**
+			 * computed from git history
+			 */
+			source: () => LocalizedString
+		}
 		kpi: {
 			/**
-			 * tasks done, of {created} created
+			 * Tasks done
 			 */
-			done: (arg: { created: number }) => LocalizedString
+			done: () => LocalizedString
 			/**
-			 * median cycle time
+			 * of {created} created
+			 */
+			ofCreated: (arg: { created: number }) => LocalizedString
+			/**
+			 * Median cycle time
 			 */
 			cycle: () => LocalizedString
 			/**
-			 * commits
+			 * in progress → done
+			 */
+			cycleCaption: () => LocalizedString
+			/**
+			 * Commits
 			 */
 			commits: () => LocalizedString
 			/**
-			 * stale docs
+			 * that touched knowledge
+			 */
+			commitsCaption: () => LocalizedString
+			/**
+			 * Stale docs
 			 */
 			stale: () => LocalizedString
+			/**
+			 * of {tracked} tracked
+			 */
+			ofTracked: (arg: { tracked: number }) => LocalizedString
 			/**
 			 * was {value}
 			 */
@@ -3762,6 +3859,16 @@ export type TranslationFunctions = {
 		 * Tasks created and done
 		 */
 		throughput: () => LocalizedString
+		throughputSub: {
+			/**
+			 * Created and done per week
+			 */
+			week: () => LocalizedString
+			/**
+			 * Created and done per month
+			 */
+			month: () => LocalizedString
+		}
 		/**
 		 * week of {day}
 		 */
@@ -3800,6 +3907,10 @@ export type TranslationFunctions = {
 			 */
 			noArea: () => LocalizedString
 			/**
+			 * Share of linked tasks done · gained this period highlighted
+			 */
+			subtitle: () => LocalizedString
+			/**
 			 * {points} pts
 			 */
 			gained: (arg: { points: unknown }) => LocalizedString
@@ -3831,6 +3942,22 @@ export type TranslationFunctions = {
 			median: (arg: { days: number }) => LocalizedString
 		}
 		heat: {
+			/**
+			 * Commits that touched knowledge · last 12 months
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Hover a day for its commit count
+			 */
+			hover: () => LocalizedString
+			/**
+			 * Less
+			 */
+			less: () => LocalizedString
+			/**
+			 * More
+			 */
+			more: () => LocalizedString
 			/**
 			 * Commits
 			 */
@@ -3877,6 +4004,10 @@ export type TranslationFunctions = {
 			 * Decisions
 			 */
 			decisions: () => LocalizedString
+			/**
+			 * Open
+			 */
+			open: () => LocalizedString
 			/**
 			 * Changed without a doc update
 			 */

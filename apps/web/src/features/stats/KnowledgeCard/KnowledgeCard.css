@@ -62,3 +62,39 @@
   flex: none;
   color: #969ab8;
 }
+
+.kn-open {
+  font-size: 13px;
+  font-weight: 500;
+}
+.kn-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.kn-pill {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: rgba(150, 154, 184, 0.16);
+  color: #b9bcd3;
+  font-size: 12px;
+  font-weight: 600;
+}
+.kn-pill[data-status="proposed"] {
+  background: rgba(165, 167, 255, 0.14);
+  color: #a5a7ff;
+}
+.kn-pill[data-status="accepted"] {
+  background: rgba(44, 194, 126, 0.14);
+  color: #2cc27e;
+}
+.kn-pill[data-status="deprecated"] {
+  background: rgba(240, 113, 126, 0.14);
+  color: #f0717e;
+}
