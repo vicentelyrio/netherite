@@ -792,7 +792,7 @@ type RootTranslation = {
 				 */
 				owner: RequiredParams<'name'>
 				/**
-				 * L​i​n​k​e​d​ ​f​r​o​m​ ​·​ ​{​c​o​u​n​t​}
+				 * B​a​c​k​l​i​n​k​s​ ​·​ ​{​c​o​u​n​t​}
 				 * @param {number} count
 				 */
 				linkedFrom: RequiredParams<'count'>
@@ -801,7 +801,7 @@ type RootTranslation = {
 				 */
 				orphan: string
 				/**
-				 * L​i​n​k​s​ ​t​o​ ​·​ ​{​c​o​u​n​t​}
+				 * O​u​t​g​o​i​n​g​ ​·​ ​{​c​o​u​n​t​}
 				 * @param {number} count
 				 */
 				linksTo: RequiredParams<'count'>
@@ -810,7 +810,7 @@ type RootTranslation = {
 				 */
 				noLinks: string
 				/**
-				 * C​h​a​n​g​e​s​ ​w​i​t​h
+				 * C​o​-​c​h​a​n​g​e​d​ ​f​i​l​e​s
 				 */
 				changesWith: string
 				/**
@@ -3429,7 +3429,7 @@ export type TranslationFunctions = {
 				 */
 				owner: (arg: { name: unknown }) => LocalizedString
 				/**
-				 * Linked from · {count}
+				 * Backlinks · {count}
 				 */
 				linkedFrom: (arg: { count: number }) => LocalizedString
 				/**
@@ -3437,7 +3437,7 @@ export type TranslationFunctions = {
 				 */
 				orphan: () => LocalizedString
 				/**
-				 * Links to · {count}
+				 * Outgoing · {count}
 				 */
 				linksTo: (arg: { count: number }) => LocalizedString
 				/**
@@ -3445,7 +3445,7 @@ export type TranslationFunctions = {
 				 */
 				noLinks: () => LocalizedString
 				/**
-				 * Changes with
+				 * Co-changed files
 				 */
 				changesWith: () => LocalizedString
 				/**

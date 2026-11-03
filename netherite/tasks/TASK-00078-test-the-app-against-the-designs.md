@@ -12,10 +12,10 @@ depends_on: [TASK-00062, TASK-00065, TASK-00068, TASK-00070, TASK-00071, TASK-00
 
 # Test the app against the designs
 
-- [ ] Run through each screen at 1920x1080 beside Claude Design and list the differences as tasks
+- [x] Run through each screen at 1920x1080 beside Claude Design and list the differences as tasks
 - [x] Check keyboard shortcuts, empty states and error states on every screen
 - [x] Check progression with a real history: Timeline, scrubber, Stats and Inbox on this repo
-- [ ] Record findings here; open a task per defect
+- [x] Record findings here; open a task per defect
 
 ## Findings
 
@@ -141,3 +141,7 @@ Fixed so far against the design: Inbox, except what needs the git decision. The 
 Not built, waiting on the ADR-00007 decision: the file and frontmatter preview, "Create & commit ⌘↵" with the commit message, and the toast with the commit sha. Create writes to the working tree and says so ("Written to your working tree, not committed"). Also not built: Goal, Tags and Due fields on a capture, the "Would affect" and "Changed since last review" row lists (the data has only one line per item), and the ⇧⌘N shortcut (browsers take it).
 
 Fixed so far against the design: ADR timeline lanes now carry the project's name ("Repo reset and tooling", "2 ADRs"); the "from to" pills the design shows only appear when an ADR changes status, and the app already draws them. Tags: the detail panel shows a "Used in" bar by goals, projects, tasks and docs, and "Often tagged with" as bars with "N shared"; the map has the legend (size, thickness, likely duplicate). Left on Tags: a "Possible duplicates" button in the heading (the banner does that job), the All / Tags / Labels tabs the design does not have, Rename and Merge… as buttons in the panel's header.
+
+Also fixed: the goal card has the horizon on its own row with an icon (infinity for forever, hourglass otherwise) and "Achieved" at the right, then the title; the doc view's rail uses the design's headings (Backlinks, Outgoing, Co-changed files). Correction to the Knowledge index note: rows already strike through a superseded title and show the orphan chip; what is missing there is the avatar in the modified column and the AI-context chip with a token count. The Project board already has the design's column panels, drop zone and drag look; what differs is the column header (a state pill, where the design has an icon, name and count) and the goal breadcrumb.
+
+Still different, not built: the doc view's stale banner with Review changes, the ADR stepper's "Deprecated, not reached" step, the boxed Decision and two-column Consequences, the AI-context switch with token bar, and the "M N lines changed" badge in the top bar; the Knowledge views' "Linked to" column and filter chips on the Project board; Stats' "Commits linked to work".

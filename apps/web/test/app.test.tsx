@@ -671,9 +671,9 @@ describe('ADR and context views', () => {
   test('the side panel lists who links to a doc, and what it links to', async () => {
     renderApp('/items/DOC-00001')
     const side = await screen.findByRole('complementary', { name: 'Related' })
-    expect(within(side).getByText(/Linked from/)).toBeInTheDocument()
+    expect(within(side).getByText(/Backlinks/)).toBeInTheDocument()
     expect(within(side).getByRole('link', { name: /ADR-00001/ })).toBeInTheDocument()
-    expect(await within(side).findByText(/Changes with/)).toBeInTheDocument()
+    expect(await within(side).findByText(/Co-changed files/)).toBeInTheDocument()
   })
 
   test('a doc whose covered files changed shows the stale banner, the commits, and Mark reviewed', async () => {

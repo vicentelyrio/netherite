@@ -6,7 +6,9 @@
 .goal-card-top {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
+  margin-bottom: -4px;
 }
 .goal-card-title {
   display: inline-flex;
@@ -28,8 +30,12 @@
 }
 
 .goal-horizon {
-  margin-left: auto;
-  font-size: 12px;
-  color: #a2a5c4;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #969ab8;
   white-space: nowrap;
 }
