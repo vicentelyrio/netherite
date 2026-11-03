@@ -8,7 +8,8 @@
     "test": "vitest run --passWithNoTests",
     "dev": "vite",
     "build": "vite build",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "i18n": "node scripts/i18n.mjs"
   },
   "dependencies": {
     "@netherite/ui": "workspace:*",
@@ -21,6 +22,7 @@
     "@dnd-kit/core": "catalog:",
     "d3-force": "catalog:",
     "dayjs": "catalog:",
+    "typesafe-i18n": "catalog:",
     "graphology": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-query": "catalog:",
@@ -53,6 +55,7 @@
     "@testing-library/dom": "catalog:",
     "@testing-library/user-event": "catalog:",
     "@testing-library/jest-dom": "catalog:",
-    "eventsource": "catalog:"
+    "eventsource": "catalog:",
+    "typescript5": "npm:typescript@5.9.3"
   }
 }

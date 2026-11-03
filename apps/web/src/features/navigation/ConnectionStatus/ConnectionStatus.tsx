@@ -1,16 +1,11 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import { useApi } from '@/infrastructure/api'
-import { type Connection, useLiveUpdates } from '@/infrastructure/live'
+import { useI18nContext } from '@/infrastructure/i18n'
+import { useLiveUpdates } from '@/infrastructure/live'
 import { useNotices } from '@/infrastructure/notices'
 import { useHealth } from '@/infrastructure/query'
 import './ConnectionStatus.css'
-
-const statusText: Record<Connection, string> = {
-  connecting: 'Connecting…',
-  live: 'Live',
-  offline: 'Offline: reconnecting',
-}
 
 /**
  * The thin bar above every screen: whether the live connection to the server is up, and how many
@@ -22,6 +17,7 @@ export function ConnectionStatus() {
   const client = useQueryClient()
   const notices = useNotices()
   const health = useHealth(api)
+  const { LL } = useI18nContext()
 
   const connection = useLiveUpdates({
     baseUrl: api.config.baseUrl,
@@ -50,11 +46,12 @@ export function ConnectionStatus() {
     <div className="app-statusbar" role="status" aria-live="polite">
       <span className="app-status" data-state={connection}>
         <span className="app-status-dot" aria-hidden="true" />
-        {statusText[connection]}
+        {LL.status[connection]()}
       </span>
       {health.data && (
         <span className="app-muted">
-          {health.data.items} items{health.data.git ? '' : ' · no git'}
+          {LL.status.items({ count: health.data.items })}
+          {health.data.git ? '' : ` · ${LL.status.noGit()}`}
         </span>
       )}
     </div>

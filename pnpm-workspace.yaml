@@ -8,6 +8,7 @@ allowBuilds:
 
 catalog:
   "@types/node": ^24.0.0
+  typesafe-i18n: ^5.26.2
   tsdown: ^0.23.4
   typescript: ^7.0.2
   vitest: ^5.0.5
