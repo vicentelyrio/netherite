@@ -1,13 +1,9 @@
 import { useState } from 'react'
 import { ChartCard } from '@/components'
-import { formatDay } from '@/infrastructure/datetime'
+import { addDays, formatDay } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useStats } from '../StatsProvider'
 import './ThroughputCard.css'
-
-/** The last day of the week that starts on `start`. */
-const weekEnd = (start: string) =>
-  new Date(Date.parse(`${start}T00:00:00Z`) + 6 * 86_400_000).toISOString().slice(0, 10)
 
 /** Tasks created and done per week (per month for a year), side by side, with a tooltip. */
 export function ThroughputCard() {
@@ -20,7 +16,7 @@ export function ThroughputCard() {
   const label = (start: string) =>
     period === 'year'
       ? start.slice(0, 7)
-      : LL.stats.throughputWeek({ from: formatDay(start), to: formatDay(weekEnd(start)) })
+      : LL.stats.throughputWeek({ from: formatDay(start), to: formatDay(addDays(start, 6)) })
   const hovered = at === undefined ? undefined : data.throughput[at]
   return (
     <ChartCard

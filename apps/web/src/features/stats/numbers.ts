@@ -1,3 +1,5 @@
+import { eachDay } from '@/infrastructure/datetime'
+
 export interface Change {
   /** Signed text such as `+3` or `-2`; `=` when nothing changed. */
   readonly text: string
@@ -22,8 +24,6 @@ export const heatLevel = (count: number, max: number): 0 | 1 | 2 | 3 | 4 => {
   return Math.min(4, Math.max(1, Math.ceil((count / max) * 4))) as 1 | 2 | 3 | 4
 }
 
-const DAY = 86_400_000
-
 /** Every day from `from` to `to`, with its commit count, for the heat map. */
 export const heatDays = (
   from: string,
@@ -31,10 +31,5 @@ export const heatDays = (
   counts: ReadonlyArray<{ readonly date: string; readonly count: number }>,
 ): ReadonlyArray<{ readonly date: string; readonly count: number }> => {
   const byDay = new Map(counts.map((c) => [c.date, c.count]))
-  const days: Array<{ date: string; count: number }> = []
-  for (let t = Date.parse(`${from}T00:00:00Z`); t <= Date.parse(`${to}T00:00:00Z`); t += DAY) {
-    const date = new Date(t).toISOString().slice(0, 10)
-    days.push({ date, count: byDay.get(date) ?? 0 })
-  }
-  return days
+  return eachDay(from, to).map((date) => ({ date, count: byDay.get(date) ?? 0 }))
 }

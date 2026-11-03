@@ -1,7 +1,10 @@
 import { afterEach, beforeEach, describe, expect, test } from 'vitest'
 import {
+  addDays,
   ago,
+  dayDiff,
   daysBetween,
+  eachDay,
   formatDate,
   formatDateTime,
   formatDay,
@@ -64,5 +67,29 @@ describe('time since', () => {
     setClock('2030-01-01T00:00:00Z')
     expect(nowIso()).toBe('2030-01-01T00:00:00.000Z')
     expect(ago('2029-12-30T00:00:00Z')).toBe('2d ago')
+  })
+})
+
+describe('calendar days', () => {
+  test('adding days crosses months, years and leap days on the calendar', () => {
+    expect(addDays('2026-10-30', 3)).toBe('2026-11-02')
+    expect(addDays('2026-01-01', -1)).toBe('2025-12-31')
+    expect(addDays('2028-02-28', 1)).toBe('2028-02-29')
+  })
+
+  test('the difference is whole days, even across a daylight saving change', () => {
+    expect(dayDiff('2026-03-01', '2026-03-31')).toBe(30)
+    expect(dayDiff('2026-11-02', '2026-10-26')).toBe(-7)
+    expect(dayDiff('2026-03-28', '2026-03-30')).toBe(2)
+  })
+
+  test('each day lists both ends, and nothing when the end is before the start', () => {
+    expect(eachDay('2026-02-27', '2026-03-02')).toEqual([
+      '2026-02-27',
+      '2026-02-28',
+      '2026-03-01',
+      '2026-03-02',
+    ])
+    expect(eachDay('2026-03-02', '2026-03-01')).toEqual([])
   })
 })

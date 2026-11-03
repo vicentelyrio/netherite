@@ -3,7 +3,7 @@ import { Banner } from '@netherite/ui'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createContext, type ReactNode, useContext, useMemo, useState } from 'react'
 import { useApi } from '@/infrastructure/api'
-import { nowIso } from '@/infrastructure/datetime'
+import { now as clock, nowIso } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
 import { inboxQuery, keys, useWrite, waitingCount } from '@/infrastructure/query'
@@ -76,16 +76,15 @@ export function InboxProvider({ children }: { readonly children: ReactNode }) {
   )
   const data = query.data
   const triage = useMemo(() => {
-    const now = Date.now()
+    const at = clock().valueOf()
     const raised: ReadonlyArray<Entry> = [
       ...(data?.captures ?? []).map((c) => captureEntry(c.text)),
       ...(data?.raised ?? []),
     ]
     return {
-      open: raised.filter((r) => !isHidden(hidden, r.key, now)),
-      snoozed: raised.filter(
-        (r) => hidden[r.key]?.kind === 'snooze' && isHidden(hidden, r.key, now),
-      ).length,
+      open: raised.filter((r) => !isHidden(hidden, r.key, at)),
+      snoozed: raised.filter((r) => hidden[r.key]?.kind === 'snooze' && isHidden(hidden, r.key, at))
+        .length,
     }
   }, [data, hidden])
 
@@ -165,7 +164,7 @@ export function InboxProvider({ children }: { readonly children: ReactNode }) {
       else hide(item, { kind: 'archive' }, LL.inbox.archived())
     },
     snooze: (item) =>
-      hide(item, { kind: 'snooze', until: snoozeUntil(new Date()) }, LL.inbox.snoozedUntil()),
+      hide(item, { kind: 'snooze', until: snoozeUntil(clock().toDate()) }, LL.inbox.snoozedUntil()),
   }
   return <Context.Provider value={value}>{children}</Context.Provider>
 }

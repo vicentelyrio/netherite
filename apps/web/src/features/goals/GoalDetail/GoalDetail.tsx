@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { Breadcrumbs } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { now } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { goalQuery } from '@/infrastructure/query'
 import { GoalProjects } from '../GoalProjects'
@@ -29,7 +30,7 @@ export function GoalDetail({ id }: { readonly id: string }) {
   }
   const goal = query.data
   const progress = goal.progress ?? { done: 0, total: 0 }
-  const horizon = horizonElapsed(goal, new Date())
+  const horizon = horizonElapsed(goal, now().toDate())
   return (
     <div className="goal-detail-main">
       <Breadcrumbs>

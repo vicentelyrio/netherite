@@ -1,4 +1,5 @@
 import type { Timeline as TimelineSchema } from '@netherite/api'
+import { addDays, dayDiff, utcDay } from '@/infrastructure/datetime'
 
 export type Timeline = typeof TimelineSchema.Type
 export type TimelineGoal = Timeline['goals'][number]
@@ -13,13 +14,8 @@ export const zooms: ReadonlyArray<Zoom> = ['fit', 'quarter', 'year', 'two-years'
 
 const zoomDays = { quarter: 90, year: 365, 'two-years': 730 } as const
 
-const DAY = 86_400_000
-const at = (day: string) => Date.parse(`${day}T00:00:00Z`)
-
-export const addDays = (day: string, days: number) =>
-  new Date(at(day) + days * DAY).toISOString().slice(0, 10)
-
-export const daysBetween = (from: string, to: string) => Math.round((at(to) - at(from)) / DAY)
+/** Whole calendar days from one `YYYY-MM-DD` to another. */
+export const daysBetween = dayDiff
 
 /** The days shown for a zoom: mostly the past, with some room ahead for due dates. */
 export const windowFor = (zoom: Exclude<Zoom, 'fit'>, today: string) => {
@@ -86,19 +82,27 @@ export const ticksOf = (zoom: Zoom, from: string, to: string): ReadonlyArray<Tic
     return ticks
   }
   if (unit === 'week') {
-    const d = new Date(`${from}T00:00:00Z`)
-    d.setUTCDate(d.getUTCDate() + ((8 - d.getUTCDay()) % 7))
-    for (let day = d.toISOString().slice(0, 10); day <= to; day = addDays(day, 7)) {
+    // From the first Monday on or after the start.
+    const first = utcDay(from)
+    for (
+      let day = first.add((8 - first.day()) % 7, 'day').format('YYYY-MM-DD');
+      day <= to;
+      day = addDays(day, 7)
+    ) {
       ticks.push({ day, major: false })
     }
     return ticks
   }
   const step = unit === 'month' ? 1 : 3
-  const d = new Date(`${from.slice(0, 7)}-01T00:00:00Z`)
-  if (d.getUTCMonth() % step !== 0) d.setUTCMonth(d.getUTCMonth() - (d.getUTCMonth() % step))
-  for (; d.toISOString().slice(0, 10) <= to; d.setUTCMonth(d.getUTCMonth() + step)) {
-    const day = d.toISOString().slice(0, 10)
-    if (day >= from) ticks.push({ day, major: d.getUTCMonth() === 0 })
+  // From the month (or quarter) the window starts in.
+  const start = utcDay(from).startOf('month')
+  for (
+    let d = start.subtract(start.month() % step, 'month');
+    d.format('YYYY-MM-DD') <= to;
+    d = d.add(step, 'month')
+  ) {
+    const day = d.format('YYYY-MM-DD')
+    if (day >= from) ticks.push({ day, major: d.month() === 0 })
   }
   return ticks
 }

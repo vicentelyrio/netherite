@@ -1,8 +1,11 @@
 export { now, resetClock, setClock } from './clock'
 export {
+  addDays,
   ago,
   type DateInput,
+  dayDiff,
   daysBetween,
+  eachDay,
   formatDate,
   formatDateTime,
   formatDay,
@@ -11,4 +14,5 @@ export {
   isoDay,
   nowIso,
   parse,
+  utcDay,
 } from './datetime'

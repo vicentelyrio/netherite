@@ -65,5 +65,19 @@ export const ago = (value: DateInput, at: DateInput = now()): string => {
   return `${Math.floor(past / 365)}y ago`
 }
 
+/** A `YYYY-MM-DD` day as a UTC moment, so adding days or months never meets a time zone or daylight saving. */
+export const utcDay = (day: string): Dayjs => dayjs.utc(day)
+
+/** The day `days` after `day` (before when negative), both as `YYYY-MM-DD`. */
+export const addDays = (day: string, days: number): string =>
+  utcDay(day).add(days, 'day').format(DAY)
+
+/** Whole calendar days from one `YYYY-MM-DD` to another, negative when `to` is earlier. */
+export const dayDiff = (from: string, to: string): number => utcDay(to).diff(utcDay(from), 'day')
+
+/** Every day from `from` to `to`, both included, as `YYYY-MM-DD`. */
+export const eachDay = (from: string, to: string): ReadonlyArray<string> =>
+  Array.from({ length: Math.max(0, dayDiff(from, to) + 1) }, (_, i) => addDays(from, i))
+
 /** The current moment as ISO text, for saving "seen at". */
 export const nowIso = (): string => now().toISOString()

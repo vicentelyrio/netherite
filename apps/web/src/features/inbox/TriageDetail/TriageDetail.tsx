@@ -5,6 +5,7 @@ import { Effect } from 'effect'
 import { useState } from 'react'
 import { FilterTabs, SelectField } from '@/components'
 import { type Client, useApi } from '@/infrastructure/api'
+import { now } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
 import { projectsQuery, useWrite } from '@/infrastructure/query'
@@ -203,7 +204,7 @@ export function TriageDetail() {
                     (c) =>
                       c.items.update({
                         params: { id },
-                        payload: { set: { due: weekAfter(item.date, new Date()) } },
+                        payload: { set: { due: weekAfter(item.date, now().toDate()) } },
                       }),
                     LL.inbox.done.moved(),
                   )

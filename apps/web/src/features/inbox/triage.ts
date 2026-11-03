@@ -1,4 +1,6 @@
 import type { Inbox } from '@netherite/api'
+import dayjs from 'dayjs'
+import { addDays } from '@/infrastructure/datetime'
 
 export type Raised = (typeof Inbox.Type)['raised'][number]
 /** What an entry is about: a rule the repo raised, or a line captured in `inbox.md`. */
@@ -63,15 +65,12 @@ export const writeHidden = (hidden: Hidden) => {
 /** Archived for good, or snoozed until a time that has not come yet. */
 export const isHidden = (hidden: Hidden, key: string, now: number) => {
   const h = hidden[key]
-  return h !== undefined && (h.kind === 'archive' || Date.parse(h.until) > now)
+  return h !== undefined && (h.kind === 'archive' || dayjs(h.until).valueOf() > now)
 }
 
 /** Tomorrow at 09:00, local time. */
 export const snoozeUntil = (now: Date) => {
-  const d = new Date(now)
-  d.setDate(d.getDate() + 1)
-  d.setHours(9, 0, 0, 0)
-  return d.toISOString()
+  return dayjs(now).add(1, 'day').hour(9).minute(0).second(0).millisecond(0).toISOString()
 }
 
 /** The two tags of a `similar-tag` item: the second is merged into the first. */
@@ -84,9 +83,10 @@ export const tagPair = (item: Pick<Entry, 'key'>) => {
 
 /** The day a week after `date` (or after today if it has none), as `YYYY-MM-DD`. */
 export const weekAfter = (date: string | undefined, now: Date) => {
-  const d = new Date(`${(date ?? now.toISOString()).slice(0, 10)}T00:00:00Z`)
-  const base = Math.max(d.getTime(), Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()))
-  return new Date(base + 7 * 86_400_000).toISOString().slice(0, 10)
+  const today = dayjs(now).format('YYYY-MM-DD')
+  const from = date === undefined ? today : date.slice(0, 10)
+  // Days are `YYYY-MM-DD`, so the later one sorts last.
+  return addDays([from, today].sort().at(-1) as string, 7)
 }
 
 /** The next item after moving `delta` steps in a list from the one picked; stays inside the list. */
