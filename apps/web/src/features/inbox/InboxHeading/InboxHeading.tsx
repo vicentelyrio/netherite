@@ -6,7 +6,7 @@ import { useInboxState } from '../InboxProvider'
 /** Breadcrumb, title, how many things need you and how far back the changes go. */
 export function InboxHeading() {
   const { LL } = useI18nContext()
-  const { waiting, since } = useInboxState()
+  const { open, since } = useInboxState()
   return (
     <div>
       <Breadcrumbs icon="inbox">
@@ -14,7 +14,9 @@ export function InboxHeading() {
       </Breadcrumbs>
       <h1 className="app-title kn-h1">{LL.inbox.heading.title()}</h1>
       <p className="kn-sub">
-        {waiting === 0 ? LL.inbox.heading.clear() : LL.inbox.heading.waiting({ count: waiting })}
+        {open.length === 0
+          ? LL.inbox.heading.clear()
+          : LL.inbox.heading.toTriage({ count: open.length })}
         {' · '}
         {since ? LL.inbox.heading.since({ when: ago(since) }) : LL.inbox.heading.sinceStart()}
       </p>

@@ -1,18 +1,19 @@
-import { Button } from '@netherite/ui'
+import { Button, Icon } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { Effect } from 'effect'
 import { useState } from 'react'
-import { SelectField } from '@/components'
+import { FilterTabs, SelectField } from '@/components'
 import { type Client, useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
 import { projectsQuery, useWrite } from '@/infrastructure/query'
 import { useInboxState } from '../InboxProvider'
-import { type Entry, tabOf, tagPair, todoTitle, weekAfter } from '../triage'
+import { type Entry, ruleLook, tabOf, tagPair, todoTitle, weekAfter } from '../triage'
 import './TriageDetail.css'
 
 const captureTypes = ['task', 'doc', 'adr', 'runbook', 'context'] as const
+type CaptureType = (typeof captureTypes)[number]
 
 type Act = (client: Client) => Effect.Effect<unknown, unknown>
 
@@ -24,6 +25,7 @@ export function TriageDetail() {
   const { selected, archive, snooze, tab } = useInboxState()
   const projects = useQuery(projectsQuery(api)).data?.projects ?? []
   const [chosen, setChosen] = useState<string | undefined>(undefined)
+  const [as, setAs] = useState<{ key: string; type: CaptureType } | undefined>(undefined)
   // Tasks belong to a project, so a capture turned into one needs it: the first, until picked.
   const project = chosen ?? projects[0]?.id ?? ''
   const done = (title: string) => (item: Entry) =>
@@ -97,46 +99,66 @@ export function TriageDetail() {
     })(),
   }
   const main = primary[item.rule]
+  const look = ruleLook[item.rule]
+  // What a capture becomes: a task until another kind is picked for this capture.
+  const type: CaptureType = as?.key === item.key ? as.type : 'task'
+  const create = () =>
+    go(
+      (c) =>
+        c.items
+          .create({
+            payload: {
+              type,
+              title: item.title,
+              ...(project !== '' && (type === 'task' || type === 'adr')
+                ? { fields: { project } }
+                : {}),
+            },
+          })
+          .pipe(Effect.andThen(() => c.inbox.release({ query: { text: item.title } }))),
+      LL.inbox.done.turned(),
+    )
   return (
     <section className="trd-panel" aria-label={LL.inbox.detail.title()}>
-      <span className="trd-rule">{LL.inbox.rules[item.rule]()}</span>
-      <h2 className="trd-title">{item.title}</h2>
-      <p className="trd-why">{item.detail}</p>
-      {item.id && (
-        <Link to="/items/$id" params={{ id: item.id }} className="trd-open">
-          {item.id}
-        </Link>
-      )}
-      {item.path && !item.id && (
-        <code className="trd-open">
-          {item.path}
-          {item.line ? `:${item.line}` : ''}
-        </code>
-      )}
-      <div className="trd-actions">
-        {main && (
-          <Button variant="primary" onClick={main.run} disabled={run.isPending}>
-            {main.label}
-          </Button>
-        )}
-        {item.rule === 'overdue-task' && (
-          <Button
-            onClick={() =>
-              go(
-                (c) =>
-                  c.items.update({
-                    params: { id },
-                    payload: { set: { due: weekAfter(item.date, new Date()) } },
-                  }),
-                LL.inbox.done.moved(),
-              )
-            }
-            disabled={run.isPending}
+      <div className="trd-top">
+        <span className="trd-kind" style={{ '--tri-tone': look.tone } as React.CSSProperties}>
+          <Icon name={look.icon} size="inline" filled={item.rule === 'stale-doc'} />
+          <strong>{LL.inbox.rules[item.rule]()}</strong>
+          {item.date !== undefined && <span>{item.date.slice(0, 10)}</span>}
+        </span>
+        <span className="trd-icons">
+          <button
+            type="button"
+            className="trd-icon"
+            title={`${LL.inbox.actions.snooze()} (H)`}
+            aria-label={LL.inbox.actions.snooze()}
+            onClick={() => snooze(item)}
           >
-            {LL.inbox.actions.moveDue()}
-          </Button>
-        )}
-        {item.rule === 'capture' && (
+            <Icon name="snooze" size={18} />
+          </button>
+          <button
+            type="button"
+            className="trd-icon"
+            title={`${LL.inbox.actions.archive()} (E)`}
+            aria-label={LL.inbox.actions.archive()}
+            onClick={() => archive(item)}
+          >
+            <Icon name="archive" size={18} />
+          </button>
+        </span>
+      </div>
+      <h2 className="trd-title">{item.title}</h2>
+      {item.rule === 'capture' ? (
+        <>
+          <div className="trd-field">
+            <span className="trd-label">{LL.inbox.turnInto()}</span>
+            <FilterTabs
+              label={LL.inbox.turnInto()}
+              options={captureTypes.map((t) => ({ value: t, label: LL.inbox.actions.asType[t]() }))}
+              value={type}
+              onChange={(t) => setAs({ key: item.key, type: t })}
+            />
+          </div>
           <SelectField
             label={LL.inbox.actions.project()}
             value={project}
@@ -144,49 +166,64 @@ export function TriageDetail() {
             anyLabel={LL.inbox.actions.noProject()}
             onChange={setChosen}
           />
-        )}
-        {item.rule === 'capture' &&
-          captureTypes.map((type) => (
+          <div className="trd-actions">
+            <p className="trd-hint">{LL.inbox.createHint()}</p>
             <Button
-              key={type}
-              variant={type === 'task' ? 'primary' : 'secondary'}
+              variant="primary"
               disabled={run.isPending || (type === 'task' && project === '')}
-              onClick={() =>
-                go(
-                  (c) =>
-                    c.items
-                      .create({
-                        payload: {
-                          type,
-                          title: item.title,
-                          ...(project !== '' && (type === 'task' || type === 'adr')
-                            ? { fields: { project } }
-                            : {}),
-                        },
-                      })
-                      .pipe(Effect.andThen(() => c.inbox.release({ query: { text: item.title } }))),
-                  LL.inbox.done.turned(),
-                )
-              }
+              onClick={create}
             >
-              {LL.inbox.actions.turnInto()} {LL.inbox.actions.asType[type]()}
+              {LL.inbox.create()}
             </Button>
-          ))}
-        {item.rule === 'orphan' && item.id && (
-          <Link to="/items/$id" params={{ id: item.id }} className="trd-link-button">
-            {LL.inbox.actions.link()}
-          </Link>
-        )}
-        <Button onClick={() => snooze(item)}>
-          {LL.inbox.actions.snooze()} <kbd>H</kbd>
-        </Button>
-        <Button onClick={() => archive(item)}>
-          {LL.inbox.actions.archive()} <kbd>E</kbd>
-        </Button>
-      </div>
-      <p className="trd-hint">
-        {tabOf(item.rule) === 'commits' ? LL.inbox.detail.fromCommit() : ''}
-      </p>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="trd-reason" style={{ '--tri-tone': look.tone } as React.CSSProperties}>
+            <Icon name={look.icon} size={18} filled={item.rule === 'stale-doc'} />
+            <p>{item.detail}</p>
+          </div>
+          {item.path && !item.id && (
+            <code className="trd-open">
+              {item.path}
+              {item.line ? `:${item.line}` : ''}
+            </code>
+          )}
+          <div className="trd-actions">
+            {item.id && (
+              <Link to="/items/$id" params={{ id: item.id }} className="trd-link-button">
+                {item.id}
+                <Icon name="arrow_forward" size="inline" />
+              </Link>
+            )}
+            {item.rule === 'overdue-task' && (
+              <Button
+                onClick={() =>
+                  go(
+                    (c) =>
+                      c.items.update({
+                        params: { id },
+                        payload: { set: { due: weekAfter(item.date, new Date()) } },
+                      }),
+                    LL.inbox.done.moved(),
+                  )
+                }
+                disabled={run.isPending}
+              >
+                {LL.inbox.actions.moveDue()}
+              </Button>
+            )}
+            {main && (
+              <Button variant="primary" onClick={main.run} disabled={run.isPending}>
+                {main.label}
+              </Button>
+            )}
+          </div>
+          <p className="trd-hint">
+            {tabOf(item.rule) === 'commits' ? LL.inbox.detail.fromCommit() : ''}
+          </p>
+        </>
+      )}
     </section>
   )
 }

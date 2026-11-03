@@ -959,9 +959,9 @@ describe('the Inbox', () => {
   test('lists what the repo raises: a proposed ADR to decide, with its action beside it', async () => {
     renderApp('/inbox')
     const list = await screen.findByRole('list', { name: 'Needs review' })
-    const row = within(list).getByRole('button', { name: /Decision/ })
+    const row = within(list).getByRole('button', { name: /Decide/ })
     expect(row).toHaveTextContent('Proposed, waiting for a decision')
-    expect(screen.getByText(/things? need(s)? you/)).toBeInTheDocument()
+    expect(screen.getByText(/\d+ to triage/)).toBeInTheDocument()
     await userEvent.click(row)
     const detail = screen.getByRole('region', { name: 'Selected inbox item' })
     expect(within(detail).getByRole('button', { name: 'Accept' })).toBeInTheDocument()
@@ -980,7 +980,7 @@ describe('the Inbox', () => {
     const list = await screen.findByRole('list', { name: 'Captured' })
     expect(within(list).getByText('look at caching')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'look at caching' })).toBeInTheDocument()
-    await userEvent.click(screen.getByRole('button', { name: 'Turn into Task' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Create' }))
     await waitFor(() => expect(screen.queryByRole('list', { name: 'Captured' })).toBeNull())
     const api = other()
     const tasks = await api.call((c) => c.items.list({ query: { type: 'task', limit: 200 } }))
@@ -990,7 +990,7 @@ describe('the Inbox', () => {
   test('E archives the picked item and Undo brings it back', async () => {
     localStorage.removeItem('netherite:inbox-hidden')
     renderApp('/inbox')
-    const rows = () => screen.queryAllByRole('button', { name: /Decision|Orphan|Stale|Overdue/ })
+    const rows = () => screen.queryAllByRole('button', { name: /Decide|Orphan|Stale|Overdue/ })
     await screen.findByRole('list', { name: 'Needs review' })
     const before = rows().length
     await userEvent.keyboard('e')

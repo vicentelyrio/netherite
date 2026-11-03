@@ -10,6 +10,7 @@ import { inboxQuery, keys, useWrite, waitingCount } from '@/infrastructure/query
 import {
   captureEntry,
   type Entry,
+  groups,
   type Hidden,
   isHidden,
   readHidden,
@@ -99,8 +100,11 @@ export function InboxProvider({ children }: { readonly children: ReactNode }) {
     )
   }
   const inbox = query.data
-  const tab: Tab = picked ?? (triage.open.some((r) => r.rule === 'capture') ? 'captured' : 'review')
-  const shown = triage.open.filter((r) => tabOf(r.rule) === tab)
+  const tab: Tab = picked ?? 'all'
+  // On All the groups follow one another, so J and K walk the list as it is drawn.
+  const shown = groups
+    .flatMap((g) => triage.open.filter((r) => tabOf(r.rule) === g))
+    .filter((r) => tab === 'all' || tabOf(r.rule) === tab)
   const hide = (item: Entry, how: Hidden[string], label: string) => {
     const before = hidden
     const next = { ...hidden, [item.key]: how }
@@ -142,7 +146,8 @@ export function InboxProvider({ children }: { readonly children: ReactNode }) {
     setTab,
     open: triage.open,
     shown,
-    countOf: (t) => triage.open.filter((r) => tabOf(r.rule) === t).length,
+    countOf: (t) =>
+      t === 'all' ? triage.open.length : triage.open.filter((r) => tabOf(r.rule) === t).length,
     snoozed: triage.snoozed,
     selected: shown.find((r) => r.key === pick) ?? shown[0],
     select,

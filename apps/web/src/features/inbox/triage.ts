@@ -5,7 +5,9 @@ export type Raised = (typeof Inbox.Type)['raised'][number]
 export type Rule = Raised['rule'] | 'capture'
 /** A line of the Inbox: something the repo raised or a capture, in one shape. */
 export type Entry = Omit<Raised, 'rule'> & { readonly rule: Rule }
-export type Tab = 'captured' | 'review' | 'commits' | 'changes'
+export type Tab = 'all' | 'captured' | 'review' | 'commits' | 'changes'
+/** The groups the list is split into, in the order they are drawn. */
+export const groups = ['captured', 'review', 'commits'] as const satisfies ReadonlyArray<Tab>
 
 /** A capture as an entry, keyed by its text so the selection survives a refresh. */
 export const captureEntry = (text: string): Entry => ({
@@ -15,8 +17,20 @@ export const captureEntry = (text: string): Entry => ({
   detail: '',
 })
 
+/** The icon and colour that stand for each kind of entry. */
+export const ruleLook: Readonly<Record<Rule, { icon: string; tone: string }>> = {
+  capture: { icon: 'edit_note', tone: '#b9bcd3' },
+  'stale-doc': { icon: 'warning', tone: '#e2ae4c' },
+  'proposed-adr': { icon: 'pending', tone: '#a5a7ff' },
+  orphan: { icon: 'link_off', tone: '#b9bcd3' },
+  'overdue-task': { icon: 'event_busy', tone: '#f0717e' },
+  'closing-commit': { icon: 'commit', tone: '#2cc27e' },
+  'new-todo': { icon: 'code', tone: '#8fc3f2' },
+  'similar-tag': { icon: 'sell', tone: '#a5a7ff' },
+}
+
 /** What each tab holds: the repo raising work to review, or work that commits point at. */
-export const tabOf = (rule: Rule): Tab =>
+export const tabOf = (rule: Rule): (typeof groups)[number] =>
   rule === 'capture'
     ? 'captured'
     : rule === 'closing-commit' || rule === 'new-todo'

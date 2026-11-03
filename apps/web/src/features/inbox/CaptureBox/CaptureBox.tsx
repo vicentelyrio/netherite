@@ -1,4 +1,4 @@
-import { Button } from '@netherite/ui'
+import { Icon } from '@netherite/ui'
 import { type FormEvent, useState } from 'react'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
@@ -6,7 +6,7 @@ import { useWrite } from '@/infrastructure/query'
 import { useInboxState } from '../InboxProvider'
 import './CaptureBox.css'
 
-/** One line, added to the bottom of `inbox.md`; triage turns it into an item later. */
+/** One line, added to the bottom of `inbox.md` with Enter; triage turns it into an item later. */
 export function CaptureBox() {
   const { LL } = useI18nContext()
   const api = useApi()
@@ -28,6 +28,7 @@ export function CaptureBox() {
   }
   return (
     <form className="cb" onSubmit={submit} aria-label={LL.inbox.capture.label()}>
+      <Icon name="add" size={18} />
       <input
         className="cb-input"
         aria-label={LL.inbox.capture.label()}
@@ -36,9 +37,6 @@ export function CaptureBox() {
         maxLength={500}
         onChange={(e) => setText(e.currentTarget.value)}
       />
-      <Button type="submit" variant="primary" disabled={text.trim() === '' || add.isPending}>
-        {LL.inbox.capture.add()}
-      </Button>
     </form>
   )
 }

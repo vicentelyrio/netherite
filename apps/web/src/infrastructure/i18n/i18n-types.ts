@@ -2274,6 +2274,11 @@ type RootTranslation = {
 			 */
 			waiting: RequiredParams<'count'>
 			/**
+			 * {​c​o​u​n​t​}​ ​t​o​ ​t​r​i​a​g​e​ ​·​ ​c​a​p​t​u​r​e​s​ ​f​r​o​m​ ​i​n​b​o​x​.​m​d​,​ ​t​h​e​ ​r​e​s​t​ ​r​a​i​s​e​d​ ​b​y​ ​t​h​e​ ​r​e​p​o
+			 * @param {number} count
+			 */
+			toTriage: RequiredParams<'count'>
+			/**
 			 * c​h​a​n​g​e​s​ ​s​i​n​c​e​ ​{​w​h​e​n​}
 			 * @param {unknown} when
 			 */
@@ -2363,6 +2368,10 @@ type RootTranslation = {
 			 */
 			label: string
 			/**
+			 * A​l​l
+			 */
+			all: string
+			/**
 			 * C​a​p​t​u​r​e​d
 			 */
 			captured: string
@@ -2419,14 +2428,93 @@ type RootTranslation = {
 			 */
 			label: string
 			/**
-			 * C​a​p​t​u​r​e​ ​a​ ​t​h​o​u​g​h​t​,​ ​p​r​e​s​s​ ​E​n​t​e​r
+			 * C​a​p​t​u​r​e​ ​a​n​y​t​h​i​n​g​ ​—​ ​a​p​p​e​n​d​e​d​ ​t​o​ ​i​n​b​o​x​.​m​d
 			 */
 			placeholder: string
+		}
+		keys: {
+			/**
+			 * K​e​y​s
+			 */
+			label: string
+			/**
+			 * m​o​v​e
+			 */
+			move: string
+			/**
+			 * a​r​c​h​i​v​e
+			 */
+			archive: string
+			/**
+			 * s​n​o​o​z​e
+			 */
+			snooze: string
+		}
+		sources: {
+			/**
+			 * i​n​b​o​x​.​m​d
+			 */
+			captured: string
+			/**
+			 * r​a​i​s​e​d​ ​b​y​ ​t​h​e​ ​r​e​p​o
+			 */
+			review: string
+			/**
+			 * f​o​u​n​d​ ​i​n​ ​h​i​s​t​o​r​y
+			 */
+			commits: string
+		}
+		chips: {
 			/**
 			 * C​a​p​t​u​r​e
 			 */
-			add: string
+			capture: string
+			/**
+			 * S​t​a​l​e​ ​d​o​c
+			 */
+			'stale-doc': string
+			/**
+			 * D​e​c​i​d​e
+			 */
+			'proposed-adr': string
+			/**
+			 * O​r​p​h​a​n
+			 */
+			orphan: string
+			/**
+			 * O​v​e​r​d​u​e
+			 */
+			'overdue-task': string
+			/**
+			 * C​l​o​s​e​s​ ​t​a​s​k
+			 */
+			'closing-commit': string
+			/**
+			 * T​O​D​O
+			 */
+			'new-todo': string
+			/**
+			 * T​a​g
+			 */
+			'similar-tag': string
 		}
+		/**
+		 * C​r​e​a​t​e
+		 */
+		create: string
+		/**
+		 * W​r​i​t​t​e​n​ ​t​o​ ​y​o​u​r​ ​w​o​r​k​i​n​g​ ​t​r​e​e​,​ ​n​o​t​ ​c​o​m​m​i​t​t​e​d
+		 */
+		createHint: string
+		/**
+		 * T​u​r​n​ ​i​n​t​o
+		 */
+		turnInto: string
+		/**
+		 * O​p​e​n​ ​{​i​d​}
+		 * @param {unknown} id
+		 */
+		openItem: RequiredParams<'id'>
 		zero: {
 			/**
 			 * I​n​b​o​x​ ​z​e​r​o
@@ -4727,6 +4815,10 @@ export type TranslationFunctions = {
 			 */
 			waiting: (arg: { count: number }) => LocalizedString
 			/**
+			 * {count} to triage · captures from inbox.md, the rest raised by the repo
+			 */
+			toTriage: (arg: { count: number }) => LocalizedString
+			/**
 			 * changes since {when}
 			 */
 			since: (arg: { when: unknown }) => LocalizedString
@@ -4813,6 +4905,10 @@ export type TranslationFunctions = {
 			 */
 			label: () => LocalizedString
 			/**
+			 * All
+			 */
+			all: () => LocalizedString
+			/**
 			 * Captured
 			 */
 			captured: () => LocalizedString
@@ -4869,14 +4965,92 @@ export type TranslationFunctions = {
 			 */
 			label: () => LocalizedString
 			/**
-			 * Capture a thought, press Enter
+			 * Capture anything — appended to inbox.md
 			 */
 			placeholder: () => LocalizedString
+		}
+		keys: {
+			/**
+			 * Keys
+			 */
+			label: () => LocalizedString
+			/**
+			 * move
+			 */
+			move: () => LocalizedString
+			/**
+			 * archive
+			 */
+			archive: () => LocalizedString
+			/**
+			 * snooze
+			 */
+			snooze: () => LocalizedString
+		}
+		sources: {
+			/**
+			 * inbox.md
+			 */
+			captured: () => LocalizedString
+			/**
+			 * raised by the repo
+			 */
+			review: () => LocalizedString
+			/**
+			 * found in history
+			 */
+			commits: () => LocalizedString
+		}
+		chips: {
 			/**
 			 * Capture
 			 */
-			add: () => LocalizedString
+			capture: () => LocalizedString
+			/**
+			 * Stale doc
+			 */
+			'stale-doc': () => LocalizedString
+			/**
+			 * Decide
+			 */
+			'proposed-adr': () => LocalizedString
+			/**
+			 * Orphan
+			 */
+			orphan: () => LocalizedString
+			/**
+			 * Overdue
+			 */
+			'overdue-task': () => LocalizedString
+			/**
+			 * Closes task
+			 */
+			'closing-commit': () => LocalizedString
+			/**
+			 * TODO
+			 */
+			'new-todo': () => LocalizedString
+			/**
+			 * Tag
+			 */
+			'similar-tag': () => LocalizedString
 		}
+		/**
+		 * Create
+		 */
+		create: () => LocalizedString
+		/**
+		 * Written to your working tree, not committed
+		 */
+		createHint: () => LocalizedString
+		/**
+		 * Turn into
+		 */
+		turnInto: () => LocalizedString
+		/**
+		 * Open {id}
+		 */
+		openItem: (arg: { id: unknown }) => LocalizedString
 		zero: {
 			/**
 			 * Inbox zero
