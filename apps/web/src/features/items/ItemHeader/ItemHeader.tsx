@@ -8,6 +8,7 @@ import {
   OrphanTag,
   TypeBadge,
 } from '@netherite/ui'
+import { useI18nContext } from '@/infrastructure/i18n'
 import './ItemHeader.css'
 
 const reviewable = new Set(['doc', 'runbook', 'context'])
@@ -26,6 +27,7 @@ export function ItemHeader({
   readonly reviewing: boolean
   readonly onReview: () => void
 }) {
+  const { LL } = useI18nContext()
   const type = item.type as ItemTypeName
   const fresh = item.freshness
   return (
@@ -50,11 +52,11 @@ export function ItemHeader({
         {item.orphan && <OrphanTag />}
       </div>
       <Button icon={editing ? 'visibility' : 'edit'} onClick={onToggleEditing}>
-        {editing ? 'Done editing' : 'Edit source'}
+        {editing ? LL.items.doneEditing() : LL.items.editSource()}
       </Button>
       {reviewable.has(type) && !(fresh?.state === 'stale' || fresh?.state === 'drifting') && (
         <Button icon="done_all" loading={reviewing} onClick={onReview}>
-          Mark reviewed
+          {LL.items.markReviewed()}
         </Button>
       )}
     </header>

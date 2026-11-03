@@ -27,18 +27,18 @@ export function ConnectionStatus() {
         if (event.type === 'config-invalid') {
           notices.notify({
             variant: 'warning',
-            title: 'The config file is not valid',
-            text: `${event.message} The previous config stays in use.`,
+            title: LL.navigation.configInvalid(),
+            text: LL.navigation.configInvalidText({ message: event.message }),
           })
         } else if (event.requiresRestart) {
           notices.notify({
             variant: 'info',
-            title: 'Restart Netherite',
-            text: 'The content folder moved. Stop and start `netherite` to use it.',
+            title: LL.navigation.restart(),
+            text: LL.navigation.restartText(),
           })
         }
       },
-      [notices],
+      [notices, LL],
     ),
   })
 

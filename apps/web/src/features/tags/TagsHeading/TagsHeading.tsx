@@ -1,13 +1,15 @@
 import { Breadcrumbs } from '@/components'
+import { useI18nContext } from '@/infrastructure/i18n'
 
 /** Breadcrumb and title. */
 export function TagsHeading() {
+  const { LL } = useI18nContext()
   return (
     <div>
       <Breadcrumbs icon="sell">
-        <strong>Tags</strong>
+        <strong>{LL.tags.title()}</strong>
       </Breadcrumbs>
-      <h1 className="app-title">Tags</h1>
+      <h1 className="app-title">{LL.tags.title()}</h1>
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { FilterTabs } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { searchQuery } from '@/infrastructure/query'
 import { arrange, chips, type Group, groupOf, type SearchHit, targetOf } from '../results'
 import { SearchFooter } from '../SearchFooter'
@@ -21,6 +22,7 @@ export function SearchPalette({
   readonly opened: boolean
   readonly onClose: () => void
 }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const navigate = useNavigate()
   const [q, setQ] = useState('')
@@ -65,7 +67,7 @@ export function SearchPalette({
       open(flat[hi], e.metaKey || e.ctrlKey)
     } else if (e.key === 'Tab') {
       e.preventDefault()
-      const keys = chips.map(([k]) => k)
+      const keys = [...chips]
       const at = keys.indexOf(only)
       setOnly(keys[(at + (e.shiftKey ? keys.length - 1 : 1)) % keys.length] as Group | 'all')
       setHi(0)
@@ -76,7 +78,7 @@ export function SearchPalette({
     <Modal
       opened={opened}
       onClose={onClose}
-      title={<span className="nt-visually-hidden">Search</span>}
+      title={<span className="nt-visually-hidden">{LL.search.title()}</span>}
       withCloseButton={false}
       size={720}
       yOffset={120}
@@ -91,8 +93,8 @@ export function SearchPalette({
             ref={input}
             // biome-ignore lint/a11y/noAutofocus: the palette opens to be typed into
             autoFocus
-            aria-label="Search goals, projects, tasks and knowledge"
-            placeholder="Search goals, projects, tasks and knowledge"
+            aria-label={LL.search.placeholder()}
+            placeholder={LL.search.placeholder()}
             value={q}
             onKeyDown={onKeyDown}
             onChange={(e) => {
@@ -105,10 +107,10 @@ export function SearchPalette({
         <FilterTabs
           className="sp-chips"
           variant="chips"
-          label="Type"
-          options={chips.map(([key, label]) => ({
+          label={LL.search.type()}
+          options={chips.map((key) => ({
             value: key,
-            label,
+            label: LL.search.chips[key](),
             count: counts(key),
             icon: key !== 'all' && (
               <TypeGlyph type={(key === 'doc' ? 'doc' : key) as ItemTypeName} />

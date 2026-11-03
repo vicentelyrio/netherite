@@ -96,6 +96,12 @@ export const lanesOf = (
     })
 }
 
+/** The words for an ADR status, from the catalog; an unknown status shows as it is. */
+export const statusLabel = (
+  LL: { decisions: { status: Record<string, () => string> } },
+  status: string,
+) => LL.decisions.status[status]?.() ?? status
+
 export const statusStyle: Record<string, { label: string; color: string; icon: string }> = {
   proposed: { label: 'Proposed', color: '#a5a7ff', icon: 'pending' },
   accepted: { label: 'Accepted', color: '#2cc27e', icon: 'check_circle' },

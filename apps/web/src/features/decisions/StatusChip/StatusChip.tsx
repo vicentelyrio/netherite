@@ -1,5 +1,6 @@
 import { Icon } from '@netherite/ui'
-import { statusStyle } from '../lanes'
+import { useI18nContext } from '@/infrastructure/i18n'
+import { statusLabel, statusStyle } from '../lanes'
 import './StatusChip.css'
 
 /** An ADR status as a small coloured chip; faded for the status it came from. */
@@ -10,6 +11,7 @@ export function StatusChip({
   readonly status: string
   readonly faded?: boolean
 }) {
+  const { LL } = useI18nContext()
   const s = statusStyle[status] ?? { label: status, color: '#b9bcd3', icon: 'circle' }
   return (
     <span
@@ -17,7 +19,7 @@ export function StatusChip({
       data-status={status}
       style={{ ['--dl' as string]: s.color, opacity: faded ? 0.7 : 1 }}
     >
-      <Icon name={s.icon} size={13} /> {s.label}
+      <Icon name={s.icon} size={13} /> {statusLabel(LL, status)}
     </span>
   )
 }

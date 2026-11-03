@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { type ReactNode, useMemo } from 'react'
 import { ItemEditor, type ItemEditorProps } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
 import { itemsQuery, keys, noticeFor, sourceQuery } from '@/infrastructure/query'
 
@@ -14,6 +15,7 @@ export function SourceEditor({
 }: { readonly id: string; readonly fallback?: ReactNode } & Partial<
   Pick<ItemEditorProps, 'variant' | 'preview' | 'mode' | 'onModeChange' | 'onStats' | 'branch'>
 >) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const client = useQueryClient()
   const notices = useNotices()
@@ -24,8 +26,8 @@ export function SourceEditor({
     [items.data],
   )
 
-  if (source.isPending) return fallback ?? <p className="app-muted">Loading the source…</p>
-  if (source.isError) return <Banner variant="danger" title="Could not load the source" />
+  if (source.isPending) return fallback ?? <p className="app-muted">{LL.editor.loading()}</p>
+  if (source.isError) return <Banner variant="danger" title={LL.editor.loadError()} />
 
   return (
     <ItemEditor
@@ -44,7 +46,11 @@ export function SourceEditor({
           return { text, hash: saved.hash }
         } catch (error) {
           notices.notify(
-            noticeFor(error, () => void client.invalidateQueries({ queryKey: keys.source(id) })),
+            noticeFor(
+              LL,
+              error,
+              () => void client.invalidateQueries({ queryKey: keys.source(id) }),
+            ),
           )
           throw error
         }

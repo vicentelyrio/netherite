@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { useI18nContext } from '@/infrastructure/i18n'
 import './ItemLinks.css'
 
 interface LinkInfo {
@@ -45,10 +46,11 @@ export function ItemLinks({
   readonly links: ReadonlyArray<LinkInfo>
   readonly backlinks: ReadonlyArray<LinkInfo>
 }) {
+  const { LL } = useI18nContext()
   return (
     <footer className="app-links">
-      <LinkList title="Links" links={links} />
-      <LinkList title="Linked from" links={backlinks} />
+      <LinkList title={LL.items.links()} links={links} />
+      <LinkList title={LL.items.linkedFrom()} links={backlinks} />
     </footer>
   )
 }

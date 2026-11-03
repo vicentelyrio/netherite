@@ -29,14 +29,7 @@ describe('search results', () => {
 
   test('are arranged in the palette order, keeping the ranking inside each group', () => {
     const groups = arrange(hits, 'all')
-    expect(groups.map((g) => g.name)).toEqual([
-      'Decisions',
-      'Tasks',
-      'Docs & runbooks',
-      'AI context',
-      'Projects',
-      'Goals',
-    ])
+    expect(groups.map((g) => g.group)).toEqual(['adr', 'task', 'doc', 'context', 'project', 'goal'])
     expect(groups[2]?.rows.map((r) => r.id)).toEqual(['RUN-00001', 'DOC-00001'])
   })
 

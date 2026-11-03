@@ -1,6 +1,7 @@
 import { Avatar, Rail, type RailItem } from '@netherite/ui'
 import { useNavigate, useRouterState } from '@tanstack/react-router'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { useHealth, useInbox, waitingCount } from '@/infrastructure/query'
 import { useResolvedShortcuts } from '@/infrastructure/shortcuts'
 import { actionOf, activeFor, railItems } from '../rail'
@@ -10,6 +11,7 @@ import { actionOf, activeFor, railItems } from '../rail'
  * Inbox for what waits for you, and who you are at the bottom. Search opens the palette.
  */
 export function AppRail({ onSearch }: { readonly onSearch: () => void }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const navigate = useNavigate()
   const pathname = useRouterState({ select: (s) => s.location.pathname })
@@ -19,9 +21,24 @@ export function AppRail({ onSearch }: { readonly onSearch: () => void }) {
   const waiting = inbox.data ? waitingCount(inbox.data) : 0
   const keys = useResolvedShortcuts()
 
+  const labels: Record<string, string> = {
+    search: LL.navigation.search(),
+    inbox: LL.navigation.inbox(),
+    goals: LL.navigation.goals(),
+    projects: LL.navigation.projects(),
+    knowledge: LL.navigation.knowledge(),
+    stats: LL.navigation.stats(),
+    tags: LL.navigation.tags(),
+    graph: LL.navigation.graph(),
+  }
   const items: RailItem[] = railItems.map(({ to: _to, ...item }) => {
     const { keys: shortcut, aliases } = keys[actionOf(item.id)]
-    const withKeys = { ...item, shortcut, ...(aliases.length > 0 ? { aliases } : {}) }
+    const withKeys = {
+      ...item,
+      label: labels[item.id] ?? item.id,
+      shortcut,
+      ...(aliases.length > 0 ? { aliases } : {}),
+    }
     return item.id === 'inbox' ? { ...withKeys, badge: waiting } : withKeys
   })
 

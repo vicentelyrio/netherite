@@ -1,16 +1,21 @@
 import { Conflict, Failure, Invalid, NotFound, Refused } from '@netherite/api'
 import { type QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { Api } from '../api'
+import { type TranslationFunctions, useI18nContext } from '../i18n'
 import { type Notice, type Notices, useNotices } from '../notices'
 
 /** The message for a failed call, as a notice. Conflicts offer to reload. */
-export const noticeFor = (error: unknown, reload: () => void): Omit<Notice, 'id'> => {
+export const noticeFor = (
+  LL: TranslationFunctions,
+  error: unknown,
+  reload: () => void,
+): Omit<Notice, 'id'> => {
   if (error instanceof Conflict) {
     return {
       variant: 'danger',
-      title: 'Changed on disk',
-      text: `${error.path} changed since you opened it, so nothing was saved. Reload to see the new version, then make the change again.`,
-      actions: [{ label: 'Reload', run: reload }],
+      title: LL.notices.changedOnDisk(),
+      text: LL.notices.changedOnDiskText({ path: error.path }),
+      actions: [{ label: LL.notices.reload(), run: reload }],
     }
   }
   if (error instanceof Invalid) {
@@ -19,20 +24,20 @@ export const noticeFor = (error: unknown, reload: () => void): Omit<Notice, 'id'
     )
     return {
       variant: 'warning',
-      title: 'That change is not valid',
+      title: LL.notices.invalid(),
       text: problems.join('; ') || error.message,
     }
   }
   if (error instanceof NotFound)
-    return { variant: 'warning', title: 'Not found', text: error.message }
+    return { variant: 'warning', title: LL.notices.notFound(), text: error.message }
   if (error instanceof Refused)
-    return { variant: 'warning', title: 'Not allowed', text: error.message }
+    return { variant: 'warning', title: LL.notices.notAllowed(), text: error.message }
   if (error instanceof Failure)
-    return { variant: 'danger', title: 'The server could not do that', text: error.message }
+    return { variant: 'danger', title: LL.notices.serverFailed(), text: error.message }
   return {
     variant: 'danger',
-    title: 'Could not reach the server',
-    text: error instanceof Error ? error.message : 'Check that `netherite serve` is still running.',
+    title: LL.notices.unreachable(),
+    text: error instanceof Error ? error.message : LL.common.serveHint(),
   }
 }
 
@@ -55,10 +60,11 @@ export const useWrite = <A, Vars>(
 ) => {
   const client = useQueryClient()
   const notices: Notices = useNotices()
+  const { LL } = useI18nContext()
   return useMutation({
     mutationFn: (vars: Vars) => run(api, vars),
     onSuccess: () => void refresh(client),
     onError: (error) =>
-      void notices.notify(noticeFor(error, options.reload ?? (() => void refresh(client)))),
+      void notices.notify(noticeFor(LL, error, options.reload ?? (() => void refresh(client)))),
   })
 }

@@ -1,17 +1,19 @@
 import { EmptyState } from '@netherite/ui'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { CommitCard } from '../CommitCard'
 import { useDecisions } from '../DecisionProvider'
 import './DecisionLanes.css'
 
 /** One column per project, each a timeline of the commits that changed its ADRs. */
 export function DecisionLanes() {
+  const { LL } = useI18nContext()
   const { lanes } = useDecisions()
   if (lanes.length === 0) {
     return (
       <EmptyState
         icon="gavel"
-        title="No decisions yet"
-        description="ADRs you record show up here, in a lane per project."
+        title={LL.decisions.empty.title()}
+        description={LL.decisions.empty.text()}
       />
     )
   }
@@ -26,15 +28,15 @@ export function DecisionLanes() {
             <span className="dl-lane-dot" />
             {lane.project}
             <span className="app-muted">
-              {lane.adrs} ADRs
-              {lane.chains > 0 ? ` · ${lane.chains} chain${lane.chains === 1 ? '' : 's'}` : ''}
+              {LL.decisions.adrs({ count: lane.adrs })}
+              {lane.chains > 0 ? ` · ${LL.decisions.chains({ count: lane.chains })}` : ''}
             </span>
           </h2>
           <div className="dl-timeline">
             {lane.commits.map((commit) => (
               <CommitCard key={commit.hash} commit={commit} />
             ))}
-            {lane.commits.length === 0 && <p className="app-muted">No recorded changes</p>}
+            {lane.commits.length === 0 && <p className="app-muted">{LL.decisions.noChanges()}</p>}
           </div>
         </section>
       ))}

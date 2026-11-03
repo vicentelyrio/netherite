@@ -11,33 +11,25 @@ export type Group = 'adr' | 'task' | 'doc' | 'context' | 'project' | 'goal'
 /** Which result group a type belongs to: docs and runbooks sit together. */
 export const groupOf = (type: string): Group => (type === 'runbook' ? 'doc' : (type as Group))
 
-const groups: ReadonlyArray<readonly [Group, string]> = [
-  ['adr', 'Decisions'],
-  ['task', 'Tasks'],
-  ['doc', 'Docs & runbooks'],
-  ['context', 'AI context'],
-  ['project', 'Projects'],
-  ['goal', 'Goals'],
-]
+const groups: ReadonlyArray<Group> = ['adr', 'task', 'doc', 'context', 'project', 'goal']
 
 /** The type chips above the results, in the order Tab walks them. */
-export const chips: ReadonlyArray<readonly [Group | 'all', string]> = [
-  ['all', 'All'],
-  ['adr', 'ADRs'],
-  ['task', 'Tasks'],
-  ['doc', 'Docs'],
-  ['context', 'Context'],
-  ['project', 'Projects'],
-  ['goal', 'Goals'],
+export const chips: ReadonlyArray<Group | 'all'> = [
+  'all',
+  'adr',
+  'task',
+  'doc',
+  'context',
+  'project',
+  'goal',
 ]
 
 /** Results in the palette's order: grouped, each group in the order the search ranked them. */
 export const arrange = (hits: ReadonlyArray<SearchHit>, only: Group | 'all') => {
   const shown = hits.filter((h) => only === 'all' || groupOf(h.type) === only)
   return groups
-    .map(([group, name]) => ({
+    .map((group) => ({
       group,
-      name,
       rows: shown.filter((h) => groupOf(h.type) === group),
     }))
     .filter((g) => g.rows.length > 0)

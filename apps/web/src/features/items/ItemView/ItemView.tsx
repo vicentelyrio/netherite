@@ -5,6 +5,7 @@ import { type ReactNode, useState } from 'react'
 import { Markdown } from '@/components'
 import { SourceEditor } from '@/features/editor'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { itemQuery, keys, useWrite } from '@/infrastructure/query'
 import { ItemHeader } from '../ItemHeader'
 import { ItemLinks } from '../ItemLinks'
@@ -22,6 +23,7 @@ export function ItemView({
   readonly id: string
   readonly special?: (item: ItemDetail) => ReactNode | undefined
 }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const client = useQueryClient()
   const query = useQuery(itemQuery(api, id))
@@ -34,18 +36,16 @@ export function ItemView({
     { reload },
   )
 
-  if (query.isPending) return <div className="app-page app-muted">Loading…</div>
+  if (query.isPending) return <div className="app-page app-muted">{LL.common.loading()}</div>
   if (query.isError) {
     const missing = query.error instanceof NotFound
     return (
       <div className="app-page">
         <Banner
           variant={missing ? 'warning' : 'danger'}
-          title={missing ? `No item ${id}` : 'Could not load this item'}
+          title={missing ? LL.items.none({ id }) : LL.items.loadError()}
         >
-          {missing
-            ? 'It may have been deleted or renumbered.'
-            : String((query.error as Error).message ?? query.error)}
+          {missing ? LL.items.noneText() : String((query.error as Error).message ?? query.error)}
         </Banner>
       </div>
     )
@@ -71,7 +71,11 @@ export function ItemView({
 
       {item.progress !== null && item.progress.total > 0 && (
         <div className="app-progress">
-          <Progress done={item.progress.done} total={item.progress.total} label="Checklist" />
+          <Progress
+            done={item.progress.done}
+            total={item.progress.total}
+            label={LL.items.checklist()}
+          />
           <span className="app-muted">
             {item.progress.done}/{item.progress.total}
           </span>

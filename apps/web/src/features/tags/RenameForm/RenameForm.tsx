@@ -3,18 +3,11 @@ import { Button } from '@netherite/ui'
 import { type FormEvent, useState } from 'react'
 import { TextField } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
 import { useWrite } from '@/infrastructure/query'
 import { renameOutcome } from '../rules'
 import './RenameForm.css'
-
-const messages = {
-  empty: 'A tag needs a name',
-  spaces: 'A tag cannot contain spaces',
-  same: '',
-  merge: 'That name is in use: the two will merge',
-  rename: '',
-} as const
 
 /** Renames a tag everywhere at once; a name already in use merges the two. */
 export function RenameForm({
@@ -26,6 +19,7 @@ export function RenameForm({
   readonly tags: ReadonlyArray<TagUse>
   readonly onDone: () => void
 }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const notices = useNotices()
   const [name, setName] = useState(tag.name)
@@ -40,17 +34,21 @@ export function RenameForm({
       onSuccess: (r) => {
         notices.notify({
           variant: 'success',
-          title: `Renamed to ${name.trim()}`,
-          text: `Changed in ${r.renamed} ${r.renamed === 1 ? 'file' : 'files'}.`,
+          title: LL.tags.renamed({ name: name.trim() }),
+          text: LL.tags.changedIn({ count: r.renamed }),
         })
         onDone()
       },
     })
   }
   return (
-    <form className="tg-rename" onSubmit={submit} aria-label={`Rename ${tag.name}`}>
+    <form
+      className="tg-rename"
+      onSubmit={submit}
+      aria-label={LL.tags.renameLabel({ name: tag.name })}
+    >
       <TextField
-        label={`New name for ${tag.name}`}
+        label={LL.tags.newName({ name: tag.name })}
         value={name}
         onChange={setName}
         onEscape={onDone}
@@ -62,9 +60,13 @@ export function RenameForm({
         disabled={outcome === 'same' || outcome === 'empty' || outcome === 'spaces'}
         loading={rename.isPending}
       >
-        {outcome === 'merge' ? 'Merge' : 'Rename'}
+        {outcome === 'merge' ? LL.tags.merge() : LL.tags.rename()}
       </Button>
-      {messages[outcome] && <span className="app-muted">{messages[outcome]}</span>}
+      {outcome in LL.tags.messages && (
+        <span className="app-muted">
+          {LL.tags.messages[outcome as 'empty' | 'spaces' | 'merge']()}
+        </span>
+      )}
     </form>
   )
 }

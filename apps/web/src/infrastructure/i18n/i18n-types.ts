@@ -26,6 +26,16 @@ type RootTranslation = {
 		 * C​h​e​c​k​ ​t​h​a​t​ ​`​n​e​t​h​e​r​i​t​e​ ​s​e​r​v​e​`​ ​i​s​ ​s​t​i​l​l​ ​r​u​n​n​i​n​g​.
 		 */
 		serveHint: string
+		notFound: {
+			/**
+			 * N​o​t​h​i​n​g​ ​h​e​r​e
+			 */
+			title: string
+			/**
+			 * T​h​a​t​ ​p​a​g​e​ ​d​o​e​s​ ​n​o​t​ ​e​x​i​s​t​.
+			 */
+			text: string
+		}
 	}
 	components: {
 		/**
@@ -754,6 +764,563 @@ type RootTranslation = {
 			}
 		}
 	}
+	navigation: {
+		/**
+		 * S​e​a​r​c​h
+		 */
+		search: string
+		/**
+		 * I​n​b​o​x
+		 */
+		inbox: string
+		/**
+		 * G​o​a​l​s
+		 */
+		goals: string
+		/**
+		 * P​r​o​j​e​c​t​s
+		 */
+		projects: string
+		/**
+		 * K​n​o​w​l​e​d​g​e
+		 */
+		knowledge: string
+		/**
+		 * S​t​a​t​s
+		 */
+		stats: string
+		/**
+		 * T​a​g​s
+		 */
+		tags: string
+		/**
+		 * G​r​a​p​h
+		 */
+		graph: string
+		/**
+		 * T​h​e​ ​c​o​n​f​i​g​ ​f​i​l​e​ ​i​s​ ​n​o​t​ ​v​a​l​i​d
+		 */
+		configInvalid: string
+		/**
+		 * {​m​e​s​s​a​g​e​}​ ​T​h​e​ ​p​r​e​v​i​o​u​s​ ​c​o​n​f​i​g​ ​s​t​a​y​s​ ​i​n​ ​u​s​e​.
+		 * @param {unknown} message
+		 */
+		configInvalidText: RequiredParams<'message'>
+		/**
+		 * R​e​s​t​a​r​t​ ​N​e​t​h​e​r​i​t​e
+		 */
+		restart: string
+		/**
+		 * T​h​e​ ​c​o​n​t​e​n​t​ ​f​o​l​d​e​r​ ​m​o​v​e​d​.​ ​S​t​o​p​ ​a​n​d​ ​s​t​a​r​t​ ​`​n​e​t​h​e​r​i​t​e​`​ ​t​o​ ​u​s​e​ ​i​t​.
+		 */
+		restartText: string
+	}
+	notices: {
+		/**
+		 * C​h​a​n​g​e​d​ ​o​n​ ​d​i​s​k
+		 */
+		changedOnDisk: string
+		/**
+		 * {​p​a​t​h​}​ ​c​h​a​n​g​e​d​ ​s​i​n​c​e​ ​y​o​u​ ​o​p​e​n​e​d​ ​i​t​,​ ​s​o​ ​n​o​t​h​i​n​g​ ​w​a​s​ ​s​a​v​e​d​.​ ​R​e​l​o​a​d​ ​t​o​ ​s​e​e​ ​t​h​e​ ​n​e​w​ ​v​e​r​s​i​o​n​,​ ​t​h​e​n​ ​m​a​k​e​ ​t​h​e​ ​c​h​a​n​g​e​ ​a​g​a​i​n​.
+		 * @param {unknown} path
+		 */
+		changedOnDiskText: RequiredParams<'path'>
+		/**
+		 * R​e​l​o​a​d
+		 */
+		reload: string
+		/**
+		 * T​h​a​t​ ​c​h​a​n​g​e​ ​i​s​ ​n​o​t​ ​v​a​l​i​d
+		 */
+		invalid: string
+		/**
+		 * N​o​t​ ​f​o​u​n​d
+		 */
+		notFound: string
+		/**
+		 * N​o​t​ ​a​l​l​o​w​e​d
+		 */
+		notAllowed: string
+		/**
+		 * T​h​e​ ​s​e​r​v​e​r​ ​c​o​u​l​d​ ​n​o​t​ ​d​o​ ​t​h​a​t
+		 */
+		serverFailed: string
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​r​e​a​c​h​ ​t​h​e​ ​s​e​r​v​e​r
+		 */
+		unreachable: string
+	}
+	decisions: {
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​d​e​c​i​s​i​o​n​s
+		 */
+		loadError: string
+		heading: {
+			/**
+			 * D​e​c​i​s​i​o​n​ ​l​o​g
+			 */
+			title: string
+			/**
+			 * K​n​o​w​l​e​d​g​e
+			 */
+			knowledge: string
+			/**
+			 * S​t​a​t​u​s​ ​c​h​a​n​g​e​s​ ​f​r​o​m​ ​{​c​o​m​m​a​n​d​}​ ​·​ ​n​e​w​e​s​t​ ​f​i​r​s​t
+			 * @param {unknown} command
+			 */
+			text: RequiredParams<'command'>
+		}
+		empty: {
+			/**
+			 * N​o​ ​d​e​c​i​s​i​o​n​s​ ​y​e​t
+			 */
+			title: string
+			/**
+			 * A​D​R​s​ ​y​o​u​ ​r​e​c​o​r​d​ ​s​h​o​w​ ​u​p​ ​h​e​r​e​,​ ​i​n​ ​a​ ​l​a​n​e​ ​p​e​r​ ​p​r​o​j​e​c​t​.
+			 */
+			text: string
+		}
+		/**
+		 * {​c​o​u​n​t​}​ ​{​{​c​h​a​i​n​|​c​h​a​i​n​s​}​}
+		 * @param {number} count
+		 */
+		chains: RequiredParams<'count'>
+		/**
+		 * {​c​o​u​n​t​}​ ​A​D​R​s
+		 * @param {number} count
+		 */
+		adrs: RequiredParams<'count'>
+		/**
+		 * N​o​ ​r​e​c​o​r​d​e​d​ ​c​h​a​n​g​e​s
+		 */
+		noChanges: string
+		/**
+		 * S​u​p​e​r​s​e​s​s​i​o​n
+		 */
+		supersession: string
+		/**
+		 * P​r​o​j​e​c​t
+		 */
+		project: string
+		/**
+		 * A​l​l​ ​p​r​o​j​e​c​t​s
+		 */
+		allProjects: string
+		/**
+		 * N​o​ ​g​i​t​ ​h​i​s​t​o​r​y
+		 */
+		noGit: string
+		/**
+		 * S​t​a​t​u​s​ ​c​h​a​n​g​e​s​ ​c​o​m​e​ ​f​r​o​m​ ​g​i​t​,​ ​s​o​ ​t​h​e​r​e​ ​i​s​ ​n​o​ ​t​i​m​e​l​i​n​e​ ​h​e​r​e​.
+		 */
+		noGitText: string
+		/**
+		 * H​i​s​t​o​r​y​ ​i​s​ ​c​u​t​ ​s​h​o​r​t
+		 */
+		partial: string
+		/**
+		 * T​h​i​s​ ​i​s​ ​a​ ​s​h​a​l​l​o​w​ ​c​l​o​n​e​,​ ​s​o​ ​o​l​d​e​r​ ​s​t​a​t​u​s​ ​c​h​a​n​g​e​s​ ​a​r​e​ ​m​i​s​s​i​n​g​.
+		 */
+		partialText: string
+		/**
+		 * s​u​p​e​r​s​e​d​e​s
+		 */
+		supersedes: string
+		status: {
+			/**
+			 * P​r​o​p​o​s​e​d
+			 */
+			proposed: string
+			/**
+			 * A​c​c​e​p​t​e​d
+			 */
+			accepted: string
+			/**
+			 * D​e​p​r​e​c​a​t​e​d
+			 */
+			deprecated: string
+			/**
+			 * S​u​p​e​r​s​e​d​e​d
+			 */
+			superseded: string
+		}
+	}
+	tags: {
+		/**
+		 * T​a​g​s
+		 */
+		title: string
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​t​a​g​s
+		 */
+		loadError: string
+		empty: {
+			/**
+			 * N​o​ ​t​a​g​s​ ​y​e​t
+			 */
+			title: string
+			/**
+			 * A​d​d​ ​`​t​a​g​s​`​ ​t​o​ ​a​n​y​ ​i​t​e​m​,​ ​o​r​ ​`​l​a​b​e​l​s​`​ ​t​o​ ​a​ ​t​a​s​k​ ​o​r​ ​p​r​o​j​e​c​t​,​ ​a​n​d​ ​t​h​e​y​ ​a​r​e​ ​c​o​u​n​t​e​d​ ​h​e​r​e​.
+			 */
+			text: string
+		}
+		/**
+		 * F​i​l​t​e​r​ ​t​a​g​s
+		 */
+		filter: string
+		/**
+		 * K​i​n​d
+		 */
+		kind: string
+		kinds: {
+			/**
+			 * A​l​l
+			 */
+			all: string
+			/**
+			 * T​a​g​s
+			 */
+			tags: string
+			/**
+			 * L​a​b​e​l​s
+			 */
+			labels: string
+		}
+		/**
+		 * N​o​ ​t​a​g​s​ ​m​a​t​c​h​.
+		 */
+		noMatch: string
+		/**
+		 * t​a​g
+		 */
+		tag: string
+		/**
+		 * l​a​b​e​l
+		 */
+		label: string
+		/**
+		 * I​t​e​m​s​ ​w​i​t​h​ ​{​n​a​m​e​}
+		 * @param {unknown} name
+		 */
+		items: RequiredParams<'name'>
+		/**
+		 * R​e​n​a​m​e
+		 */
+		rename: string
+		/**
+		 * R​e​n​a​m​e​ ​{​n​a​m​e​}
+		 * @param {unknown} name
+		 */
+		renameLabel: RequiredParams<'name'>
+		/**
+		 * N​e​w​ ​n​a​m​e​ ​f​o​r​ ​{​n​a​m​e​}
+		 * @param {unknown} name
+		 */
+		newName: RequiredParams<'name'>
+		/**
+		 * M​e​r​g​e
+		 */
+		merge: string
+		/**
+		 * {​c​o​u​n​t​}​ ​{​t​y​p​e​}
+		 * @param {number} count
+		 * @param {unknown} type
+		 */
+		typeTitle: RequiredParams<'count' | 'type'>
+		/**
+		 * R​e​n​a​m​e​d​ ​t​o​ ​{​n​a​m​e​}
+		 * @param {unknown} name
+		 */
+		renamed: RequiredParams<'name'>
+		/**
+		 * C​h​a​n​g​e​d​ ​i​n​ ​{​c​o​u​n​t​}​ ​{​{​f​i​l​e​|​f​i​l​e​s​}​}​.
+		 * @param {number} count
+		 */
+		changedIn: RequiredParams<'count'>
+		messages: {
+			/**
+			 * A​ ​t​a​g​ ​n​e​e​d​s​ ​a​ ​n​a​m​e
+			 */
+			empty: string
+			/**
+			 * A​ ​t​a​g​ ​c​a​n​n​o​t​ ​c​o​n​t​a​i​n​ ​s​p​a​c​e​s
+			 */
+			spaces: string
+			/**
+			 * T​h​a​t​ ​n​a​m​e​ ​i​s​ ​i​n​ ​u​s​e​:​ ​t​h​e​ ​t​w​o​ ​w​i​l​l​ ​m​e​r​g​e
+			 */
+			merge: string
+		}
+	}
+	stats: {
+		/**
+		 * S​t​a​t​s
+		 */
+		title: string
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​s​t​a​t​s
+		 */
+		loadError: string
+		/**
+		 * S​t​a​t​s​ ​n​e​e​d​ ​g​i​t​ ​h​i​s​t​o​r​y
+		 */
+		noGit: string
+		/**
+		 * P​r​o​g​r​e​s​s​ ​o​v​e​r​ ​t​i​m​e​ ​i​s​ ​r​e​a​d​ ​f​r​o​m​ ​t​h​e​ ​c​o​m​m​i​t​s​ ​o​f​ ​t​h​i​s​ ​r​e​p​o​s​i​t​o​r​y​.​ ​P​u​t​ ​t​h​e​ ​w​o​r​k​s​p​a​c​e​ ​i​n​ ​a​ ​g​i​t​ ​r​e​p​o​s​i​t​o​r​y​ ​a​n​d​ ​t​h​e​ ​c​h​a​r​t​s​ ​f​i​l​l​ ​i​n​.
+		 */
+		noGitText: string
+		/**
+		 * H​i​s​t​o​r​y​ ​i​s​ ​c​u​t​ ​s​h​o​r​t
+		 */
+		partial: string
+		/**
+		 * T​h​i​s​ ​i​s​ ​a​ ​s​h​a​l​l​o​w​ ​c​l​o​n​e​,​ ​s​o​ ​t​h​e​ ​e​a​r​l​i​e​s​t​ ​w​e​e​k​s​ ​a​r​e​ ​m​i​s​s​i​n​g​.
+		 */
+		partialText: string
+		tiles: {
+			/**
+			 * t​a​s​k​s​ ​d​o​n​e
+			 */
+			done: string
+			/**
+			 * b​e​s​t​ ​w​e​e​k
+			 */
+			bestWeek: string
+			/**
+			 * b​e​s​t​ ​w​e​e​k​ ​·​ ​{​w​e​e​k​}
+			 * @param {unknown} week
+			 */
+			bestWeekOn: RequiredParams<'week'>
+			/**
+			 * A​D​R​s​ ​a​c​c​e​p​t​e​d
+			 */
+			adrs: string
+			/**
+			 * w​e​e​k​s​ ​o​f​ ​h​i​s​t​o​r​y
+			 */
+			weeks: string
+		}
+		/**
+		 * T​a​s​k​s​ ​d​o​n​e​ ​p​e​r​ ​w​e​e​k
+		 */
+		throughput: string
+		progress: {
+			/**
+			 * P​r​o​g​r​e​s​s​ ​o​v​e​r​ ​t​i​m​e
+			 */
+			title: string
+			/**
+			 * P​r​o​g​r​e​s​s​ ​o​f
+			 */
+			of: string
+			/**
+			 * G​o​a​l​s
+			 */
+			goals: string
+			/**
+			 * P​r​o​j​e​c​t​s
+			 */
+			projects: string
+			/**
+			 * P​r​o​g​r​e​s​s​ ​o​f​ ​e​a​c​h​ ​g​o​a​l
+			 */
+			eachGoal: string
+			/**
+			 * P​r​o​g​r​e​s​s​ ​o​f​ ​e​a​c​h​ ​p​r​o​j​e​c​t
+			 */
+			eachProject: string
+			/**
+			 * N​o​ ​p​r​o​g​r​e​s​s​ ​r​e​c​o​r​d​e​d​ ​y​e​t
+			 */
+			none: string
+		}
+		/**
+		 * A​D​R​ ​a​c​t​i​v​i​t​y
+		 */
+		adrActivity: string
+		/**
+		 * A​D​R​s​ ​b​y​ ​t​h​e​ ​s​t​a​t​u​s​ ​t​h​e​y​ ​m​o​v​e​d​ ​t​o​,​ ​p​e​r​ ​w​e​e​k
+		 */
+		adrChart: string
+	}
+	search: {
+		/**
+		 * S​e​a​r​c​h
+		 */
+		title: string
+		/**
+		 * S​e​a​r​c​h​ ​g​o​a​l​s​,​ ​p​r​o​j​e​c​t​s​,​ ​t​a​s​k​s​ ​a​n​d​ ​k​n​o​w​l​e​d​g​e
+		 */
+		placeholder: string
+		/**
+		 * R​e​s​u​l​t​s
+		 */
+		results: string
+		/**
+		 * T​y​p​e
+		 */
+		type: string
+		/**
+		 * S​e​a​r​c​h​ ​g​o​a​l​s​,​ ​p​r​o​j​e​c​t​s​,​ ​t​a​s​k​s​ ​a​n​d​ ​k​n​o​w​l​e​d​g​e​.
+		 */
+		empty: string
+		/**
+		 * N​o​ ​r​e​s​u​l​t​s​.​ ​T​r​y​ ​a​ ​f​i​l​e​ ​n​a​m​e​ ​o​r​ ​a​n​ ​A​D​R​ ​i​d​.
+		 */
+		none: string
+		chips: {
+			/**
+			 * A​l​l
+			 */
+			all: string
+			/**
+			 * A​D​R​s
+			 */
+			adr: string
+			/**
+			 * T​a​s​k​s
+			 */
+			task: string
+			/**
+			 * D​o​c​s
+			 */
+			doc: string
+			/**
+			 * C​o​n​t​e​x​t
+			 */
+			context: string
+			/**
+			 * P​r​o​j​e​c​t​s
+			 */
+			project: string
+			/**
+			 * G​o​a​l​s
+			 */
+			goal: string
+		}
+		groups: {
+			/**
+			 * D​e​c​i​s​i​o​n​s
+			 */
+			adr: string
+			/**
+			 * T​a​s​k​s
+			 */
+			task: string
+			/**
+			 * D​o​c​s​ ​&​ ​r​u​n​b​o​o​k​s
+			 */
+			doc: string
+			/**
+			 * A​I​ ​c​o​n​t​e​x​t
+			 */
+			context: string
+			/**
+			 * P​r​o​j​e​c​t​s
+			 */
+			project: string
+			/**
+			 * G​o​a​l​s
+			 */
+			goal: string
+		}
+		footer: {
+			/**
+			 * n​a​v​i​g​a​t​e
+			 */
+			navigate: string
+			/**
+			 * o​p​e​n
+			 */
+			open: string
+			/**
+			 * o​p​e​n​ ​a​s​ ​s​p​l​i​t
+			 */
+			split: string
+			/**
+			 * n​e​x​t​ ​t​y​p​e
+			 */
+			next: string
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​r​e​s​u​l​t​|​r​e​s​u​l​t​s​}​}​ ​·​ ​t​i​t​l​e​s​,​ ​p​a​t​h​s​ ​a​n​d​ ​b​o​d​y
+			 * @param {number} count
+			 */
+			results: RequiredParams<'count'>
+		}
+	}
+	items: {
+		/**
+		 * N​o​ ​i​t​e​m​ ​{​i​d​}
+		 * @param {unknown} id
+		 */
+		none: RequiredParams<'id'>
+		/**
+		 * I​t​ ​m​a​y​ ​h​a​v​e​ ​b​e​e​n​ ​d​e​l​e​t​e​d​ ​o​r​ ​r​e​n​u​m​b​e​r​e​d​.
+		 */
+		noneText: string
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​t​h​i​s​ ​i​t​e​m
+		 */
+		loadError: string
+		/**
+		 * E​d​i​t​ ​s​o​u​r​c​e
+		 */
+		editSource: string
+		/**
+		 * D​o​n​e​ ​e​d​i​t​i​n​g
+		 */
+		doneEditing: string
+		/**
+		 * M​a​r​k​ ​r​e​v​i​e​w​e​d
+		 */
+		markReviewed: string
+		/**
+		 * C​h​e​c​k​l​i​s​t
+		 */
+		checklist: string
+		/**
+		 * L​i​n​k​s
+		 */
+		links: string
+		/**
+		 * L​i​n​k​e​d​ ​f​r​o​m
+		 */
+		linkedFrom: string
+	}
+	graph: {
+		/**
+		 * G​r​a​p​h
+		 */
+		title: string
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​t​h​e​ ​g​r​a​p​h
+		 */
+		loadError: string
+		empty: {
+			/**
+			 * N​o​t​h​i​n​g​ ​t​o​ ​d​r​a​w
+			 */
+			title: string
+			/**
+			 * A​d​d​ ​g​o​a​l​s​,​ ​p​r​o​j​e​c​t​s​ ​a​n​d​ ​t​a​s​k​s​ ​a​n​d​ ​t​h​e​y​ ​s​h​o​w​ ​u​p​ ​h​e​r​e​.
+			 */
+			text: string
+		}
+		/**
+		 * A​l​l​ ​i​t​e​m​s​ ​a​n​d​ ​t​h​e​ ​l​i​n​k​s​ ​b​e​t​w​e​e​n​ ​t​h​e​m
+		 */
+		label: string
+	}
+	editor: {
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​t​h​e​ ​s​o​u​r​c​e
+		 */
+		loadError: string
+		/**
+		 * L​o​a​d​i​n​g​ ​t​h​e​ ​s​o​u​r​c​e​…
+		 */
+		loading: string
+	}
 	goals: {
 		/**
 		 * G​o​a​l​s
@@ -1156,6 +1723,16 @@ export type TranslationFunctions = {
 		 * Check that `netherite serve` is still running.
 		 */
 		serveHint: () => LocalizedString
+		notFound: {
+			/**
+			 * Nothing here
+			 */
+			title: () => LocalizedString
+			/**
+			 * That page does not exist.
+			 */
+			text: () => LocalizedString
+		}
 	}
 	components: {
 		/**
@@ -1856,6 +2433,548 @@ export type TranslationFunctions = {
 				noCoChanged: () => LocalizedString
 			}
 		}
+	}
+	navigation: {
+		/**
+		 * Search
+		 */
+		search: () => LocalizedString
+		/**
+		 * Inbox
+		 */
+		inbox: () => LocalizedString
+		/**
+		 * Goals
+		 */
+		goals: () => LocalizedString
+		/**
+		 * Projects
+		 */
+		projects: () => LocalizedString
+		/**
+		 * Knowledge
+		 */
+		knowledge: () => LocalizedString
+		/**
+		 * Stats
+		 */
+		stats: () => LocalizedString
+		/**
+		 * Tags
+		 */
+		tags: () => LocalizedString
+		/**
+		 * Graph
+		 */
+		graph: () => LocalizedString
+		/**
+		 * The config file is not valid
+		 */
+		configInvalid: () => LocalizedString
+		/**
+		 * {message} The previous config stays in use.
+		 */
+		configInvalidText: (arg: { message: unknown }) => LocalizedString
+		/**
+		 * Restart Netherite
+		 */
+		restart: () => LocalizedString
+		/**
+		 * The content folder moved. Stop and start `netherite` to use it.
+		 */
+		restartText: () => LocalizedString
+	}
+	notices: {
+		/**
+		 * Changed on disk
+		 */
+		changedOnDisk: () => LocalizedString
+		/**
+		 * {path} changed since you opened it, so nothing was saved. Reload to see the new version, then make the change again.
+		 */
+		changedOnDiskText: (arg: { path: unknown }) => LocalizedString
+		/**
+		 * Reload
+		 */
+		reload: () => LocalizedString
+		/**
+		 * That change is not valid
+		 */
+		invalid: () => LocalizedString
+		/**
+		 * Not found
+		 */
+		notFound: () => LocalizedString
+		/**
+		 * Not allowed
+		 */
+		notAllowed: () => LocalizedString
+		/**
+		 * The server could not do that
+		 */
+		serverFailed: () => LocalizedString
+		/**
+		 * Could not reach the server
+		 */
+		unreachable: () => LocalizedString
+	}
+	decisions: {
+		/**
+		 * Could not load decisions
+		 */
+		loadError: () => LocalizedString
+		heading: {
+			/**
+			 * Decision log
+			 */
+			title: () => LocalizedString
+			/**
+			 * Knowledge
+			 */
+			knowledge: () => LocalizedString
+			/**
+			 * Status changes from {command} · newest first
+			 */
+			text: (arg: { command: unknown }) => LocalizedString
+		}
+		empty: {
+			/**
+			 * No decisions yet
+			 */
+			title: () => LocalizedString
+			/**
+			 * ADRs you record show up here, in a lane per project.
+			 */
+			text: () => LocalizedString
+		}
+		/**
+		 * {count} {{chain|chains}}
+		 */
+		chains: (arg: { count: number }) => LocalizedString
+		/**
+		 * {count} ADRs
+		 */
+		adrs: (arg: { count: number }) => LocalizedString
+		/**
+		 * No recorded changes
+		 */
+		noChanges: () => LocalizedString
+		/**
+		 * Supersession
+		 */
+		supersession: () => LocalizedString
+		/**
+		 * Project
+		 */
+		project: () => LocalizedString
+		/**
+		 * All projects
+		 */
+		allProjects: () => LocalizedString
+		/**
+		 * No git history
+		 */
+		noGit: () => LocalizedString
+		/**
+		 * Status changes come from git, so there is no timeline here.
+		 */
+		noGitText: () => LocalizedString
+		/**
+		 * History is cut short
+		 */
+		partial: () => LocalizedString
+		/**
+		 * This is a shallow clone, so older status changes are missing.
+		 */
+		partialText: () => LocalizedString
+		/**
+		 * supersedes
+		 */
+		supersedes: () => LocalizedString
+		status: {
+			/**
+			 * Proposed
+			 */
+			proposed: () => LocalizedString
+			/**
+			 * Accepted
+			 */
+			accepted: () => LocalizedString
+			/**
+			 * Deprecated
+			 */
+			deprecated: () => LocalizedString
+			/**
+			 * Superseded
+			 */
+			superseded: () => LocalizedString
+		}
+	}
+	tags: {
+		/**
+		 * Tags
+		 */
+		title: () => LocalizedString
+		/**
+		 * Could not load tags
+		 */
+		loadError: () => LocalizedString
+		empty: {
+			/**
+			 * No tags yet
+			 */
+			title: () => LocalizedString
+			/**
+			 * Add `tags` to any item, or `labels` to a task or project, and they are counted here.
+			 */
+			text: () => LocalizedString
+		}
+		/**
+		 * Filter tags
+		 */
+		filter: () => LocalizedString
+		/**
+		 * Kind
+		 */
+		kind: () => LocalizedString
+		kinds: {
+			/**
+			 * All
+			 */
+			all: () => LocalizedString
+			/**
+			 * Tags
+			 */
+			tags: () => LocalizedString
+			/**
+			 * Labels
+			 */
+			labels: () => LocalizedString
+		}
+		/**
+		 * No tags match.
+		 */
+		noMatch: () => LocalizedString
+		/**
+		 * tag
+		 */
+		tag: () => LocalizedString
+		/**
+		 * label
+		 */
+		label: () => LocalizedString
+		/**
+		 * Items with {name}
+		 */
+		items: (arg: { name: unknown }) => LocalizedString
+		/**
+		 * Rename
+		 */
+		rename: () => LocalizedString
+		/**
+		 * Rename {name}
+		 */
+		renameLabel: (arg: { name: unknown }) => LocalizedString
+		/**
+		 * New name for {name}
+		 */
+		newName: (arg: { name: unknown }) => LocalizedString
+		/**
+		 * Merge
+		 */
+		merge: () => LocalizedString
+		/**
+		 * {count} {type}
+		 */
+		typeTitle: (arg: { count: number, type: unknown }) => LocalizedString
+		/**
+		 * Renamed to {name}
+		 */
+		renamed: (arg: { name: unknown }) => LocalizedString
+		/**
+		 * Changed in {count} {{file|files}}.
+		 */
+		changedIn: (arg: { count: number }) => LocalizedString
+		messages: {
+			/**
+			 * A tag needs a name
+			 */
+			empty: () => LocalizedString
+			/**
+			 * A tag cannot contain spaces
+			 */
+			spaces: () => LocalizedString
+			/**
+			 * That name is in use: the two will merge
+			 */
+			merge: () => LocalizedString
+		}
+	}
+	stats: {
+		/**
+		 * Stats
+		 */
+		title: () => LocalizedString
+		/**
+		 * Could not load stats
+		 */
+		loadError: () => LocalizedString
+		/**
+		 * Stats need git history
+		 */
+		noGit: () => LocalizedString
+		/**
+		 * Progress over time is read from the commits of this repository. Put the workspace in a git repository and the charts fill in.
+		 */
+		noGitText: () => LocalizedString
+		/**
+		 * History is cut short
+		 */
+		partial: () => LocalizedString
+		/**
+		 * This is a shallow clone, so the earliest weeks are missing.
+		 */
+		partialText: () => LocalizedString
+		tiles: {
+			/**
+			 * tasks done
+			 */
+			done: () => LocalizedString
+			/**
+			 * best week
+			 */
+			bestWeek: () => LocalizedString
+			/**
+			 * best week · {week}
+			 */
+			bestWeekOn: (arg: { week: unknown }) => LocalizedString
+			/**
+			 * ADRs accepted
+			 */
+			adrs: () => LocalizedString
+			/**
+			 * weeks of history
+			 */
+			weeks: () => LocalizedString
+		}
+		/**
+		 * Tasks done per week
+		 */
+		throughput: () => LocalizedString
+		progress: {
+			/**
+			 * Progress over time
+			 */
+			title: () => LocalizedString
+			/**
+			 * Progress of
+			 */
+			of: () => LocalizedString
+			/**
+			 * Goals
+			 */
+			goals: () => LocalizedString
+			/**
+			 * Projects
+			 */
+			projects: () => LocalizedString
+			/**
+			 * Progress of each goal
+			 */
+			eachGoal: () => LocalizedString
+			/**
+			 * Progress of each project
+			 */
+			eachProject: () => LocalizedString
+			/**
+			 * No progress recorded yet
+			 */
+			none: () => LocalizedString
+		}
+		/**
+		 * ADR activity
+		 */
+		adrActivity: () => LocalizedString
+		/**
+		 * ADRs by the status they moved to, per week
+		 */
+		adrChart: () => LocalizedString
+	}
+	search: {
+		/**
+		 * Search
+		 */
+		title: () => LocalizedString
+		/**
+		 * Search goals, projects, tasks and knowledge
+		 */
+		placeholder: () => LocalizedString
+		/**
+		 * Results
+		 */
+		results: () => LocalizedString
+		/**
+		 * Type
+		 */
+		type: () => LocalizedString
+		/**
+		 * Search goals, projects, tasks and knowledge.
+		 */
+		empty: () => LocalizedString
+		/**
+		 * No results. Try a file name or an ADR id.
+		 */
+		none: () => LocalizedString
+		chips: {
+			/**
+			 * All
+			 */
+			all: () => LocalizedString
+			/**
+			 * ADRs
+			 */
+			adr: () => LocalizedString
+			/**
+			 * Tasks
+			 */
+			task: () => LocalizedString
+			/**
+			 * Docs
+			 */
+			doc: () => LocalizedString
+			/**
+			 * Context
+			 */
+			context: () => LocalizedString
+			/**
+			 * Projects
+			 */
+			project: () => LocalizedString
+			/**
+			 * Goals
+			 */
+			goal: () => LocalizedString
+		}
+		groups: {
+			/**
+			 * Decisions
+			 */
+			adr: () => LocalizedString
+			/**
+			 * Tasks
+			 */
+			task: () => LocalizedString
+			/**
+			 * Docs & runbooks
+			 */
+			doc: () => LocalizedString
+			/**
+			 * AI context
+			 */
+			context: () => LocalizedString
+			/**
+			 * Projects
+			 */
+			project: () => LocalizedString
+			/**
+			 * Goals
+			 */
+			goal: () => LocalizedString
+		}
+		footer: {
+			/**
+			 * navigate
+			 */
+			navigate: () => LocalizedString
+			/**
+			 * open
+			 */
+			open: () => LocalizedString
+			/**
+			 * open as split
+			 */
+			split: () => LocalizedString
+			/**
+			 * next type
+			 */
+			next: () => LocalizedString
+			/**
+			 * {count} {{result|results}} · titles, paths and body
+			 */
+			results: (arg: { count: number }) => LocalizedString
+		}
+	}
+	items: {
+		/**
+		 * No item {id}
+		 */
+		none: (arg: { id: unknown }) => LocalizedString
+		/**
+		 * It may have been deleted or renumbered.
+		 */
+		noneText: () => LocalizedString
+		/**
+		 * Could not load this item
+		 */
+		loadError: () => LocalizedString
+		/**
+		 * Edit source
+		 */
+		editSource: () => LocalizedString
+		/**
+		 * Done editing
+		 */
+		doneEditing: () => LocalizedString
+		/**
+		 * Mark reviewed
+		 */
+		markReviewed: () => LocalizedString
+		/**
+		 * Checklist
+		 */
+		checklist: () => LocalizedString
+		/**
+		 * Links
+		 */
+		links: () => LocalizedString
+		/**
+		 * Linked from
+		 */
+		linkedFrom: () => LocalizedString
+	}
+	graph: {
+		/**
+		 * Graph
+		 */
+		title: () => LocalizedString
+		/**
+		 * Could not load the graph
+		 */
+		loadError: () => LocalizedString
+		empty: {
+			/**
+			 * Nothing to draw
+			 */
+			title: () => LocalizedString
+			/**
+			 * Add goals, projects and tasks and they show up here.
+			 */
+			text: () => LocalizedString
+		}
+		/**
+		 * All items and the links between them
+		 */
+		label: () => LocalizedString
+	}
+	editor: {
+		/**
+		 * Could not load the source
+		 */
+		loadError: () => LocalizedString
+		/**
+		 * Loading the source…
+		 */
+		loading: () => LocalizedString
 	}
 	goals: {
 		/**

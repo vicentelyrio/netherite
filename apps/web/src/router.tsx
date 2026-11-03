@@ -7,6 +7,7 @@ import {
   type RouterHistory,
   redirect,
 } from '@tanstack/react-router'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { DecisionsPage } from './pages/decisions'
 import { GoalPage, GoalsPage } from './pages/goals'
 import { GraphPage } from './pages/graph'
@@ -18,11 +19,20 @@ import { ShellPage } from './pages/shell'
 import { StatsPage } from './pages/stats'
 import { TagsPage } from './pages/tags'
 
+function NotFoundScreen() {
+  const { LL } = useI18nContext()
+  return (
+    <EmptyState
+      icon="search_off"
+      title={LL.common.notFound.title()}
+      description={LL.common.notFound.text()}
+    />
+  )
+}
+
 const root = createRootRoute({
   component: ShellPage,
-  notFoundComponent: () => (
-    <EmptyState icon="search_off" title="Nothing here" description="That page does not exist." />
-  ),
+  notFoundComponent: NotFoundScreen,
 })
 
 const index = createRoute({

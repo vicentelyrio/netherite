@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { createContext, type ReactNode, useContext, useState } from 'react'
 import type { LineSeries } from '@/components'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { goalsQuery, projectsQuery, statsQuery } from '@/infrastructure/query'
 import { lineColors, percent } from '../numbers'
 
@@ -28,13 +29,14 @@ export const useStats = (): StatsState => {
 
 /** Loads the stats from git history; says so instead when there is none, or loading fails. */
 export function StatsProvider({ children }: { readonly children: ReactNode }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const stats = useQuery(statsQuery(api))
   const goals = useQuery(goalsQuery(api))
   const projects = useQuery(projectsQuery(api))
   const [by, setBy] = useState<ProgressBy>('goals')
 
-  if (stats.isPending) return <div className="app-page app-muted">Loading…</div>
+  if (stats.isPending) return <div className="app-page app-muted">{LL.common.loading()}</div>
   if (stats.isError) {
     const noGit = stats.error instanceof Unavailable
     return (
@@ -42,12 +44,12 @@ export function StatsProvider({ children }: { readonly children: ReactNode }) {
         {noGit ? (
           <EmptyState
             icon="bar_chart"
-            title="Stats need git history"
-            description="Progress over time is read from the commits of this repository. Put the workspace in a git repository and the charts fill in."
+            title={LL.stats.noGit()}
+            description={LL.stats.noGitText()}
           />
         ) : (
-          <Banner variant="danger" title="Could not load stats">
-            Check that `netherite serve` is still running.
+          <Banner variant="danger" title={LL.stats.loadError()}>
+            {LL.common.serveHint()}
           </Banner>
         )}
       </div>

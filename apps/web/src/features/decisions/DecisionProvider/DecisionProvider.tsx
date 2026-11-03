@@ -3,6 +3,7 @@ import { Banner } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { createContext, type ReactNode, useContext, useState } from 'react'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { decisionsQuery, knowledgeQuery } from '@/infrastructure/query'
 import { type Lane, lanesOf } from '../lanes'
 
@@ -29,19 +30,20 @@ export const useDecisions = (): DecisionState => {
 
 /** Loads the ADRs and their status changes and holds the project filter. */
 export function DecisionProvider({ children }: { readonly children: ReactNode }) {
+  const { LL } = useI18nContext()
   const api = useApi()
   const knowledge = useQuery(knowledgeQuery(api))
   const decisions = useQuery(decisionsQuery(api))
   const [project, setProject] = useState('')
 
   if (knowledge.isPending || decisions.isPending) {
-    return <div className="app-page app-muted">Loading…</div>
+    return <div className="app-page app-muted">{LL.common.loading()}</div>
   }
   if (knowledge.isError) {
     return (
       <div className="app-page">
-        <Banner variant="danger" title="Could not load decisions">
-          Check that `netherite serve` is still running.
+        <Banner variant="danger" title={LL.decisions.loadError()}>
+          {LL.common.serveHint()}
         </Banner>
       </div>
     )
