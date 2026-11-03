@@ -18,6 +18,9 @@ check uses `warning`). `netherite lint --fix` applies the fixes marked below, ne
 | `outside-type-folder` | warning | an item sits outside its type's folder | |
 | `stale` | warning | a doc's covered files changed in many commits since it was reviewed | |
 | `drifting` | warning | the same, but fewer commits (see `freshness` in the [config](config.md)) | |
+| `due-before-created` | warning | a `due` date earlier than the day the item was created | |
+| `milestone-without-due` | warning | a project has a `milestone` but no `due` date, so it cannot sit on the Timeline | |
+| `invalid-horizon` | warning | a goal's `horizon` is not `forever` or a length such as `10 years`, `6 months`, `90d` | |
 | `orphan` | info | nothing links to this item | |
 | `unknown-field` | info | a frontmatter field the schema does not know (it is kept as it is) | |
 

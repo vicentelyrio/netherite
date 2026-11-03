@@ -63,7 +63,7 @@ export interface History {
 export interface HistoryOptions {
   /** Content root relative to the workspace, such as `netherite`. */
   readonly contentRoot: string
-  /** Frontmatter fields to follow. Default: `status`, `state`, `project`, `goals`. */
+  /** Frontmatter fields to follow. Default: `status`, `state`, `due`, `project`, `goals`. */
   readonly fields?: ReadonlyArray<string>
   /** Only commits after this date (ISO 8601). */
   readonly after?: string
@@ -71,7 +71,7 @@ export interface HistoryOptions {
   readonly limit?: number
 }
 
-export const defaultTrackedFields = ['status', 'state', 'project', 'goals'] as const
+export const defaultTrackedFields = ['status', 'state', 'due', 'project', 'goals'] as const
 
 /**
  * The top of the file's frontmatter after the commit, if the diff shows it: `null` if the file

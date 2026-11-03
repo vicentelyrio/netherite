@@ -38,6 +38,7 @@ const Goal = open(
     status: Schema.Literals(['active', 'achieved', 'dropped']),
     area: optional(Text),
     due: optional(IsoDate),
+    horizon: optional(Text),
     owner: optional(Handle),
   }),
 )
@@ -47,6 +48,8 @@ const Project = open(
     ...common('project', ProjectId),
     goals: Schema.NonEmptyArray(GoalId),
     status: Schema.Literals(['active', 'paused', 'done', 'archived']),
+    due: optional(IsoDate),
+    milestone: optional(Text),
     owner: optional(Handle),
     labels: optional(Strings),
     decisions: optional(ids(AdrId)),

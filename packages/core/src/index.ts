@@ -108,7 +108,17 @@ export {
   type WeekRange,
   weekStart,
 } from './history'
+export { type Horizon, parseHorizon } from './horizon'
 export { nextId, nextIds } from './ids'
+export {
+  type Lifecycle,
+  type LifecycleEvent,
+  type LifecycleKind,
+  type LifecycleOptions,
+  lifecycles,
+  type Phase,
+  type Span,
+} from './lifecycle'
 export {
   type Diagnostic,
   type Fix,

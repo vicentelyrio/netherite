@@ -56,6 +56,15 @@ A task's `state` is one of the names in your `states` config; each name has a ca
 bars, and whether it shows in the Inbox as blocked. An ADR has a `status` instead. Progress for a
 project is tasks in a `done` state over all its tasks; for a goal, the same across its projects.
 
+## Dates and horizons
+
+Start dates are never written: when work began comes from the git history (when a task first left
+the backlog, when a project got its first task). What you can write is where it should end. A goal
+or project takes `due: YYYY-MM-DD`; a project can also name a `milestone` that the date stands
+for. A goal takes a `horizon`, how far ahead it looks: `forever`, or a length such as `10 years`,
+`6 months`, `90d`. Lint warns about a `due` before the item existed, a `milestone` without a `due`,
+and a `horizon` it cannot read.
+
 ## Freshness
 
 A doc or runbook (or context item) with `covers` globs is **fresh**, **drifting** or **stale**,

@@ -10,6 +10,7 @@ import {
 import { Effect } from 'effect'
 import { fileSlug, typeFolders } from './filenames'
 import { computeFreshness, type Freshness } from './freshness'
+import { parseHorizon } from './horizon'
 import type { ParseOptions } from './parse-pool'
 import { scanItems } from './scan'
 import type { ScannedItem } from './scanned-item'
@@ -32,6 +33,9 @@ export type RuleId =
   | 'stale'
   | 'orphan'
   | 'unknown-field'
+  | 'due-before-created'
+  | 'milestone-without-due'
+  | 'invalid-horizon'
 
 /**
  * A change that would clear a diagnostic. Lint only describes it; core operations apply it
@@ -138,6 +142,43 @@ export const lint = (index: WorkspaceIndex, options: LintOptions): Diagnostic[] 
       const field = issue.path[0]
       const label = issue.path.length === 0 ? '' : `${issue.path.join('.')}: `
       report(item, fieldPosition(item, field), 'schema', 'error', `${label}${issue.message}`)
+    }
+
+    // Dates that cannot be right even when each one is well formed.
+    const fields = data as {
+      created?: unknown
+      due?: unknown
+      milestone?: unknown
+      horizon?: unknown
+    }
+    if (typeof fields.created === 'string' && typeof fields.due === 'string') {
+      if (fields.due < fields.created.slice(0, 10)) {
+        report(
+          item,
+          fieldPosition(item, 'due'),
+          'due-before-created',
+          'warning',
+          `due ${fields.due} is before the item was created (${fields.created.slice(0, 10)})`,
+        )
+      }
+    }
+    if (item.type === 'project' && fields.milestone !== undefined && fields.due === undefined) {
+      report(
+        item,
+        fieldPosition(item, 'milestone'),
+        'milestone-without-due',
+        'warning',
+        'A milestone needs a due date, or it cannot be placed on the Timeline',
+      )
+    }
+    if (typeof fields.horizon === 'string' && parseHorizon(fields.horizon) === undefined) {
+      report(
+        item,
+        fieldPosition(item, 'horizon'),
+        'invalid-horizon',
+        'warning',
+        `horizon "${fields.horizon}" is not "forever" or a length like "10 years", "6 months" or "90d"`,
+      )
     }
 
     const type = item.type as ItemType | undefined

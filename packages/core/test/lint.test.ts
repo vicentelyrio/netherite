@@ -353,3 +353,41 @@ describe('results', () => {
     expect(found.filter((d) => d.severity !== 'info')).toEqual([])
   })
 })
+
+describe('dates and horizons', () => {
+  const goal = (extra: string) =>
+    item(
+      'n/goals/GOAL-00001-g.md',
+      `id: GOAL-00001\naliases: [GOAL-00001]\ntype: goal\ntitle: G\nstatus: active\n${extra}`,
+    )
+  const project = (extra: string) =>
+    item(
+      'n/projects/PRJ-00001-p.md',
+      `id: PRJ-00001\naliases: [PRJ-00001]\ntype: project\ntitle: P\ngoals: [GOAL-00001]\nstatus: active\n${extra}`,
+    )
+
+  test('a due date before the creation date is reported', () => {
+    const found = only(
+      run([goal('created: 2026-05-01T10:00:00Z\ndue: 2026-04-30')]),
+      'due-before-created',
+    )
+    expect(found).toHaveLength(1)
+    expect(
+      only(run([goal('created: 2026-05-01T10:00:00Z\ndue: 2026-05-01')]), 'due-before-created'),
+    ).toEqual([])
+  })
+
+  test('a milestone without a due date is reported on projects only', () => {
+    expect(only(run([project('milestone: Beta')]), 'milestone-without-due')).toHaveLength(1)
+    expect(
+      only(run([project('milestone: Beta\ndue: 2026-09-01')]), 'milestone-without-due'),
+    ).toEqual([])
+  })
+
+  test('a horizon must be forever or a length', () => {
+    for (const ok of ['forever', '10 years', '6 months', '2 weeks', '90d', '10y'])
+      expect(only(run([goal(`horizon: ${ok}`)]), 'invalid-horizon')).toEqual([])
+    for (const bad of ['someday', 'ten years', '0 days'])
+      expect(only(run([goal(`horizon: ${bad}`)]), 'invalid-horizon')).toHaveLength(1)
+  })
+})

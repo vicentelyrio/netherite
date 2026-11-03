@@ -18,6 +18,7 @@ The fields of each item type, as the validator checks them (`netherite lint`, an
 | `status` | `active` \| `achieved` \| `dropped` | yes |  |
 | `area` | string |  |  |
 | `due` | string |  | pattern `^\d{4}-\d{2}-\d{2}$` |
+| `horizon` | string |  |  |
 | `owner` | string |  | pattern `^@[A-Za-z0-9][A-Za-z0-9_.-]*$` |
 
 ## `project`
@@ -33,6 +34,8 @@ The fields of each item type, as the validator checks them (`netherite lint`, an
 | `created_by` | string |  | pattern `^@[A-Za-z0-9][A-Za-z0-9_.-]*$` |
 | `goals` | string[] | yes |  |
 | `status` | `active` \| `paused` \| `done` \| `archived` | yes |  |
+| `due` | string |  | pattern `^\d{4}-\d{2}-\d{2}$` |
+| `milestone` | string |  |  |
 | `owner` | string |  | pattern `^@[A-Za-z0-9][A-Za-z0-9_.-]*$` |
 | `labels` | string[] |  |  |
 | `decisions` | string[] |  |  |
