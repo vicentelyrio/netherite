@@ -6,11 +6,11 @@ title: "Rail: groups, shortcuts and Timeline"
 created: 2026-11-02T20:20:04Z
 created_by: "@vicentelyrio"
 project: PRJ-00010
-state: backlog
+state: done
 ---
 
 # Rail: groups, shortcuts and Timeline
 
-- [ ] Groups: Inbox / Goals, Projects, Knowledge / Stats, Tags, Timeline, Graph
-- [ ] Shortcuts ⌘I ⌘G ⌘P ⌘L ⌘D ⌘T ⌘Y ⇧⌘G and the tooltip with the key
-- [ ] Active marker and avatar footer as designed
+- [x] Groups: Inbox / Goals, Projects, Knowledge / Stats, Tags, Timeline, Graph
+- [x] Shortcuts ⌘I ⌘G ⌘P ⌘L ⌘D ⌘T ⌘Y ⇧⌘G and the tooltip with the key
+- [x] Active marker and avatar footer as designed

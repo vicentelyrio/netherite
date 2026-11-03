@@ -6,17 +6,17 @@ title: Timeline screen
 created: 2026-11-02T20:20:04Z
 created_by: "@vicentelyrio"
 project: PRJ-00010
-state: backlog
+state: done
 depends_on: [TASK-00059, TASK-00062]
 ---
 
 # Timeline screen
 
-- [ ] Route `/timeline`, rail item and shortcut
-- [ ] Goal, project and task rows; chevron expands a project to its tasks
-- [ ] Bars: active, on hold (hatched), planned (dashed), overdue, done with check, milestone flag
-- [ ] Decision diamonds from proposed to accepted, deprecated marker, open-for-N-days
-- [ ] Task lifespan: waiting line, active bar, held, overdue, days label
-- [ ] Today line and badge; zoom quarter, year, 2 years; toggles for tasks and decisions
-- [ ] Activity strip: commits per week
-- [ ] Empty state for a repo with no dates
+- [x] Route `/timeline`, rail item and shortcut
+- [x] Goal, project and task rows; chevron expands a project to its tasks
+- [x] Bars: active, on hold (hatched), planned (dashed), overdue, done with check, milestone flag
+- [x] Decision diamonds from proposed to accepted, deprecated marker, open-for-N-days
+- [x] Task lifespan: waiting line, active bar, held, overdue, days label
+- [x] Today line and badge; zoom quarter, year, 2 years; toggles for tasks and decisions
+- [x] Activity strip: commits per week
+- [x] Empty state for a repo with no dates

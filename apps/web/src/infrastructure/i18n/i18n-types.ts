@@ -844,6 +844,10 @@ type RootTranslation = {
 		 */
 		graph: string
 		/**
+		 * T​i​m​e​l​i​n​e
+		 */
+		timeline: string
+		/**
 		 * T​h​e​ ​c​o​n​f​i​g​ ​f​i​l​e​ ​i​s​ ​n​o​t​ ​v​a​l​i​d
 		 */
 		configInvalid: string
@@ -1383,6 +1387,120 @@ type RootTranslation = {
 			 */
 			commits: RequiredParams<'count'>
 		}
+	}
+	timeline: {
+		/**
+		 * T​i​m​e​l​i​n​e
+		 */
+		title: string
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​t​h​e​ ​t​i​m​e​l​i​n​e
+		 */
+		loadError: string
+		/**
+		 * N​o​ ​h​i​s​t​o​r​y​ ​t​o​ ​d​r​a​w
+		 */
+		noGit: string
+		/**
+		 * T​h​e​ ​t​i​m​e​l​i​n​e​ ​i​s​ ​r​e​a​d​ ​f​r​o​m​ ​g​i​t​.​ ​P​u​t​ ​t​h​i​s​ ​w​o​r​k​s​p​a​c​e​ ​i​n​ ​a​ ​r​e​p​o​s​i​t​o​r​y​ ​a​n​d​ ​c​o​m​m​i​t​.
+		 */
+		noGitText: string
+		/**
+		 * H​i​s​t​o​r​y​ ​i​s​ ​c​u​t​ ​s​h​o​r​t
+		 */
+		partial: string
+		/**
+		 * S​o​m​e​ ​d​a​t​e​s​ ​a​r​e​ ​o​n​l​y​ ​a​s​ ​e​a​r​l​y​ ​a​s​ ​t​h​e​ ​a​v​a​i​l​a​b​l​e​ ​h​i​s​t​o​r​y​ ​g​o​e​s​.
+		 */
+		partialText: string
+		empty: {
+			/**
+			 * N​o​t​h​i​n​g​ ​d​a​t​e​d​ ​y​e​t
+			 */
+			title: string
+			/**
+			 * G​o​a​l​s​,​ ​p​r​o​j​e​c​t​s​ ​a​n​d​ ​t​a​s​k​s​ ​s​h​o​w​ ​u​p​ ​h​e​r​e​ ​o​n​c​e​ ​t​h​e​y​ ​h​a​v​e​ ​b​e​e​n​ ​c​o​m​m​i​t​t​e​d​.
+			 */
+			text: string
+		}
+		zoom: {
+			/**
+			 * Z​o​o​m
+			 */
+			label: string
+			/**
+			 * F​i​t
+			 */
+			fit: string
+			/**
+			 * Q​u​a​r​t​e​r
+			 */
+			quarter: string
+			/**
+			 * Y​e​a​r
+			 */
+			year: string
+			/**
+			 * 2​ ​y​e​a​r​s
+			 */
+			twoYears: string
+		}
+		/**
+		 * T​a​s​k​s
+		 */
+		tasks: string
+		/**
+		 * D​e​c​i​s​i​o​n​s
+		 */
+		decisions: string
+		/**
+		 * T​o​d​a​y
+		 */
+		today: string
+		/**
+		 * S​h​o​w​ ​t​a​s​k​s
+		 */
+		showTasks: string
+		/**
+		 * H​i​d​e​ ​t​a​s​k​s
+		 */
+		hideTasks: string
+		/**
+		 * O​v​e​r​d​u​e
+		 */
+		overdue: string
+		/**
+		 * O​n​ ​h​o​l​d
+		 */
+		onHold: string
+		/**
+		 * P​l​a​n​n​e​d
+		 */
+		planned: string
+		/**
+		 * D​u​e​ ​{​d​a​t​e​}
+		 * @param {unknown} date
+		 */
+		due: RequiredParams<'date'>
+		/**
+		 * M​i​l​e​s​t​o​n​e​:​ ​{​n​a​m​e​}
+		 * @param {unknown} name
+		 */
+		milestone: RequiredParams<'name'>
+		/**
+		 * {​d​a​y​s​}​d
+		 * @param {number} days
+		 */
+		days: RequiredParams<'days'>
+		/**
+		 * o​p​e​n​ ​{​d​a​y​s​}​d
+		 * @param {number} days
+		 */
+		openFor: RequiredParams<'days'>
+		/**
+		 * C​o​m​m​i​t​s​ ​p​e​r​ ​w​e​e​k
+		 */
+		activity: string
 	}
 	editor: {
 		/**
@@ -2585,6 +2703,10 @@ export type TranslationFunctions = {
 		 */
 		graph: () => LocalizedString
 		/**
+		 * Timeline
+		 */
+		timeline: () => LocalizedString
+		/**
 		 * The config file is not valid
 		 */
 		configInvalid: () => LocalizedString
@@ -3108,6 +3230,116 @@ export type TranslationFunctions = {
 			 */
 			commits: (arg: { count: number }) => LocalizedString
 		}
+	}
+	timeline: {
+		/**
+		 * Timeline
+		 */
+		title: () => LocalizedString
+		/**
+		 * Could not load the timeline
+		 */
+		loadError: () => LocalizedString
+		/**
+		 * No history to draw
+		 */
+		noGit: () => LocalizedString
+		/**
+		 * The timeline is read from git. Put this workspace in a repository and commit.
+		 */
+		noGitText: () => LocalizedString
+		/**
+		 * History is cut short
+		 */
+		partial: () => LocalizedString
+		/**
+		 * Some dates are only as early as the available history goes.
+		 */
+		partialText: () => LocalizedString
+		empty: {
+			/**
+			 * Nothing dated yet
+			 */
+			title: () => LocalizedString
+			/**
+			 * Goals, projects and tasks show up here once they have been committed.
+			 */
+			text: () => LocalizedString
+		}
+		zoom: {
+			/**
+			 * Zoom
+			 */
+			label: () => LocalizedString
+			/**
+			 * Fit
+			 */
+			fit: () => LocalizedString
+			/**
+			 * Quarter
+			 */
+			quarter: () => LocalizedString
+			/**
+			 * Year
+			 */
+			year: () => LocalizedString
+			/**
+			 * 2 years
+			 */
+			twoYears: () => LocalizedString
+		}
+		/**
+		 * Tasks
+		 */
+		tasks: () => LocalizedString
+		/**
+		 * Decisions
+		 */
+		decisions: () => LocalizedString
+		/**
+		 * Today
+		 */
+		today: () => LocalizedString
+		/**
+		 * Show tasks
+		 */
+		showTasks: () => LocalizedString
+		/**
+		 * Hide tasks
+		 */
+		hideTasks: () => LocalizedString
+		/**
+		 * Overdue
+		 */
+		overdue: () => LocalizedString
+		/**
+		 * On hold
+		 */
+		onHold: () => LocalizedString
+		/**
+		 * Planned
+		 */
+		planned: () => LocalizedString
+		/**
+		 * Due {date}
+		 */
+		due: (arg: { date: unknown }) => LocalizedString
+		/**
+		 * Milestone: {name}
+		 */
+		milestone: (arg: { name: unknown }) => LocalizedString
+		/**
+		 * {days}d
+		 */
+		days: (arg: { days: number }) => LocalizedString
+		/**
+		 * open {days}d
+		 */
+		openFor: (arg: { days: number }) => LocalizedString
+		/**
+		 * Commits per week
+		 */
+		activity: () => LocalizedString
 	}
 	editor: {
 		/**

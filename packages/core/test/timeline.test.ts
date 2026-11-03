@@ -35,6 +35,15 @@ describe('timeline', () => {
     })
   })
 
+  test('a project done through its tasks finished when its last task did', async () => {
+    const only = Object.fromEntries(
+      Object.entries(files).filter(([path]) => !/TASK-0000[23]/.test(path)),
+    )
+    const w = await world(only)
+    const tl = timelineOf(w.repo, history, { now })
+    expect(tl.projects[0]).toMatchObject({ status: 'done', finished: '2026-01-20' })
+  })
+
   test('overdue and planned are decided from today', async () => {
     const w = await world(files)
     const tl = timelineOf(w.repo, history, { now })

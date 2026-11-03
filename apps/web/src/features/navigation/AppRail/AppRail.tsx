@@ -29,6 +29,7 @@ export function AppRail({ onSearch }: { readonly onSearch: () => void }) {
     knowledge: LL.navigation.knowledge(),
     stats: LL.navigation.stats(),
     tags: LL.navigation.tags(),
+    timeline: LL.navigation.timeline(),
     graph: LL.navigation.graph(),
   }
   const items: RailItem[] = railItems.map(({ to: _to, ...item }) => {

@@ -11,6 +11,7 @@ export const actions = {
   'go.knowledge': { label: 'Knowledge', keys: 'mod+l', aliases: ['mod+alt+l'] },
   'go.stats': { label: 'Stats', keys: 'mod+d', aliases: ['mod+alt+d'] },
   'go.tags': { label: 'Tags', keys: 'mod+t', aliases: ['mod+alt+t'] },
+  'go.timeline': { label: 'Timeline', keys: 'mod+y', aliases: ['mod+alt+y'] },
   'go.graph': { label: 'Graph', keys: 'mod+shift+g' },
 } as const satisfies Record<
   string,

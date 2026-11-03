@@ -18,6 +18,7 @@ import { ProjectPage, ProjectsEntryPage } from './pages/projects'
 import { ShellPage } from './pages/shell'
 import { StatsPage } from './pages/stats'
 import { TagsPage } from './pages/tags'
+import { TimelinePage } from './pages/timeline'
 
 function NotFoundScreen() {
   const { LL } = useI18nContext()
@@ -83,6 +84,11 @@ const decisions = createRoute({
   component: DecisionsPage,
 })
 const stats = createRoute({ getParentRoute: () => root, path: '/stats', component: StatsPage })
+const timeline = createRoute({
+  getParentRoute: () => root,
+  path: '/timeline',
+  component: TimelinePage,
+})
 const tags = createRoute({ getParentRoute: () => root, path: '/tags', component: TagsPage })
 const graph = createRoute({
   getParentRoute: () => root,
@@ -120,6 +126,7 @@ const routeTree = root.addChildren([
   decisions,
   stats,
   tags,
+  timeline,
   graph,
   item,
   preview,

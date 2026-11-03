@@ -38,6 +38,12 @@ export const railItems: ReadonlyArray<
     to: '/tags',
   },
   {
+    id: 'timeline',
+    icon: 'timeline',
+    group: 'insight',
+    to: '/timeline',
+  },
+  {
     id: 'graph',
     icon: 'hub',
     group: 'insight',

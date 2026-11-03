@@ -1077,3 +1077,23 @@ describe('the graph scrubber', () => {
     expect(screen.getByRole('button', { name: 'Play' })).toBeTruthy()
   })
 })
+
+describe('the timeline', () => {
+  test('draws goals and projects with their tasks under an open project', async () => {
+    renderApp('/timeline')
+    const chart = await screen.findByRole('region', { name: 'Timeline' })
+    expect(within(chart).getByRole('link', { name: 'Ship' })).toBeTruthy()
+    const open = within(chart).getByRole('link', { name: 'App' })
+    expect(open).toBeTruthy()
+    expect(within(chart).queryByRole('link', { name: 'Core' })).toBeNull()
+    fireEvent.click(within(chart).getByRole('button', { name: 'Show tasks' }))
+    expect(await within(chart).findByRole('link', { name: 'Core' })).toBeTruthy()
+    fireEvent.click(screen.getByRole('radio', { name: 'Quarter' }))
+    expect(await screen.findByRole('region', { name: 'Timeline' })).toBeTruthy()
+  })
+
+  test('is a rail item with its key', async () => {
+    renderApp('/')
+    expect(await screen.findByRole('button', { name: /Timeline/ })).toBeTruthy()
+  })
+})

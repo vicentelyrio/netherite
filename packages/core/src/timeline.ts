@@ -136,31 +136,56 @@ export const timelineOf = (
     }
   }
 
-  const all = {
-    goals: rows
-      .filter((r) => r.node.type === 'goal')
-      .map((r): TimelineGoal => {
-        const horizon = text(r.fields.horizon)
-        return { ...base(r), ...(horizon === undefined ? {} : { horizon }) }
+  // A project is done when its tasks are, whatever its own status says, so it finished when the
+  // last of them did; a goal when its last project did.
+  const latest = (days: ReadonlyArray<string | undefined>) =>
+    days
+      .filter((d): d is string => d !== undefined)
+      .sort()
+      .at(-1)
+  const withFinish = <T extends TimelineBase>(
+    item: T,
+    children: ReadonlyArray<TimelineBase>,
+  ): T => {
+    if (item.status !== 'done' || item.finished !== undefined) return item
+    const finished = latest(children.map((c) => c.finished))
+    return finished === undefined ? item : { ...item, finished }
+  }
+
+  const tasks = rows
+    .filter((r) => r.node.type === 'task')
+    .map(
+      (r): TimelineTask => ({
+        ...base(r),
+        ...(r.node.parent === undefined ? {} : { project: r.node.parent }),
       }),
-    projects: rows
-      .filter((r) => r.node.type === 'project')
-      .map((r): TimelineProject => {
-        const milestone = text(r.fields.milestone)
-        return {
+    )
+  const projects = rows
+    .filter((r) => r.node.type === 'project')
+    .map((r): TimelineProject => {
+      const milestone = text(r.fields.milestone)
+      return withFinish(
+        {
           ...base(r),
           ...(r.node.parent === undefined ? {} : { goal: r.node.parent }),
           ...(milestone === undefined ? {} : { milestone }),
-        }
-      }),
-    tasks: rows
-      .filter((r) => r.node.type === 'task')
-      .map(
-        (r): TimelineTask => ({
-          ...base(r),
-          ...(r.node.parent === undefined ? {} : { project: r.node.parent }),
-        }),
-      ),
+        },
+        tasks.filter((t) => t.project === r.node.id),
+      )
+    })
+  const goals = rows
+    .filter((r) => r.node.type === 'goal')
+    .map((r): TimelineGoal => {
+      const horizon = text(r.fields.horizon)
+      return withFinish(
+        { ...base(r), ...(horizon === undefined ? {} : { horizon }) },
+        projects.filter((p) => p.goal === r.node.id),
+      )
+    })
+  const all = {
+    goals,
+    projects,
+    tasks,
     decisions: rows
       .filter((r) => r.node.type === 'adr')
       .map((r): TimelineDecision => {

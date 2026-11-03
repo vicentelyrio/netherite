@@ -1,0 +1,21 @@
+.tl-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.tl-toggle {
+  height: 32px;
+  padding-inline: 12px;
+  border: 1px solid var(--nt-color-border, #33364f);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.tl-toggle[aria-pressed="true"] {
+  background: rgba(165, 167, 255, 0.16);
+  border-color: #a5a7ff;
+}
