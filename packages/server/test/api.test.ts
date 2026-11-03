@@ -707,6 +707,19 @@ describe('inbox', () => {
     )
   })
 
+  test('with git: graph nodes with a status say since when they have it', async () => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const { nodes } = yield* s.client.graph.graph({ query: {} })
+          const task = nodes.find((n) => n.id === 'TASK-00001')
+          expect(task?.since).toMatch(/^\d{4}-\d{2}-\d{2}T/)
+          expect(nodes.find((n) => n.type === 'adr')?.since).toBeUndefined()
+        }),
+      { git: true },
+    )
+  })
+
   test('agent activity since a time, grouped per item', async () => {
     await withServer((s) =>
       Effect.gen(function* () {

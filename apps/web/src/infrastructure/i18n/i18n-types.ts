@@ -186,6 +186,11 @@ type RootTranslation = {
 			 */
 			tooltipStatus: RequiredParams<'percent' | 'status'>
 			/**
+			 * s​i​n​c​e​ ​{​d​a​y​}
+			 * @param {unknown} day
+			 */
+			tooltipSince: RequiredParams<'day'>
+			/**
 			 * E​d​g​e​s
 			 */
 			edgesTitle: string
@@ -2618,6 +2623,10 @@ export type TranslationFunctions = {
 			 * {status} · {percent}%
 			 */
 			tooltipStatus: (arg: { percent: unknown, status: unknown }) => LocalizedString
+			/**
+			 * since {day}
+			 */
+			tooltipSince: (arg: { day: unknown }) => LocalizedString
 			/**
 			 * Edges
 			 */

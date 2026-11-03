@@ -13,6 +13,7 @@ import {
 } from '@netherite/ui'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { formatDay } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import {
   fitTo,
@@ -753,7 +754,11 @@ export function GraphView({
               `${LL.components.graph.tooltipStatus({
                 status: LL.components.graph.status[hover.status](),
                 percent: Math.round((hover.progress ?? 0) * 100),
-              })} · `}
+              })}${
+                hover.since === undefined
+                  ? ''
+                  : ` ${LL.components.graph.tooltipSince({ day: formatDay(hover.since) })}`
+              } · `}
             {LL.components.graph.links({
               count: graph.hasNode(hover.id) ? graph.degree(hover.id) : 0,
             })}

@@ -29,6 +29,7 @@ import {
   itemSummary,
   itemTypes,
   knowledgeRows,
+  lifecycles,
   link,
   lint,
   lintText,
@@ -357,7 +358,17 @@ const graph = (state: ServerState) =>
           )
         }
         const fresh = yield* state.freshness.get
-        return graphOf(state.repo, fresh)
+        // Since when each item has had its status comes from git; without it the graph still works.
+        const past = state.git === undefined ? undefined : yield* state.history.pipe(Effect.option)
+        const since = new Map<string, string>()
+        if (past !== undefined && past._tag === 'Some' && past.value !== undefined) {
+          const found = lifecycles(past.value, { states: state.repo.workspace.config.states })
+          for (const [id, life] of found) {
+            const at = life.finished ?? life.spans.at(-1)?.from ?? life.started ?? life.created
+            if (at !== undefined) since.set(id, at)
+          }
+        }
+        return graphOf(state.repo, fresh, since)
       }),
     ),
   )

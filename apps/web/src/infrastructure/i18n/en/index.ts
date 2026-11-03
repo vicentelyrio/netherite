@@ -49,6 +49,7 @@ const en = {
       statusFilter: 'Show',
       filters: { all: 'All', open: 'Open', done: 'Done' },
       tooltipStatus: '{status} · {percent}%',
+      tooltipSince: 'since {day}',
       edgesTitle: 'Edges',
       staleDoc: 'Stale doc',
       tooltipIn: ' · in {parent}',

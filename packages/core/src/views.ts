@@ -230,9 +230,14 @@ const standing = (
 
 /**
  * Every item and every typed link between them, for the graph view. Goals, projects and tasks carry
- * their status and progress, an item its parent (what it belongs to), and a doc whether it is stale.
+ * their status and progress (and since when, given the lifecycles), an item its parent (what it
+ * belongs to), and a doc whether it is stale.
  */
-export const graphOf = (repo: Repo, freshness?: ReadonlyMap<string, Freshness>) => {
+export const graphOf = (
+  repo: Repo,
+  freshness?: ReadonlyMap<string, Freshness>,
+  since?: ReadonlyMap<string, string>,
+) => {
   const items = repo.index.items()
   const idOf = new Map(items.map((i) => [i.path, i.id]))
   const categories = new Map(
@@ -257,6 +262,9 @@ export const graphOf = (repo: Repo, freshness?: ReadonlyMap<string, Freshness>) 
         ...(where === undefined ? {} : where),
         ...(parent === undefined ? {} : { parent: idOf.get(parent.to) as string }),
         ...(stale ? { stale: true } : {}),
+        ...(where === undefined || since?.get(item.id) === undefined
+          ? {}
+          : { since: since.get(item.id) as string }),
       },
     ]
   })

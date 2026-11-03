@@ -20,6 +20,8 @@ export interface GraphNodeData {
   readonly progress?: number | undefined
   /** A doc whose code changed in many commits since it was reviewed. */
   readonly stale?: boolean | undefined
+  /** When it reached its status, ISO 8601. */
+  readonly since?: string | undefined
 }
 
 export interface GraphEdgeData {

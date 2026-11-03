@@ -198,6 +198,8 @@ export const GraphNode = Schema.Struct({
   progress: Schema.optionalKey(N),
   /** What it belongs to. */
   parent: Schema.optionalKey(S),
+  /** When it reached this status, ISO 8601; needs git. */
+  since: Schema.optionalKey(S),
   /** A doc whose code changed in many commits since it was reviewed. */
   stale: Schema.optionalKey(Schema.Boolean),
 })
