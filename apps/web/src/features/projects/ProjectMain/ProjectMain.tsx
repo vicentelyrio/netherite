@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { boardQuery } from '@/infrastructure/query'
+import { KnowledgeView } from '../KnowledgeView'
 import { LinkedItems } from '../LinkedItems'
 import { TaskBoard } from '../TaskBoard'
 import type { ProjectViewId } from '../views'
@@ -26,5 +27,5 @@ export function ProjectMain({
   if (view === 'docs') {
     return <LinkedItems board={board} types={['doc', 'runbook']} empty={LL.projects.noDocs()} />
   }
-  return <LinkedItems board={board} types={['adr', 'context']} empty={LL.projects.noKnowledge()} />
+  return <KnowledgeView board={board} />
 }

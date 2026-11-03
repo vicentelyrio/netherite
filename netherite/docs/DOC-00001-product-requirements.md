@@ -74,7 +74,7 @@ Navigation rail: Search (⌘K), Inbox, Goals, Projects, Knowledge, Stats, Tags, 
 | **Inbox** | What a person should review: items created or changed in the working tree (typically by agents), proposed ADRs awaiting a decision, stale docs, orphans, lint errors, blocked tasks. |
 | **Goals overview** | Goals grouped by `area`, with progress rings and project cards. |
 | **Goal detail** | Horizon/due and progress, its projects, a focused graph. |
-| **Project** | Views: **Tasks** (kanban by state, drag to change state), **Docs** (docs and runbooks scoped to the project), **Knowledge** (all knowledge linked to the project), **Design** (design links and image assets referenced by the project). Mini graph. |
+| **Project** | Views: **Tasks** (kanban by state, drag to change state), **Docs** (docs and runbooks scoped to the project), **Knowledge** (all knowledge linked to the project, grouped by type with status, other projects, age and freshness). Mini graph. A **Design** view is not part of 2.0: the repo has no design data to show until assets are served by the API. |
 | **Task drawer** | Split view: source (CodeMirror with schema lint and git diff gutter) and rendered view. Checklist toggles write back to Markdown. Decisions row links ADRs. |
 | **Knowledge index** | All knowledge by type, with filters (type, status, project, tag), stale and orphan toggles, preview panel with backlinks and co-changed files. Empty state with starters. |
 | **Doc view** | Doc / ADR / context variants: stale banner with "Mark reviewed", supersession banner and lifecycle steps, AI-context toggle with token budget and sync targets. |
@@ -124,7 +124,7 @@ Agents can search, read, create, update, link and delete every item type, fetch 
 
 ## Open questions
 
-- The exact content of the project **Design** view needs a design pass.
+- The project **Design** view is left out of 2.0 (see Project, above); it returns when the API serves image assets.
 - Windows is best-effort in 2.0: the git adapter is tested on a Windows CI runner, and the app has a smoke test. Full parity is out of scope until reported.
 
 ## Decisions

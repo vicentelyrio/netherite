@@ -1937,6 +1937,54 @@ type RootTranslation = {
 		 * N​o​ ​d​o​c​s​ ​o​r​ ​r​u​n​b​o​o​k​s​ ​l​i​n​k​ ​t​o​ ​t​h​i​s​ ​p​r​o​j​e​c​t​.
 		 */
 		noDocs: string
+		knowledgeTable: {
+			/**
+			 * K​n​o​w​l​e​d​g​e​ ​l​i​n​k​e​d​ ​t​o​ ​t​h​e​ ​p​r​o​j​e​c​t
+			 */
+			label: string
+			/**
+			 * T​y​p​e
+			 */
+			type: string
+			/**
+			 * T​i​t​l​e
+			 */
+			title: string
+			/**
+			 * S​t​a​t​u​s
+			 */
+			status: string
+			/**
+			 * A​l​s​o​ ​l​i​n​k​e​d​ ​t​o
+			 */
+			linkedTo: string
+			/**
+			 * M​o​d​i​f​i​e​d
+			 */
+			modified: string
+			/**
+			 * F​r​e​s​h​n​e​s​s
+			 */
+			freshness: string
+			groups: {
+				/**
+				 * D​e​c​i​s​i​o​n​s
+				 */
+				adr: string
+				/**
+				 * C​o​n​t​e​x​t
+				 */
+				context: string
+				/**
+				 * D​o​c​s
+				 */
+				doc: string
+				/**
+				 * R​u​n​b​o​o​k​s
+				 */
+				runbook: string
+			}
+		}
 		/**
 		 * N​o​ ​d​e​c​i​s​i​o​n​s​ ​o​r​ ​c​o​n​t​e​x​t​ ​l​i​n​k​ ​t​o​ ​t​h​i​s​ ​p​r​o​j​e​c​t​.
 		 */
@@ -4216,6 +4264,54 @@ export type TranslationFunctions = {
 		 * No docs or runbooks link to this project.
 		 */
 		noDocs: () => LocalizedString
+		knowledgeTable: {
+			/**
+			 * Knowledge linked to the project
+			 */
+			label: () => LocalizedString
+			/**
+			 * Type
+			 */
+			type: () => LocalizedString
+			/**
+			 * Title
+			 */
+			title: () => LocalizedString
+			/**
+			 * Status
+			 */
+			status: () => LocalizedString
+			/**
+			 * Also linked to
+			 */
+			linkedTo: () => LocalizedString
+			/**
+			 * Modified
+			 */
+			modified: () => LocalizedString
+			/**
+			 * Freshness
+			 */
+			freshness: () => LocalizedString
+			groups: {
+				/**
+				 * Decisions
+				 */
+				adr: () => LocalizedString
+				/**
+				 * Context
+				 */
+				context: () => LocalizedString
+				/**
+				 * Docs
+				 */
+				doc: () => LocalizedString
+				/**
+				 * Runbooks
+				 */
+				runbook: () => LocalizedString
+			}
+		}
 		/**
 		 * No decisions or context link to this project.
 		 */

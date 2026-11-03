@@ -1,0 +1,98 @@
+/* Table columns: type, title (the rest), status, also linked to, modified, freshness. */
+.pkv {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #2a2c42;
+  border-radius: 10px;
+  background: #1d1f31;
+  overflow: hidden;
+  font-size: 14px;
+  color: #e8e9f3;
+}
+
+.pkv th,
+.pkv td {
+  padding: 0 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.pkv th:first-child,
+.pkv td:first-child {
+  padding-left: 16px;
+  width: 90px;
+}
+
+.pkv th[data-col="status"],
+.pkv td:nth-child(3) {
+  width: 130px;
+}
+
+.pkv th[data-col="linkedTo"],
+.pkv td:nth-child(4) {
+  width: 170px;
+}
+
+.pkv th[data-col="modified"],
+.pkv td:nth-child(5) {
+  width: 90px;
+}
+
+.pkv th[data-col="freshness"],
+.pkv td:nth-child(6) {
+  width: 130px;
+}
+
+.pkv thead th {
+  height: 32px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #969ab8;
+}
+
+.pkv-head th {
+  height: 34px;
+  padding-left: 16px;
+  background: #18192a;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e8e9f3;
+}
+
+.pkv-head span {
+  margin-left: 6px;
+  font-weight: 400;
+  color: #969ab8;
+}
+
+.pkv-row td {
+  height: 44px;
+  border-top: 1px solid #2a2c42;
+}
+
+.pkv-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pkv-title > span {
+  margin-left: 10px;
+  font-weight: 600;
+}
+
+.pkv-title > span[data-superseded] {
+  text-decoration: line-through;
+  color: #969ab8;
+}
+
+.pkv-id {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  color: #969ab8;
+  text-decoration: none;
+}
