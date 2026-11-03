@@ -140,6 +140,52 @@ type RootTranslation = {
 			 */
 			nodes: string
 			/**
+			 * S​t​a​t​u​s
+			 */
+			statusTitle: string
+			status: {
+				/**
+				 * B​a​c​k​l​o​g
+				 */
+				backlog: string
+				/**
+				 * I​n​ ​p​r​o​g​r​e​s​s
+				 */
+				progress: string
+				/**
+				 * O​n​ ​h​o​l​d
+				 */
+				hold: string
+				/**
+				 * D​o​n​e
+				 */
+				done: string
+			}
+			/**
+			 * S​h​o​w
+			 */
+			statusFilter: string
+			filters: {
+				/**
+				 * A​l​l
+				 */
+				all: string
+				/**
+				 * O​p​e​n
+				 */
+				open: string
+				/**
+				 * D​o​n​e
+				 */
+				done: string
+			}
+			/**
+			 * {​s​t​a​t​u​s​}​ ​·​ ​{​p​e​r​c​e​n​t​}​%
+			 * @param {unknown} percent
+			 * @param {unknown} status
+			 */
+			tooltipStatus: RequiredParams<'percent' | 'status'>
+			/**
 			 * E​d​g​e​s
 			 */
 			edgesTitle: string
@@ -1834,6 +1880,50 @@ export type TranslationFunctions = {
 			 * Nodes
 			 */
 			nodes: () => LocalizedString
+			/**
+			 * Status
+			 */
+			statusTitle: () => LocalizedString
+			status: {
+				/**
+				 * Backlog
+				 */
+				backlog: () => LocalizedString
+				/**
+				 * In progress
+				 */
+				progress: () => LocalizedString
+				/**
+				 * On hold
+				 */
+				hold: () => LocalizedString
+				/**
+				 * Done
+				 */
+				done: () => LocalizedString
+			}
+			/**
+			 * Show
+			 */
+			statusFilter: () => LocalizedString
+			filters: {
+				/**
+				 * All
+				 */
+				all: () => LocalizedString
+				/**
+				 * Open
+				 */
+				open: () => LocalizedString
+				/**
+				 * Done
+				 */
+				done: () => LocalizedString
+			}
+			/**
+			 * {status} · {percent}%
+			 */
+			tooltipStatus: (arg: { percent: unknown, status: unknown }) => LocalizedString
 			/**
 			 * Edges
 			 */

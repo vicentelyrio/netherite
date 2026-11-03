@@ -15,6 +15,11 @@ export interface GraphNodeData {
   readonly id: string
   readonly type: string
   readonly title: string
+  /** Goals, projects and tasks: where they stand, and how much is done (0 to 1). */
+  readonly status?: 'backlog' | 'progress' | 'hold' | 'done' | undefined
+  readonly progress?: number | undefined
+  /** A doc whose code changed in many commits since it was reviewed. */
+  readonly stale?: boolean | undefined
 }
 
 export interface GraphEdgeData {

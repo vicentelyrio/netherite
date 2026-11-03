@@ -147,13 +147,13 @@
   left: var(--gv-legend-x, 24px);
   bottom: var(--gv-legend-y, 24px);
   z-index: 3;
-  width: 372px;
+  width: 548px;
   background: rgba(24, 25, 42, 0.94);
   border: 1px solid #33364f;
   border-radius: 10px;
   padding: 12px 14px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   column-gap: 20px;
 }
 
@@ -296,4 +296,33 @@
 .gv:not(.gv--embedded) .gv-legend {
   --gv-legend-x: 96px;
   --gv-legend-y: 40px;
+}
+
+/* The All / Open / Done filter in the legend. */
+.gv-filter {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  margin-top: 8px;
+  background: #14152a;
+  border-radius: 6px;
+}
+.gv-filter label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  border-radius: 5px;
+  color: #969ab8;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.gv-filter label[data-on] {
+  background: #34365a;
+  color: #e8e9f3;
+}
+.gv-filter label:has(:focus-visible) {
+  outline: 1px solid #a5a7ff;
 }

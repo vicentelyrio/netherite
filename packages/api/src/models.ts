@@ -185,7 +185,20 @@ export const UnlinkQuery = { to: S, kind: RelationKind, baseHash: opt(S) }
 
 // ---- graph, lint, inbox, history, stats ------------------------------------------------
 
-export const GraphNode = Schema.Struct({ id: S, type: S, title: S, path: S })
+export const NodeStatus = Schema.Literals(['backlog', 'progress', 'hold', 'done'])
+export const GraphNode = Schema.Struct({
+  id: S,
+  type: S,
+  title: S,
+  path: S,
+  /** Goals, projects and tasks: where they stand, and how much is done (0 to 1). */
+  status: Schema.optionalKey(NodeStatus),
+  progress: Schema.optionalKey(N),
+  /** What it belongs to. */
+  parent: Schema.optionalKey(S),
+  /** A doc whose code changed in many commits since it was reviewed. */
+  stale: Schema.optionalKey(Schema.Boolean),
+})
 export const GraphEdge = Schema.Struct({ from: S, to: S, kind: EdgeKindName })
 export const Graph = Schema.Struct({
   nodes: Schema.Array(GraphNode),

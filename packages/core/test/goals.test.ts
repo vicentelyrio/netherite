@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { boardOf, goalDetail, goalRows, knowledgeRows, summaryOf } from '../src/index'
+import { boardOf, goalDetail, goalRows, graphOf, knowledgeRows, summaryOf } from '../src/index'
 import { cleanFiles, world } from './ops-helpers'
 
 const goal = (n: number, extra: string[] = [], title = `Goal ${n}`) => ({
@@ -195,5 +195,54 @@ describe('search snippets', () => {
     expect(snippet).toContain('needle')
     expect(snippetOf('nothing here', 'zzz')).toBeUndefined()
     expect(snippetOf('anything', '  ')).toBeUndefined()
+  })
+})
+
+describe('graph nodes carry status', () => {
+  const states = (w: Awaited<ReturnType<typeof world>>) =>
+    Object.fromEntries(
+      graphOf(w.repo)
+        .nodes.filter((n) => n.status !== undefined)
+        .map((n) => [n.id, [n.status, n.progress]]),
+    )
+
+  test('a task takes its status from the category of its state, a project and a goal from their tasks', async () => {
+    const w = await world({
+      ...cleanFiles(),
+      ...goal(2),
+      ...project(7, ['GOAL-00002']),
+      ...project(8, ['GOAL-00002']),
+      ...task(1, 'PRJ-00007', 'done'),
+      ...task(2, 'PRJ-00007', 'backlog'),
+      ...task(3, 'PRJ-00008', 'done'),
+    })
+    const found = states(w)
+    expect(found['TASK-00011']).toEqual(['done', 1])
+    expect(found['TASK-00012']).toEqual(['backlog', 0])
+    expect(found['PRJ-00007']).toEqual(['progress', 0.5])
+    expect(found['PRJ-00008']).toEqual(['done', 1])
+    expect(found['GOAL-00002']).toEqual(['progress', 2 / 3])
+  })
+
+  test('a paused project is on hold, an achieved goal is done, and a node names its parent', async () => {
+    const w = await world({
+      ...cleanFiles(),
+      ...task(1, 'PRJ-00007', 'backlog'),
+      '/repo/netherite/goals/GOAL-00002-g.md': `---\nid: GOAL-00002\naliases: [GOAL-00002]\ntype: goal\ntitle: G\nstatus: achieved\n---\n\n# G\n`,
+      '/repo/netherite/projects/PRJ-00007-p.md': `---\nid: PRJ-00007\naliases: [PRJ-00007]\ntype: project\ntitle: Project 7\ngoals: [GOAL-00002]\nstatus: paused\n---\n\n# P\n`,
+    })
+    const nodes = graphOf(w.repo).nodes
+    expect(states(w)['PRJ-00007']?.[0]).toBe('hold')
+    expect(nodes.find((n) => n.id === 'TASK-00011')?.parent).toBe('PRJ-00007')
+    expect(nodes.find((n) => n.id === 'PRJ-00007')?.parent).toBe('GOAL-00002')
+  })
+
+  test('docs and the rest have no status', async () => {
+    const w = await world({ ...cleanFiles(), ...goal(2) })
+    const others = graphOf(w.repo).nodes.filter(
+      (n) => !['goal', 'project', 'task'].includes(n.type),
+    )
+    expect(others.length).toBeGreaterThan(0)
+    expect(others.filter((n) => n.status !== undefined || n.progress !== undefined)).toEqual([])
   })
 })

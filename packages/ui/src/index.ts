@@ -11,6 +11,7 @@ export {
   graphMetrics,
   itemTypeNames,
   nodeSpec,
+  statusGlyph,
   statusNames,
   statusOfCategory,
 } from '@netherite/tokens'

@@ -15,6 +15,8 @@ export interface StatusGlyphProps {
   readonly label?: string
   /** Draw done items a little fainter, as the graph does. */
   readonly dimDone?: boolean
+  /** A colour of its own, for samples in a legend; otherwise the type's. */
+  readonly color?: string
 }
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value))
@@ -31,8 +33,9 @@ export function StatusGlyph({
   size = 12,
   label,
   dimDone,
+  color: own,
 }: StatusGlyphProps) {
-  const color = `var(--nt-color-type-${type})`
+  const color = own ?? `var(--nt-color-type-${type})`
   const ring =
     size >= statusGlyph.thickFrom ? 'var(--nt-status-ring-thick)' : 'var(--nt-status-ring-thin)'
   const percent = Math.round(clamp(progress) * 100)

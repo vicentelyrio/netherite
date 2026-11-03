@@ -797,6 +797,33 @@ describe('the graph view', () => {
     await waitFor(() => expect(at()).not.toBe(panned))
   })
 
+  test('goals, projects and tasks show their status, and the legend counts and filters by it', async () => {
+    renderApp('/graph')
+    const goal = await nodeButton('GOAL-00001')
+    const task = await nodeButton('TASK-00001')
+    expect(goal).toHaveAttribute('data-status', 'progress')
+    expect(task.getAttribute('data-status')).toMatch(/^(backlog|progress|hold|done)$/)
+    const legend = screen.getByRole('complementary', { name: 'Legend' })
+    expect(within(legend).getByRole('heading', { name: 'Status' })).toBeInTheDocument()
+    const filter = within(legend).getByRole('radiogroup', { name: 'Show' })
+    // "Done" fades everything that is not done; "All" brings it back.
+    await userEvent.click(within(filter).getByRole('radio', { name: 'Done' }))
+    expect(task.getAttribute('data-status') === 'done' ? '1' : task.getAttribute('opacity')).toBe(
+      task.getAttribute('data-status') === 'done' ? '1' : '0.12',
+    )
+    expect(goal.getAttribute('opacity')).toBe('0.12')
+    await userEvent.click(within(filter).getByRole('radio', { name: 'All' }))
+    expect(goal.getAttribute('opacity')).toBe('1')
+  })
+
+  test('hovering a task says its status and progress', async () => {
+    renderApp('/graph')
+    await userEvent.hover(await nodeButton('GOAL-00001'))
+    await waitFor(() =>
+      expect(document.querySelector('.gv-tooltip')).toHaveTextContent(/In progress · \d+%/),
+    )
+  })
+
   test('double-clicking a node, or pressing Enter on it, opens its page', async () => {
     renderApp('/graph')
     await userEvent.dblClick(await nodeButton('GOAL-00001'))

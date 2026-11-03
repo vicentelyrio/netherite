@@ -176,15 +176,89 @@ export const itemDetail = (
   }
 }
 
-/** Every item and every typed link between them, for the graph view. */
-export const graphOf = (repo: Repo) => {
+export type NodeStatus = 'backlog' | 'progress' | 'hold' | 'done'
+
+/** A task state's category decides its status (ADR-00021). */
+const statusOfCategory = {
+  todo: 'backlog',
+  active: 'progress',
+  blocked: 'hold',
+  done: 'done',
+} as const
+
+const ratio = (progress: { readonly done: number; readonly total: number } | undefined) =>
+  progress === undefined || progress.total <= 0 ? 0 : progress.done / progress.total
+
+/**
+ * Where a goal, project or task stands, and how much of it is done (0 to 1). A task's status comes
+ * from its state's category; a project's and a goal's from their own status and how many of their
+ * tasks are done. Other types have none.
+ */
+const standing = (
+  repo: Repo,
+  item: ScannedItem,
+  categories: ReadonlyMap<string, keyof typeof statusOfCategory>,
+): { readonly status: NodeStatus; readonly progress: number } | undefined => {
+  const f = fieldsOf(item)
+  const progress = repo.index.progress(item.path)
+  if (item.type === 'task') {
+    const category = typeof f.state === 'string' ? categories.get(f.state) : undefined
+    const status = statusOfCategory[category ?? 'todo']
+    return { status, progress: status === 'done' ? 1 : ratio(progress) }
+  }
+  if (item.type === 'project') {
+    const own = f.status
+    const all = ratio(progress)
+    const status: NodeStatus =
+      own === 'done' || own === 'archived'
+        ? 'done'
+        : own === 'paused'
+          ? 'hold'
+          : all === 1
+            ? 'done'
+            : 'progress'
+    return { status, progress: status === 'done' ? 1 : all }
+  }
+  if (item.type === 'goal') {
+    const own = f.status
+    const status: NodeStatus = own === 'achieved' ? 'done' : own === 'dropped' ? 'hold' : 'progress'
+    return { status, progress: status === 'done' ? 1 : ratio(progress) }
+  }
+  return undefined
+}
+
+/**
+ * Every item and every typed link between them, for the graph view. Goals, projects and tasks carry
+ * their status and progress, an item its parent (what it belongs to), and a doc whether it is stale.
+ */
+export const graphOf = (repo: Repo, freshness?: ReadonlyMap<string, Freshness>) => {
   const items = repo.index.items()
   const idOf = new Map(items.map((i) => [i.path, i.id]))
-  const nodes = items.flatMap((item) =>
-    item.id === undefined || item.type === undefined
-      ? []
-      : [{ id: item.id, type: item.type, title: item.title ?? item.id, path: item.path }],
+  const categories = new Map(
+    repo.workspace.config.states.map((st) => [
+      st.name,
+      st.category as keyof typeof statusOfCategory,
+    ]),
   )
+  const nodes = items.flatMap((item) => {
+    if (item.id === undefined || item.type === undefined) return []
+    const where = standing(repo, item, categories)
+    const parent = repo.index
+      .outgoing(item.path)
+      .find((e) => e.kind === 'belongs_to' && idOf.get(e.to) !== undefined)
+    const stale = freshness?.get(item.path)?.state === 'stale'
+    return [
+      {
+        id: item.id,
+        type: item.type,
+        title: item.title ?? item.id,
+        path: item.path,
+        ...(where === undefined ? {} : where),
+        ...(parent === undefined ? {} : { parent: idOf.get(parent.to) as string }),
+        ...(stale ? { stale: true } : {}),
+      },
+    ]
+  })
   const edges = items.flatMap((item) =>
     repo.index.outgoing(item.path).flatMap((edge) => {
       const from = idOf.get(edge.from)

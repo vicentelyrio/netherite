@@ -7,6 +7,8 @@ import {
   type ItemTypeName,
   itemTypeNames,
   nodeSpec,
+  StatusGlyph,
+  statusGlyph,
   typeLabels,
 } from '@netherite/ui'
 import { Link, useNavigate } from '@tanstack/react-router'
@@ -15,6 +17,7 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import {
   fitTo,
   type GraphData,
+  type GraphNodeData,
   type Live,
   layout,
   live,
@@ -88,6 +91,99 @@ function Shape({
     default:
       return <circle cx={x} cy={y} r={r} fill={fill} />
   }
+}
+
+type NodeStatus = NonNullable<GraphNodeData['status']>
+
+/** The pie's filled part: a wedge from the top, clockwise, for `share` of the circle. */
+const wedge = (x: number, y: number, r: number, share: number) => {
+  if (share >= 1) return `M${x - r},${y} a${r},${r} 0 1 0 ${2 * r},0 a${r},${r} 0 1 0 ${-2 * r},0`
+  const angle = share * Math.PI * 2
+  const ex = x + r * Math.sin(angle)
+  const ey = y - r * Math.cos(angle)
+  return `M${x},${y} L${x},${y - r} A${r},${r} 0 ${share > 0.5 ? 1 : 0} 1 ${ex},${ey} Z`
+}
+
+/**
+ * A goal, project or task with its status (ADR-00021), as the status glyph is drawn in HTML: a pie
+ * filled to the share done on a ring (dashed and grey on hold), a halo while in progress, solid
+ * with a check when done. Hue stays the type's.
+ */
+function StatusShape({
+  type,
+  status,
+  progress,
+  x,
+  y,
+  scale,
+}: {
+  readonly type: ItemTypeName
+  readonly status: NodeStatus
+  readonly progress: number
+  readonly x: number
+  readonly y: number
+  readonly scale: number
+}) {
+  const r = nodeSpec[type].radius * scale
+  const color = designColor.type[type]
+  const ring = r * 2 >= statusGlyph.thickFrom ? statusGlyph.ring.thick : statusGlyph.ring.thin
+  const inner = r - ring / 2
+  const fill = status === 'hold' ? statusGlyph.holdFill : color
+  if (status === 'done') {
+    const c = r * 0.72
+    return (
+      <g opacity={statusGlyph.doneOpacity}>
+        <circle cx={x} cy={y} r={r} fill={color} />
+        <path
+          d={`M${x - c * 0.5},${y + c * 0.05} L${x - c * 0.1},${y + c * 0.45} L${x + c * 0.55},${y - c * 0.4}`}
+          fill="none"
+          stroke={designColor.bg.shell}
+          strokeWidth={Math.max(1.2, r * 0.22)}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+    )
+  }
+  return (
+    <g>
+      {status === 'progress' && (
+        <circle
+          cx={x}
+          cy={y}
+          r={r + statusGlyph.halo.gap + statusGlyph.halo.width / 2}
+          fill="none"
+          stroke={color}
+          strokeWidth={statusGlyph.halo.width}
+        />
+      )}
+      <circle cx={x} cy={y} r={inner} fill={color} fillOpacity={statusGlyph.trackShare / 100} />
+      {progress > 0 && <path d={wedge(x, y, inner, progress)} fill={fill} />}
+      <circle
+        cx={x}
+        cy={y}
+        r={inner}
+        fill="none"
+        stroke={color}
+        strokeWidth={ring}
+        strokeDasharray={status === 'hold' ? `${ring * 2} ${ring * 1.4}` : undefined}
+      />
+    </g>
+  )
+}
+
+/** The amber dot on a doc whose code has moved on since it was reviewed. */
+function StaleDot({ x, y, r }: { readonly x: number; readonly y: number; readonly r: number }) {
+  return (
+    <circle
+      cx={x + r * 0.55 + 3}
+      cy={y - r * 0.55 - 3}
+      r={3.5}
+      fill={designColor.status.warning}
+      stroke={canvas}
+      strokeWidth={2}
+    />
+  )
 }
 
 /** A node's name on a dark pill, beside or under the node. */
@@ -228,6 +324,7 @@ export function GraphView({
   const [hiddenKinds, setHiddenKinds] = useState<ReadonlySet<string>>(
     () => new Set(data.edges.map((e) => e.kind).filter((k) => !styleOf(k).inDesign)),
   )
+  const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'done'>('all')
   const [focus, setFocus] = useState<string | undefined>(initialFocus)
   const [hover, setHover] = useState<Placed | undefined>()
   const [view, setView] = useState({ x: 0, y: 0, k: 1 })
@@ -316,6 +413,9 @@ export function GraphView({
   const active = hover?.id ?? focus
   const near = active === undefined ? undefined : neighbourhood(graph, active)
   const focusNear = focus === undefined ? undefined : neighbourhood(graph, focus)
+  const statusesPresent = (['backlog', 'progress', 'hold', 'done'] as const).filter((st) =>
+    placed.some((p) => p.status === st),
+  )
   const kindsPresent = [...new Set(shown.edges.map((e) => e.kind))].sort()
   const typesPresent = itemTypeNames.filter((t) => placed.some((p) => p.type === t))
 
@@ -358,6 +458,11 @@ export function GraphView({
     return next
   }
 
+  /** Does the node pass the All / Open / Done filter? Items with no status always do. */
+  const passes = (p: Placed) =>
+    p.status === undefined ||
+    statusFilter === 'all' ||
+    (statusFilter === 'done' ? p.status === 'done' : p.status !== 'done')
   const radius = (p: Placed) => nodeSpec[p.type as ItemTypeName].radius * nodeScale
   const dim = (id: string) =>
     near !== undefined && !near.has(id) && !(focusNear?.has(id) && id === focus)
@@ -381,6 +486,7 @@ export function GraphView({
     return { x: p.x, y: p.y + r + 5, anchor: 'middle' as const }
   }
 
+  const statusCount = (st: NodeStatus) => shown.nodes.filter((n) => n.status === st).length
   const typeCount = (t: string) => shown.nodes.filter((n) => n.type === t).length
   const kindCount = (k: string) => shown.edges.filter((e) => e.kind === k).length
   const showTypeLegend = legend !== 'none'
@@ -471,13 +577,15 @@ export function GraphView({
                 }
                 strokeWidth={s.width + (hot ? graphMetrics.hotWidthBoost : 0)}
                 strokeOpacity={
-                  hot
-                    ? graphMetrics.hotOpacity
-                    : warm
-                      ? graphMetrics.warmOpacity
-                      : typed
-                        ? 0.7
-                        : 0.45
+                  !passes(a) || !passes(b)
+                    ? statusGlyph.filteredOpacity
+                    : hot
+                      ? graphMetrics.hotOpacity
+                      : warm
+                        ? graphMetrics.warmOpacity
+                        : typed
+                          ? 0.7
+                          : 0.45
                 }
                 strokeDasharray={s.dash.length > 0 ? s.dash.join(' ') : undefined}
                 strokeLinecap="round"
@@ -498,8 +606,15 @@ export function GraphView({
                 aria-label={`${p.id} ${p.title}`}
                 aria-pressed={focus === p.id}
                 data-node={p.id}
+                data-status={p.status}
                 className="gv-node"
-                opacity={dim(p.id) ? graphMetrics.dimmedOpacity : 1}
+                opacity={
+                  !passes(p)
+                    ? statusGlyph.filteredOpacity
+                    : dim(p.id)
+                      ? graphMetrics.dimmedOpacity
+                      : 1
+                }
                 onPointerDown={(e) => startNodeDrag(p.id, e)}
                 onPointerUp={(e) => e.stopPropagation()}
                 onClick={(e) => {
@@ -561,7 +676,19 @@ export function GraphView({
                     />
                   )
                 )}
-                <Shape type={type} x={p.x} y={p.y} scale={nodeScale} />
+                {p.status !== undefined ? (
+                  <StatusShape
+                    type={type}
+                    status={p.status}
+                    progress={p.progress ?? 0}
+                    x={p.x}
+                    y={p.y}
+                    scale={nodeScale}
+                  />
+                ) : (
+                  <Shape type={type} x={p.x} y={p.y} scale={nodeScale} />
+                )}
+                {p.stale && <StaleDot x={p.x} y={p.y} r={r} />}
               </g>
             )
           })}
@@ -608,6 +735,11 @@ export function GraphView({
             {hover.id} {hover.title}
           </div>
           <div className="gv-tooltip-meta">
+            {hover.status !== undefined &&
+              `${LL.components.graph.tooltipStatus({
+                status: LL.components.graph.status[hover.status](),
+                percent: Math.round((hover.progress ?? 0) * 100),
+              })} · `}
             {LL.components.graph.links({
               count: graph.hasNode(hover.id) ? graph.degree(hover.id) : 0,
             })}
@@ -672,6 +804,42 @@ export function GraphView({
             <div className="gv-legend-row gv-legend-stale">
               <span className="gv-stale-dot" />
               <span className="gv-legend-name">{LL.components.graph.staleDoc()}</span>
+            </div>
+          </div>
+          <div>
+            <h2 className="gv-legend-h">{LL.components.graph.statusTitle()}</h2>
+            {statusesPresent.map((st) => (
+              <div key={st} className="gv-legend-row">
+                <span className="gv-glyph">
+                  <StatusGlyph
+                    type="task"
+                    status={st}
+                    progress={st === 'progress' ? 0.6 : st === 'hold' ? 0.4 : 0}
+                    size={12}
+                    color={designColor.graph.sample}
+                  />
+                </span>
+                <span className="gv-legend-name">{LL.components.graph.status[st]()}</span>
+                <span className="gv-count">{statusCount(st)}</span>
+              </div>
+            ))}
+            <div
+              className="gv-filter"
+              role="radiogroup"
+              aria-label={LL.components.graph.statusFilter()}
+            >
+              {(['all', 'open', 'done'] as const).map((f) => (
+                <label key={f} data-on={statusFilter === f || undefined}>
+                  <input
+                    type="radio"
+                    name="gv-status"
+                    className="nt-visually-hidden"
+                    checked={statusFilter === f}
+                    onChange={() => setStatusFilter(f)}
+                  />
+                  {LL.components.graph.filters[f]()}
+                </label>
+              ))}
             </div>
           </div>
         </aside>

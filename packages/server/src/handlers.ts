@@ -329,7 +329,12 @@ const search = (state: ServerState) =>
 
 const graph = (state: ServerState) =>
   HttpApiBuilder.group(NetheriteApi, 'graph', (handlers) =>
-    handlers.handle('graph', () => Effect.sync(() => graphOf(state.repo))),
+    handlers.handle('graph', () =>
+      Effect.gen(function* () {
+        const fresh = yield* state.freshness.get
+        return graphOf(state.repo, fresh)
+      }),
+    ),
   )
 
 const goals = (state: ServerState) =>

@@ -28,4 +28,6 @@ export const statusGlyph = {
   halo: { gap: 1.5, width: 1.5 },
   /** Done items step back a little so open work stands out. */
   doneOpacity: 0.8,
+  /** What the All / Open / Done filter fades the other nodes to. */
+  filteredOpacity: 0.12,
 } as const
