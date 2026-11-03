@@ -34,6 +34,8 @@ const commands = [
   [['renumber'], 'netherite renumber'],
   [['mcp'], 'netherite mcp'],
   [['context', 'sync'], 'netherite context sync'],
+  [['timeline'], 'netherite timeline'],
+  [['stats'], 'netherite stats'],
 ]
 
 const cli = () => {

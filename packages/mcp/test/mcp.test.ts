@@ -814,6 +814,8 @@ describe('resources', () => {
       const { resources } = await s.client.listResources()
       expect(resources.map((r) => r.uri)).toEqual([
         'netherite://context',
+        'netherite://timeline',
+        'netherite://stats',
         'netherite://schema/goal',
         'netherite://schema/project',
         'netherite://schema/task',
@@ -825,8 +827,37 @@ describe('resources', () => {
       const { resourceTemplates } = await s.client.listResourceTemplates()
       expect(resourceTemplates.map((t) => t.uriTemplate)).toEqual([
         'netherite://item/{id}',
+        'netherite://stats/{period}',
         'netherite://schema/{type}',
       ])
+    })
+  })
+
+  test('reads the timeline and stats from git history, and refuses without git', async () => {
+    const repo = await createGitRepo({ fixture: 'basic', history: basicHistory })
+    try {
+      const opened = await provide(openRepo(repo.root))
+      const git = await provide(workspaceGit(opened.workspace))
+      await withSession(
+        async (s) => {
+          const tl = await s.client.readResource({ uri: 'netherite://timeline' })
+          const timeline = JSON.parse((tl.contents[0] as { text: string }).text)
+          expect(timeline.tasks.length).toBeGreaterThan(0)
+          const st = await s.client.readResource({ uri: 'netherite://stats/year' })
+          expect(JSON.parse((st.contents[0] as { text: string }).text).period).toBe('year')
+          await expect(s.client.readResource({ uri: 'netherite://stats/decade' })).rejects.toThrow(
+            /Period must be/,
+          )
+        },
+        { existing: repo.root, git },
+      )
+    } finally {
+      await repo.cleanup()
+    }
+    await withSession(async (s) => {
+      await expect(s.client.readResource({ uri: 'netherite://timeline' })).rejects.toThrow(
+        /needs a workspace in a git repository/,
+      )
     })
   })
 

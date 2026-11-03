@@ -5,6 +5,7 @@ import { init } from './commands/init'
 import { type FailOn, lintCommand } from './commands/lint'
 import { mcpCommand } from './commands/mcp'
 import { newItem } from './commands/new'
+import { statsCommand, timelineCommand } from './commands/progress'
 import { renumberCommand } from './commands/renumber'
 import { serveCommand } from './commands/serve'
 import { type Env, type ExitCode, exitCodes } from './output'
@@ -262,9 +263,66 @@ export const makeCli = (env: Env, state: { code: ExitCode }, version = '0.0.0') 
     ),
   )
 
+  const timelineCmd = Command.make(
+    'timeline',
+    {
+      dir,
+      from: Flag.String('from').pipe(
+        Flag.optional,
+        Flag.withDescription('First day, such as 2026-01-01. Default: the earliest date.'),
+      ),
+      to: Flag.String('to').pipe(
+        Flag.optional,
+        Flag.withDescription('Last day. Default: today, or the latest due date.'),
+      ),
+      json: jsonFlag,
+    },
+    (c) =>
+      Effect.flatMap(
+        timelineCommand(env, {
+          dir: c.dir,
+          from: Option.getOrUndefined(c.from),
+          to: Option.getOrUndefined(c.to),
+          json: c.json,
+        }),
+        finish,
+      ),
+  ).pipe(
+    Command.withDescription(
+      'Goals, projects, tasks and decisions on one time axis, read from git history. Needs git.',
+    ),
+  )
+
+  const statsCmd = Command.make(
+    'stats',
+    {
+      dir,
+      period: Flag.String('period').pipe(
+        Flag.withDefault('30d'),
+        Flag.withDescription('30d, quarter or year.'),
+      ),
+      json: jsonFlag,
+    },
+    (c) => Effect.flatMap(statsCommand(env, c), finish),
+  ).pipe(
+    Command.withDescription(
+      'Tasks created and done, cycle time, goal areas and knowledge health for a period, against the one before. Needs git.',
+    ),
+  )
+
   return Command.make('netherite', serveFlags, serve).pipe(
     Command.withDescription('Typed, linked knowledge in your git repository.'),
-    Command.withSubcommands([initCmd, newCmd, lintCmd, renumberCmd, mcpCmd, contextCmd, serveCmd]),
+    Command.withSubcommands([
+      initCmd,
+      newCmd,
+      lintCmd,
+      renumberCmd,
+      mcpCmd,
+      contextCmd,
+      timelineCmd,
+      statsCmd,
+      serveCmd,
+    ]),
   )
 }
 

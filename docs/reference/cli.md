@@ -149,3 +149,34 @@ FLAGS
   --json              Print machine-readable JSON instead of text.
 ```
 
+## `netherite timeline`
+
+```text
+DESCRIPTION
+  Goals, projects, tasks and decisions on one time axis, read from git history. Needs git.
+
+USAGE
+  netherite timeline [flags]
+
+FLAGS
+  --dir, -C string    Folder to work in (default: the current one). The workspace is found by walking up from it.
+  --from string       First day, such as 2026-01-01. Default: the earliest date.
+  --to string         Last day. Default: today, or the latest due date.
+  --json              Print machine-readable JSON instead of text.
+```
+
+## `netherite stats`
+
+```text
+DESCRIPTION
+  Tasks created and done, cycle time, goal areas and knowledge health for a period, against the one before. Needs git.
+
+USAGE
+  netherite stats [flags]
+
+FLAGS
+  --dir, -C string    Folder to work in (default: the current one). The workspace is found by walking up from it.
+  --period string     30d, quarter or year.
+  --json              Print machine-readable JSON instead of text.
+```
+

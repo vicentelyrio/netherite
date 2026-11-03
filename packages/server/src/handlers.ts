@@ -35,6 +35,7 @@ import {
   markReviewed,
   type OpResult,
   pathMap,
+  periodStats,
   progressSeries,
   projectRows,
   readActivity,
@@ -683,35 +684,53 @@ const timeline = (state: ServerState) =>
 
 const stats = (state: ServerState) =>
   HttpApiBuilder.group(NetheriteApi, 'stats', (handlers) =>
-    handlers.handle('stats', ({ query }) =>
-      withHistory(state, (h) => {
-        const date = /^\d{4}-\d{2}-\d{2}$/
-        for (const key of ['from', 'to'] as const) {
-          const v = query[key]
-          if (v !== undefined && !date.test(v))
-            return Effect.fail(invalid([key], 'Must be a date like 2026-03-05'))
-        }
-        const range = {
-          ...(query.from ? { from: query.from } : {}),
-          ...(query.to ? { to: query.to } : {}),
-        }
-        const done = new Set(
-          state.repo.workspace.config.states
-            .filter((s) => s.category === 'done')
-            .map((s) => s.name),
-        )
-        const series = progressSeries(h, done, range)
-        return Effect.succeed({
-          partial: h.partial,
-          completions: completionsByWeek(h, done, range),
-          adrs: adrActivityByWeek(h, range),
-          progress: {
-            projects: Object.fromEntries(series.projects),
-            goals: Object.fromEntries(series.goals),
-          },
-        })
-      }),
-    ),
+    handlers
+      .handle('period', ({ query }) =>
+        Effect.gen(function* () {
+          const period = query.period ?? '30d'
+          if (period !== '30d' && period !== 'quarter' && period !== 'year')
+            return yield* invalid(['period'], 'Use 30d, quarter or year')
+          const fresh = yield* state.freshness.get
+          return yield* withHistory(state, (h) =>
+            Effect.succeed(
+              periodStats(state.repo, h, {
+                period,
+                now: new Date().toISOString(),
+                ...(fresh === undefined ? {} : { freshness: fresh }),
+              }),
+            ),
+          )
+        }),
+      )
+      .handle('stats', ({ query }) =>
+        withHistory(state, (h) => {
+          const date = /^\d{4}-\d{2}-\d{2}$/
+          for (const key of ['from', 'to'] as const) {
+            const v = query[key]
+            if (v !== undefined && !date.test(v))
+              return Effect.fail(invalid([key], 'Must be a date like 2026-03-05'))
+          }
+          const range = {
+            ...(query.from ? { from: query.from } : {}),
+            ...(query.to ? { to: query.to } : {}),
+          }
+          const done = new Set(
+            state.repo.workspace.config.states
+              .filter((s) => s.category === 'done')
+              .map((s) => s.name),
+          )
+          const series = progressSeries(h, done, range)
+          return Effect.succeed({
+            partial: h.partial,
+            completions: completionsByWeek(h, done, range),
+            adrs: adrActivityByWeek(h, range),
+            progress: {
+              projects: Object.fromEntries(series.projects),
+              goals: Object.fromEntries(series.goals),
+            },
+          })
+        }),
+      ),
   )
 
 const events = (state: ServerState) =>

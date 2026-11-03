@@ -29,7 +29,17 @@ describe('the documentation', () => {
   })
 
   test('every `netherite <command>` in a code block is a command the program has', () => {
-    const known = new Set(['init', 'new', 'lint', 'renumber', 'mcp', 'context', 'serve'])
+    const known = new Set([
+      'init',
+      'new',
+      'lint',
+      'renumber',
+      'mcp',
+      'context',
+      'serve',
+      'timeline',
+      'stats',
+    ])
     const unknown: string[] = []
     for (const page of pages) {
       const blocks = [...text(page).matchAll(/```(?:sh|bash|text)?\n([\s\S]*?)```/g)]

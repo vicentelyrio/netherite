@@ -716,6 +716,41 @@ describe('usage', () => {
   })
 })
 
+describe('timeline and stats', () => {
+  test('print the same data as the API, as JSON or as text', async () => {
+    const repo = await createGitRepo({ fixture: 'basic', history: basicHistory })
+    try {
+      const timeline = json<{ tasks: unknown[]; activity: unknown[]; today: string }>(
+        await cli(repo.root, 'timeline', '--json'),
+      )
+      expect(timeline.tasks.length).toBeGreaterThan(0)
+      expect(timeline.activity.length).toBeGreaterThan(0)
+      const text = await cli(repo.root, 'timeline')
+      expect(text.code).toBe(0)
+      expect(text.stdout[0]).toMatch(/^Timeline \d{4}-\d{2}-\d{2} to /)
+
+      const stats = json<{ period: string; kpis: { commits: { value: number } } }>(
+        await cli(repo.root, 'stats', '--period', 'year', '--json'),
+      )
+      expect(stats.period).toBe('year')
+      expect(stats.kpis.commits.value).toBeGreaterThan(0)
+      expect((await cli(repo.root, 'stats')).stdout[0]).toMatch(/^Stats .* \(30d\)$/)
+    } finally {
+      await repo.cleanup()
+    }
+  })
+
+  test('refuse bad input and workspaces without git', async () => {
+    await temp(async (dir) => {
+      await cli(dir, 'init')
+      expect((await cli(dir, 'timeline')).code).toBe(2)
+      expect((await cli(dir, 'stats')).code).toBe(2)
+      expect((await cli(dir, 'stats', '--period', 'decade')).code).toBe(2)
+      expect((await cli(dir, 'timeline', '--from', 'soon')).code).toBe(2)
+    })
+  })
+})
+
 describe('the built program', () => {
   const bin = join(__dirname, '..', 'dist', 'bin.mjs')
 

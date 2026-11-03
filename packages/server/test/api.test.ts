@@ -739,6 +739,31 @@ describe('inbox', () => {
 })
 
 describe('history and stats', () => {
+  test('period stats need git, take a period, and compare with the one before', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const none = yield* failure(s.client.stats.period({ query: {} }))
+        expect(none._tag).toBe('Unavailable')
+      }),
+    )
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const month = yield* s.client.stats.period({ query: {} })
+          expect(month.period).toBe('30d')
+          expect(month.kpis.commits.value).toBeGreaterThan(0)
+          expect(month.kpis.commits.previous).toBe(0)
+          expect(month.heat.days.reduce((n, d) => n + d.count, 0)).toBeGreaterThan(0)
+          expect(month.knowledge.decisions).toMatchObject({ accepted: 2 })
+          const year = yield* s.client.stats.period({ query: { period: 'year' } })
+          expect(year.throughput.length).toBeGreaterThanOrEqual(1)
+          const bad = yield* failure(s.client.stats.period({ query: { period: 'decade' } }))
+          expect(bad).toMatchObject({ _tag: 'Invalid', issues: [{ path: ['period'] }] })
+        }),
+      { git: true },
+    )
+  })
+
   test('the timeline needs git, takes a window, and counts commits per week', async () => {
     await withServer((s) =>
       Effect.gen(function* () {

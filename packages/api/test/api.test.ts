@@ -64,6 +64,7 @@ describe('the API definition', () => {
         '/api/projects/{id}/board',
         '/api/search',
         '/api/stats',
+        '/api/stats/period',
         '/api/tags',
         '/api/tags/rename',
         '/api/timeline',

@@ -364,6 +364,44 @@ export const Timeline = Schema.Struct({
 })
 export const TimelineQuery = { from: opt(S), to: opt(S) }
 
+const Delta = Schema.Struct({ value: N, previous: opt(N) })
+export const Period = Schema.Literals(['30d', 'quarter', 'year'])
+export const PeriodStats = Schema.Struct({
+  period: Period,
+  from: S,
+  to: S,
+  kpis: Schema.Struct({
+    created: Delta,
+    done: Delta,
+    cycleDays: Schema.NullOr(Delta),
+    commits: Delta,
+    staleDocs: Delta,
+  }),
+  throughput: Schema.Array(Schema.Struct({ start: S, created: N, done: N })),
+  areas: Schema.Array(
+    Schema.Struct({
+      area: S,
+      goals: N,
+      share: N,
+      gained: N,
+      achieved: N,
+      idle: N,
+    }),
+  ),
+  projects: Schema.Array(Schema.Struct({ id: S, title: S, done: N, cycleDays: Schema.NullOr(N) })),
+  heat: Schema.Struct({
+    from: S,
+    to: S,
+    days: Schema.Array(Schema.Struct({ date: S, count: N })),
+  }),
+  knowledge: Schema.Struct({
+    freshness: Schema.Struct({ fresh: N, drifting: N, stale: N, notTracked: N }),
+    decisions: Schema.Record(S, N),
+  }),
+  approximate: Schema.Boolean,
+})
+export const PeriodStatsQuery = { period: opt(S) }
+
 export const Health = Schema.Struct({
   name: Schema.Literal('netherite'),
   version: S,

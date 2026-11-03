@@ -29,12 +29,14 @@ import {
   markReviewed,
   type OpEnv,
   type OpResult,
+  periodStats,
   type Repo,
   readHistory,
   type ScannedItem,
   searchItems,
   setState,
   summarize,
+  timelineOf,
   toggleChecklistItem,
   unlink,
   updateItem,
@@ -554,6 +556,20 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           description: 'Curated context for agents, within the token budget.',
           mimeType: 'text/markdown',
         },
+        {
+          uri: 'netherite://timeline',
+          name: 'Timeline',
+          description:
+            'Goals, projects, tasks and decisions on one time axis, with holds, due dates and overdue flags. Needs git.',
+          mimeType: 'application/json',
+        },
+        {
+          uri: 'netherite://stats',
+          name: 'Stats (30 days)',
+          description:
+            'Tasks created and done, cycle time, goal areas and knowledge health over 30 days, against the 30 before. Needs git.',
+          mimeType: 'application/json',
+        },
         ...itemTypes.map((type) => ({
           uri: `netherite://schema/${type}`,
           name: `Schema: ${type}`,
@@ -571,6 +587,12 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           mimeType: 'text/markdown',
         },
         {
+          uriTemplate: 'netherite://stats/{period}',
+          name: 'Stats',
+          description: 'The same for a period: 30d, quarter or year. Needs git.',
+          mimeType: 'application/json',
+        },
+        {
           uriTemplate: 'netherite://schema/{type}',
           name: 'Schema',
           description: 'JSON Schema for an item type.',
@@ -581,7 +603,7 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
     server.setRequestHandler(ReadResourceRequestSchema, (request) =>
       serial(async () => {
         const uri = request.params.uri
-        const parsed = /^netherite:\/\/(item|schema|context)(?:\/(.+))?$/.exec(uri)
+        const parsed = /^netherite:\/\/(item|schema|context|timeline|stats)(?:\/(.+))?$/.exec(uri)
         if (parsed === null) throw new McpError(ErrorCode.InvalidParams, `Unknown resource: ${uri}`)
         const [, kind, rest] = parsed
         if (kind === 'context') {
@@ -594,6 +616,32 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
               ? `\n\n<!-- Left out for the token budget: ${bundle.omitted.map((o) => o.id).join(', ')} -->\n`
               : ''
           return { contents: [{ uri, mimeType: 'text/markdown', text: bundle.text + note }] }
+        }
+        if (kind === 'timeline' || kind === 'stats') {
+          const past = await history()
+          if (past === undefined)
+            throw new McpError(
+              ErrorCode.InvalidRequest,
+              'This needs a workspace in a git repository.',
+            )
+          const now = new Date().toISOString()
+          let data: unknown
+          if (kind === 'timeline') {
+            data = timelineOf(repo, past, { now })
+          } else {
+            const period = rest ?? '30d'
+            if (period !== '30d' && period !== 'quarter' && period !== 'year')
+              throw new McpError(ErrorCode.InvalidParams, 'Period must be 30d, quarter or year')
+            const fresh = await freshness()
+            data = periodStats(repo, past, {
+              period,
+              now,
+              ...(fresh === undefined ? {} : { freshness: fresh }),
+            })
+          }
+          return {
+            contents: [{ uri, mimeType: 'application/json', text: JSON.stringify(data, null, 2) }],
+          }
         }
         if (kind === 'schema') {
           if (rest === undefined || !(rest in schemas))

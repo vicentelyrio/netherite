@@ -151,7 +151,10 @@ The curated context for agents: context items marked for inclusion, highest prio
 | URI | What |
 | --- | --- |
 | `netherite://context` | Curated context for agents, within the token budget. |
+| `netherite://timeline` | Goals, projects, tasks and decisions on one time axis, with holds, due dates and overdue flags. Needs git. |
+| `netherite://stats` | Tasks created and done, cycle time, goal areas and knowledge health over 30 days, against the 30 before. Needs git. |
 | `netherite://item/{id}` | The raw Markdown file of an item, by ID. |
+| `netherite://stats/{period}` | The same for a period: 30d, quarter or year. Needs git. |
 | `netherite://schema/{type}` | JSON Schema for an item type. |
 
 The schema of each item type is read at `netherite://schema/<type>` (goal, project, task, adr, doc, context, runbook); see the [schema reference](schemas.md).

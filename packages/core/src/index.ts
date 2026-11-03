@@ -137,6 +137,13 @@ export { applyMarkedBlock, type Markers, renderMarkedBlock } from './marked-bloc
 export * from './ops'
 export { type ParseOptions, parseFiles, type SourceFile } from './parse-pool'
 export {
+  type Delta,
+  type Period,
+  type PeriodOptions,
+  type PeriodStats,
+  periodStats,
+} from './period-stats'
+export {
   createResolver,
   lookupKeys,
   type MutableResolver,

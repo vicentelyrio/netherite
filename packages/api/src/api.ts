@@ -28,6 +28,8 @@ import {
   LintReport,
   LintTextPayload,
   ListQuery,
+  PeriodStats,
+  PeriodStatsQuery,
   ProjectList,
   RenameTagPayload,
   RenameTagResult,
@@ -220,6 +222,11 @@ export class StatsGroup extends HttpApiGroup.make('stats').add(
   HttpApiEndpoint.get('stats', '/stats', {
     query: StatsQuery,
     success: Stats,
+    error: [Invalid, Unavailable, Failure],
+  }),
+  HttpApiEndpoint.get('period', '/stats/period', {
+    query: PeriodStatsQuery,
+    success: PeriodStats,
     error: [Invalid, Unavailable, Failure],
   }),
 ) {}

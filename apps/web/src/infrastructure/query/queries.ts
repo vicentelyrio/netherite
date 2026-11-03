@@ -149,6 +149,13 @@ export const statsQuery = (api: Api) =>
     retry: false,
   })
 
+export const periodStatsQuery = (api: Api, period: '30d' | 'quarter' | 'year' = '30d') =>
+  queryOptions({
+    queryKey: [...keys.stats, 'period', period] as const,
+    queryFn: () => api.call((c) => c.stats.period({ query: { period } })),
+    retry: false,
+  })
+
 export const timelineQuery = (api: Api, range: { from?: string; to?: string } = {}) =>
   queryOptions({
     queryKey: [...keys.timeline, range] as const,
