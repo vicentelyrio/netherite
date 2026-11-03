@@ -7,6 +7,7 @@ created: 2026-11-01T23:50:43Z
 created_by: "@vicentelyrio"
 goals: [GOAL-00001]
 status: active
+due: 2026-11-01
 decisions: [ADR-00007, ADR-00009]
 ---
 
