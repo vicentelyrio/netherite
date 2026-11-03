@@ -87,7 +87,10 @@ export const goalQuery = (api: Api, id: string) =>
   })
 
 export const graphQuery = (api: Api) =>
-  queryOptions({ queryKey: keys.graph, queryFn: () => api.call((c) => c.graph.graph()) })
+  queryOptions({
+    queryKey: keys.graph,
+    queryFn: () => api.call((c) => c.graph.graph({ query: {} })),
+  })
 
 export const projectsQuery = (api: Api) =>
   queryOptions({ queryKey: keys.projects, queryFn: () => api.call((c) => c.projects.list()) })

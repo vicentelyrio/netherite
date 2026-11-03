@@ -18,6 +18,7 @@ import {
   fieldsOf,
   goalDetail,
   goalRows,
+  graphAsOf,
   graphOf,
   groupActivity,
   type History,
@@ -329,8 +330,19 @@ const search = (state: ServerState) =>
 
 const graph = (state: ServerState) =>
   HttpApiBuilder.group(NetheriteApi, 'graph', (handlers) =>
-    handlers.handle('graph', () =>
+    handlers.handle('graph', ({ query }) =>
       Effect.gen(function* () {
+        if (query.asOf !== undefined) {
+          const asOf = query.asOf
+          if (
+            !/^\d{4}-\d{2}-\d{2}(T[\d:.]+(Z|[+-]\d{2}:\d{2})?)?$/u.test(asOf) ||
+            Number.isNaN(Date.parse(asOf))
+          )
+            return yield* invalid(['asOf'], 'Use a date such as 2026-03-01')
+          return yield* withHistory(state, (h) =>
+            Effect.succeed(graphAsOf(state.repo, h, { asOf, now: new Date().toISOString() })),
+          )
+        }
         const fresh = yield* state.freshness.get
         return graphOf(state.repo, fresh)
       }),

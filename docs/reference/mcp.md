@@ -26,6 +26,7 @@ One item in full: its fields, text, links in both directions, progress, freshnes
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | string | yes | Item ID, such as TASK-00042. |
+| `as_of` | string |  | A date (2026-03-01): show the state as it stood then, rebuilt from git history. Needs git. |
 
 ### `list`
 
@@ -39,6 +40,7 @@ Items matching filters, in ID order. Use it to browse; use `search` to find by t
 | `tag` | string |  | Only items with this tag or label. |
 | `limit` | integer |  |  |
 | `offset` | integer |  |  |
+| `as_of` | string |  | A date (2026-03-01): show the state as it stood then, rebuilt from git history. Needs git. |
 
 ### `create`
 

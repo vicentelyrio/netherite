@@ -12,6 +12,7 @@ import {
   GoalDetail,
   GoalList,
   Graph,
+  GraphQuery,
   Health,
   Inbox,
   InboxQuery,
@@ -128,7 +129,11 @@ export class SearchGroup extends HttpApiGroup.make('search').add(
 ) {}
 
 export class GraphGroup extends HttpApiGroup.make('graph').add(
-  HttpApiEndpoint.get('graph', '/graph', { success: Graph }),
+  HttpApiEndpoint.get('graph', '/graph', {
+    query: GraphQuery,
+    success: Graph,
+    error: [Invalid, Unavailable, Failure],
+  }),
 ) {}
 
 export class GoalsGroup extends HttpApiGroup.make('goals').add(

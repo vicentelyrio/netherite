@@ -200,9 +200,16 @@ export const GraphNode = Schema.Struct({
   stale: Schema.optionalKey(Schema.Boolean),
 })
 export const GraphEdge = Schema.Struct({ from: S, to: S, kind: EdgeKindName })
+export const GraphQuery = {
+  /** Rebuild the graph as it stood at this date (`YYYY-MM-DD` or ISO 8601). Needs git. */
+  asOf: opt(S),
+}
 export const Graph = Schema.Struct({
   nodes: Schema.Array(GraphNode),
   edges: Schema.Array(GraphEdge),
+  /** Set when the graph is a past state: the moment it shows, and whether history is incomplete. */
+  asOf: Schema.optionalKey(S),
+  approximate: Schema.optionalKey(Schema.Boolean),
 })
 
 export const Severity = Schema.Literals(['error', 'warning', 'info'])

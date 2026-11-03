@@ -17,6 +17,7 @@ export {
   type ReadActivityOptions,
   readActivity,
 } from './activity'
+export { type AsOfGraph, type AsOfNode, type AsOfOptions, graphAsOf } from './asof'
 export {
   type CoChange,
   type CoChanged,

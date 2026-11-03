@@ -731,6 +731,46 @@ describe('lint and context (more)', () => {
     }
   })
 
+  test('as_of rebuilds the state at a date from git history', async () => {
+    const repo = await createGitRepo({ fixture: 'basic', history: basicHistory })
+    try {
+      const opened = await provide(openRepo(repo.root))
+      const git = await provide(workspaceGit(opened.workspace))
+      await withSession(
+        async (s) => {
+          const before = (await s.call('list', { as_of: '2000-01-01' })).data
+          expect(before).toMatchObject({ total: 0, items: [], approximate: false })
+          const live = (await s.call('list', { limit: 500 })).data
+          const after = (await s.call('list', { as_of: '2999-01-01', limit: 500 })).data
+          expect(after.total).toBe(live.total)
+          const tasks = (await s.call('list', { as_of: '2999-01-01', type: 'task' })).data
+          expect(tasks.items.every((i: any) => i.type === 'task')).toBe(true)
+
+          const gone = (await s.call('get', { id: 'DOC-00001', as_of: '2000-01-01' })).data
+          expect(gone).toMatchObject({ id: 'DOC-00001', existed: false, events: [] })
+          const here = (await s.call('get', { id: 'DOC-00001', as_of: '2999-01-01' })).data
+          expect(here.existed).toBe(true)
+
+          const bad = await s.call('list', { as_of: 'soon' })
+          expect(bad.isError).toBe(true)
+          const tagged = await s.call('list', { as_of: '2999-01-01', tag: 'x' })
+          expect(tagged.isError).toBe(true)
+        },
+        { existing: repo.root, git },
+      )
+    } finally {
+      await repo.cleanup()
+    }
+  })
+
+  test('as_of without git says so', async () => {
+    await withSession(async (s) => {
+      const result = await s.call('list', { as_of: '2026-01-01' })
+      expect(result.isError).toBe(true)
+      expect(result.data.error.type).toBe('Unavailable')
+    })
+  })
+
   test('without git there is no freshness', async () => {
     await withSession(async (s) => {
       expect(

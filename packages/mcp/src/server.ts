@@ -16,10 +16,13 @@ import {
   type EdgeKind,
   freshnessCache,
   type GitRepository,
+  graphAsOf,
+  type History,
   type ItemType,
   itemDetail,
   itemJsonSchemas,
   itemTypes,
+  lifecycles,
   link,
   lint,
   listItems,
@@ -27,6 +30,7 @@ import {
   type OpEnv,
   type OpResult,
   type Repo,
+  readHistory,
   type ScannedItem,
   searchItems,
   setState,
@@ -99,6 +103,38 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
     // Freshness covers the whole index, so it is computed on demand and kept until something changes.
     const cache = freshnessCache(repo, options.git)
     const freshness = () => run(cache.get)
+
+    // The git history is read once per commit, for the `as_of` views.
+    let cachedHistory: { head: string | undefined; history: History } | undefined
+    const history = () =>
+      run(
+        Effect.gen(function* () {
+          const git = options.git
+          if (git === undefined) return undefined
+          const head = yield* git.head
+          const hit = cachedHistory
+          if (hit !== undefined && hit.head === head) return hit.history
+          const read = yield* readHistory(git, repo.workspace.root, {
+            contentRoot: repo.contentRoot,
+          })
+          cachedHistory = { head, history: read }
+          return read
+        }),
+      )
+    const asOfProblem = (value: string | undefined) =>
+      value !== undefined &&
+      (!/^\d{4}-\d{2}-\d{2}(T[\d:.]+(Z|[+-]\d{2}:\d{2})?)?$/u.test(value) ||
+        Number.isNaN(Date.parse(value)))
+        ? describeError({
+            _tag: 'ValidationError',
+            issues: [{ path: ['as_of'], message: 'Use a date such as 2026-03-01' }],
+          })
+        : undefined
+    const noHistory = () =>
+      describeError({
+        _tag: 'Unavailable',
+        message: 'as_of needs a workspace in a git repository.',
+      })
 
     const locate = (id: string) => {
       const found = repo.index.findById(id)
@@ -190,26 +226,76 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
         write: false,
         handle: async (r) => {
           const id = r.id('id')
+          const asOf = r.string('as_of')
           const problem = r.check()
           if (problem !== undefined) return describeError(problem)
+          const badDate = asOfProblem(asOf)
+          if (badDate !== undefined) return badDate
           const found = locate(id as string)
           if (found.error) return found.error
           const item = found.item as ScannedItem
+          if (asOf !== undefined) {
+            const past = await history()
+            if (past === undefined) return noHistory()
+            const now = new Date().toISOString()
+            const graph = graphAsOf(repo, past, { asOf, now })
+            const node = graph.nodes.find((n) => n.id === id)
+            const life = lifecycles(past, { states: repo.workspace.config.states, now }).get(
+              id as string,
+            )
+            const until = Date.parse(graph.asOf)
+            return ok({
+              id,
+              asOf: graph.asOf,
+              existed: node !== undefined,
+              approximate: graph.approximate,
+              ...(node === undefined ? {} : { state: node }),
+              events: (life?.events ?? []).filter((e) => Date.parse(e.date) <= until),
+            })
+          }
           return ok(itemDetail(repo, item, await freshness()))
         },
       },
 
       list: {
         write: false,
-        handle: (r) => {
+        handle: async (r) => {
           const type = r.oneOf('type', itemTypes)
           const status = r.string('status')
           const project = r.string('project')
           const tag = r.string('tag')
           const limit = r.integer('limit', { min: 1, max: 500 }) ?? 50
           const offset = r.integer('offset', { min: 0 }) ?? 0
+          const asOf = r.string('as_of')
           const problem = r.check()
           if (problem !== undefined) return describeError(problem)
+          const badDate = asOfProblem(asOf)
+          if (badDate !== undefined) return badDate
+          if (asOf !== undefined) {
+            if (tag !== undefined)
+              return describeError({
+                _tag: 'ValidationError',
+                issues: [{ path: ['tag'], message: 'tag cannot be combined with as_of' }],
+              })
+            const past = await history()
+            if (past === undefined) return noHistory()
+            const graph = graphAsOf(repo, past, { asOf, now: new Date().toISOString() })
+            const all = graph.nodes
+              .filter(
+                (n) =>
+                  (type === undefined || n.type === type) &&
+                  (project === undefined || n.parent === project) &&
+                  (status === undefined || n.status === status),
+              )
+              .sort((a, b) => a.id.localeCompare(b.id))
+            return ok({
+              asOf: graph.asOf,
+              approximate: graph.approximate,
+              total: all.length,
+              offset,
+              items: all.slice(offset, offset + limit),
+            })
+          }
           return ok(listItems(repo, { type, status, project, tag, limit, offset }))
         },
       },

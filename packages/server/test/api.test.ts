@@ -186,7 +186,7 @@ describe('search, graph, lint', () => {
   test('graph has a node per item and typed edges, including text references', async () => {
     await withServer((s) =>
       Effect.gen(function* () {
-        const graph = yield* s.client.graph.graph()
+        const graph = yield* s.client.graph.graph({ query: {} })
         expect(graph.nodes).toHaveLength(8)
         const has = (from: string, to: string, kind: string) =>
           graph.edges.some((e) => e.from === from && e.to === to && e.kind === kind)
@@ -739,6 +739,32 @@ describe('inbox', () => {
 })
 
 describe('history and stats', () => {
+  test('the graph as of a date needs git and a valid date', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const none = yield* failure(s.client.graph.graph({ query: { asOf: '2026-01-01' } }))
+        expect(none._tag).toBe('Unavailable')
+        const bad = yield* failure(s.client.graph.graph({ query: { asOf: 'soon' } }))
+        expect(bad).toMatchObject({ _tag: 'Invalid', issues: [{ path: ['asOf'] }] })
+      }),
+    )
+  })
+
+  test('the graph as of a date is empty before the first commit and live afterwards', async () => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const before = yield* s.client.graph.graph({ query: { asOf: '2000-01-01' } })
+          expect(before.nodes).toEqual([])
+          expect(before.approximate).toBe(false)
+          const live = yield* s.client.graph.graph({ query: {} })
+          const later = yield* s.client.graph.graph({ query: { asOf: '2999-01-01' } })
+          expect(later.nodes.map((n) => n.id).sort()).toEqual(live.nodes.map((n) => n.id).sort())
+        }),
+      { git: true },
+    )
+  })
+
   test('without git they are 503', async () => {
     await withServer((s) =>
       Effect.gen(function* () {
