@@ -3,30 +3,26 @@ import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
 import { useWrite } from '@/infrastructure/query'
-import { keyOf } from '../rules'
+import { keyOf, type TagPair } from '../rules'
 import { useTags } from '../TagsProvider'
 
-/** The likeliest duplicate pair, with a way to merge the less used into the more used, or leave both. */
-export function DuplicatesBanner() {
+/** A likely duplicate pair, with a way to merge the less used into the more used, or leave both. */
+export function DuplicatesBanner({ pair }: { readonly pair: TagPair }) {
   const { LL } = useI18nContext()
   const api = useApi()
   const notices = useNotices()
-  const { all, duplicates, keepBoth } = useTags()
+  const { all, keepBoth } = useTags()
   const merge = useWrite(api, (a, input: { field: 'tags' | 'labels'; from: string; to: string }) =>
     a.call((c) => c.tags.rename({ payload: input })),
   )
-  const pair = duplicates.find(
-    (d) => all.some((t) => keyOf(t) === keyOf(d.a)) && all.some((t) => keyOf(t) === keyOf(d.b)),
-  )
-  if (pair === undefined) return null
   const total = (r: { field: string; name: string }) =>
     all.find((t) => keyOf(t) === keyOf(r as never))?.total ?? 0
   // The less used spelling goes into the more used one.
   const [from, into] = total(pair.a) <= total(pair.b) ? [pair.a, pair.b] : [pair.b, pair.a]
   return (
     <Banner
-      variant="warning"
-      title={LL.tags.duplicates.title()}
+      variant="info"
+      title={LL.tags.duplicates.note({ a: pair.a.name, b: pair.b.name })}
       actions={
         <>
           <Button
@@ -55,11 +51,7 @@ export function DuplicatesBanner() {
         </>
       }
     >
-      {LL.tags.duplicates.text({
-        a: pair.a.name,
-        b: pair.b.name,
-        more: duplicates.length - 1,
-      })}
+      {LL.tags.duplicates.why()}
     </Banner>
   )
 }

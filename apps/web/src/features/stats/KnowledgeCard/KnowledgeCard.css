@@ -1,7 +1,8 @@
 .st-kbar {
   display: flex;
-  height: 10px;
-  border-radius: 5px;
+  gap: 2px;
+  height: 8px;
+  border-radius: 4px;
   overflow: hidden;
   background: #33364f;
 }
@@ -17,18 +18,44 @@
 .kn-swatch[data-kind="drifting"] {
   background: #e2ae4c;
 }
-.st-kbar > [data-kind="stale"],
-.kn-swatch[data-kind="stale"] {
-  background: #f0717e;
+.st-kbar > [data-kind="stale"] {
+  background: #e2ae4c;
+}
+.st-kbar > [data-kind="drifting"] {
+  background: transparent;
+  border: 1.5px solid #e2ae4c;
+  box-sizing: border-box;
+}
+.kn-swatch[data-kind="drifting"] {
+  background: transparent;
+  border: 1.5px solid #e2ae4c;
+  box-sizing: border-box;
+}
+.kn-legend .nt-icon {
+  color: #e2ae4c;
 }
 .kn-swatch {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
 }
 .kn-legend {
-  flex-wrap: wrap;
-  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 12px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: #b9bcd3;
+}
+.kn-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.kn-legend strong {
+  color: #e8e9f3;
 }
 .kn-h {
   margin: 20px 0 0;

@@ -1,3 +1,4 @@
+export { DuplicatesButton } from './DuplicatesButton'
 export { type FieldFilter, filterTags, renameOutcome } from './rules'
 export { TagDetail } from './TagDetail'
 export { TagsHeading } from './TagsHeading'

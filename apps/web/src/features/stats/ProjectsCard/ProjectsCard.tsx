@@ -19,6 +19,7 @@ export function ProjectsCard() {
           {shown.map((p) => (
             <li key={p.id} className="pj-row">
               <Link to="/projects/$id" params={{ id: p.id }} className="pj-name">
+                <span className="pj-dot" aria-hidden="true" />
                 {p.title}
               </Link>
               <span className="pj-bar" aria-hidden="true">

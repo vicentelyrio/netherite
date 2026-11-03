@@ -5,6 +5,10 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { useStats } from '../StatsProvider'
 import './ThroughputCard.css'
 
+/** The last day of the week that starts on `start`. */
+const weekEnd = (start: string) =>
+  new Date(Date.parse(`${start}T00:00:00Z`) + 6 * 86_400_000).toISOString().slice(0, 10)
+
 /** Tasks created and done per week (per month for a year), side by side, with a tooltip. */
 export function ThroughputCard() {
   const { LL } = useI18nContext()
@@ -14,7 +18,9 @@ export function ThroughputCard() {
   // The axis tops out at a round number so the gridlines mean something.
   const peak = top <= 4 ? 4 : top <= 10 ? 10 : Math.ceil(top / 10) * 10
   const label = (start: string) =>
-    period === 'year' ? start.slice(0, 7) : LL.stats.throughputWeek({ day: formatDay(start) })
+    period === 'year'
+      ? start.slice(0, 7)
+      : LL.stats.throughputWeek({ from: formatDay(start), to: formatDay(weekEnd(start)) })
   const hovered = at === undefined ? undefined : data.throughput[at]
   return (
     <ChartCard

@@ -1,3 +1,4 @@
+import { Icon } from '@netherite/ui'
 import { ChartCard } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useStats } from '../StatsProvider'
@@ -10,6 +11,11 @@ const noArea = '—'
 export function AreasCard() {
   const { LL } = useI18nContext()
   const { data } = useStats()
+  const named = (a: string) => (a === noArea ? LL.stats.areas.noArea() : a)
+  const footer = data.areas.flatMap((a) => [
+    ...a.achievedGoals.map((title) => ({ kind: 'achieved' as const, title, area: named(a.area) })),
+    ...a.idleGoals.map((title) => ({ kind: 'idle' as const, title, area: named(a.area) })),
+  ])
   return (
     <ChartCard title={LL.stats.areas.title()} subtitle={LL.stats.areas.subtitle()}>
       {data.areas.length === 0 ? (
@@ -23,9 +29,7 @@ export function AreasCard() {
             return (
               <li key={a.area} className="ar-row">
                 <div className="ar-head">
-                  <span className="ar-name">
-                    {a.area === noArea ? LL.stats.areas.noArea() : a.area}
-                  </span>
+                  <span className="ar-name">{named(a.area)}</span>
                   <span className="ar-goals">{LL.stats.areas.goals({ count: a.goals })}</span>
                   <span className="ar-fill" />
                   <span className="ar-gain" data-up={a.gained > 0 || undefined}>
@@ -37,19 +41,28 @@ export function AreasCard() {
                   <span className="ar-base" style={{ width: `${share - gained}%` }} />
                   <span className="ar-add" style={{ width: `${gained}%` }} />
                 </span>
-                {(a.achieved > 0 || a.idle > 0) && (
-                  <span className="ar-note">
-                    {[
-                      a.achieved > 0 ? LL.stats.areas.achieved({ count: a.achieved }) : '',
-                      a.idle > 0 ? LL.stats.areas.idle({ count: a.idle }) : '',
-                    ]
-                      .filter(Boolean)
-                      .join(' · ')}
-                  </span>
-                )}
               </li>
             )
           })}
+        </ul>
+      )}
+      {footer.length > 0 && (
+        <ul className="ar-foot">
+          {footer.map((f) => (
+            <li key={`${f.kind}-${f.title}`}>
+              <Icon
+                name={f.kind === 'achieved' ? 'check_circle' : 'pause_circle'}
+                size="inline"
+                filled={f.kind === 'achieved'}
+              />
+              <span className="ar-foot-title">{f.title}</span>
+              <span className="ar-foot-note">
+                {f.kind === 'achieved'
+                  ? LL.stats.areas.achievedIn({ area: f.area })
+                  : LL.stats.areas.idleIn({ area: f.area })}
+              </span>
+            </li>
+          ))}
         </ul>
       )}
     </ChartCard>

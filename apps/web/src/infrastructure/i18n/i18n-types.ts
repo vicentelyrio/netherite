@@ -1232,6 +1232,15 @@ type RootTranslation = {
 			 */
 			mergeInto: string
 			/**
+			 * M​e​r​g​e​…
+			 */
+			mergeMore: string
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​i​t​e​m​|​i​t​e​m​s​}​}
+			 * @param {number} count
+			 */
+			count: RequiredParams<'count'>
+			/**
 			 * C​h​o​o​s​e​ ​a​ ​t​a​g
 			 */
 			choose: string
@@ -1242,12 +1251,19 @@ type RootTranslation = {
 			 */
 			title: string
 			/**
-			 * {​a​}​ ​a​n​d​ ​{​b​}​ ​l​o​o​k​ ​l​i​k​e​ ​t​h​e​ ​s​a​m​e​ ​t​a​g​.​ ​{​m​o​r​e​}​ ​m​o​r​e​ ​t​o​ ​c​h​e​c​k​.
+			 * “​{​a​}​”​ ​a​n​d​ ​“​{​b​}​”​ ​l​o​o​k​ ​l​i​k​e​ ​t​h​e​ ​s​a​m​e​ ​t​a​g
 			 * @param {unknown} a
 			 * @param {unknown} b
-			 * @param {number} more
 			 */
-			text: RequiredParams<'a' | 'b' | 'more'>
+			note: RequiredParams<'a' | 'b'>
+			/**
+			 * S​i​m​i​l​a​r​ ​n​a​m​e​s​ ​o​r​ ​t​h​e​ ​s​a​m​e​ ​n​e​i​g​h​b​o​u​r​s​.​ ​M​e​r​g​i​n​g​ ​r​e​w​r​i​t​e​s​ ​t​h​e​ ​t​a​g​ ​i​n​ ​e​v​e​r​y​ ​f​i​l​e​ ​t​h​a​t​ ​c​a​r​r​i​e​s​ ​i​t​.
+			 */
+			why: string
+			/**
+			 * P​o​s​s​i​b​l​e​ ​d​u​p​l​i​c​a​t​e​s
+			 */
+			count: string
 			/**
 			 * M​e​r​g​e​ ​{​f​r​o​m​}​ ​i​n​t​o​ ​{​i​n​t​o​}
 			 * @param {unknown} from
@@ -1403,10 +1419,11 @@ type RootTranslation = {
 			month: string
 		}
 		/**
-		 * w​e​e​k​ ​o​f​ ​{​d​a​y​}
-		 * @param {unknown} day
+		 * {​f​r​o​m​}​ ​–​ ​{​t​o​}
+		 * @param {unknown} from
+		 * @param {unknown} to
 		 */
-		throughputWeek: RequiredParams<'day'>
+		throughputWeek: RequiredParams<'from' | 'to'>
 		/**
 		 * {​s​t​a​r​t​}​:​ ​{​c​r​e​a​t​e​d​}​ ​c​r​e​a​t​e​d​,​ ​{​d​o​n​e​}​ ​d​o​n​e
 		 * @param {number} created
@@ -1465,6 +1482,16 @@ type RootTranslation = {
 			 */
 			achieved: RequiredParams<'count'>
 			/**
+			 * a​c​h​i​e​v​e​d​ ​·​ ​{​a​r​e​a​}
+			 * @param {unknown} area
+			 */
+			achievedIn: RequiredParams<'area'>
+			/**
+			 * n​o​ ​t​a​s​k​s​ ​d​o​n​e​ ​·​ ​{​a​r​e​a​}
+			 * @param {unknown} area
+			 */
+			idleIn: RequiredParams<'area'>
+			/**
 			 * {​c​o​u​n​t​}​ ​i​d​l​e
 			 * @param {number} count
 			 */
@@ -1503,7 +1530,7 @@ type RootTranslation = {
 			 */
 			more: string
 			/**
-			 * C​o​m​m​i​t​s
+			 * A​c​t​i​v​i​t​y
 			 */
 			title: string
 			/**
@@ -3844,6 +3871,14 @@ export type TranslationFunctions = {
 			 */
 			mergeInto: () => LocalizedString
 			/**
+			 * Merge…
+			 */
+			mergeMore: () => LocalizedString
+			/**
+			 * {count} {{item|items}}
+			 */
+			count: (arg: { count: number }) => LocalizedString
+			/**
 			 * Choose a tag
 			 */
 			choose: () => LocalizedString
@@ -3854,9 +3889,17 @@ export type TranslationFunctions = {
 			 */
 			title: () => LocalizedString
 			/**
-			 * {a} and {b} look like the same tag. {more} more to check.
+			 * “{a}” and “{b}” look like the same tag
 			 */
-			text: (arg: { a: unknown, b: unknown, more: number }) => LocalizedString
+			note: (arg: { a: unknown, b: unknown }) => LocalizedString
+			/**
+			 * Similar names or the same neighbours. Merging rewrites the tag in every file that carries it.
+			 */
+			why: () => LocalizedString
+			/**
+			 * Possible duplicates
+			 */
+			count: () => LocalizedString
 			/**
 			 * Merge {from} into {into}
 			 */
@@ -4003,9 +4046,9 @@ export type TranslationFunctions = {
 			month: () => LocalizedString
 		}
 		/**
-		 * week of {day}
+		 * {from} – {to}
 		 */
-		throughputWeek: (arg: { day: unknown }) => LocalizedString
+		throughputWeek: (arg: { from: unknown, to: unknown }) => LocalizedString
 		/**
 		 * {start}: {created} created, {done} done
 		 */
@@ -4056,6 +4099,14 @@ export type TranslationFunctions = {
 			 */
 			achieved: (arg: { count: number }) => LocalizedString
 			/**
+			 * achieved · {area}
+			 */
+			achievedIn: (arg: { area: unknown }) => LocalizedString
+			/**
+			 * no tasks done · {area}
+			 */
+			idleIn: (arg: { area: unknown }) => LocalizedString
+			/**
 			 * {count} idle
 			 */
 			idle: (arg: { count: number }) => LocalizedString
@@ -4092,7 +4143,7 @@ export type TranslationFunctions = {
 			 */
 			more: () => LocalizedString
 			/**
-			 * Commits
+			 * Activity
 			 */
 			title: () => LocalizedString
 			/**

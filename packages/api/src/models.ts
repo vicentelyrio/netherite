@@ -418,6 +418,8 @@ export const PeriodStats = Schema.Struct({
       gained: N,
       achieved: N,
       idle: N,
+      achievedGoals: Schema.Array(S),
+      idleGoals: Schema.Array(S),
     }),
   ),
   projects: Schema.Array(Schema.Struct({ id: S, title: S, done: N, cycleDays: Schema.NullOr(N) })),

@@ -1,4 +1,4 @@
-import { Button } from '@netherite/ui'
+import { Button, Icon } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { SelectField } from '@/components'
@@ -6,6 +6,7 @@ import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
 import { useWrite } from '@/infrastructure/query'
+import { DuplicatesBanner } from '../DuplicatesBanner'
 import { RenameForm } from '../RenameForm'
 import { grepFor, groupsOf, keyOf, recentIds } from '../rules'
 import { useTags } from '../TagsProvider'
@@ -23,7 +24,8 @@ export function TagDetail() {
   const { LL } = useI18nContext()
   const api = useApi()
   const notices = useNotices()
-  const { all, selected, select } = useTags()
+  const { all, selected, select, duplicates } = useTags()
+  const [merging, setMerging] = useState(false)
   const [renaming, setRenaming] = useState(false)
   const [into, setInto] = useState('')
   const merge = useWrite(api, (a, input: { field: 'tags' | 'labels'; from: string; to: string }) =>
@@ -37,15 +39,36 @@ export function TagDetail() {
     )
   }
   const g = groupsOf(selected.byType)
+  const pair = duplicates.find(
+    (d) => keyOf(d.a) === keyOf(selected) || keyOf(d.b) === keyOf(selected),
+  )
   const others = all.filter((t) => t.field === selected.field && t.name !== selected.name)
   return (
     <section className="td" aria-label={LL.tags.detail.title()}>
       <header className="td-head">
-        <h2 className="td-name">{selected.name}</h2>
-        <span className="td-meta">
-          {selected.field === 'tags' ? LL.tags.tag() : LL.tags.label()} · {selected.cluster}
-        </span>
+        <div>
+          <h2 className="td-name">
+            <Icon name="sell" size={20} />
+            {selected.name}
+          </h2>
+          <span className="td-meta">
+            {LL.tags.detail.count({ count: selected.total })} ·{' '}
+            {selected.field === 'tags' ? LL.tags.tag() : LL.tags.label()} · {selected.cluster}
+          </span>
+        </div>
+        <div className="td-actions">
+          <Button size="sm" onClick={() => setRenaming(!renaming)}>
+            {LL.tags.rename()}
+          </Button>
+          {others.length > 0 && (
+            <Button size="sm" onClick={() => setMerging(!merging)}>
+              {LL.tags.detail.mergeMore()}
+            </Button>
+          )}
+        </div>
       </header>
+      {renaming && <RenameForm tag={selected} tags={all} onDone={() => setRenaming(false)} />}
+      {pair !== undefined && <DuplicatesBanner pair={pair} />}
 
       <h3 className="td-h">{LL.tags.detail.usedIn()}</h3>
       <div className="td-bar" aria-hidden="true">
@@ -120,13 +143,7 @@ export function TagDetail() {
       <h3 className="td-h">{LL.tags.detail.grep()}</h3>
       <code className="td-grep">{grepFor(selected)}</code>
 
-      <div className="td-actions">
-        <Button size="sm" icon="edit" onClick={() => setRenaming(!renaming)}>
-          {LL.tags.rename()}
-        </Button>
-      </div>
-      {renaming && <RenameForm tag={selected} tags={all} onDone={() => setRenaming(false)} />}
-      {others.length > 0 && (
+      {merging && others.length > 0 && (
         <div className="td-merge">
           <SelectField
             label={LL.tags.detail.mergeInto()}

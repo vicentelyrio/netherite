@@ -26,16 +26,10 @@ export const railItems: ReadonlyArray<
     to: '/knowledge',
   },
   {
-    id: 'stats',
-    icon: 'bar_chart',
+    id: 'graph',
+    icon: 'hub',
     group: 'insight',
-    to: '/stats',
-  },
-  {
-    id: 'tags',
-    icon: 'sell',
-    group: 'insight',
-    to: '/tags',
+    to: '/graph',
   },
   {
     id: 'timeline',
@@ -44,10 +38,16 @@ export const railItems: ReadonlyArray<
     to: '/timeline',
   },
   {
-    id: 'graph',
-    icon: 'hub',
+    id: 'tags',
+    icon: 'sell',
     group: 'insight',
-    to: '/graph',
+    to: '/tags',
+  },
+  {
+    id: 'stats',
+    icon: 'bar_chart',
+    group: 'insight',
+    to: '/stats',
   },
 ]
 

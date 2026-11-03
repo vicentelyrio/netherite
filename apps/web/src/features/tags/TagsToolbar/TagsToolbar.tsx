@@ -1,3 +1,4 @@
+import { Icon } from '@netherite/ui'
 import { useEffect, useRef } from 'react'
 import { FilterTabs } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
@@ -6,6 +7,7 @@ import './TagsToolbar.css'
 
 const kinds = ['all', 'tags', 'labels'] as const
 const views = ['map', 'list'] as const
+const viewIcon = { map: 'bubble_chart', list: 'list' } as const
 
 /** A text filter (focused with `/`), tabs for tags, labels or both, and the map or list view. */
 export function TagsToolbar() {
@@ -49,7 +51,11 @@ export function TagsToolbar() {
       />
       <FilterTabs
         label={LL.tags.view.label()}
-        options={views.map((value) => ({ value, label: LL.tags.view[value]() }))}
+        options={views.map((value) => ({
+          value,
+          label: LL.tags.view[value](),
+          icon: <Icon name={viewIcon[value]} size="inline" />,
+        }))}
         value={view}
         onChange={setView}
       />

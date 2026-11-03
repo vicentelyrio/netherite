@@ -1,3 +1,4 @@
+import { Icon } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
 import { ChartCard } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
@@ -40,10 +41,14 @@ export function KnowledgeCard() {
           ),
         )}
       </div>
-      <ul className="st-legend st-legend--row kn-legend">
+      <ul className="kn-legend">
         {order.map((k) => (
           <li key={k}>
-            <span className="kn-swatch" data-kind={k} />
+            {k === 'stale' ? (
+              <Icon name="warning" size={13} filled />
+            ) : (
+              <span className="kn-swatch" data-kind={k} />
+            )}
             {names[k]} <strong>{f[k]}</strong>
           </li>
         ))}

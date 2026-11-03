@@ -43,6 +43,9 @@ export interface PeriodStats {
     /** Points gained over the period (share now minus share at the start, in percent points). */
     readonly gained: number
     readonly achieved: number
+    /** The titles of the goals reached in the period, and of those that saw no task done. */
+    readonly achievedGoals: ReadonlyArray<string>
+    readonly idleGoals: ReadonlyArray<string>
     /** Goals still in progress that gained nothing. */
     readonly idle: number
   }>
@@ -199,18 +202,30 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
 
   const byArea = new Map<
     string,
-    { goals: number; share: number; was: number; achieved: number; idle: number }
+    {
+      goals: number
+      share: number
+      was: number
+      achievedGoals: string[]
+      idleGoals: string[]
+    }
   >()
   for (const g of end.nodes.filter((n) => n.type === 'goal')) {
     const key = areaOf(g.id)
-    const row = byArea.get(key) ?? { goals: 0, share: 0, was: 0, achieved: 0, idle: 0 }
+    const row = byArea.get(key) ?? {
+      goals: 0,
+      share: 0,
+      was: 0,
+      achievedGoals: [],
+      idleGoals: [],
+    }
     const before = start.get(g.id)?.progress ?? 0
     const progress = g.progress ?? 0
     row.goals++
     row.share += progress
     row.was += before
-    if (g.status === 'done' && start.get(g.id)?.status !== 'done') row.achieved++
-    if (g.status === 'progress' && progress - before === 0) row.idle++
+    if (g.status === 'done' && start.get(g.id)?.status !== 'done') row.achievedGoals.push(g.title)
+    if (g.status === 'progress' && progress - before === 0) row.idleGoals.push(g.title)
     byArea.set(key, row)
   }
   const areas = [...byArea]
@@ -219,8 +234,10 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
       goals: r.goals,
       share: Math.round((r.share / r.goals) * 100) / 100,
       gained: Math.round(((r.share - r.was) / r.goals) * 100),
-      achieved: r.achieved,
-      idle: r.idle,
+      achieved: r.achievedGoals.length,
+      idle: r.idleGoals.length,
+      achievedGoals: r.achievedGoals,
+      idleGoals: r.idleGoals,
     }))
     .sort((a, b) => a.area.localeCompare(b.area))
 
