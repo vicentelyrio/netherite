@@ -1,0 +1,49 @@
+/* ---- doc, ADR and context view, as designed ---- */
+.kf-frame {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 64px;
+  z-index: 5;
+}
+
+.kf-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(14, 15, 26, 0.62);
+}
+
+.kf-sheet {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  max-width: 100%;
+  width: min(1792px, 100%);
+  display: flex;
+  flex-direction: column;
+  background: #282a3f;
+  box-shadow: 24px 0 64px rgba(0, 0, 0, 0.4);
+}
+
+.kf-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.kf-body .ed[data-variant="drawer"] .ed-code {
+  flex: 0 0 760px;
+}
+
+.kf-body .ed[data-variant="drawer"] .ed-rendered {
+  overflow: hidden;
+}
+
+.kf-split {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+}

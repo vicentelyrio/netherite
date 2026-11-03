@@ -1,6 +1,6 @@
 import type { KnowledgeRow } from '@netherite/api'
 import { describe, expect, test } from 'vitest'
-import { lanesOf, type Transition } from '../src/pages/decisions'
+import { lanesOf, type Transition } from '@/features/decisions'
 
 const adr = (id: string, extra: Partial<KnowledgeRow> = {}): KnowledgeRow => ({
   id,

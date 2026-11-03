@@ -1,3 +1,4 @@
+export { DocView } from './DocView'
 export { type Filters, filterKnowledge, noFilters, type SortKey, typeCounts } from './filters'
 export { KnowledgeActions, KnowledgeCreateForm } from './KnowledgeActions'
 export { KnowledgeHeading } from './KnowledgeHeading'
@@ -6,3 +7,4 @@ export { KnowledgeProvider, useKnowledgeIndex } from './KnowledgeProvider'
 export { KnowledgeStarters } from './KnowledgeStarters'
 export { KnowledgeTable } from './KnowledgeTable'
 export { KnowledgeToolbar } from './KnowledgeToolbar'
+export const knowledgeTypes = new Set(['adr', 'doc', 'context', 'runbook'])

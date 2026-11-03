@@ -15,7 +15,7 @@ depends_on: [TASK-00080, TASK-00081, TASK-00082]
 - [x] Goals: GoalCard, GoalList, GoalDetailHeader
 - [x] Projects: ProjectCard, TaskBoard, TaskCard, ProjectKnowledgeTable
 - [ ] Task: TaskDrawerContent, Checklist
-- [ ] Knowledge: KnowledgeTable, KnowledgePreview, DocSidebar, AdrLifecycle, DecisionLanes
+- [x] Knowledge: KnowledgeTable, KnowledgePreview, DocSidebar, AdrLifecycle, DecisionLanes
 - [ ] Graph: GraphPanel, GraphLegend; Editor: SourceEditor wrapper
 - [ ] Inbox: InboxList, InboxPreview; Tags: TagMap, TagList, TagPanel; Stats: KpiRow, Throughput, HeatMap
 - [ ] Search: SearchPalette results
@@ -27,6 +27,6 @@ depends_on: [TASK-00080, TASK-00081, TASK-00082]
 
 ## Progress
 
-Done: goals, projects and the knowledge index (features/goals, features/projects, features/knowledge, matching pages). TaskDrawer moved to features/tasks and SourceEditor to features/editor, both still one file each: splitting the drawer into TaskDrawerContent, Checklist and its field cells is left. The project knowledge table is a round 2 design item (TASK-00073).
+Done: goals, projects and knowledge (index, doc view, decision log): features/goals, features/projects, features/knowledge, features/decisions and the matching pages. TaskDrawer moved to features/tasks and SourceEditor to features/editor, both still one file each: splitting the drawer into TaskDrawerContent, Checklist and its field cells is left. The project knowledge table is a round 2 design item (TASK-00073).
 
-Left: knowledge doc view (pages/knowledge-item.tsx: Lifecycle, SupersessionChain, ContextCard, KnowledgeFrame) and decision log (pages/decisions.tsx), item page, graph, inbox, tags, stats, search.
+Left: the item page (pages/item.tsx), graph, inbox, tags, stats, search.

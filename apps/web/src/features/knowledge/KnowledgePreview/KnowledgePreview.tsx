@@ -2,9 +2,11 @@ import type { KnowledgeRow } from '@netherite/api'
 import { Icon, type ItemTypeName, TypeBadge } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
+import { LinkRow } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { previewQuery } from '@/infrastructure/query'
 import { useKnowledgeIndex } from '../KnowledgeProvider'
+import '../shared.css'
 import './KnowledgePreview.css'
 
 function Preview({ row }: { readonly row: KnowledgeRow }) {
@@ -42,17 +44,7 @@ function Preview({ row }: { readonly row: KnowledgeRow }) {
           <section>
             <h3 className="kn-h">Backlinks · {data.backlinks.length}</h3>
             {data.backlinks.map((b) => (
-              <div key={`${b.kind}:${b.path}`} className="kn-link-row">
-                <span className="kn-link-dot" />
-                {b.id ? (
-                  <Link to="/items/$id" params={{ id: b.id }}>
-                    {b.id} {b.title}
-                  </Link>
-                ) : (
-                  <code>{b.path}</code>
-                )}
-                <span className="app-muted">{b.kind.replace('_', ' ')}</span>
-              </div>
+              <LinkRow key={`${b.kind}:${b.path}`} link={b} />
             ))}
             {data.backlinks.length === 0 && (
               <div className="kn-none">

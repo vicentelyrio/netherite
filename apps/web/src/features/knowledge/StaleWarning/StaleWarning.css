@@ -1,0 +1,5 @@
+.kf-warning {
+  background: rgba(226, 174, 76, 0.1);
+  border: 1px solid rgba(226, 174, 76, 0.35);
+  color: #e2ae4c;
+}

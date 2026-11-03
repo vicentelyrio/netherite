@@ -1,0 +1,23 @@
+.link-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 30px;
+  font-size: 14px;
+}
+
+.link-row a {
+  flex: 1;
+  color: #e8e9f3;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link-row-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d9a646;
+}

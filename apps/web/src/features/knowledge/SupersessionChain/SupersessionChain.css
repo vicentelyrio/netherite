@@ -1,0 +1,43 @@
+.kf-chain-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #2e3148;
+}
+
+.kf-chain-row[data-old] {
+  background: transparent;
+  border: 1px solid #474b6e;
+  color: #b9bcd3;
+}
+
+.kf-chain-row[data-old] .kf-chain-title {
+  text-decoration: line-through;
+}
+
+.kf-chain-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kf-chain-gap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 22px;
+  padding-left: 13px;
+  font-size: 12px;
+  color: #969ab8;
+}
+
+.kf-chain-gap span {
+  width: 1px;
+  height: 22px;
+  border-left: 1.5px dashed #6a6e96;
+}

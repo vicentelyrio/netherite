@@ -15,9 +15,9 @@ import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Markdown } from '@/components/Markdown'
 import { SourceEditor } from '@/features/editor'
+import { DocView, knowledgeTypes } from '@/features/knowledge'
 import { useApi } from '@/infrastructure/api'
 import { itemQuery, keys, useWrite } from '@/infrastructure/query'
-import { KnowledgeFrame, knowledgeTypes } from './knowledge-item'
 
 const reviewable = new Set(['doc', 'runbook', 'context'])
 
@@ -58,7 +58,7 @@ export function ItemPage({ id, mode }: { readonly id: string; readonly mode?: 's
 
   const item = query.data
   const type = item.type as ItemTypeName
-  if (knowledgeTypes.has(type)) return <KnowledgeFrame item={item} {...(mode ? { mode } : {})} />
+  if (knowledgeTypes.has(type)) return <DocView item={item} {...(mode ? { mode } : {})} />
   const fresh = item.freshness
 
   return (

@@ -8,6 +8,7 @@
   color: #b9bcd3;
   font-weight: 500;
   cursor: pointer;
+  white-space: nowrap;
 }
 .filter-tabs-count {
   color: #969ab8;

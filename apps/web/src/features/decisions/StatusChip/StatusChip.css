@@ -1,0 +1,12 @@
+.dl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 8px 0 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--dl) 16%, transparent);
+  color: var(--dl);
+  font-size: 12px;
+  font-weight: 600;
+}
