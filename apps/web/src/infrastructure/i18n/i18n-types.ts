@@ -1466,6 +1466,15 @@ type RootTranslation = {
 			 * D​e​c​i​s​i​o​n​s
 			 */
 			decisions: string
+			/**
+			 * C​h​a​n​g​e​d​ ​w​i​t​h​o​u​t​ ​a​ ​d​o​c​ ​u​p​d​a​t​e
+			 */
+			undocumented: string
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}
+			 * @param {number} count
+			 */
+			undocumentedCount: RequiredParams<'count'>
 		}
 	}
 	search: {
@@ -3831,6 +3840,14 @@ export type TranslationFunctions = {
 			 * Decisions
 			 */
 			decisions: () => LocalizedString
+			/**
+			 * Changed without a doc update
+			 */
+			undocumented: () => LocalizedString
+			/**
+			 * {count} {{commit|commits}}
+			 */
+			undocumentedCount: (arg: { count: number }) => LocalizedString
 		}
 	}
 	search: {

@@ -66,6 +66,12 @@ export interface PeriodStats {
       readonly notTracked: number
     }
     readonly decisions: Readonly<Record<string, number>>
+    /** Code changed most often in the period with no knowledge changing alongside it. */
+    readonly undocumented: ReadonlyArray<{
+      readonly path: string
+      readonly commits: number
+      readonly last: string
+    }>
   }
   /** Every area there is, for the filter, whatever area is chosen. */
   readonly areaNames: ReadonlyArray<string>
@@ -76,6 +82,12 @@ export interface PeriodOptions {
   readonly period: Period
   readonly now?: string
   readonly freshness?: ReadonlyMap<string, Freshness>
+  /** Code changed without a doc update in this period (`undocumentedChurn`). */
+  readonly undocumented?: ReadonlyArray<{
+    readonly path: string
+    readonly commits: number
+    readonly last: string
+  }>
   /** Only the work under goals in this area. Commits and knowledge are not filtered. */
   readonly area?: string
 }
@@ -274,7 +286,7 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
         .map(([date, count]) => ({ date, count }))
         .sort((a, b) => a.date.localeCompare(b.date)),
     },
-    knowledge: { freshness, decisions },
+    knowledge: { freshness, decisions, undocumented: options.undocumented ?? [] },
     areaNames: [...byArea.keys()].sort(),
     approximate: history.partial,
   }

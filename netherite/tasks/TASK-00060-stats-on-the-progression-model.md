@@ -6,7 +6,7 @@ title: Stats on the progression model
 created: 2026-11-02T20:20:04Z
 created_by: "@vicentelyrio"
 project: PRJ-00009
-state: doing
+state: done
 depends_on: [TASK-00057]
 ---
 
@@ -17,4 +17,4 @@ depends_on: [TASK-00057]
 - [x] Goal areas: share done and points gained in the period; achieved and idle goals
 - [x] By project: tasks done and median cycle time
 - [x] Commit heat map (53 weeks) with per-day counts
-- [ ] Knowledge health: fresh, drifting, stale, not tracked; decisions by status; most co-changed code without a doc update
+- [x] Knowledge health: fresh, drifting, stale, not tracked; decisions by status; most co-changed code without a doc update

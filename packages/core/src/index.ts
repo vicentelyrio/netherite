@@ -174,6 +174,7 @@ export {
   type TimelineTask,
   timelineOf,
 } from './timeline'
+export { type Undocumented, type UndocumentedOptions, undocumentedChurn } from './undocumented'
 export {
   type BoardCard,
   type BoardColumn,

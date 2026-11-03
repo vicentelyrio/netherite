@@ -13,6 +13,7 @@ import {
   boardOf,
   coChanged,
   completionsByWeek,
+  computeFreshness,
   createItem,
   decisionLog,
   deleteItem,
@@ -58,6 +59,7 @@ import {
   tagUsage,
   timelineOf,
   toggleChecklistItem,
+  undocumentedChurn,
   unlink,
   updateItem,
 } from '@netherite/core'
@@ -353,8 +355,20 @@ const graph = (state: ServerState) =>
             Number.isNaN(Date.parse(asOf))
           )
             return yield* invalid(['asOf'], 'Use a date such as 2026-03-01')
+          const freshness =
+            state.git === undefined
+              ? undefined
+              : yield* computeFreshness({
+                  index: state.repo.index,
+                  git: state.git,
+                  thresholds: state.repo.workspace.config.freshness,
+                  root: state.repo.workspace.root,
+                  asOf,
+                }).pipe(Effect.orElseSucceed(() => undefined))
           return yield* withHistory(state, (h) =>
-            Effect.succeed(graphAsOf(state.repo, h, { asOf, now: new Date().toISOString() })),
+            Effect.succeed(
+              graphAsOf(state.repo, h, { asOf, now: new Date().toISOString(), freshness }),
+            ),
           )
         }
         const fresh = yield* state.freshness.get
@@ -780,6 +794,20 @@ const stats = (state: ServerState) =>
           if (period !== '30d' && period !== 'quarter' && period !== 'year')
             return yield* invalid(['period'], 'Use 30d, quarter or year')
           const fresh = yield* state.freshness.get
+          // Which code changed without a doc update comes from git; without it the list is empty.
+          const length = period === '30d' ? 30 : period === 'quarter' ? 90 : 365
+          const today = new Date().toISOString().slice(0, 10)
+          const first = new Date(Date.parse(`${today}T00:00:00Z`) - (length - 1) * 86_400_000)
+            .toISOString()
+            .slice(0, 10)
+          const undocumented =
+            state.git === undefined
+              ? []
+              : yield* undocumentedChurn(state.git, state.repo.workspace.root, {
+                  contentRoot: state.repo.workspace.config.content,
+                  from: first,
+                  to: today,
+                }).pipe(Effect.orElseSucceed(() => []))
           return yield* withHistory(state, (h) =>
             Effect.succeed(
               periodStats(state.repo, h, {
@@ -787,6 +815,7 @@ const stats = (state: ServerState) =>
                 now: new Date().toISOString(),
                 ...(query.area === undefined || query.area === '' ? {} : { area: query.area }),
                 ...(fresh === undefined ? {} : { freshness: fresh }),
+                undocumented,
               }),
             ),
           )

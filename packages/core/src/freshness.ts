@@ -98,6 +98,11 @@ export interface FreshnessInput {
   readonly thresholds: Thresholds
   /** Absolute path of the workspace root. */
   readonly root: string
+  /**
+   * Work it out as of this moment (ISO 8601 or `YYYY-MM-DD`, the end of that day) instead of now:
+   * later commits and uncommitted changes do not count, and a review after it is ignored.
+   */
+  readonly asOf?: string
 }
 
 /**
@@ -109,6 +114,14 @@ export interface FreshnessInput {
 export const computeFreshness = (input: FreshnessInput) =>
   Effect.gen(function* () {
     const { index, git, thresholds } = input
+    const until =
+      input.asOf === undefined
+        ? undefined
+        : input.asOf.length <= 10
+          ? `${input.asOf}T23:59:59.999Z`
+          : input.asOf
+    const untilMs = until === undefined ? undefined : Date.parse(until)
+    const upTo = (date: string) => untilMs === undefined || Date.parse(date) <= untilMs
     const result = new Map<string, Freshness>()
     const none = { commits: 0, uncommitted: false, baseline: undefined, atLeast: false }
 
@@ -147,11 +160,20 @@ export const computeFreshness = (input: FreshnessInput) =>
     for (const { item, covers } of candidates) {
       const reviewed = fieldsOf(item).reviewed_at
       let baseline: Freshness['baseline']
-      if (typeof reviewed === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(reviewed)) {
+      if (
+        typeof reviewed === 'string' &&
+        /^\d{4}-\d{2}-\d{2}$/.test(reviewed) &&
+        upTo(`${reviewed}T00:00:00.000Z`)
+      ) {
         baseline = { source: 'reviewed_at', date: reviewed }
       } else {
         const gitPath = map.toGit(item.path)
-        const [last] = yield* git.log({ paths: [gitPath], limit: 1 })
+        const [last] =
+          until === undefined
+            ? yield* git.log({ paths: [gitPath], limit: 1 })
+            : (yield* git.log({ paths: [gitPath], limit: 200 })).filter((c) =>
+                upTo(c.committerDate),
+              )
         if (last !== undefined) {
           baseline = {
             source: 'last-commit',
@@ -170,17 +192,18 @@ export const computeFreshness = (input: FreshnessInput) =>
 
     // 4. One history query for everyone, from the oldest baseline.
     const dates = tracked.flatMap((t) => (t.baseline ? [t.baseline.date] : []))
-    const history: ReadonlyArray<CommitInfo> =
+    const history: ReadonlyArray<CommitInfo> = (
       dates.length === 0
         ? []
         : yield* git.log({
             after: dayBefore([...dates].sort()[0] as string),
             files: 'names',
           })
+    ).filter((c) => upTo(c.committerDate))
     const edge = git.shallow ? history.find((c) => boundary.has(c.hash)) : undefined
 
     // 5. Uncommitted changes, from one status.
-    const status = yield* git.status({ untracked: 'all' })
+    const status = until === undefined ? yield* git.status({ untracked: 'all' }) : { entries: [] }
     const dirty = status.entries
       .filter((e) => e.kind !== 'ignored')
       .flatMap((e) => [e.path, ...(e.from ? [e.from] : [])])

@@ -182,4 +182,25 @@ describe('graph as of a date', () => {
     expect(past.nodes.map(pick).sort()).toEqual(live.nodes.map(pick).sort())
     expect(past.edges).toHaveLength(live.edges.length)
   })
+
+  test('a doc is stale when the freshness given for that date says so', async () => {
+    const w = await world(files)
+    const stale = new Map([
+      [
+        'netherite/tasks/TASK-00001-a.md',
+        {
+          state: 'stale',
+          commits: 12,
+          uncommitted: false,
+          baseline: undefined,
+          atLeast: false,
+          covers: ['src'],
+        },
+      ],
+    ] as const)
+    const g = graphAsOf(w.repo, history, { asOf: '2026-01-26', now, freshness: stale })
+    const byId = Object.fromEntries(g.nodes.map((n) => [n.id, n]))
+    expect(byId['TASK-00001']?.stale).toBe(true)
+    expect(byId['TASK-00002']?.stale).toBeUndefined()
+  })
 })

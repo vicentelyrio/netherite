@@ -394,6 +394,8 @@ const en = {
       stale: 'Stale',
       notTracked: 'Not tracked',
       decisions: 'Decisions',
+      undocumented: 'Changed without a doc update',
+      undocumentedCount: '{count:number} {{commit|commits}}',
     },
   },
   search: {

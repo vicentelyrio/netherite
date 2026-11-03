@@ -48,6 +48,19 @@ export function KnowledgeCard() {
           </li>
         ))}
       </ul>
+      {data.knowledge.undocumented.length > 0 && (
+        <>
+          <h3 className="kn-h">{LL.stats.knowledge.undocumented()}</h3>
+          <ul className="kn-code">
+            {data.knowledge.undocumented.map((u) => (
+              <li key={u.path}>
+                <code title={u.path}>{u.path}</code>
+                <span>{LL.stats.knowledge.undocumentedCount({ count: u.commits })}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </ChartCard>
   )
 }

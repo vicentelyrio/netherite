@@ -37,7 +37,7 @@ const runPath = 'netherite/runbooks/RUN-00001-release.md'
 /** Freshness of every item in the workspace at `dir` (the git root unless `workspaceDir` is given). */
 const measure = async (
   dir: string,
-  options: { thresholds?: Thresholds; git?: boolean; workspaceDir?: string } = {},
+  options: { thresholds?: Thresholds; git?: boolean; workspaceDir?: string; asOf?: string } = {},
 ) => {
   const root = options.workspaceDir ?? dir
   const workspace = await run(openWorkspace(root))
@@ -52,6 +52,7 @@ const measure = async (
       git,
       thresholds: options.thresholds ?? workspace.config.freshness,
       root,
+      ...(options.asOf === undefined ? {} : { asOf: options.asOf }),
     }),
   )
   return { freshness, index, workspace, git }
@@ -213,6 +214,18 @@ describe('thresholds', () => {
       async (repo) => {
         const { freshness } = await measure(repo.root)
         expect(freshness.get(docPath)).toMatchObject({ state: 'stale', commits: 3 + 9 })
+      },
+      [...basicHistory, ...commitsOn(9)],
+    )
+  })
+
+  test('as of a past date, later commits do not count', async () => {
+    await withFixture(
+      async (repo) => {
+        const now = (await measure(repo.root)).freshness.get(docPath)
+        const then = (await measure(repo.root, { asOf: '2026-01-31' })).freshness.get(docPath)
+        expect(now).toMatchObject({ state: 'stale', commits: 3 + 9 })
+        expect(then).toMatchObject({ state: 'drifting', commits: 3 })
       },
       [...basicHistory, ...commitsOn(9)],
     )

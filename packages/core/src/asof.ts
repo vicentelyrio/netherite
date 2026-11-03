@@ -1,3 +1,4 @@
+import type { Freshness } from './freshness'
 import type { FieldValue, History, ItemHistory } from './history'
 import { lifecycles } from './lifecycle'
 import type { Repo } from './ops/repo'
@@ -12,6 +13,8 @@ export interface AsOfNode {
   readonly status?: NodeStatus
   readonly progress?: number
   readonly parent?: string
+  /** A doc whose covered code had changed in many commits since its review, at that date. */
+  readonly stale?: boolean
 }
 
 export interface AsOfGraph {
@@ -32,6 +35,8 @@ export interface AsOfOptions {
   readonly asOf: string
   /** The current time; items not in history yet (uncommitted) appear from here on. */
   readonly now?: string
+  /** Freshness as of that date (`computeFreshness` with `asOf`), by path, for the stale flag. */
+  readonly freshness?: ReadonlyMap<string, Freshness> | undefined
 }
 
 const endOfDay = (date: string) => (date.length <= 10 ? `${date}T23:59:59.999Z` : date)
@@ -55,7 +60,7 @@ const first = (value: FieldValue) =>
  * Rebuilds the graph as it stood at a date (ADR-00023) by replaying history: which items existed,
  * what state each was in, who they belonged to, and how much of each project and goal was done.
  * Links come from today's files, shown when both ends existed; a supersession shows from the day
- * the new decision was accepted. Whether a doc was stale is not rebuilt. Checklist progress inside
+ * the new decision was accepted. A doc is stale when the given freshness says so. Checklist progress inside
  * an open task is not in history, so such a task counts as zero until it is done.
  */
 export const graphAsOf = (repo: Repo, history: History, options: AsOfOptions): AsOfGraph => {
@@ -144,7 +149,13 @@ export const graphAsOf = (repo: Repo, history: History, options: AsOfOptions): A
       own.status = result
       own.progress = result === 'done' ? 1 : share(id)
     }
-    return { ...base, ...own, ...(parent === undefined ? {} : { parent }) }
+    const stale = options.freshness?.get(item.path)?.state === 'stale'
+    return {
+      ...base,
+      ...own,
+      ...(parent === undefined ? {} : { parent }),
+      ...(stale ? { stale: true } : {}),
+    }
   })
 
   const idOf = new Map(items.map((i) => [i.path, i.id]))

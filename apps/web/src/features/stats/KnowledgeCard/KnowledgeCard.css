@@ -36,3 +36,29 @@
   font-weight: 600;
   color: #969ab8;
 }
+
+.kn-code {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+.kn-code li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.kn-code code {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #c9cbe0;
+}
+.kn-code span {
+  flex: none;
+  color: #969ab8;
+}
