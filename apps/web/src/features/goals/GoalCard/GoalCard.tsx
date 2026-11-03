@@ -1,9 +1,10 @@
 import type { GoalRow } from '@netherite/api'
-import { Card } from '@netherite/ui'
+import { Card, StatusGlyph } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
 import { ProgressBar, TagList } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { horizonLabel } from '../horizon'
+import { statusOfProgress } from '../status'
 import './GoalCard.css'
 
 /** A goal as a card: title, due date, tags and how much of it is done. */
@@ -16,6 +17,12 @@ export function GoalCard({ goal }: { readonly goal: GoalRow }) {
       <Card interactive>
         <div className="goal-card">
           <div className="goal-card-top">
+            <StatusGlyph
+              type="goal"
+              status={achieved ? 'done' : statusOfProgress(progress.done, progress.total)}
+              progress={progress.total > 0 ? progress.done / progress.total : 0}
+              size={16}
+            />
             <span className="goal-card-title">{goal.title}</span>
             {goal.horizon && <span className="goal-horizon">{horizonLabel(goal.horizon)}</span>}
             {achieved && <span className="goal-achieved">{LL.goals.achieved()}</span>}

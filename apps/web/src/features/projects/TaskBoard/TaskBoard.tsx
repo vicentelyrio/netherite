@@ -80,7 +80,12 @@ export function TaskBoard({
         {dragging && (
           <div className="board-overlay">
             <Card>
-              <TaskCardBody card={dragging} projectId={board.id} overline={overline} />
+              <TaskCardBody
+                card={dragging}
+                projectId={board.id}
+                overline={overline}
+                category={board.columns.find((c) => c.name === dragging.state)?.category}
+              />
             </Card>
           </div>
         )}

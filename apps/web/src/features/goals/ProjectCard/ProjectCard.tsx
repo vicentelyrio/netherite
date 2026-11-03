@@ -1,8 +1,9 @@
 import type { ProjectRow } from '@netherite/api'
-import { Card } from '@netherite/ui'
+import { Card, StatusGlyph } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
 import { ProgressBar, TagList } from '@/components'
 import '../GoalCard/GoalCard.css'
+import { statusOfProgress } from '../status'
 
 /** A project as a card: the goals it serves, its title, tags and progress. */
 export function ProjectCard({ project }: { readonly project: ProjectRow }) {
@@ -14,7 +15,15 @@ export function ProjectCard({ project }: { readonly project: ProjectRow }) {
           {project.goals.length > 0 && (
             <span className="goal-overline">{project.goals.map((g) => g.title).join(' · ')}</span>
           )}
-          <span className="goal-card-title">{project.title}</span>
+          <span className="goal-card-title">
+            <StatusGlyph
+              type="project"
+              status={statusOfProgress(progress.done, progress.total)}
+              progress={progress.total > 0 ? progress.done / progress.total : 0}
+              size={14}
+            />{' '}
+            {project.title}
+          </span>
           <TagList tags={project.tags} />
           <ProgressBar done={progress.done} total={progress.total} />
         </div>

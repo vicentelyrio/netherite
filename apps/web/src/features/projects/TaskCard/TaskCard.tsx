@@ -1,6 +1,6 @@
 import { useDraggable } from '@dnd-kit/core'
 import type { BoardCard } from '@netherite/api'
-import { Avatar, Card, Icon } from '@netherite/ui'
+import { Avatar, Card, Icon, StatusGlyph, statusOfCategory } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
 import { ProgressBar, TagList } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
@@ -10,10 +10,13 @@ export function TaskCardBody({
   card,
   projectId,
   overline,
+  category,
 }: {
   readonly card: BoardCard
   readonly projectId: string
   readonly overline?: string | undefined
+  /** The state category of its column, which decides the glyph. */
+  readonly category?: string | undefined
 }) {
   const { LL } = useI18nContext()
   const assignee = card.assignees[0]
@@ -21,6 +24,11 @@ export function TaskCardBody({
     <div className="board-card">
       {overline && <span className="board-overline">{overline}</span>}
       <div className="board-card-top">
+        <StatusGlyph
+          type="task"
+          status={statusOfCategory[category as keyof typeof statusOfCategory] ?? 'backlog'}
+          size={10}
+        />
         <Link
           to="/projects/$id"
           params={{ id: projectId }}
@@ -69,7 +77,7 @@ export function TaskCard({
       {...listeners}
     >
       <Card interactive>
-        <TaskCardBody card={card} projectId={projectId} overline={overline} />
+        <TaskCardBody card={card} projectId={projectId} overline={overline} category={category} />
       </Card>
     </div>
   )

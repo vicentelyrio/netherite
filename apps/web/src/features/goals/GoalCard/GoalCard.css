@@ -6,9 +6,12 @@
 .goal-card-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
 }
 .goal-card-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 16px;
   line-height: 22px;
   font-weight: 600;

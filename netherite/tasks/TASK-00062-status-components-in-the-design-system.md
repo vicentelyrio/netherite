@@ -6,14 +6,14 @@ title: Status components in the design system
 created: 2026-11-02T20:20:04Z
 created_by: "@vicentelyrio"
 project: PRJ-00010
-state: doing
+state: done
 ---
 
 # Status components in the design system
 
 - [x] Tokens: `status-*` (halo, hold grey, done opacity) next to `type-*`
 - [x] `StatusGlyph` (pie, halo, hold, done) in sizes 6 to 32, used by cards, graph and Timeline
-- [ ] Replace the ad-hoc progress rings and pills on goals, projects, tasks
+- [x] Replace the ad-hoc progress rings and pills on goals, projects, tasks
 - [x] Task states map to backlog, in progress, on hold, done through the state category
 - [x] Tests for each status and size
 

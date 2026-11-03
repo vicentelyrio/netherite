@@ -85,6 +85,8 @@
 }
 
 .board-card-title {
+  flex: 1;
+  min-width: 0;
   font-weight: 600;
   color: inherit;
   text-decoration: none;
@@ -124,8 +126,12 @@
 .board-card-top {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
   gap: 8px;
+}
+
+.board-card-top .nt-status-glyph {
+  flex: none;
+  margin: 5px 2px 0;
 }
 
 /* ---- board cards, as designed ---- */
