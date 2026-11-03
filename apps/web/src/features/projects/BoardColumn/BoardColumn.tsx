@@ -38,17 +38,19 @@ export function BoardColumn({
         <TaskStatePill state={name} category={category as StateCategory} />
         <span className="board-count">{cards.length}</span>
       </header>
-      {cards.map((card) => (
-        <TaskCard
-          key={card.id}
-          card={card}
-          projectId={projectId}
-          category={category}
-          selected={card.id === selected}
-          overline={overline}
-        />
-      ))}
-      {target && <div className="board-drop">{LL.projects.dropTo({ name })}</div>}
+      <div className="board-cards">
+        {cards.map((card) => (
+          <TaskCard
+            key={card.id}
+            card={card}
+            projectId={projectId}
+            category={category}
+            selected={card.id === selected}
+            overline={overline}
+          />
+        ))}
+        {target && <div className="board-drop">{LL.projects.dropTo({ name })}</div>}
+      </div>
       <NewTask projectId={projectId} state={name} />
     </section>
   )

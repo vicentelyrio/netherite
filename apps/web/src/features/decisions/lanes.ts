@@ -37,7 +37,7 @@ export interface Lane {
   readonly commits: ReadonlyArray<CommitCardData>
 }
 
-const noProject = 'No project'
+export const noProject = 'No project'
 
 /**
  * One lane per project: every status change of its ADRs, grouped by the commit that made it,

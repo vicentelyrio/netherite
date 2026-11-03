@@ -957,6 +957,18 @@ type RootTranslation = {
 		 */
 		allProjects: string
 		/**
+		 * N​o​ ​p​r​o​j​e​c​t
+		 */
+		noProject: string
+		/**
+		 * P​r​o​j​e​c​t​…
+		 */
+		pickProject: string
+		/**
+		 * N​o​ ​p​r​o​j​e​c​t​ ​m​a​t​c​h​e​s
+		 */
+		noProjectMatch: string
+		/**
 		 * N​o​ ​g​i​t​ ​h​i​s​t​o​r​y
 		 */
 		noGit: string
@@ -3214,6 +3226,18 @@ export type TranslationFunctions = {
 		 * All projects
 		 */
 		allProjects: () => LocalizedString
+		/**
+		 * No project
+		 */
+		noProject: () => LocalizedString
+		/**
+		 * Project…
+		 */
+		pickProject: () => LocalizedString
+		/**
+		 * No project matches
+		 */
+		noProjectMatch: () => LocalizedString
 		/**
 		 * No git history
 		 */

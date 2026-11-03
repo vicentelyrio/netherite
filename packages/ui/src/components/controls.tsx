@@ -7,6 +7,7 @@ import {
   Card as MantineCard,
   type CardProps as MantineCardProps,
   Progress as MantineProgress,
+  Select as MantineSelect,
   Tooltip,
 } from '@mantine/core'
 import {
@@ -252,5 +253,49 @@ export function ProgressRing({
         )}
       </div>
     </div>
+  )
+}
+
+// ---- SearchSelect ------------------------------------------------------------------------
+
+export interface SearchSelectProps {
+  /** The accessible name. */
+  readonly label: string
+  readonly placeholder: string
+  /** The choices; the picked one, or `undefined` for none. */
+  readonly options: ReadonlyArray<string>
+  readonly value: string | undefined
+  readonly onChange: (value: string | undefined) => void
+  /** Said when typing matches nothing. */
+  readonly nothingFound: string
+  /** Fixed width in pixels, so a longer choice never resizes the control. */
+  readonly width?: number
+}
+
+/** A drop-down you can type into to narrow the choices, and clear. Its width does not change. */
+export function SearchSelect({
+  label,
+  placeholder,
+  options,
+  value,
+  onChange,
+  nothingFound,
+  width = 200,
+}: SearchSelectProps) {
+  return (
+    <MantineSelect
+      aria-label={label}
+      placeholder={placeholder}
+      data={[...options]}
+      value={value ?? null}
+      onChange={(next) => onChange(next ?? undefined)}
+      searchable
+      clearable
+      nothingFoundMessage={nothingFound}
+      comboboxProps={{ withinPortal: true, width: Math.max(width, 200) }}
+      w={width}
+      maxDropdownHeight={280}
+      leftSection={<Icon name="search" size="inline" />}
+    />
   )
 }

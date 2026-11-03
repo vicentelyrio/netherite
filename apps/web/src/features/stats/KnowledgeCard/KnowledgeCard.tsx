@@ -20,7 +20,7 @@ export function KnowledgeCard() {
   const decisions = Object.entries(data.knowledge.decisions).sort(([a], [b]) => a.localeCompare(b))
   return (
     <ChartCard title={LL.stats.knowledge.title()}>
-      <div className="kn-bar" role="img" aria-label={LL.stats.knowledge.label()}>
+      <div className="st-kbar" role="img" aria-label={LL.stats.knowledge.label()}>
         {order.map((k) =>
           f[k] === 0 ? null : (
             <span

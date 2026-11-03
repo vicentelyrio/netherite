@@ -299,6 +299,37 @@
   border-color: var(--nt-color-border-divider);
 }
 
+.nt-select-input {
+  height: 34px;
+  background: var(--nt-color-bg-column);
+  border: 1px solid var(--nt-color-border-subtle);
+  color: var(--nt-color-text-primary);
+  font-size: var(--nt-text-caption-size);
+}
+.nt-select-input:focus,
+.nt-select-input:focus-within {
+  border-color: var(--nt-color-accent-fg);
+}
+.nt-select-section {
+  color: var(--nt-color-text-muted);
+}
+.nt-select-dropdown {
+  padding: var(--nt-space-1);
+  background: var(--nt-color-bg-overlay);
+  border: 1px solid var(--nt-color-border-overlay);
+  border-radius: var(--nt-radius-tooltip);
+  box-shadow: var(--nt-shadow-popover);
+}
+.nt-select-option {
+  padding: 6px var(--nt-space-2);
+  font-size: var(--nt-text-caption-size);
+  border-radius: var(--nt-radius-xs);
+}
+.nt-select-option:hover,
+.nt-select-option[data-combobox-selected] {
+  background: var(--nt-color-bg-column);
+}
+
 .nt-modal,
 .nt-drawer {
   background: var(--nt-color-bg-canvas);
@@ -559,7 +590,7 @@
   letter-spacing: -0.02em;
   color: var(--nt-color-text-on-accent);
   background: var(--nt-color-accent-solid);
-  border-radius: var(--nt-radius-tooltip);
+  border-radius: 50%;
 }
 .nt-rail-list {
   display: flex;

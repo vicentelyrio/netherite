@@ -14,7 +14,8 @@
 .project-graph-open {
   position: absolute;
   right: var(--nt-space-4);
-  bottom: var(--nt-space-4);
+  /* The graph runs 40px past the columns; the legend's bottom lines up with theirs. */
+  bottom: 40px;
   z-index: 2;
   display: inline-flex;
   align-items: center;
@@ -26,7 +27,7 @@
   /* On the line of the open icon, clear of the rail. */
   left: var(--nt-space-4);
   right: calc(var(--nt-space-4) + 32px);
-  bottom: var(--nt-space-4);
+  bottom: 40px;
   min-height: 20px;
 }
 

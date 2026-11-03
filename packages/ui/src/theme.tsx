@@ -12,6 +12,7 @@ import {
   Modal,
   Progress,
   SegmentedControl,
+  Select,
   Switch,
   Tabs,
   Tooltip,
@@ -36,6 +37,12 @@ export const classNames = {
   },
   tabs: { list: 'nt-tabs-list', tab: 'nt-tab', panel: 'nt-tab-panel' },
   switch: { track: 'nt-switch-track', thumb: 'nt-switch-thumb', label: 'nt-switch-label' },
+  select: {
+    input: 'nt-select-input',
+    dropdown: 'nt-select-dropdown',
+    option: 'nt-select-option',
+    section: 'nt-select-section',
+  },
   tooltip: { tooltip: 'nt-tooltip' },
   menu: {
     dropdown: 'nt-menu',
@@ -96,6 +103,10 @@ export const theme: MantineThemeOverride = createTheme({
     Tabs: Tabs.extend({
       classNames: classNames.tabs,
       defaultProps: { variant: 'default', keepMounted: false },
+    }),
+    Select: Select.extend({
+      classNames: classNames.select,
+      defaultProps: { size: 'sm', radius: 'sm', withCheckIcon: false },
     }),
     Switch: Switch.extend({ classNames: classNames.switch, defaultProps: { size: 'sm' } }),
     Tooltip: Tooltip.extend({

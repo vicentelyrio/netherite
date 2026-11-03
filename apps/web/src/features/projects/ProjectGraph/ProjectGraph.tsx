@@ -31,7 +31,7 @@ export function ProjectGraph({ board }: { readonly board: Board }) {
           labels="focus"
           nodeScale={0.85}
           pad={20}
-          padBottom={56}
+          padBottom={96}
           zoomButtons={false}
           focus={board.id}
           label={LL.projects.graphLabel({ title: board.title })}

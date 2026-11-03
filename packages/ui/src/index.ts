@@ -32,6 +32,8 @@ export {
   ProgressRing,
   type ProgressRingProps,
   percentOf,
+  SearchSelect,
+  type SearchSelectProps,
 } from './components/controls'
 export {
   AdrStatusPill,

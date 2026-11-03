@@ -715,12 +715,18 @@ describe('the decision log', () => {
     expect(screen.getByRole('region', { name: 'No project' })).toBeInTheDocument()
   })
 
-  test('the project tabs show one lane, and Knowledge links to the log', async () => {
+  test('the project filter shows one lane, and Knowledge links to the log', async () => {
     renderApp('/decisions')
     await screen.findByRole('region', { name: 'No project' })
-    await userEvent.click(screen.getByRole('radio', { name: 'PRJ-00001' }))
+    await userEvent.click(screen.getByRole('combobox', { name: 'Project' }))
+    await userEvent.click(await screen.findByRole('option', { name: 'PRJ-00001' }))
     await waitFor(() => expect(screen.queryByRole('region', { name: 'No project' })).toBeNull())
     expect(screen.getByRole('region', { name: 'PRJ-00001' })).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('radio', { name: 'No project' }))
+    expect(await screen.findByRole('region', { name: 'No project' })).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: 'PRJ-00001' })).toBeNull()
+    await userEvent.click(screen.getByRole('radio', { name: 'All projects' }))
+    expect(await screen.findByRole('region', { name: 'PRJ-00001' })).toBeInTheDocument()
     await userEvent.click(railButton(/^Knowledge/))
     await userEvent.click(await screen.findByRole('link', { name: /Decision log/ }))
     expect(await screen.findByRole('heading', { name: 'Decision log' })).toBeInTheDocument()

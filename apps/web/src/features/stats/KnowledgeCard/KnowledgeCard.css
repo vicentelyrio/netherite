@@ -1,23 +1,23 @@
-.kn-bar {
+.st-kbar {
   display: flex;
   height: 10px;
   border-radius: 5px;
   overflow: hidden;
   background: #33364f;
 }
-.kn-bar > span,
+.st-kbar > span,
 .kn-swatch {
   background: #4d5180;
 }
-.kn-bar > [data-kind="fresh"],
+.st-kbar > [data-kind="fresh"],
 .kn-swatch[data-kind="fresh"] {
   background: #2cc27e;
 }
-.kn-bar > [data-kind="drifting"],
+.st-kbar > [data-kind="drifting"],
 .kn-swatch[data-kind="drifting"] {
   background: #e2ae4c;
 }
-.kn-bar > [data-kind="stale"],
+.st-kbar > [data-kind="stale"],
 .kn-swatch[data-kind="stale"] {
   background: #f0717e;
 }

@@ -1,10 +1,11 @@
+import { SearchSelect } from '@netherite/ui'
 import { FilterTabs } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useDecisions } from '../DecisionProvider'
-import { statusLabel, statusStyle } from '../lanes'
+import { noProject, statusLabel, statusStyle } from '../lanes'
 import './DecisionLegend.css'
 
-/** What each colour means, and tabs that narrow the log to one project. */
+/** What each colour means, and a filter that narrows the log to one project. */
 export function DecisionLegend() {
   const { LL } = useI18nContext()
   const { all, project, setProject } = useDecisions()
@@ -25,10 +26,20 @@ export function DecisionLegend() {
         label={LL.decisions.project()}
         options={[
           { value: '', label: LL.decisions.allProjects() },
-          ...all.map((l) => ({ value: l.project, label: l.project })),
+          ...(all.some((l) => l.project === noProject)
+            ? [{ value: noProject, label: LL.decisions.noProject() }]
+            : []),
         ]}
         value={project}
         onChange={setProject}
+      />
+      <SearchSelect
+        label={LL.decisions.project()}
+        placeholder={LL.decisions.pickProject()}
+        nothingFound={LL.decisions.noProjectMatch()}
+        options={all.filter((l) => l.project !== noProject).map((l) => l.project)}
+        value={project === '' || project === noProject ? undefined : project}
+        onChange={(next) => setProject(next ?? '')}
       />
     </div>
   )

@@ -1,13 +1,30 @@
 .dl-lanes {
   display: grid;
-  grid-template-columns: repeat(var(--lanes, 3), minmax(380px, 1fr));
+  /* The last track is empty: the page's right margin, so the last lane stops short of the edge. */
+  --dl-end: max(0px, calc(var(--nt-grid-margin-compact) - 32px));
+  grid-template-columns: repeat(var(--lanes, 3), minmax(380px, 1fr)) var(--dl-end);
   column-gap: 32px;
+  grid-template-rows: minmax(0, 1fr);
+  /* Lanes scroll sideways here, and each lane scrolls its own cards. */
   overflow-x: auto;
-  padding-bottom: 24px;
+  overflow-y: hidden;
+  /* The height is set to the room left on screen (DecisionLanes.tsx). */
+  min-height: 320px;
+  padding-bottom: 0;
 }
 
 .dl-lane {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
+  min-height: 0;
+}
+
+.dl-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 24px;
 }
 
 .dl-lane-head {
@@ -48,4 +65,10 @@
   bottom: 0;
   width: 2px;
   background: #33364f;
+}
+
+@media (min-width: 75em) {
+  .dl-lanes {
+    --dl-end: max(0px, calc(var(--nt-grid-margin-end) - 32px));
+  }
 }
