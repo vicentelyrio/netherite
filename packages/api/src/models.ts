@@ -489,6 +489,10 @@ export const GoalRow = Schema.Struct({
   area: opt(S),
   due: opt(S),
   created: opt(S),
+  /** How far ahead the goal looks, as written (`forever`, `5 years`). */
+  horizon: opt(S),
+  /** The horizon in days; missing for `forever`. */
+  horizonDays: opt(N),
   tags: Schema.Array(S),
   progress: OptProgress,
   projects: N,

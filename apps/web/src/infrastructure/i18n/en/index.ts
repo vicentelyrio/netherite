@@ -500,6 +500,7 @@ const en = {
       loadError: 'Could not load this goal',
       back: 'Back to goals',
       progress: 'Progress',
+      horizon: 'Horizon',
       projects: 'Projects',
       newProject: 'New project',
       projectTitle: 'Project title',

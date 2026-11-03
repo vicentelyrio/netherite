@@ -1844,6 +1844,10 @@ type RootTranslation = {
 			 */
 			progress: string
 			/**
+			 * H​o​r​i​z​o​n
+			 */
+			horizon: string
+			/**
 			 * P​r​o​j​e​c​t​s
 			 */
 			projects: string
@@ -4123,6 +4127,10 @@ export type TranslationFunctions = {
 			 * Progress
 			 */
 			progress: () => LocalizedString
+			/**
+			 * Horizon
+			 */
+			horizon: () => LocalizedString
 			/**
 			 * Projects
 			 */

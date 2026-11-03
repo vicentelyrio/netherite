@@ -3,6 +3,7 @@ import { Card } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
 import { ProgressBar, TagList } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
+import { horizonLabel } from '../horizon'
 import './GoalCard.css'
 
 /** A goal as a card: title, due date, tags and how much of it is done. */
@@ -16,6 +17,7 @@ export function GoalCard({ goal }: { readonly goal: GoalRow }) {
         <div className="goal-card">
           <div className="goal-card-top">
             <span className="goal-card-title">{goal.title}</span>
+            {goal.horizon && <span className="goal-horizon">{horizonLabel(goal.horizon)}</span>}
             {achieved && <span className="goal-achieved">{LL.goals.achieved()}</span>}
           </div>
           {goal.due && <span className="app-muted">{LL.goals.due({ date: goal.due })}</span>}

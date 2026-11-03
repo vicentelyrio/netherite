@@ -47,6 +47,20 @@ describe('goals for the overview', () => {
     expect(goalRows(w.repo).find((g) => g.id === 'GOAL-00001')?.projects).toBe(2)
   })
 
+  test('carry the horizon as written, and in days unless it is forever or not a horizon', async () => {
+    const w = await world({
+      ...cleanFiles(),
+      ...goal(2, ['horizon: 5 years']),
+      ...goal(3, ['horizon: forever']),
+      ...goal(4, ['horizon: someday']),
+    })
+    const row = (id: string) => goalRows(w.repo).find((g) => g.id === id)
+    expect(row('GOAL-00002')).toMatchObject({ horizon: '5 years', horizonDays: 1825 })
+    expect(row('GOAL-00003')).toMatchObject({ horizon: 'forever', horizonDays: undefined })
+    expect(row('GOAL-00004')).toMatchObject({ horizon: 'someday', horizonDays: undefined })
+    expect(row('GOAL-00001')?.horizon).toBeUndefined()
+  })
+
   test('progress is the done tasks over all tasks of all its projects, once each', async () => {
     const w = await world({
       ...cleanFiles(),

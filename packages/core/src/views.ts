@@ -1,4 +1,5 @@
 import type { Freshness } from './freshness'
+import { parseHorizon } from './horizon'
 import { contentHash } from './ops/hash'
 import type { Repo } from './ops/repo'
 import type { ScannedItem } from './scanned-item'
@@ -283,6 +284,10 @@ export interface GoalRow {
   readonly due: string | undefined
   /** When the goal was made, for how far along its horizon it is. */
   readonly created: string | undefined
+  /** How far ahead it looks, as written: `forever`, `5 years`. */
+  readonly horizon: string | undefined
+  /** The horizon in days; missing for `forever` and for text that is not a horizon. */
+  readonly horizonDays: number | undefined
   readonly tags: ReadonlyArray<string>
   /** Tasks done over tasks, across all its projects. `null` when it has none. */
   readonly progress: { readonly done: number; readonly total: number } | null
@@ -313,6 +318,9 @@ const projectsOf = (repo: Repo, goalPath: string) =>
 
 const goalRow = (repo: Repo, item: ScannedItem): GoalRow => {
   const f = fieldsOf(item)
+  const horizon =
+    typeof f.horizon === 'string' && f.horizon.trim() !== '' ? f.horizon.trim() : undefined
+  const parsed = horizon === undefined ? undefined : parseHorizon(horizon)
   return {
     id: item.id as string,
     title: item.title ?? (item.id as string),
@@ -321,6 +329,8 @@ const goalRow = (repo: Repo, item: ScannedItem): GoalRow => {
     area: typeof f.area === 'string' && f.area !== '' ? f.area : undefined,
     due: typeof f.due === 'string' ? f.due : undefined,
     created: typeof f.created === 'string' ? f.created : undefined,
+    horizon,
+    horizonDays: parsed === undefined || parsed.forever ? undefined : parsed.days,
     tags: strings(f.tags),
     progress: repo.index.progress(item.path) ?? null,
     projects: projectsOf(repo, item.path).length,

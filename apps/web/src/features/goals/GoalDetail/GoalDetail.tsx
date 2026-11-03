@@ -7,6 +7,7 @@ import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { goalQuery } from '@/infrastructure/query'
 import { GoalProjects } from '../GoalProjects'
+import { horizonElapsed, horizonLabel } from '../horizon'
 import './GoalDetail.css'
 
 /** One goal: where it sits, how far along it is, and its projects. */
@@ -28,6 +29,7 @@ export function GoalDetail({ id }: { readonly id: string }) {
   }
   const goal = query.data
   const progress = goal.progress ?? { done: 0, total: 0 }
+  const horizon = horizonElapsed(goal, new Date())
   return (
     <div className="goal-detail-main">
       <Breadcrumbs>
@@ -38,14 +40,35 @@ export function GoalDetail({ id }: { readonly id: string }) {
       </Breadcrumbs>
       <header className="goal-head">
         <h1 className="app-title goal-title">{goal.title}</h1>
-        <div className="goal-ring">
-          <ProgressRing
-            done={progress.done}
-            total={progress.total}
-            size={64}
-            label={LL.goals.detail.progress()}
-          />
-          <span className="app-muted">{LL.goals.detail.progress()}</span>
+        <div className="goal-rings">
+          {goal.horizon && (
+            <div className="goal-ring">
+              {horizon === undefined ? (
+                <span className="goal-forever" role="img" aria-label={horizonLabel(goal.horizon)}>
+                  ∞
+                </span>
+              ) : (
+                <ProgressRing
+                  done={horizon.elapsed}
+                  total={horizon.total}
+                  size={64}
+                  label={LL.goals.detail.horizon()}
+                />
+              )}
+              <span className="app-muted">
+                {LL.goals.detail.horizon()} · {horizonLabel(goal.horizon)}
+              </span>
+            </div>
+          )}
+          <div className="goal-ring">
+            <ProgressRing
+              done={progress.done}
+              total={progress.total}
+              size={64}
+              label={LL.goals.detail.progress()}
+            />
+            <span className="app-muted">{LL.goals.detail.progress()}</span>
+          </div>
         </div>
       </header>
       <GoalProjects goalId={goal.id} projects={goal.projectRows} />
