@@ -30,6 +30,7 @@ context:
 | `states[].category` | | `todo`, `active`, `blocked` or `done` |
 | `freshness.drifting` | `1` | commits since review (touching covered files) before a doc is *drifting* |
 | `freshness.stale` | `10` | commits before it is *stale* |
+| `inbox.rules.<rule>` | `true` | set to `false` to stop the Inbox raising that rule: `stale-doc`, `proposed-adr`, `orphan`, `overdue-task`, `closing-commit`, `new-todo`, `similar-tag` |
 | `context.budget` | `8000` | tokens the synced context may use per file (an estimate: characters / 4) |
 | `context.targets` | `[claude, agents]` | `claude` writes `CLAUDE.md`, `agents` writes `AGENTS.md`, `mcp` serves it over MCP only |
 

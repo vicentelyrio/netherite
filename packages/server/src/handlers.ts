@@ -38,6 +38,7 @@ import {
   periodStats,
   progressSeries,
   projectRows,
+  raised,
   readActivity,
   readSource,
   renameTag,
@@ -582,7 +583,36 @@ const inbox = (state: ServerState) =>
         )
         const all = repo.index.items()
 
+        const since = new Date(Date.now() - 14 * 86_400_000).toISOString()
+        const recent = state.git
+          ? yield* state.git.log({ after: since, limit: 50 }).pipe(Effect.orElseSucceed(() => []))
+          : []
+        const patches = state.git
+          ? yield* state.git
+              .patchLog({ paths: ['.'], after: since, limit: 30, context: 0 })
+              .pipe(Effect.orElseSucceed(() => []))
+          : []
+        const todo = /\bTODO\b/
+        const todos = patches.flatMap((c) =>
+          c.patches
+            .filter((p) => !p.deleted && !p.path.startsWith(`${folder}/`))
+            .flatMap((p) =>
+              p.hunks.flatMap((h) =>
+                h.lines.flatMap((text, i) =>
+                  todo.test(text)
+                    ? [{ hash: c.hash, date: c.date, path: p.path, line: h.newStart + i, text }]
+                    : [],
+                ),
+              ),
+            ),
+        )
+
         return {
+          raised: raised(repo, {
+            freshness: fresh ?? new Map(),
+            commits: recent,
+            todos,
+          }),
           changes,
           activity: groupActivity(log.entries),
           proposed: summaries(

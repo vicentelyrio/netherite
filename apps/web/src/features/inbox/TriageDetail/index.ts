@@ -1,0 +1,1 @@
+export { TriageDetail } from './TriageDetail'

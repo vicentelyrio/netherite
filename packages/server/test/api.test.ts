@@ -638,6 +638,7 @@ describe('inbox', () => {
       Effect.gen(function* () {
         const inbox = yield* s.client.inbox.inbox({ query: {} })
         expect(inbox.proposed.map((i) => i.id)).toEqual(['ADR-00003'])
+        expect(inbox.raised.map((r) => r.key)).toContain('proposed-adr:ADR-00003')
         expect(inbox.changes).toEqual([])
         expect(inbox.freshness).toEqual([])
         expect(inbox.errors).toEqual([])

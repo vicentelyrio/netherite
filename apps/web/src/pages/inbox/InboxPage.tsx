@@ -1,13 +1,31 @@
-import { InboxActions, InboxGroups, InboxHeading, InboxProvider } from '@/features/inbox'
-import { PageTemplate } from '@/templates'
+import {
+  InboxActions,
+  InboxGroups,
+  InboxHeading,
+  InboxProvider,
+  InboxToolbar,
+  TriageDetail,
+  TriageList,
+  useInboxState,
+} from '@/features/inbox'
+import { SplitTemplate } from '@/templates'
 
-/** The Inbox: what changed since you last looked, and what waits for you. */
+function Main() {
+  const { tab } = useInboxState()
+  return tab === 'changes' ? <InboxGroups /> : <TriageList />
+}
+
+/** The Inbox: what the repo raises for you to triage, and what changed since you last looked. */
 export function InboxPage() {
   return (
     <InboxProvider>
-      <PageTemplate header={<InboxHeading />} actions={<InboxActions />}>
-        <InboxGroups />
-      </PageTemplate>
+      <SplitTemplate
+        header={<InboxHeading />}
+        actions={<InboxActions />}
+        toolbar={<InboxToolbar />}
+        main={<Main />}
+        aside={<TriageDetail />}
+      />
     </InboxProvider>
   )
 }

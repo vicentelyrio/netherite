@@ -231,7 +231,29 @@ export const InboxQuery = {
   /** Only agent activity after this time (ISO 8601), such as the last visit. */
   since: opt(S),
 }
+export const Raised = Schema.Struct({
+  /** Stable while the cause stays, so a dismissal or snooze can be remembered under it. */
+  key: S,
+  rule: Schema.Literals([
+    'stale-doc',
+    'proposed-adr',
+    'orphan',
+    'overdue-task',
+    'closing-commit',
+    'new-todo',
+    'similar-tag',
+  ]),
+  title: S,
+  detail: S,
+  id: opt(S),
+  path: opt(S),
+  line: opt(N),
+  date: opt(S),
+  commit: opt(S),
+})
 export const Inbox = Schema.Struct({
+  /** What the repo raises, newest cause first. Rules can be switched off with `inbox.rules` in the config. */
+  raised: Schema.Array(Raised),
   /** Uncommitted changes to items, from `git status`. Empty without git. */
   changes: Schema.Array(
     Schema.Struct({

@@ -144,6 +144,14 @@ export {
   periodStats,
 } from './period-stats'
 export {
+  enabledRules,
+  type Raised,
+  type RaisedInput,
+  type RaisedRule,
+  raised,
+  raisedRules,
+} from './raised'
+export {
   createResolver,
   lookupKeys,
   type MutableResolver,

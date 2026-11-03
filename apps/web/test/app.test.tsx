@@ -950,16 +950,32 @@ describe('opening as a split', () => {
 })
 
 describe('the Inbox', () => {
-  test('lists what waits for you: a proposed ADR under decisions to make, with the count in the header', async () => {
+  test('lists what the repo raises: a proposed ADR to decide, with its action beside it', async () => {
     renderApp('/inbox')
-    const group = await screen.findByRole('region', { name: 'Decisions to make' })
-    expect(within(group).getByText('ADR-00003')).toBeInTheDocument()
-    expect(within(group).getByText('Proposed')).toBeInTheDocument()
+    const list = await screen.findByRole('list', { name: 'Needs review' })
+    const row = within(list).getByRole('button', { name: /Decision/ })
+    expect(row).toHaveTextContent('Proposed, waiting for a decision')
     expect(screen.getByText(/things? need(s)? you/)).toBeInTheDocument()
-    expect(within(group).getByRole('link', { name: /ADR-00003/ })).toHaveAttribute(
+    await userEvent.click(row)
+    const detail = screen.getByRole('region', { name: 'Selected inbox item' })
+    expect(within(detail).getByRole('button', { name: 'Accept' })).toBeInTheDocument()
+    expect(within(detail).getByRole('link', { name: 'ADR-00003' })).toHaveAttribute(
       'href',
       '/items/ADR-00003',
     )
+  })
+
+  test('E archives the picked item and Undo brings it back', async () => {
+    localStorage.removeItem('netherite:inbox-hidden')
+    renderApp('/inbox')
+    const rows = () => screen.queryAllByRole('button', { name: /Decision|Orphan|Stale|Overdue/ })
+    await screen.findByRole('list', { name: 'Needs review' })
+    const before = rows().length
+    await userEvent.keyboard('e')
+    await waitFor(() => expect(rows().length).toBe(before - 1))
+    await userEvent.click(await screen.findByRole('button', { name: 'Undo' }))
+    await waitFor(() => expect(rows().length).toBe(before))
+    localStorage.removeItem('netherite:inbox-hidden')
   })
 
   test('shows uncommitted changes to items, and Mark as seen moves the since-line forward', async () => {
@@ -972,6 +988,7 @@ describe('the Inbox', () => {
       }),
     )
     renderApp('/inbox')
+    await userEvent.click(await screen.findByRole('radio', { name: /Changes/ }))
     const changes = await screen.findByRole('region', { name: 'Uncommitted changes' })
     expect(within(changes).getByText('DOC-00001')).toBeInTheDocument()
     expect(screen.getByText(/changes since the beginning/)).toBeInTheDocument()
@@ -982,7 +999,7 @@ describe('the Inbox', () => {
 
   test('the rail badge counts the same things the page lists', async () => {
     renderApp('/inbox')
-    await screen.findByRole('region', { name: 'Decisions to make' })
+    await screen.findByRole('list', { name: 'Needs review' })
     expect(
       await within(nav()).findByRole('button', { name: /^Inbox, \d+ waiting$/ }),
     ).toBeInTheDocument()

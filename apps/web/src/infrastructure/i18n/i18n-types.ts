@@ -2142,6 +2142,165 @@ type RootTranslation = {
 		 * @param {number} count
 		 */
 		showAll: RequiredParams<'count'>
+		/**
+		 * U​n​d​o
+		 */
+		undo: string
+		/**
+		 * A​r​c​h​i​v​e​d
+		 */
+		archived: string
+		/**
+		 * S​n​o​o​z​e​d​ ​u​n​t​i​l​ ​t​o​m​o​r​r​o​w
+		 */
+		snoozedUntil: string
+		tabs: {
+			/**
+			 * I​n​b​o​x​ ​s​e​c​t​i​o​n​s
+			 */
+			label: string
+			/**
+			 * N​e​e​d​s​ ​r​e​v​i​e​w
+			 */
+			review: string
+			/**
+			 * F​r​o​m​ ​c​o​m​m​i​t​s
+			 */
+			commits: string
+			/**
+			 * C​h​a​n​g​e​s
+			 */
+			changes: string
+		}
+		rules: {
+			/**
+			 * S​t​a​l​e​ ​d​o​c
+			 */
+			'stale-doc': string
+			/**
+			 * D​e​c​i​s​i​o​n
+			 */
+			'proposed-adr': string
+			/**
+			 * O​r​p​h​a​n
+			 */
+			orphan: string
+			/**
+			 * O​v​e​r​d​u​e
+			 */
+			'overdue-task': string
+			/**
+			 * C​l​o​s​i​n​g​ ​c​o​m​m​i​t
+			 */
+			'closing-commit': string
+			/**
+			 * N​e​w​ ​T​O​D​O
+			 */
+			'new-todo': string
+			/**
+			 * S​i​m​i​l​a​r​ ​t​a​g​s
+			 */
+			'similar-tag': string
+		}
+		zero: {
+			/**
+			 * I​n​b​o​x​ ​z​e​r​o
+			 */
+			title: string
+			/**
+			 * N​o​t​h​i​n​g​ ​n​e​e​d​s​ ​r​e​v​i​e​w​.​ ​T​h​e​ ​r​e​p​o​ ​w​i​l​l​ ​r​a​i​s​e​ ​i​t​ ​h​e​r​e​ ​w​h​e​n​ ​s​o​m​e​t​h​i​n​g​ ​d​o​e​s​.
+			 */
+			text: string
+			/**
+			 * N​o​ ​c​o​m​m​i​t​ ​p​o​i​n​t​s​ ​a​t​ ​o​p​e​n​ ​w​o​r​k​ ​a​n​d​ ​n​o​ ​n​e​w​ ​T​O​D​O​s​.
+			 */
+			commits: string
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​i​t​e​m​ ​i​s​|​i​t​e​m​s​ ​a​r​e​}​}​ ​s​n​o​o​z​e​d​ ​u​n​t​i​l​ ​t​o​m​o​r​r​o​w​.
+			 * @param {number} count
+			 */
+			snoozed: RequiredParams<'count'>
+		}
+		detail: {
+			/**
+			 * S​e​l​e​c​t​e​d​ ​i​n​b​o​x​ ​i​t​e​m
+			 */
+			title: string
+			/**
+			 * P​i​c​k​ ​a​n​ ​i​t​e​m​ ​t​o​ ​s​e​e​ ​w​h​y​ ​i​t​ ​i​s​ ​h​e​r​e​.
+			 */
+			pick: string
+			/**
+			 * R​a​i​s​e​d​ ​b​y​ ​a​ ​r​e​c​e​n​t​ ​c​o​m​m​i​t​.
+			 */
+			fromCommit: string
+		}
+		actions: {
+			/**
+			 * M​a​r​k​ ​r​e​v​i​e​w​e​d
+			 */
+			reviewed: string
+			/**
+			 * A​c​c​e​p​t
+			 */
+			accept: string
+			/**
+			 * M​a​r​k​ ​t​a​s​k​ ​d​o​n​e
+			 */
+			taskDone: string
+			/**
+			 * M​o​v​e​ ​d​u​e​ ​a​ ​w​e​e​k
+			 */
+			moveDue: string
+			/**
+			 * M​a​k​e​ ​t​a​s​k
+			 */
+			makeTask: string
+			/**
+			 * L​i​n​k
+			 */
+			link: string
+			/**
+			 * M​e​r​g​e​ ​{​f​r​o​m​}​ ​i​n​t​o​ ​{​t​o​}
+			 * @param {unknown} from
+			 * @param {unknown} to
+			 */
+			mergeTags: RequiredParams<'from' | 'to'>
+			/**
+			 * S​n​o​o​z​e
+			 */
+			snooze: string
+			/**
+			 * A​r​c​h​i​v​e
+			 */
+			archive: string
+		}
+		done: {
+			/**
+			 * M​a​r​k​e​d​ ​r​e​v​i​e​w​e​d
+			 */
+			reviewed: string
+			/**
+			 * A​c​c​e​p​t​e​d
+			 */
+			accepted: string
+			/**
+			 * T​a​s​k​ ​d​o​n​e
+			 */
+			taskDone: string
+			/**
+			 * T​a​s​k​ ​c​r​e​a​t​e​d
+			 */
+			madeTask: string
+			/**
+			 * D​u​e​ ​d​a​t​e​ ​m​o​v​e​d
+			 */
+			moved: string
+			/**
+			 * T​a​g​s​ ​m​e​r​g​e​d
+			 */
+			merged: string
+		}
 	}
 }
 
@@ -4179,6 +4338,162 @@ export type TranslationFunctions = {
 		 * Show all {count} changes
 		 */
 		showAll: (arg: { count: number }) => LocalizedString
+		/**
+		 * Undo
+		 */
+		undo: () => LocalizedString
+		/**
+		 * Archived
+		 */
+		archived: () => LocalizedString
+		/**
+		 * Snoozed until tomorrow
+		 */
+		snoozedUntil: () => LocalizedString
+		tabs: {
+			/**
+			 * Inbox sections
+			 */
+			label: () => LocalizedString
+			/**
+			 * Needs review
+			 */
+			review: () => LocalizedString
+			/**
+			 * From commits
+			 */
+			commits: () => LocalizedString
+			/**
+			 * Changes
+			 */
+			changes: () => LocalizedString
+		}
+		rules: {
+			/**
+			 * Stale doc
+			 */
+			'stale-doc': () => LocalizedString
+			/**
+			 * Decision
+			 */
+			'proposed-adr': () => LocalizedString
+			/**
+			 * Orphan
+			 */
+			orphan: () => LocalizedString
+			/**
+			 * Overdue
+			 */
+			'overdue-task': () => LocalizedString
+			/**
+			 * Closing commit
+			 */
+			'closing-commit': () => LocalizedString
+			/**
+			 * New TODO
+			 */
+			'new-todo': () => LocalizedString
+			/**
+			 * Similar tags
+			 */
+			'similar-tag': () => LocalizedString
+		}
+		zero: {
+			/**
+			 * Inbox zero
+			 */
+			title: () => LocalizedString
+			/**
+			 * Nothing needs review. The repo will raise it here when something does.
+			 */
+			text: () => LocalizedString
+			/**
+			 * No commit points at open work and no new TODOs.
+			 */
+			commits: () => LocalizedString
+			/**
+			 * {count} {{item is|items are}} snoozed until tomorrow.
+			 */
+			snoozed: (arg: { count: number }) => LocalizedString
+		}
+		detail: {
+			/**
+			 * Selected inbox item
+			 */
+			title: () => LocalizedString
+			/**
+			 * Pick an item to see why it is here.
+			 */
+			pick: () => LocalizedString
+			/**
+			 * Raised by a recent commit.
+			 */
+			fromCommit: () => LocalizedString
+		}
+		actions: {
+			/**
+			 * Mark reviewed
+			 */
+			reviewed: () => LocalizedString
+			/**
+			 * Accept
+			 */
+			accept: () => LocalizedString
+			/**
+			 * Mark task done
+			 */
+			taskDone: () => LocalizedString
+			/**
+			 * Move due a week
+			 */
+			moveDue: () => LocalizedString
+			/**
+			 * Make task
+			 */
+			makeTask: () => LocalizedString
+			/**
+			 * Link
+			 */
+			link: () => LocalizedString
+			/**
+			 * Merge {from} into {to}
+			 */
+			mergeTags: (arg: { from: unknown, to: unknown }) => LocalizedString
+			/**
+			 * Snooze
+			 */
+			snooze: () => LocalizedString
+			/**
+			 * Archive
+			 */
+			archive: () => LocalizedString
+		}
+		done: {
+			/**
+			 * Marked reviewed
+			 */
+			reviewed: () => LocalizedString
+			/**
+			 * Accepted
+			 */
+			accepted: () => LocalizedString
+			/**
+			 * Task done
+			 */
+			taskDone: () => LocalizedString
+			/**
+			 * Task created
+			 */
+			madeTask: () => LocalizedString
+			/**
+			 * Due date moved
+			 */
+			moved: () => LocalizedString
+			/**
+			 * Tags merged
+			 */
+			merged: () => LocalizedString
+		}
 	}
 }
 
