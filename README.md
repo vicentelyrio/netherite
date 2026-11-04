@@ -51,6 +51,8 @@ and task, connecting an agent, and keeping the context file in sync.
 
 ## Documentation
 
+The same pages are published as a searchable site: <https://vicentelyrio.github.io/netherite/>.
+
 | | |
 | --- | --- |
 | [Getting started](docs/getting-started.md) | `init`, the app, the first items, agents and skills |

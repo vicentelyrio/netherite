@@ -155,3 +155,7 @@ playwright-report
 packages/netherite/README.md
 packages/netherite/LICENSE
 apps/web/.bundle-report.json
+
+# The documentation site
+docs/.vitepress/dist
+docs/.vitepress/cache

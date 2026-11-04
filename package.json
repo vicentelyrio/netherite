@@ -31,6 +31,8 @@
     "test:scale": "turbo run test:scale",
     "e2e": "turbo run e2e",
     "docs:gen": "node scripts/gen-reference.mjs",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
     "docs:check": "node scripts/gen-reference.mjs --check && node scripts/check-npx-name.mjs",
     "netherite:lint": "node packages/cli/dist/bin.mjs lint --fail-on warning",
     "netherite:context": "node packages/cli/dist/bin.mjs context sync --check",
@@ -44,6 +46,7 @@
     "lefthook": "^2.2.2",
     "turbo": "^2.11.10",
     "typescript": "catalog:",
+    "vitepress": "^1.6.4",
     "vitest": "catalog:"
   },
   "manypkg": {

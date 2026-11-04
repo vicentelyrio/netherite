@@ -342,7 +342,9 @@ export const makeCli = (env: Env, state: { code: ExitCode }, version = '0.0.0') 
   )
 
   return Command.make('netherite', serveFlags, serve).pipe(
-    Command.withDescription('Typed, linked knowledge in your git repository.'),
+    Command.withDescription(
+      'Typed, linked knowledge in your git repository. Documentation: https://vicentelyrio.github.io/netherite/',
+    ),
     Command.withSubcommands([
       initCmd,
       newCmd,

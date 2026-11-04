@@ -10,7 +10,7 @@ Every command takes `--help`, `--version`, `--log-level <level>` and `--completi
 
 ```text
 DESCRIPTION
-  Typed, linked knowledge in your git repository.
+  Typed, linked knowledge in your git repository. Documentation: https://vicentelyrio.github.io/netherite/
 
 USAGE
   netherite <subcommand> [flags]

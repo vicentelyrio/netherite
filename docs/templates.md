@@ -4,7 +4,7 @@
 
 Each item type has a starter template: the frontmatter with every optional field in a comment, and
 the sections the app and `netherite lint` expect. Optional fields start with `#`; remove the
-`#` to use one. `{{name}}` marks a value that Netherite fills in.
+`#` to use one. <code v-pre>{{name}}</code> marks a value that Netherite fills in.
 
 ## Use them
 
