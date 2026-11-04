@@ -50,8 +50,8 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm build
 
-      - name: Browser bundle size
-        run: echo "Enabled with apps/web in TASK-00034. It fails if the browser build imports more of effect than Schema and the HTTP client, or exceeds its size budget."
+      - name: Browser bundle stays within its record
+        run: pnpm --filter @netherite/web check:bundle
 
       # The repository's own knowledge base, checked with the CLI that was just built.
       - name: Reference docs are up to date

@@ -1,3 +1,4 @@
+import { writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
@@ -24,8 +25,38 @@ const sessionToken = (): Plugin => ({
   },
 })
 
+/**
+ * After a build, writes which modules went into which chunk and how big each is, for
+ * `scripts/check-bundle.mjs` (the browser bundle may use only part of `effect`).
+ */
+const bundleReport = (): Plugin => ({
+  name: 'netherite-bundle-report',
+  apply: 'build',
+  generateBundle(_options, bundle) {
+    const chunks = Object.values(bundle).flatMap((item) =>
+      item.type === 'chunk'
+        ? [
+            {
+              file: item.fileName,
+              modules: item.modules
+                ? Object.fromEntries(
+                    Object.entries(item.modules).map(([id, m]) => [id, m.renderedLength]),
+                  )
+                : {},
+            },
+          ]
+        : [],
+    )
+    // Next to the app, not in `dist/`, which is what gets published.
+    writeFileSync(
+      fileURLToPath(new URL('./.bundle-report.json', import.meta.url)),
+      JSON.stringify({ chunks }, null, 2),
+    )
+  },
+})
+
 export default defineConfig({
-  plugins: [react(), sessionToken()],
+  plugins: [react(), sessionToken(), bundleReport()],
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   server: {
     host: '127.0.0.1',

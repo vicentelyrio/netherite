@@ -9,7 +9,9 @@
     "dev": "vite",
     "build": "vite build",
     "e2e": "playwright test",
-    "i18n": "node scripts/i18n.mjs"
+    "i18n": "node scripts/i18n.mjs",
+    "check:bundle": "node scripts/check-bundle.mjs",
+    "bundle:update": "node scripts/check-bundle.mjs --update"
   },
   "dependencies": {
     "@codemirror/autocomplete": "catalog:",

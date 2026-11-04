@@ -154,3 +154,4 @@ playwright-report
 # Copied from the root README at build
 packages/netherite/README.md
 packages/netherite/LICENSE
+apps/web/.bundle-report.json
