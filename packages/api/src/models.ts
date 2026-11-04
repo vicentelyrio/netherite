@@ -691,3 +691,5 @@ export const RenameTagResult = Schema.Struct({
   /** Every file written. */
   changed: Schema.Array(S),
 })
+
+export const RenameAreaPayload = Schema.Struct({ from: S, to: S })

@@ -52,6 +52,7 @@
 
 .drawer-title-slot {
   flex: 1;
+  min-width: 0;
 }
 
 .drawer-crumbs {
@@ -63,7 +64,26 @@
   color: #b9bcd3;
 }
 
+/* One line: the project and the file name give way with an ellipsis, the rest stays. */
+.drawer-crumbs {
+  min-width: 0;
+  white-space: nowrap;
+}
+.drawer-crumbs > * {
+  flex: none;
+}
+.drawer-crumbs > a:nth-of-type(2) {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 28%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .drawer-crumbs strong {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: #e6e7f2;
   font-weight: 500;
 }

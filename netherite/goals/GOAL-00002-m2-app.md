@@ -6,6 +6,7 @@ title: M2 · App
 created: 2026-11-01T23:50:43Z
 created_by: "@vicentelyrio"
 status: active
+area: Version 1.0
 ---
 
 # M2 · App

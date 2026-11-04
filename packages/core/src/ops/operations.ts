@@ -301,6 +301,14 @@ export interface FieldPatch {
 
 const immutable = ['id', 'type']
 
+/** Keeps the first `# ` heading after the frontmatter in step with a new `title`. */
+const retitleHeading = (text: string, title: string) => {
+  const end = text.match(/^---\r?\n[\s\S]*?\r?\n---[ \t]*(?:\r?\n|$)/)?.[0].length ?? 0
+  const rest = text.slice(end)
+  const heading = /^# .*$/m
+  return heading.test(rest) ? text.slice(0, end) + rest.replace(heading, () => `# ${title}`) : text
+}
+
 /** Sets and removes frontmatter fields. `id` and `type` cannot be changed this way. */
 export const updateFields = (
   repo: Repo,
@@ -329,7 +337,8 @@ export const updateFields = (
       baseHash: options.baseHash,
       edit: (source, item) => {
         const order = repo.fieldOrder[item.type as ItemType] ?? []
-        return fold(source, [
+        const title = patch.set?.title
+        const edited = fold(source, [
           ...Object.entries(patch.set ?? {}).map(
             ([name, value]) =>
               (text: string) =>
@@ -337,6 +346,9 @@ export const updateFields = (
           ),
           ...(patch.unset ?? []).map((name) => (text: string) => unsetField(text, name)),
         ])
+        return typeof title === 'string'
+          ? Effect.map(edited, (text) => retitleHeading(text, title))
+          : edited
       },
     },
   ])
@@ -779,6 +791,35 @@ export const renameTag = (repo: Repo, input: { field: TagField; from: string; to
         if (result !== undefined && !result.unchanged) renamed++
         for (const c of result?.changed ?? []) changed.add(c)
       }
+    }
+    return { renamed, changed: [...changed] } satisfies RenameResult
+  })
+
+/**
+ * Renames an area in every goal that has it, one file at a time through `updateItem`. If the new
+ * name is already an area, the two merge. An empty `from` is the goals that have no area yet; an
+ * empty `to` removes the area from its goals. Nothing is written when the name is unchanged.
+ */
+export const renameArea = (repo: Repo, input: { from: string; to: string }) =>
+  Effect.gen(function* () {
+    const to = input.to.trim()
+    // Removing an area leaves its goals without one; the goals without one cannot be removed.
+    if (to === '' && input.from === '') return yield* invalid(['to'], 'An area needs a name')
+    if (to === input.from) return { renamed: 0, changed: [] } satisfies RenameResult
+    const changed = new Set<string>()
+    let renamed = 0
+    for (const item of repo.index.items()) {
+      if (item.id === undefined || item.type !== 'goal') continue
+      const data = item.parsed.frontmatter?.data as Record<string, unknown> | undefined
+      const area = typeof data?.area === 'string' && data.area !== '' ? data.area : ''
+      if (area !== input.from) continue
+      const result = yield* updateItem(
+        repo,
+        item.id,
+        to === '' ? { unset: ['area'] } : { set: { area: to } },
+      )
+      if (result !== undefined && !result.unchanged) renamed++
+      for (const c of result?.changed ?? []) changed.add(c)
     }
     return { renamed, changed: [...changed] } satisfies RenameResult
   })

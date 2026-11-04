@@ -197,13 +197,23 @@ describe('updateFields', () => {
   test('changes one field and nothing else', async () => {
     const w = await world()
     const before = w.read(task1) as string
-    const result = await w.run(
-      updateFields(w.repo, 'TASK-00001', { set: { title: 'Core library' } }),
-    )
+    const result = await w.run(updateFields(w.repo, 'TASK-00001', { set: { state: 'doing' } }))
     const after = w.read(task1) as string
-    expect(after).toBe(before.replace('title: Core', 'title: Core library'))
+    expect(after).toBe(before.replace('state: backlog', 'state: doing'))
     expect(changedLineCount(before, after)).toBe(1)
     expect(result.hash).toBe(contentHash(after))
+  })
+
+  test('a new title also changes the heading, and only that much', async () => {
+    const w = await world()
+    const before = w.read(task1) as string
+    await w.run(updateFields(w.repo, 'TASK-00001', { set: { title: 'Core library' } }))
+    const after = w.read(task1) as string
+    expect(after).toBe(
+      before
+        .replace('title: Core', 'title: Core library')
+        .replace('\n# Core\n', '\n# Core library\n'),
+    )
     expect(w.repo.index.get(task1)?.title).toBe('Core library')
   })
 

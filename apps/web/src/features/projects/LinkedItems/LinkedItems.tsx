@@ -7,14 +7,11 @@ import './LinkedItems.css'
 export function LinkedItems({
   board,
   types,
-  empty,
 }: {
   readonly board: Board
   readonly types: ReadonlyArray<string>
-  readonly empty: string
 }) {
   const items = board.linked.filter((i) => types.includes(i.type))
-  if (items.length === 0) return <p className="app-muted">{empty}</p>
   return (
     <section className="app-list">
       {items.map((item) => (

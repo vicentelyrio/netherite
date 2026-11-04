@@ -23,6 +23,11 @@ type RootTranslation = {
 		 */
 		loading: string
 		/**
+		 * R​e​n​a​m​e​ ​{​n​a​m​e​}
+		 * @param {unknown} name
+		 */
+		rename: RequiredParams<'name'>
+		/**
 		 * C​h​e​c​k​ ​t​h​a​t​ ​`​n​e​t​h​e​r​i​t​e​ ​s​e​r​v​e​`​ ​i​s​ ​s​t​i​l​l​ ​r​u​n​n​i​n​g​.
 		 */
 		serveHint: string
@@ -46,6 +51,10 @@ type RootTranslation = {
 		 * C​r​e​a​t​e
 		 */
 		createTitle: string
+		/**
+		 * C​a​n​c​e​l
+		 */
+		cancel: string
 		freshness: {
 			/**
 			 * S​t​a​l​e​ ​·​ ​{​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}
@@ -2106,6 +2115,20 @@ type RootTranslation = {
 		 * C​r​e​a​t​e​ ​a​r​e​a
 		 */
 		createArea: string
+		/**
+		 * R​e​m​o​v​e​ ​a​r​e​a​ ​{​n​a​m​e​}
+		 * @param {unknown} name
+		 */
+		removeArea: RequiredParams<'name'>
+		/**
+		 * A​r​e​a​ ​{​n​a​m​e​}​ ​r​e​m​o​v​e​d
+		 * @param {unknown} name
+		 */
+		areaRemoved: RequiredParams<'name'>
+		/**
+		 * I​t​s​ ​g​o​a​l​s​ ​a​r​e​ ​n​o​w​ ​w​i​t​h​o​u​t​ ​a​n​ ​a​r​e​a​.
+		 */
+		areaRemovedText: string
 		detail: {
 			/**
 			 * N​o​ ​g​o​a​l​ ​{​i​d​}
@@ -2214,10 +2237,6 @@ type RootTranslation = {
 		 * @param {unknown} names
 		 */
 		waitingOn: RequiredParams<'names'>
-		/**
-		 * N​o​ ​d​o​c​s​ ​o​r​ ​r​u​n​b​o​o​k​s​ ​l​i​n​k​ ​t​o​ ​t​h​i​s​ ​p​r​o​j​e​c​t​.
-		 */
-		noDocs: string
 		knowledgeTable: {
 			/**
 			 * A​l​l
@@ -2274,10 +2293,30 @@ type RootTranslation = {
 				runbook: string
 			}
 		}
-		/**
-		 * N​o​ ​d​e​c​i​s​i​o​n​s​ ​o​r​ ​c​o​n​t​e​x​t​ ​l​i​n​k​ ​t​o​ ​t​h​i​s​ ​p​r​o​j​e​c​t​.
-		 */
-		noKnowledge: string
+		empty: {
+			docs: {
+				/**
+				 * N​o​ ​d​o​c​s​ ​f​o​r​ ​t​h​i​s​ ​p​r​o​j​e​c​t​ ​y​e​t
+				 */
+				title: string
+				/**
+				 * G​u​i​d​e​s​ ​a​n​d​ ​r​u​n​b​o​o​k​s​ ​t​h​a​t​ ​e​x​p​l​a​i​n​ ​h​o​w​ ​t​h​i​s​ ​p​r​o​j​e​c​t​ ​w​o​r​k​s​.​ ​O​n​e​ ​s​h​o​w​s​ ​u​p​ ​h​e​r​e​ ​o​n​c​e​ ​i​t​s​ ​f​r​o​n​t​m​a​t​t​e​r​ ​s​a​y​s​ ​p​r​o​j​e​c​t​:​ ​{​i​d​}​.
+				 * @param {unknown} id
+				 */
+				text: RequiredParams<'id'>
+			}
+			knowledge: {
+				/**
+				 * N​o​ ​d​e​c​i​s​i​o​n​s​ ​o​r​ ​c​o​n​t​e​x​t​ ​y​e​t
+				 */
+				title: string
+				/**
+				 * D​e​c​i​s​i​o​n​s​ ​r​e​c​o​r​d​ ​w​h​y​ ​s​o​m​e​t​h​i​n​g​ ​w​a​s​ ​c​h​o​s​e​n​;​ ​c​o​n​t​e​x​t​ ​t​e​l​l​s​ ​a​g​e​n​t​s​ ​w​h​a​t​ ​t​o​ ​k​n​o​w​ ​b​e​f​o​r​e​ ​t​o​u​c​h​i​n​g​ ​t​h​e​ ​p​r​o​j​e​c​t​.​ ​T​h​e​y​ ​s​h​o​w​ ​u​p​ ​h​e​r​e​ ​o​n​c​e​ ​t​h​e​i​r​ ​f​r​o​n​t​m​a​t​t​e​r​ ​s​a​y​s​ ​p​r​o​j​e​c​t​:​ ​{​i​d​}​.
+				 * @param {unknown} id
+				 */
+				text: RequiredParams<'id'>
+			}
+		}
 		/**
 		 * G​r​a​p​h
 		 */
@@ -2839,6 +2878,10 @@ export type TranslationFunctions = {
 		 */
 		loading: () => LocalizedString
 		/**
+		 * Rename {name}
+		 */
+		rename: (arg: { name: unknown }) => LocalizedString
+		/**
 		 * Check that `netherite serve` is still running.
 		 */
 		serveHint: () => LocalizedString
@@ -2862,6 +2905,10 @@ export type TranslationFunctions = {
 		 * Create
 		 */
 		createTitle: () => LocalizedString
+		/**
+		 * Cancel
+		 */
+		cancel: () => LocalizedString
 		freshness: {
 			/**
 			 * Stale · {count} {{commit|commits}}
@@ -4818,6 +4865,18 @@ export type TranslationFunctions = {
 		 * Create area
 		 */
 		createArea: () => LocalizedString
+		/**
+		 * Remove area {name}
+		 */
+		removeArea: (arg: { name: unknown }) => LocalizedString
+		/**
+		 * Area {name} removed
+		 */
+		areaRemoved: (arg: { name: unknown }) => LocalizedString
+		/**
+		 * Its goals are now without an area.
+		 */
+		areaRemovedText: () => LocalizedString
 		detail: {
 			/**
 			 * No goal {id}
@@ -4920,10 +4979,6 @@ export type TranslationFunctions = {
 		 * Waiting on {names}
 		 */
 		waitingOn: (arg: { names: unknown }) => LocalizedString
-		/**
-		 * No docs or runbooks link to this project.
-		 */
-		noDocs: () => LocalizedString
 		knowledgeTable: {
 			/**
 			 * All
@@ -4980,10 +5035,28 @@ export type TranslationFunctions = {
 				runbook: () => LocalizedString
 			}
 		}
-		/**
-		 * No decisions or context link to this project.
-		 */
-		noKnowledge: () => LocalizedString
+		empty: {
+			docs: {
+				/**
+				 * No docs for this project yet
+				 */
+				title: () => LocalizedString
+				/**
+				 * Guides and runbooks that explain how this project works. One shows up here once its frontmatter says project: {id}.
+				 */
+				text: (arg: { id: unknown }) => LocalizedString
+			}
+			knowledge: {
+				/**
+				 * No decisions or context yet
+				 */
+				title: () => LocalizedString
+				/**
+				 * Decisions record why something was chosen; context tells agents what to know before touching the project. They show up here once their frontmatter says project: {id}.
+				 */
+				text: (arg: { id: unknown }) => LocalizedString
+			}
+		}
 		/**
 		 * Graph
 		 */

@@ -41,6 +41,7 @@ describe('the API definition', () => {
       [
         '/api/events',
         '/api/goals',
+        '/api/goals/rename-area',
         '/api/goals/{id}',
         '/api/graph',
         '/api/health',

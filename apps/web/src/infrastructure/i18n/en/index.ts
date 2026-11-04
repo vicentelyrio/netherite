@@ -10,12 +10,14 @@ const en = {
   common: {
     any: 'Any',
     loading: 'Loading…',
+    rename: 'Rename {name}',
     serveHint: 'Check that `netherite serve` is still running.',
     notFound: { title: 'Nothing here', text: 'That page does not exist.' },
   },
   components: {
     breadcrumb: 'Breadcrumb',
     createTitle: 'Create',
+    cancel: 'Cancel',
     freshness: {
       stale: 'Stale · {count:number} {{commit|commits}}',
       behind: '{count:number} {{commit|commits}} behind',
@@ -565,6 +567,9 @@ const en = {
     firstGoal: 'First goal',
     areaExists: 'That area exists: the goal will join it.',
     createArea: 'Create area',
+    removeArea: 'Remove area {name}',
+    areaRemoved: 'Area {name} removed',
+    areaRemovedText: 'Its goals are now without an area.',
     detail: {
       none: 'No goal {id}',
       loadError: 'Could not load this goal',
@@ -590,7 +595,6 @@ const en = {
     newTaskIn: 'New {state} task',
     dropTo: 'Drop to move to {name}',
     waitingOn: 'Waiting on {names}',
-    noDocs: 'No docs or runbooks link to this project.',
     knowledgeTable: {
       all: 'All',
       filter: 'Kinds of knowledge',
@@ -603,7 +607,16 @@ const en = {
       freshness: 'Freshness',
       groups: { adr: 'Decisions', context: 'Context', doc: 'Docs', runbook: 'Runbooks' },
     },
-    noKnowledge: 'No decisions or context link to this project.',
+    empty: {
+      docs: {
+        title: 'No docs for this project yet',
+        text: 'Guides and runbooks that explain how this project works. One shows up here once its frontmatter says project: {id}.',
+      },
+      knowledge: {
+        title: 'No decisions or context yet',
+        text: 'Decisions record why something was chosen; context tells agents what to know before touching the project. They show up here once their frontmatter says project: {id}.',
+      },
+    },
     graph: 'Graph',
     openGraph: 'Open the graph',
     graphLoading: 'Loading graph…',

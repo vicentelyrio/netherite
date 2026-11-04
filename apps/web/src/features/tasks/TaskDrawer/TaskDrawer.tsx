@@ -83,7 +83,8 @@ export function TaskDrawer({
             <Link to="/projects/$id" params={{ id: projectId }}>
               {projectTitle ?? task.data?.project}
             </Link>{' '}
-            › <span>{LL.tasks.drawer.tasks()}</span> › <strong>{file || id}</strong>
+            › <span>{LL.tasks.drawer.tasks()}</span> ›{' '}
+            <strong title={file || id}>{file || id}</strong>
             {changedLines > 0 && (
               <span className="drawer-lines">
                 {LL.tasks.drawer.changedLines({ count: changedLines })}

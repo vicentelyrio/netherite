@@ -16,6 +16,7 @@ export {
   type OpResult,
   type RenameResult,
   readSource,
+  renameArea,
   renameTag,
   replaceSource,
   type SectionPatch,

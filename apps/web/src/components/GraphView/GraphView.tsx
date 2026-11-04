@@ -745,12 +745,16 @@ export function GraphView({
         <div
           role="tooltip"
           className="gv-tooltip"
+          // Anchored by its bottom edge above the node (its top edge below, near the top), so a
+          // tooltip that wraps onto more lines still clears the node.
+          data-below={(sat.get(hover.id)?.y ?? 0) - radius(hover) < 140 || undefined}
           style={{
-            left: Math.min(Math.max(sat.get(hover.id)?.x ?? 0, 150), box.width - 150),
+            left: Math.min(Math.max(sat.get(hover.id)?.x ?? 0, 140), box.width - 140),
             top:
-              (sat.get(hover.id)?.y ?? 0) - radius(hover) - 96 < 0
-                ? (sat.get(hover.id)?.y ?? 0) + radius(hover) + 12
-                : (sat.get(hover.id)?.y ?? 0) - radius(hover) - 88,
+              (sat.get(hover.id)?.y ?? 0) -
+              radius(hover) -
+              8 +
+              ((sat.get(hover.id)?.y ?? 0) - radius(hover) < 140 ? 2 * radius(hover) + 24 : 0),
           }}
         >
           <div className="gv-tooltip-kind">

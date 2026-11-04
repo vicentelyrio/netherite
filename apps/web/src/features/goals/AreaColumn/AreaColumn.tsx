@@ -1,6 +1,10 @@
 import type { GoalRow } from '@netherite/api'
-import { ProgressRing } from '@netherite/ui'
-import { CardColumn } from '@/components'
+import { Icon, ProgressRing } from '@netherite/ui'
+import { CardColumn, EditableText } from '@/components'
+import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
+import { useNotices } from '@/infrastructure/notices'
+import { useWrite } from '@/infrastructure/query'
 import { GoalCard } from '../GoalCard'
 import { NewGoal } from '../NewGoal'
 import './AreaColumn.css'
@@ -20,10 +24,45 @@ export function AreaColumn({
   /** The "No area" group: new goals made here get no area. */
   readonly isUnassigned: boolean
 }) {
+  const { LL } = useI18nContext()
+  const notices = useNotices()
+  const api = useApi()
+  const remove = useWrite(api, (a) =>
+    a.call((c) => c.goals.renameArea({ payload: { from: area, to: '' } })),
+  )
+  const rename = useWrite(api, (a, to: string) =>
+    a.call((c) => c.goals.renameArea({ payload: { from: isUnassigned ? '' : area, to } })),
+  )
   return (
     <CardColumn label={area}>
       <header className="goals-area-head">
-        <h2 className="goals-area-title">{area}</h2>
+        <EditableText
+          as="h2"
+          className="goals-area-title"
+          value={area}
+          draft={isUnassigned ? '' : undefined}
+          onSave={(to) => rename.mutate(to)}
+        />
+        {!isUnassigned && (
+          <button
+            type="button"
+            className="goals-area-del"
+            aria-label={LL.goals.removeArea({ name: area })}
+            title={LL.goals.removeArea({ name: area })}
+            onClick={() =>
+              remove.mutate(undefined, {
+                onSuccess: () =>
+                  notices.notify({
+                    variant: 'success',
+                    title: LL.goals.areaRemoved({ name: area }),
+                    text: LL.goals.areaRemovedText(),
+                  }),
+              })
+            }
+          >
+            <Icon name="delete" size="inline" />
+          </button>
+        )}
         <ProgressRing done={done} total={total} size={58} label={area} />
       </header>
       {goals.map((goal) => (

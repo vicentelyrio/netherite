@@ -8,6 +8,7 @@ import { useApi } from '@/infrastructure/api'
 import { ago } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { knowledgeQuery } from '@/infrastructure/query'
+import { ProjectEmpty } from '../ProjectEmpty'
 import './KnowledgeView.css'
 
 const groups = ['adr', 'context', 'doc', 'runbook'] as const
@@ -20,7 +21,7 @@ export function KnowledgeView({ board }: { readonly board: Board }) {
   const [only, setOnly] = useState<'all' | (typeof groups)[number]>('all')
   if (!query.data) return null
   const mine = query.data.items.filter((r) => r.projects.includes(board.id))
-  if (mine.length === 0) return <p className="app-muted">{LL.projects.noKnowledge()}</p>
+  if (mine.length === 0) return <ProjectEmpty board={board} kind="knowledge" />
   return (
     <div className="pkv-wrap">
       <FilterTabs

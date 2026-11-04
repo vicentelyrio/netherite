@@ -6,6 +6,7 @@ title: M1 · Headless
 created: 2026-11-01T23:50:43Z
 created_by: "@vicentelyrio"
 status: active
+area: Version 1.0
 ---
 
 # M1 · Headless

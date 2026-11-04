@@ -26,7 +26,7 @@
 
 .gv-tooltip {
   position: absolute;
-  transform: translateX(-50%);
+  transform: translate(-50%, -100%);
   z-index: 4;
   min-width: 200px;
   max-width: 280px;
@@ -39,6 +39,10 @@
   flex-direction: column;
   gap: 2px;
   pointer-events: none;
+}
+
+.gv-tooltip[data-below] {
+  transform: translateX(-50%);
 }
 
 .gv-tooltip-kind {
@@ -240,9 +244,11 @@
 
 .gv-legend--row {
   position: absolute;
+  top: auto;
   left: 0;
   right: 0;
   bottom: 0;
+  max-width: none;
   width: auto;
   display: flex;
   flex-wrap: wrap;

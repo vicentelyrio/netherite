@@ -35,6 +35,7 @@ import {
   PeriodStats,
   PeriodStatsQuery,
   ProjectList,
+  RenameAreaPayload,
   RenameTagPayload,
   RenameTagResult,
   ReviewPayload,
@@ -151,6 +152,11 @@ export class GoalsGroup extends HttpApiGroup.make('goals').add(
     params: id,
     success: GoalDetail,
     error: [NotFound, Refused],
+  }),
+  HttpApiEndpoint.post('renameArea', '/goals/rename-area', {
+    payload: RenameAreaPayload,
+    success: RenameTagResult,
+    error: writes,
   }),
 ) {}
 

@@ -47,6 +47,7 @@ import {
   readCaptures,
   readSource,
   removeCapture,
+  renameArea,
   renameTag,
   replaceSource,
   type ScannedItem,
@@ -400,6 +401,14 @@ const goals = (state: ServerState) =>
           }
           return goalDetail(state.repo, item)
         }),
+      )
+      .handle('renameArea', ({ payload }) =>
+        state.writes.withPermits(1)(
+          renameArea(state.repo, payload).pipe(
+            Effect.mapError(toApiError),
+            Effect.tap((r) => notifyChanged(state, r.changed, [])),
+          ),
+        ),
       ),
   )
 

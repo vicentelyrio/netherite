@@ -30,8 +30,11 @@ export function TitleForm({ label, onSubmit, onCancel }: TitleFormProps) {
         onEscape={onCancel}
         autoFocus
       />
-      <Button variant="primary" type="submit">
+      <Button variant="primary" type="submit" size="md">
         {LL.components.createTitle()}
+      </Button>
+      <Button type="button" size="md" onClick={onCancel}>
+        {LL.components.cancel()}
       </Button>
     </form>
   )

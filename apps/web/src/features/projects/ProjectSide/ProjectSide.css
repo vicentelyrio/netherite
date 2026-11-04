@@ -2,6 +2,11 @@
   margin: 0;
 }
 
+.editable-input.project-title {
+  margin-bottom: var(--nt-space-3);
+  height: calc(var(--nt-text-display-line-height) + 8px);
+}
+
 .project-views {
   display: inline-flex;
   align-items: center;

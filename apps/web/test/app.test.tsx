@@ -452,6 +452,24 @@ describe('goals', () => {
     )
   })
 
+  test('the pencil beside an area name renames the area on its goals', async () => {
+    const made = await other().call((c) =>
+      c.items.create({
+        payload: { type: 'goal', title: 'Run daily', fields: { area: 'Fitness' } },
+      }),
+    )
+    renderApp('/goals')
+    await userEvent.click(await screen.findByRole('button', { name: 'Rename Fitness' }))
+    const field = screen.getByRole('textbox', { name: 'Rename Fitness' })
+    await userEvent.clear(field)
+    await userEvent.type(field, 'Health{Enter}')
+    const area = await screen.findByRole('region', { name: 'Health' })
+    expect(within(area).getByText('Run daily')).toBeInTheDocument()
+    const goals = await other().call((c) => c.goals.list())
+    expect(goals.goals.find((g) => g.id === made.id)?.area).toBe('Health')
+    await other().call((c) => c.items.delete({ params: { id: made.id }, query: { force: 'true' } }))
+  })
+
   test('a goal made inside an area joins that area', async () => {
     renderApp('/goals')
     const area = await screen.findByRole('region', { name: 'No area' })
@@ -498,6 +516,52 @@ describe('the project board', () => {
     expect(await screen.findByText(/ADR-0000|No decisions/)).toBeInTheDocument()
     await userEvent.click(screen.getByRole('tab', { name: 'Docs' }))
     expect(await screen.findByText(/DOC-0000|RUN-0000|No docs/)).toBeInTheDocument()
+  })
+
+  test('a project with nothing in Docs says what belongs there and starts a doc that belongs to it', async () => {
+    const made = await other().call((c) =>
+      c.items.create({
+        payload: { type: 'project', title: 'Empty project', fields: { goals: ['GOAL-00001'] } },
+      }),
+    )
+    renderApp(`/projects/${made.id}`)
+    await screen.findByRole('region', { name: 'backlog' })
+    await userEvent.click(screen.getByRole('tab', { name: 'Docs' }))
+    expect(await screen.findByText('No docs for this project yet')).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(`project: ${made.id}`))).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'New doc' }))
+    await userEvent.type(screen.getByRole('textbox'), 'How it works{Enter}')
+    expect(
+      await screen.findByRole('heading', { name: 'How it works', level: 1 }),
+    ).toBeInTheDocument()
+    const doc = await other().call((c) => c.items.list({ query: { type: 'doc', limit: 200 } }))
+    const found = doc.items.find((i) => i.title === 'How it works')
+    expect(found).toBeDefined()
+    const detail = await other().call((c) => c.items.get({ params: { id: found?.id ?? '' } }))
+    expect(JSON.stringify(detail.frontmatter)).toContain(made.id)
+    // The workspace is shared with the tests after this one.
+    for (const id of [found?.id ?? '', made.id]) {
+      await other().call((c) => c.items.delete({ params: { id }, query: { force: 'true' } }))
+    }
+  })
+
+  test('the pencil beside a project name renames it, and the heading in its file follows', async () => {
+    const made = await other().call((c) =>
+      c.items.create({
+        payload: { type: 'project', title: 'Old name', fields: { goals: ['GOAL-00001'] } },
+      }),
+    )
+    renderApp(`/projects/${made.id}`)
+    await userEvent.click(await screen.findByRole('button', { name: 'Rename Old name' }))
+    await userEvent.clear(screen.getByRole('textbox', { name: 'Rename Old name' }))
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Rename Old name' }),
+      'New name{Enter}',
+    )
+    expect(await screen.findByRole('heading', { name: 'New name', level: 1 })).toBeInTheDocument()
+    const source = await other().call((c) => c.items.source({ params: { id: made.id } }))
+    expect(JSON.stringify(source)).toContain('# New name')
+    await other().call((c) => c.items.delete({ params: { id: made.id }, query: { force: 'true' } }))
   })
 
   test('an unknown or non-project ID says so', async () => {

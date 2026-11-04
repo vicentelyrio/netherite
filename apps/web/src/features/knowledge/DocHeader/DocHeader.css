@@ -6,7 +6,18 @@
   font-size: 13px;
   color: #b9bcd3;
 }
+.kf-path {
+  min-width: 0;
+  white-space: nowrap;
+}
+.kf-path > * {
+  flex: none;
+}
 .kf-path strong {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: #e6e7f2;
   font-weight: 500;
 }

@@ -62,9 +62,14 @@ export function NewArea({ areas }: { readonly areas: ReadonlyArray<string> }) {
         onChange={setTitle}
         onEscape={() => setAdding(false)}
       />
-      <Button variant="primary" type="submit">
-        {LL.goals.createArea()}
-      </Button>
+      <div className="goals-area-actions">
+        <Button variant="primary" type="submit" size="md">
+          {LL.goals.createArea()}
+        </Button>
+        <Button type="button" size="md" onClick={() => setAdding(false)}>
+          {LL.components.cancel()}
+        </Button>
+      </div>
     </form>
   )
 }

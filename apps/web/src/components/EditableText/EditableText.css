@@ -1,0 +1,43 @@
+.editable {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.editable > :first-child {
+  min-width: 0;
+}
+.editable-edit {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--nt-color-text-muted, #969ab8);
+  cursor: pointer;
+  opacity: 0;
+}
+.editable:hover .editable-edit,
+.editable-edit:focus-visible {
+  opacity: 1;
+}
+.editable-edit:hover {
+  background: var(--nt-color-surface-hover, #2e3148);
+  color: var(--nt-color-text, #e8e9f3);
+}
+.editable-input {
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--nt-color-border-focus, #a5a7ff);
+  border-radius: 6px;
+  padding: 0 10px;
+  outline: none;
+}
