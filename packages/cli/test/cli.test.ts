@@ -278,6 +278,96 @@ describe('new', () => {
   })
 })
 
+describe('new --template and templates', () => {
+  test('--template starts from the sections of the type', async () => {
+    await temp(async (dir) => {
+      await cli(dir, 'init')
+      const made = await cli(dir, 'new', 'adr', 'Use Stow', '--template')
+      expect(made.code).toBe(0)
+      const text = read(dir, 'netherite/adr/ADR-00001-use-stow.md')
+      expect(text).toContain('# Use Stow\n\n## Context')
+      expect(text).toContain('## Decision')
+      expect(text).toContain('## Consequences')
+      expect(text).not.toContain('{{')
+      await cli(dir, 'new', 'runbook', 'Deploy', '--template')
+      const runbook = read(dir, 'netherite/runbooks/RUN-00001-deploy.md')
+      expect(runbook).toContain('## Steps')
+      expect(runbook).toContain('## If it goes wrong')
+      expect((await cli(dir, 'lint')).code).toBe(0)
+    })
+  })
+
+  test('--body and --body-file win over the template', async () => {
+    await temp(async (dir) => {
+      await cli(dir, 'init')
+      await cli(dir, 'new', 'doc', 'Mine', '--template', '--body', 'Just this.')
+      const text = read(dir, 'netherite/docs/DOC-00001-mine.md')
+      expect(text.endsWith('# Mine\n\nJust this.\n')).toBe(true)
+      writeFileSync(join(dir, 'b.md'), 'From a file.\n')
+      await cli(dir, 'new', 'doc', 'Other', '--template', '--body-file', 'b.md')
+      expect(
+        read(dir, 'netherite/docs/DOC-00002-other.md').endsWith('# Other\n\nFrom a file.\n'),
+      ).toBe(true)
+    })
+  })
+
+  test('a template of the workspace replaces the built-in one for its type', async () => {
+    await temp(async (dir) => {
+      await cli(dir, 'init')
+      mkdirSync(join(dir, 'netherite/templates'), { recursive: true })
+      writeFileSync(
+        join(dir, 'netherite/templates/doc.md'),
+        '---\nid: {{id}}\ntype: doc\ntitle: {{title}}\n---\n\n# {{title}}\n\n## Our house style for {{title}}\n',
+      )
+      await cli(dir, 'new', 'doc', 'Setup', '--template')
+      expect(read(dir, 'netherite/docs/DOC-00001-setup.md')).toContain(
+        '## Our house style for Setup',
+      )
+      await cli(dir, 'new', 'runbook', 'Run', '--template')
+      expect(read(dir, 'netherite/runbooks/RUN-00001-run.md')).toContain('## Steps')
+      const listed = await cli(dir, 'templates')
+      expect(listed.stdout).toContain('doc      workspace netherite/templates/doc.md')
+      expect(listed.stdout).toContain('runbook  built-in')
+      expect((await cli(dir, 'lint')).code).toBe(0)
+    })
+  })
+
+  test('templates lists every type, and prints one to copy', async () => {
+    await temp(async (dir) => {
+      await cli(dir, 'init')
+      const listed = await cli(dir, 'templates')
+      expect(listed.code).toBe(0)
+      expect(listed.stdout.map((l) => l.split(/\s+/)[0])).toEqual([
+        'goal',
+        'project',
+        'task',
+        'adr',
+        'doc',
+        'context',
+        'runbook',
+      ])
+      const one = await cli(dir, 'templates', 'task')
+      expect(one.code).toBe(0)
+      expect(one.stdout.join('\n')).toContain('# depends_on: [TASK-00001]')
+      expect(one.stdout.join('\n')).toContain('## Checklist')
+      const data = json<Array<{ type: string; source: string }>>(
+        await cli(dir, 'templates', '--json'),
+      )
+      expect(data).toHaveLength(7)
+      expect(data.every((t) => t.source === 'built-in')).toBe(true)
+    })
+  })
+
+  test('an unknown type is a usage error', async () => {
+    await temp(async (dir) => {
+      await cli(dir, 'init')
+      const result = await cli(dir, 'templates', 'sprint')
+      expect(result.code).toBe(2)
+      expect(result.stderr.join('\n')).toContain('Unknown type "sprint"')
+    })
+  })
+})
+
 describe('lint', () => {
   test('a clean workspace passes', async () => {
     await temp(async (dir) => {

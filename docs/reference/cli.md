@@ -76,6 +76,7 @@ FLAGS
   --body string          Text for after the title.
   --body-file string     Read the text from a file.
   --created-by string    @handle to record. Default: from git config.
+  --template             Start from the type's template, with its sections. --body and --body-file replace it.
   --json                 Print machine-readable JSON instead of text.
 ```
 

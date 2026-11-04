@@ -87,6 +87,7 @@ export const makeCli = (env: Env, state: { code: ExitCode }, version = '0.0.0') 
         Flag.withDescription('@handle to record. Default: from git config.'),
       ),
       template: Flag.Boolean('template').pipe(
+        Flag.withDefault(false),
         Flag.withDescription(
           "Start from the type's template, with its sections. --body and --body-file replace it.",
         ),
