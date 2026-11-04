@@ -59,6 +59,8 @@ export const buildContext = (
       if (typeof data !== 'object' || data === null) return []
       const fields = data as Record<string, unknown>
       if (fields.include_in_context !== true) return []
+      // A retired context item is not handed to agents, whatever `include_in_context` says.
+      if (fields.status === 'superseded' || fields.status === 'deprecated') return []
       const targets = Array.isArray(fields.targets) ? fields.targets : undefined
       if (targets !== undefined && !targets.includes(target)) return []
       if (

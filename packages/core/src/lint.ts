@@ -15,7 +15,7 @@ import type { ParseOptions } from './parse-pool'
 import { scanItems } from './scan'
 import type { ScannedItem } from './scanned-item'
 import type { Workspace } from './workspace'
-import { createIndex, type WorkspaceIndex } from './workspace-index'
+import { createIndex, isRetired, type WorkspaceIndex } from './workspace-index'
 
 export type Severity = 'error' | 'warning' | 'info'
 
@@ -32,6 +32,8 @@ export type RuleId =
   | 'drifting'
   | 'stale'
   | 'orphan'
+  | 'superseded-without-successor'
+  | 'links-to-retired'
   | 'unknown-field'
   | 'due-before-created'
   | 'milestone-without-due'
@@ -312,6 +314,35 @@ export const lint = (index: WorkspaceIndex, options: LintOptions): Diagnostic[] 
   for (const path of index.orphans()) {
     const item = index.get(path)
     if (item !== undefined) report(item, top, 'orphan', 'info', 'Nothing links to this item')
+  }
+
+  // 9. Retired items (ADR-00025).
+  for (const item of index.items()) {
+    const data = item.parsed.frontmatter?.data as Record<string, unknown> | undefined
+    const isKnowledge = ['doc', 'runbook', 'context'].includes(item.type ?? '')
+    // ADRs keep their own lifecycle, which does not ask for a replacement.
+    if (isKnowledge && data?.status === 'superseded' && typeof data.superseded_by !== 'string') {
+      report(
+        item,
+        fieldPosition(item, 'status'),
+        'superseded-without-successor',
+        'warning',
+        'Superseded, but superseded_by names no replacement',
+      )
+    }
+    if (isRetired(item) || !isKnowledge) continue
+    for (const edge of index.outgoing(item.path)) {
+      if (edge.kind === 'supersedes') continue
+      const target = index.get(edge.to)
+      if (target === undefined || !isRetired(target)) continue
+      report(
+        item,
+        top,
+        'links-to-retired',
+        'info',
+        `Links to ${target.id ?? target.path}, which is ${(target.parsed.frontmatter?.data as Record<string, unknown> | undefined)?.status}`,
+      )
+    }
   }
 
   const only = options.only === undefined ? undefined : new Set(options.only)

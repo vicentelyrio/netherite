@@ -21,7 +21,7 @@ export function KnowledgeView({ board }: { readonly board: Board }) {
   const [only, setOnly] = useState<'all' | (typeof groups)[number]>('all')
   if (!query.data) return null
   const mine = query.data.items.filter((r) => r.projects.includes(board.id))
-  if (mine.length === 0) return <ProjectEmpty board={board} kind="knowledge" />
+  if (mine.length === 0) return <ProjectEmpty board={board} />
   return (
     <div className="pkv-wrap">
       <FilterTabs
@@ -83,10 +83,14 @@ function Row({ row, project }: { readonly row: KnowledgeRow; readonly project: s
         <Link to="/items/$id" params={{ id: row.id }} className="pkv-id">
           {row.id}
         </Link>
-        <span data-superseded={row.status === 'superseded' || undefined}>{row.title}</span>
+        <span
+          data-superseded={row.status === 'superseded' || row.status === 'deprecated' || undefined}
+        >
+          {row.title}
+        </span>
       </td>
       <td>
-        {row.type === 'adr' && row.status !== undefined ? (
+        {row.status !== undefined && row.status !== 'active' ? (
           <AdrStatusPill status={row.status as AdrStatus} />
         ) : (
           <span className="app-muted">—</span>

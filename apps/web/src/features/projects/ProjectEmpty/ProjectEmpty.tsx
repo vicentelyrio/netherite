@@ -7,20 +7,16 @@ import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useWrite } from '@/infrastructure/query'
 
-type Kind = 'docs' | 'knowledge'
 type Type = 'doc' | 'runbook' | 'adr' | 'context'
 
-/** What each view can start from nothing: the kinds of item that belong to it. */
-const startsWith: Readonly<Record<Kind, ReadonlyArray<Type>>> = {
-  docs: ['doc', 'runbook'],
-  knowledge: ['adr', 'context', 'doc'],
-}
+/** What a project can start knowing from nothing: the first one is the primary action. */
+const startsWith: ReadonlyArray<Type> = ['adr', 'doc', 'context', 'runbook']
 
 /**
- * A project section with nothing in it: what the section holds, how an item ends up in it, and a
+ * A project with nothing in its Knowledge: what belongs there, how an item ends up in it, and a
  * way to start one that already belongs to this project.
  */
-export function ProjectEmpty({ board, kind }: { readonly board: Board; readonly kind: Kind }) {
+export function ProjectEmpty({ board }: { readonly board: Board }) {
   const { LL } = useI18nContext()
   const api = useApi()
   const navigate = useNavigate()
@@ -36,14 +32,14 @@ export function ProjectEmpty({ board, kind }: { readonly board: Board; readonly 
     adr: LL.knowledge.actions.newAdr(),
     context: LL.knowledge.actions.newContext(),
   }
-  const text = LL.projects.empty[kind]
+  const text = LL.projects.empty
   return (
     <div className="pe">
       <EmptyState
-        icon={kind === 'docs' ? 'description' : 'stacks'}
+        icon="stacks"
         title={text.title()}
         description={text.text({ id: board.id })}
-        actions={startsWith[kind].map((type, i) => (
+        actions={startsWith.map((type, i) => (
           <Button
             key={type}
             icon="add"

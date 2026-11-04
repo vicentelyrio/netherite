@@ -287,6 +287,7 @@ const en = {
     status: {
       proposed: 'Proposed',
       accepted: 'Accepted',
+      active: 'Active',
       deprecated: 'Deprecated',
       superseded: 'Superseded',
     },
@@ -586,7 +587,7 @@ const en = {
     },
   },
   projects: {
-    views: { label: 'Views', tasks: 'Tasks', docs: 'Docs', knowledge: 'Knowledge' },
+    views: { label: 'Views', tasks: 'Tasks', knowledge: 'Knowledge' },
     none: 'No project {id}',
     loadError: 'Could not load this project',
     back: 'Back to goals',
@@ -608,14 +609,8 @@ const en = {
       groups: { adr: 'Decisions', context: 'Context', doc: 'Docs', runbook: 'Runbooks' },
     },
     empty: {
-      docs: {
-        title: 'No docs for this project yet',
-        text: 'Guides and runbooks that explain how this project works. One shows up here once its frontmatter says project: {id}.',
-      },
-      knowledge: {
-        title: 'No decisions or context yet',
-        text: 'Decisions record why something was chosen; context tells agents what to know before touching the project. They show up here once their frontmatter says project: {id}.',
-      },
+      title: 'No decisions, docs or context yet',
+      text: 'Decisions record why something was chosen, docs explain how it works, and context tells agents what to know before touching the project. They show up here once their frontmatter says project: {id}.',
     },
     graph: 'Graph',
     openGraph: 'Open the graph',

@@ -79,6 +79,10 @@ const knowledge = <const T extends 'doc' | 'runbook' | 'context', I extends Sche
   explains: optional(ids(ItemId)),
   covers: optional(Schema.Array(Glob)),
   reviewed_at: optional(IsoDate),
+  /** Missing means `active`; a retired item is left out of freshness and agent context. */
+  status: optional(Schema.Literals(['active', 'deprecated', 'superseded'])),
+  supersedes: optional(ids(ItemId)),
+  superseded_by: optional(ItemId),
 })
 
 const Doc = open(Schema.Struct(knowledge('doc', DocId)))

@@ -197,6 +197,19 @@ describe('fixtures/basic', () => {
       })
     })
   })
+
+  test('a deprecated doc is not tracked', async () => {
+    await withFixture(async (repo) => {
+      const file = join(repo.root, docPath)
+      const text = (await import('node:fs')).readFileSync(file, 'utf8')
+      writeFileSync(file, text.replace('type: doc', 'type: doc\nstatus: deprecated'))
+      const { freshness } = await measure(repo.root)
+      expect(freshness.get(docPath)).toMatchObject({
+        state: 'not-tracked',
+        reason: 'deprecated',
+      })
+    })
+  })
 })
 
 describe('thresholds', () => {

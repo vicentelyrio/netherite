@@ -36,7 +36,9 @@ export function SearchResultRow({
       </span>
       <div className="sp-main">
         <div className="sp-title">
-          {hit.type === 'adr' && <span className="sp-id">{hit.id}</span>}
+          <span className="sp-id">
+            <Highlight text={hit.id} q={q} />
+          </span>
           <span className="sp-name" data-old={hit.status === 'superseded' || undefined}>
             <Highlight text={hit.title} q={q} />
           </span>

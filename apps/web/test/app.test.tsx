@@ -143,6 +143,21 @@ describe('reading an item', () => {
     await waitFor(async () => expect(await status()).toBe('proposed'))
   })
 
+  test('a doc is retired from its own view and brought back, and the file follows', async () => {
+    renderApp('/items/DOC-00001')
+    await screen.findByRole('heading', { level: 1 })
+    const api = other()
+    const status = async () =>
+      (await api.call((c) => c.items.get({ params: { id: 'DOC-00001' } }))).status
+    expect(screen.getByRole('radio', { name: 'Active' })).toBeChecked()
+    await userEvent.click(screen.getByRole('radio', { name: 'Deprecated' }))
+    await waitFor(async () => expect(await status()).toBe('deprecated'))
+    await waitFor(() => expect(screen.getByRole('radio', { name: 'Deprecated' })).toBeChecked())
+    // Put it back for the tests after this one: active again means no status in the file.
+    await userEvent.click(screen.getByRole('radio', { name: 'Active' }))
+    await waitFor(async () => expect(await status()).toBeUndefined())
+  })
+
   test('a wikilink in the text is a link to the other item, followed without reloading', async () => {
     renderApp('/items/ADR-00001')
     const link = await screen.findByRole('link', { name: 'ADR-00002' })
@@ -509,16 +524,15 @@ describe('the project board', () => {
     expect(screen.getByRole('img', { name: /: tasks$/ })).toBeInTheDocument()
   })
 
-  test('Docs and Knowledge are views of what links to the project', async () => {
+  test('Knowledge is the view of what links to the project, with docs and decisions together', async () => {
     renderApp('/projects/PRJ-00001')
     await screen.findByRole('region', { name: 'backlog' })
+    expect(screen.queryByRole('tab', { name: 'Docs' })).toBeNull()
     await userEvent.click(screen.getByRole('tab', { name: 'Knowledge' }))
-    expect(await screen.findByText(/ADR-0000|No decisions/)).toBeInTheDocument()
-    await userEvent.click(screen.getByRole('tab', { name: 'Docs' }))
-    expect(await screen.findByText(/DOC-0000|RUN-0000|No docs/)).toBeInTheDocument()
+    expect((await screen.findAllByText(/ADR-0000|DOC-0000|No decisions/)).length).toBeGreaterThan(0)
   })
 
-  test('a project with nothing in Docs says what belongs there and starts a doc that belongs to it', async () => {
+  test('a project with nothing in Knowledge says what belongs there and starts a doc that belongs to it', async () => {
     const made = await other().call((c) =>
       c.items.create({
         payload: { type: 'project', title: 'Empty project', fields: { goals: ['GOAL-00001'] } },
@@ -526,8 +540,8 @@ describe('the project board', () => {
     )
     renderApp(`/projects/${made.id}`)
     await screen.findByRole('region', { name: 'backlog' })
-    await userEvent.click(screen.getByRole('tab', { name: 'Docs' }))
-    expect(await screen.findByText('No docs for this project yet')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('tab', { name: 'Knowledge' }))
+    expect(await screen.findByText('No decisions, docs or context yet')).toBeInTheDocument()
     expect(screen.getByText(new RegExp(`project: ${made.id}`))).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'New doc' }))
     await userEvent.type(screen.getByRole('textbox'), 'How it works{Enter}')

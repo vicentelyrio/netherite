@@ -109,7 +109,7 @@ export interface FreshnessInput {
  * Works out how fresh every item with `covers:` is (ADR-00009): it counts the commits since the
  * item was reviewed (`reviewed_at`, else its own last commit) that touched anything it covers,
  * and one more if covered files have uncommitted changes. All items share one history query.
- * Items without `covers`, and superseded or deprecated ADRs, are not tracked.
+ * Items without `covers`, and retired (superseded or deprecated) items, are not tracked.
  */
 export const computeFreshness = (input: FreshnessInput) =>
   Effect.gen(function* () {
@@ -130,10 +130,8 @@ export const computeFreshness = (input: FreshnessInput) =>
     for (const item of index.items()) {
       const fields = fieldsOf(item)
       const covers = asStrings(fields.covers)
-      if (
-        item.type === 'adr' &&
-        (fields.status === 'superseded' || fields.status === 'deprecated')
-      ) {
+      // A retired ADR, doc, runbook or context item is not kept up to date (ADR-00025).
+      if (fields.status === 'superseded' || fields.status === 'deprecated') {
         result.set(item.path, { ...none, state: 'not-tracked', covers, reason: fields.status })
       } else if (covers.length === 0) {
         result.set(item.path, { ...none, state: 'not-tracked', covers, reason: 'no-covers' })

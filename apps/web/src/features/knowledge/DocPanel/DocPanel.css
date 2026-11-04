@@ -88,7 +88,8 @@
 .kf-switch label[data-status="proposed"] .nt-icon {
   color: #a5a7ff;
 }
-.kf-switch label[data-status="accepted"] .nt-icon {
+.kf-switch label[data-status="accepted"] .nt-icon,
+.kf-switch label[data-status="active"] .nt-icon {
   color: #2cc27e;
 }
 .kf-switch label[data-status="deprecated"] .nt-icon {
@@ -98,7 +99,8 @@
   background: rgba(165, 167, 255, 0.16);
   color: #a5a7ff;
 }
-.kf-switch label[data-status="accepted"][data-on] {
+.kf-switch label[data-status="accepted"][data-on],
+.kf-switch label[data-status="active"][data-on] {
   background: rgba(44, 194, 126, 0.16);
   color: #2cc27e;
 }

@@ -15,8 +15,17 @@ import '../shared.css'
 import { useI18nContext } from '@/infrastructure/i18n'
 import './DocPanel.css'
 
-const adrStatuses = ['proposed', 'accepted', 'deprecated'] as const
-const adrIcon = { proposed: 'pending', accepted: 'check_circle', deprecated: 'block' } as const
+/** What an item can be switched between from here; superseding needs a replacement, so it is not here. */
+const statusesFor = (type: string) =>
+  type === 'adr'
+    ? (['proposed', 'accepted', 'deprecated'] as const)
+    : (['active', 'deprecated'] as const)
+const statusIcon = {
+  proposed: 'pending',
+  accepted: 'check_circle',
+  active: 'check_circle',
+  deprecated: 'block',
+} as const
 
 /** What the item is connected to: its type and status, freshness, links both ways, co-changes. */
 export function DocPanel({
@@ -37,6 +46,8 @@ export function DocPanel({
   const switchName = useId()
   const type = item.type as ItemTypeName
   const fresh = item.freshness
+  // A doc, runbook or context item with no status is active.
+  const current = item.status ?? (type === 'adr' ? undefined : 'active')
   const front = (item.frontmatter ?? {}) as Record<string, unknown>
   const owner = [front.owner, front.created_by].find((v) => typeof v === 'string' && v !== '')
   return (
@@ -45,26 +56,26 @@ export function DocPanel({
         <h2 className="kf-h">{LL.knowledge.doc.panel.typeStatus()}</h2>
         <div className="kf-status-row">
           <TypeBadge type={type} />
-          {type === 'adr' &&
-            item.status !== undefined &&
+          {item.status !== undefined &&
+            item.status !== 'active' &&
             (status === undefined || item.status === 'superseded') && (
               <AdrStatusPill status={item.status as AdrStatus} />
             )}
           {item.orphan && <OrphanTag />}
         </div>
-        {type === 'adr' && status !== undefined && item.status !== 'superseded' && (
+        {status !== undefined && current !== 'superseded' && (
           <div className="kf-switch" role="radiogroup" aria-label={LL.knowledge.doc.changeStatus()}>
-            {adrStatuses.map((s) => (
-              <label key={s} data-status={s} data-on={item.status === s || undefined}>
+            {statusesFor(type).map((s) => (
+              <label key={s} data-status={s} data-on={current === s || undefined}>
                 <input
                   type="radio"
                   className="nt-visually-hidden"
                   name={switchName}
-                  checked={item.status === s}
+                  checked={current === s}
                   disabled={status.pending}
-                  onChange={() => s !== item.status && status.set(s)}
+                  onChange={() => s !== current && status.set(s)}
                 />
-                <Icon name={adrIcon[s]} size={15} filled={item.status === s} />
+                <Icon name={statusIcon[s]} size={15} filled={current === s} />
                 {LL.decisions.status[s]()}
               </label>
             ))}

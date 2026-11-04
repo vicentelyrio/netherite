@@ -1045,6 +1045,10 @@ type RootTranslation = {
 			 */
 			accepted: string
 			/**
+			 * A​c​t​i​v​e
+			 */
+			active: string
+			/**
 			 * D​e​p​r​e​c​a​t​e​d
 			 */
 			deprecated: string
@@ -2193,10 +2197,6 @@ type RootTranslation = {
 			 */
 			tasks: string
 			/**
-			 * D​o​c​s
-			 */
-			docs: string
-			/**
 			 * K​n​o​w​l​e​d​g​e
 			 */
 			knowledge: string
@@ -2294,28 +2294,15 @@ type RootTranslation = {
 			}
 		}
 		empty: {
-			docs: {
-				/**
-				 * N​o​ ​d​o​c​s​ ​f​o​r​ ​t​h​i​s​ ​p​r​o​j​e​c​t​ ​y​e​t
-				 */
-				title: string
-				/**
-				 * G​u​i​d​e​s​ ​a​n​d​ ​r​u​n​b​o​o​k​s​ ​t​h​a​t​ ​e​x​p​l​a​i​n​ ​h​o​w​ ​t​h​i​s​ ​p​r​o​j​e​c​t​ ​w​o​r​k​s​.​ ​O​n​e​ ​s​h​o​w​s​ ​u​p​ ​h​e​r​e​ ​o​n​c​e​ ​i​t​s​ ​f​r​o​n​t​m​a​t​t​e​r​ ​s​a​y​s​ ​p​r​o​j​e​c​t​:​ ​{​i​d​}​.
-				 * @param {unknown} id
-				 */
-				text: RequiredParams<'id'>
-			}
-			knowledge: {
-				/**
-				 * N​o​ ​d​e​c​i​s​i​o​n​s​ ​o​r​ ​c​o​n​t​e​x​t​ ​y​e​t
-				 */
-				title: string
-				/**
-				 * D​e​c​i​s​i​o​n​s​ ​r​e​c​o​r​d​ ​w​h​y​ ​s​o​m​e​t​h​i​n​g​ ​w​a​s​ ​c​h​o​s​e​n​;​ ​c​o​n​t​e​x​t​ ​t​e​l​l​s​ ​a​g​e​n​t​s​ ​w​h​a​t​ ​t​o​ ​k​n​o​w​ ​b​e​f​o​r​e​ ​t​o​u​c​h​i​n​g​ ​t​h​e​ ​p​r​o​j​e​c​t​.​ ​T​h​e​y​ ​s​h​o​w​ ​u​p​ ​h​e​r​e​ ​o​n​c​e​ ​t​h​e​i​r​ ​f​r​o​n​t​m​a​t​t​e​r​ ​s​a​y​s​ ​p​r​o​j​e​c​t​:​ ​{​i​d​}​.
-				 * @param {unknown} id
-				 */
-				text: RequiredParams<'id'>
-			}
+			/**
+			 * N​o​ ​d​e​c​i​s​i​o​n​s​,​ ​d​o​c​s​ ​o​r​ ​c​o​n​t​e​x​t​ ​y​e​t
+			 */
+			title: string
+			/**
+			 * D​e​c​i​s​i​o​n​s​ ​r​e​c​o​r​d​ ​w​h​y​ ​s​o​m​e​t​h​i​n​g​ ​w​a​s​ ​c​h​o​s​e​n​,​ ​d​o​c​s​ ​e​x​p​l​a​i​n​ ​h​o​w​ ​i​t​ ​w​o​r​k​s​,​ ​a​n​d​ ​c​o​n​t​e​x​t​ ​t​e​l​l​s​ ​a​g​e​n​t​s​ ​w​h​a​t​ ​t​o​ ​k​n​o​w​ ​b​e​f​o​r​e​ ​t​o​u​c​h​i​n​g​ ​t​h​e​ ​p​r​o​j​e​c​t​.​ ​T​h​e​y​ ​s​h​o​w​ ​u​p​ ​h​e​r​e​ ​o​n​c​e​ ​t​h​e​i​r​ ​f​r​o​n​t​m​a​t​t​e​r​ ​s​a​y​s​ ​p​r​o​j​e​c​t​:​ ​{​i​d​}​.
+			 * @param {unknown} id
+			 */
+			text: RequiredParams<'id'>
 		}
 		/**
 		 * G​r​a​p​h
@@ -3863,6 +3850,10 @@ export type TranslationFunctions = {
 			 */
 			accepted: () => LocalizedString
 			/**
+			 * Active
+			 */
+			active: () => LocalizedString
+			/**
 			 * Deprecated
 			 */
 			deprecated: () => LocalizedString
@@ -4939,10 +4930,6 @@ export type TranslationFunctions = {
 			 */
 			tasks: () => LocalizedString
 			/**
-			 * Docs
-			 */
-			docs: () => LocalizedString
-			/**
 			 * Knowledge
 			 */
 			knowledge: () => LocalizedString
@@ -5036,26 +5023,14 @@ export type TranslationFunctions = {
 			}
 		}
 		empty: {
-			docs: {
-				/**
-				 * No docs for this project yet
-				 */
-				title: () => LocalizedString
-				/**
-				 * Guides and runbooks that explain how this project works. One shows up here once its frontmatter says project: {id}.
-				 */
-				text: (arg: { id: unknown }) => LocalizedString
-			}
-			knowledge: {
-				/**
-				 * No decisions or context yet
-				 */
-				title: () => LocalizedString
-				/**
-				 * Decisions record why something was chosen; context tells agents what to know before touching the project. They show up here once their frontmatter says project: {id}.
-				 */
-				text: (arg: { id: unknown }) => LocalizedString
-			}
+			/**
+			 * No decisions, docs or context yet
+			 */
+			title: () => LocalizedString
+			/**
+			 * Decisions record why something was chosen, docs explain how it works, and context tells agents what to know before touching the project. They show up here once their frontmatter says project: {id}.
+			 */
+			text: (arg: { id: unknown }) => LocalizedString
 		}
 		/**
 		 * Graph

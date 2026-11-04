@@ -22,7 +22,8 @@ export function KnowledgeRow({
   readonly selected: boolean
   readonly onSelect: () => void
 }) {
-  const superseded = row.status === 'superseded'
+  // A retired item of any type is struck through, as a superseded ADR is.
+  const superseded = row.status === 'superseded' || row.status === 'deprecated'
   return (
     // biome-ignore lint/a11y/useSemanticElements: the row holds links, so it cannot be a button
     <div
@@ -53,7 +54,7 @@ export function KnowledgeRow({
         <span className="kn-mono">{row.path}</span>
       </div>
       <div>
-        {row.type === 'adr' && row.status !== undefined ? (
+        {row.status !== undefined && row.status !== 'active' ? (
           <AdrStatusPill status={row.status as AdrStatus} />
         ) : (
           <span className="app-muted">—</span>

@@ -2,12 +2,10 @@ import { useQuery } from '@tanstack/react-query'
 import { useApi } from '@/infrastructure/api'
 import { boardQuery } from '@/infrastructure/query'
 import { KnowledgeView } from '../KnowledgeView'
-import { LinkedItems } from '../LinkedItems'
-import { ProjectEmpty } from '../ProjectEmpty'
 import { TaskBoard } from '../TaskBoard'
 import type { ProjectViewId } from '../views'
 
-/** The chosen view of a project: its task board, its docs, or its decisions and context. */
+/** The chosen view of a project: its task board, or what it knows: decisions, docs and context. */
 export function ProjectMain({
   id,
   view,
@@ -23,13 +21,5 @@ export function ProjectMain({
   if (!query.data) return null
   const board = query.data
   if (view === 'tasks') return <TaskBoard board={board} selected={task} />
-  if (view === 'docs') {
-    const any = board.linked.some((i) => i.type === 'doc' || i.type === 'runbook')
-    return any ? (
-      <LinkedItems board={board} types={['doc', 'runbook']} />
-    ) : (
-      <ProjectEmpty board={board} kind="docs" />
-    )
-  }
   return <KnowledgeView board={board} />
 }

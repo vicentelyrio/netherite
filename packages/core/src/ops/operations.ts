@@ -425,10 +425,26 @@ export const markReviewed = (
 // ---------------------------------------------------------------------------------------------
 // States and supersession
 
-const adrOrFail = (item: ScannedItem) =>
-  item.type === 'adr'
+const knowledgeTypes = ['doc', 'runbook', 'context']
+
+/** The statuses an item type can be given: an ADR's lifecycle, or whether a doc is still current. */
+const statusesOf = (type: string | undefined) =>
+  type === 'adr'
+    ? ['proposed', 'accepted', 'deprecated', 'superseded']
+    : knowledgeTypes.includes(type ?? '')
+      ? ['active', 'deprecated', 'superseded']
+      : []
+
+/** An item is replaced by one of its own type: an ADR by an ADR, a doc by a doc. */
+const sameKind = (item: ScannedItem, other: ScannedItem) =>
+  item.type === other.type && statusesOf(item.type).includes('superseded')
     ? Effect.succeed(item)
-    : Effect.fail(invalid(['type'], `${item.id} is not an ADR`))
+    : Effect.fail(
+        invalid(
+          ['superseded_by'],
+          `${item.id} and ${other.id} must be the same kind of item, an ADR or a doc, runbook or context`,
+        ),
+      )
 
 /** Marks `old` as superseded by `by`, and records that `by` supersedes `old`: both files change. */
 export const supersede = (
@@ -438,39 +454,44 @@ export const supersede = (
 ): Op =>
   Effect.gen(function* () {
     if (input.old === input.by)
-      return yield* invalid(['superseded_by'], 'An ADR cannot supersede itself')
-    yield* adrOrFail(yield* locate(repo, input.old))
-    yield* adrOrFail(yield* locate(repo, input.by))
+      return yield* invalid(['superseded_by'], 'An item cannot supersede itself')
+    const old = yield* locate(repo, input.old)
+    yield* sameKind(old, yield* locate(repo, input.by))
+    const order = repo.fieldOrder[old.type as ItemType] ?? []
     return yield* mutate(repo, [
       {
         id: input.old,
         baseHash: options.baseHash,
         edit: (source) =>
           fold(source, [
-            (t) => setField(t, 'status', 'superseded', { order: repo.fieldOrder.adr }),
-            (t) => setField(t, 'superseded_by', input.by, { order: repo.fieldOrder.adr }),
+            (t) => setField(t, 'status', 'superseded', { order }),
+            (t) => setField(t, 'superseded_by', input.by, { order }),
           ]),
       },
       {
         id: input.by,
-        edit: (source) =>
-          appendToList(source, 'supersedes', input.old, { order: repo.fieldOrder.adr }),
+        edit: (source) => appendToList(source, 'supersedes', input.old, { order }),
       },
     ])
   })
 
-/** Undoes `supersede`: the old ADR gets a new status, and the newer one stops listing it. */
+/** Undoes `supersede`: the old item gets a new status, and the newer one stops listing it. */
 const restore = (repo: Repo, oldId: string, status: string, options: OpOptions): Op =>
   Effect.gen(function* () {
     const item = yield* locate(repo, oldId)
     const by = data(yield* readText(repo, item.path))?.superseded_by
+    const order = repo.fieldOrder[item.type as ItemType] ?? []
     const steps: Step[] = [
       {
         id: oldId,
         baseHash: options.baseHash,
         edit: (source) =>
           fold(source, [
-            (t) => setField(t, 'status', status, { order: repo.fieldOrder.adr }),
+            // A doc with no status is active, so that is how it is written.
+            (t) =>
+              status === 'active'
+                ? unsetField(t, 'status')
+                : setField(t, 'status', status, { order }),
             (t) => unsetField(t, 'superseded_by'),
           ]),
       },
@@ -482,8 +503,9 @@ const restore = (repo: Repo, oldId: string, status: string, options: OpOptions):
   })
 
 /**
- * Sets a task's state, or an ADR's status. Making an ADR `superseded` needs `supersededBy`, and
- * updates both ADRs. Moving an ADR out of `superseded` clears that link on both.
+ * Sets a task's state, or the status of an ADR, doc, runbook or context item. Making an item
+ * `superseded` needs `supersededBy`, and updates both items. Moving an item out of `superseded`
+ * clears that link on both. A doc made `active` loses its `status`, as a missing one means active.
  */
 export const setState = (
   repo: Repo,
@@ -496,21 +518,27 @@ export const setState = (
     if (item.type === 'task') {
       return yield* updateFields(repo, id, { set: { state: value } }, options)
     }
-    if (item.type !== 'adr') {
-      return yield* invalid(['state'], 'Only tasks have a state and ADRs a status')
+    const allowed = statusesOf(item.type)
+    if (allowed.length === 0) {
+      return yield* invalid(['state'], 'Only tasks have a state; ADRs and docs have a status')
+    }
+    if (!allowed.includes(value)) {
+      return yield* invalid(['state'], `A ${item.type} status is one of ${allowed.join(', ')}`)
     }
     const current = data(yield* readText(repo, item.path))?.status
     if (value === 'superseded') {
       if (options.supersededBy === undefined) {
         return yield* invalid(
           ['superseded_by'],
-          'Required when the status is superseded: say which ADR replaces this one',
+          'Required when the status is superseded: say which item replaces this one',
         )
       }
       return yield* supersede(repo, { old: id, by: options.supersededBy }, options)
     }
     if (current === 'superseded') return yield* restore(repo, id, value, options)
-    return yield* updateFields(repo, id, { set: { status: value } }, options)
+    return yield* value === 'active'
+      ? updateFields(repo, id, { unset: ['status'] }, options)
+      : updateFields(repo, id, { set: { status: value } }, options)
   })
 
 // ---------------------------------------------------------------------------------------------

@@ -68,6 +68,14 @@ export interface IndexChange {
 
 const knowledgeTypes = new Set(['doc', 'adr', 'context', 'runbook'])
 
+/** Superseded and deprecated items are retired: nothing is asked of them any more (ADR-00025). */
+export const isRetired = (item: ScannedItem): boolean => {
+  const data = item.parsed.frontmatter?.data
+  const status =
+    typeof data === 'object' && data !== null ? (data as Record<string, unknown>).status : undefined
+  return status === 'superseded' || status === 'deprecated'
+}
+
 const stringList = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []
 
@@ -94,14 +102,20 @@ const frontmatterFields: Record<string, ReadonlyArray<FieldSpec>> = {
   doc: [
     ['explains', 'explains', 'out', true],
     ['project', 'explains', 'out', false],
+    ['supersedes', 'supersedes', 'out', true],
+    ['superseded_by', 'supersedes', 'in', false],
   ],
   runbook: [
     ['explains', 'explains', 'out', true],
     ['project', 'explains', 'out', false],
+    ['supersedes', 'supersedes', 'out', true],
+    ['superseded_by', 'supersedes', 'in', false],
   ],
   context: [
     ['explains', 'explains', 'out', true],
     ['project', 'explains', 'out', false],
+    ['supersedes', 'supersedes', 'out', true],
+    ['superseded_by', 'supersedes', 'in', false],
   ],
 }
 
@@ -422,13 +436,17 @@ export const createIndex = (options: IndexOptions) => {
     /** Knowledge (docs, ADRs, context, runbooks) that nothing links to. */
     isOrphan: (path: string) => {
       const item = entries.get(path)?.item
-      if (item === undefined || !knowledgeTypes.has(item.type ?? '')) return false
+      if (item === undefined || !knowledgeTypes.has(item.type ?? '') || isRetired(item))
+        return false
       return incoming(path).length === 0
     },
     orphans: () =>
       [...entries.values()]
         .filter(
-          ({ item }) => knowledgeTypes.has(item.type ?? '') && graph.inDegree(item.path) === 0,
+          ({ item }) =>
+            knowledgeTypes.has(item.type ?? '') &&
+            !isRetired(item) &&
+            graph.inDegree(item.path) === 0,
         )
         .map((e) => e.item.path)
         .sort(),
