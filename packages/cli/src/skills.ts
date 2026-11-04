@@ -36,7 +36,7 @@ ${connection}
 
 1. \`search\` for an existing ADR on the topic. If one exists and still holds, link to it instead of writing a new one.
 2. \`create\` with \`type: adr\`, a title that states the decision, \`fields.status\` (\`proposed\` until a person accepts it), \`fields.date\` and \`fields.deciders\` (@handles).
-3. Put the text in \`body\` with three sections: **Context** (the forces, briefly), **Decision** (what was chosen, in the active voice), **Consequences** (what gets easier, what gets harder).
+3. Put the text in \`body\` with three sections: **Context** (the forces, briefly), **Decision** (what was chosen, in the active voice), **Consequences** (what gets easier, what gets harder; start each bullet with \`\\+\` or \`\\-\`). If you can run commands, \`netherite templates adr\` prints this workspace's template; follow its sections.
 4. \`link\` the new ADR to what it affects: the project (\`fields.project\`), and each task or project that follows from it.
 5. \`lint\` the new item and fix what it reports.
 
@@ -62,9 +62,9 @@ ${connection}
 
 1. \`search\` and \`list\` first. Reuse the goal and project that already exist; do not create duplicates.
 2. If there is no goal, \`create\` one (\`type: goal\`) with a short title and the outcome in the body.
-3. \`create\` a project (\`type: project\`) with \`fields.goals\`, and its scope and non-goals in the body.
+3. \`create\` a project (\`type: project\`) with \`fields.goals\`, and in the body its **Scope**, **Out of scope** and **Done when**.
 4. \`create\` one task per piece of work that one person can finish and check. Each needs \`fields.project\` and a \`fields.state\` (\`backlog\` unless it is under way).
-5. Put acceptance criteria in each task body as a checklist (\`- [ ] ...\`), one line per verifiable outcome.
+5. Put acceptance criteria in each task body under **Checklist** (\`- [ ] ...\`), one line per verifiable outcome, and leave a **Notes** section for what is learned. If you can run commands, \`netherite templates project\` and \`netherite templates task\` print this workspace's templates.
 6. Use \`link\` with \`kind: depends_on\` for ordering, and link the ADRs that constrain a task.
 7. If planning needed a choice that is not recorded, stop and use the \`netherite-adr\` skill.
 8. \`lint\` the workspace and fix what it reports. Then summarise the plan by ID.
@@ -142,7 +142,7 @@ Context items are short, durable facts an agent needs in every session: conventi
 
 1. \`context\` shows what agents get now, and what did not fit the budget. Read it first.
 2. \`search\` for an existing item on the topic; \`update\` it rather than adding a second.
-3. To add: \`create\` with \`type: context\`, \`fields.include_in_context: true\`, a \`fields.priority\` (\`high\` for rules that must never be missed), and optionally \`fields.targets\` and \`fields.project\`. Write the body as terse instructions.
+3. To add: \`create\` with \`type: context\`, \`fields.include_in_context: true\`, a \`fields.priority\` (\`high\` for rules that must never be missed), and optionally \`fields.targets\` and \`fields.project\`. Write the body as terse instructions, under **Rules** and **Layout** (\`netherite templates context\` prints the template).
 4. If items are left out by the budget, shorten or merge the low-value ones; do not raise the budget without asking.
 5. \`mark_reviewed\` after checking an item is still true.
 6. Tell the person to run \`netherite context sync\` so \`CLAUDE.md\` and \`AGENTS.md\` follow.

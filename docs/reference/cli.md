@@ -80,6 +80,23 @@ FLAGS
   --json                 Print machine-readable JSON instead of text.
 ```
 
+## `netherite templates`
+
+```text
+DESCRIPTION
+  List the starter templates, or print one to copy. A file in templates/ in the content folder replaces the built-in one.
+
+USAGE
+  netherite templates [flags] [<type>]
+
+ARGUMENTS
+  type string    goal, project, task, adr, doc, context or runbook. Without it, list them. (optional)
+
+FLAGS
+  --dir, -C string    Folder to work in (default: the current one). The workspace is found by walking up from it.
+  --json              Print machine-readable JSON instead of text.
+```
+
 ## `netherite lint`
 
 ```text

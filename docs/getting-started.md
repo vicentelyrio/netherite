@@ -56,7 +56,7 @@ Quote values with brackets so your shell leaves them alone. Everything is a file
 
 ## 4. Write down decisions and docs
 
-Record a lasting decision as an ADR (`npx @vicentelyrio/netherite new adr "Use GNU Stow"`), then change its status
+Record a lasting decision as an ADR (`npx @vicentelyrio/netherite new adr "Use GNU Stow" --template` starts it with the usual sections; see [templates](templates.md)), then change its status
 as it is accepted. Never rewrite an accepted ADR: add a new one that supersedes it, and the
 **Decision log** shows the chain.
 
@@ -124,6 +124,7 @@ collision and `netherite renumber <item>` gives one of them a new ID and rewrite
 
 - [Install](install.md): `npx`, a global install, upgrading, and what `init` adds.
 - [Agents](agents.md): skills, MCP setup for Claude Code, Cursor and Codex, and troubleshooting.
+- [Templates](templates.md): a starter for each item type, and how to make your own.
 - [Concepts](concepts.md): how items, IDs, links and freshness work.
 - [Obsidian](obsidian.md): the same files open in Obsidian.
 - [Reference](reference/cli.md): every command, tool, field and setting.

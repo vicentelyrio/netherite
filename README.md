@@ -56,6 +56,7 @@ and task, connecting an agent, and keeping the context file in sync.
 | [Getting started](docs/getting-started.md) | `init`, the app, the first items, agents and skills |
 | [Install](docs/install.md) | `npx` or global, upgrading, what `init` adds, troubleshooting |
 | [Agents](docs/agents.md) | the skills, connecting Claude Code, Cursor and Codex, context |
+| [Templates](docs/templates.md) | a starter for each item type, `new --template`, and your own |
 | [Concepts](docs/concepts.md) | items, IDs, links, states, freshness and context |
 | [CLI reference](docs/reference/cli.md) | every command and flag |
 | [MCP reference](docs/reference/mcp.md) | the tools and resources an agent sees |

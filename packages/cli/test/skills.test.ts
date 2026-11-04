@@ -1,4 +1,12 @@
-import { existsSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { beforeAll, describe, expect, test } from 'vitest'
@@ -230,5 +238,27 @@ describe('init --update', () => {
       expect(result.stdout.join('\n')).toContain('skipped  AGENTS.md')
       expect(read(dir, 'AGENTS.md')).toBe(bad)
     })
+  })
+
+  test('a later update leaves the workspace templates alone', async () => {
+    await temp(async (dir) => {
+      git(dir, 'init', '-q', '-b', 'main')
+      await cli(dir, 'init')
+      mkdirSync(join(dir, 'netherite/templates'), { recursive: true })
+      const own = '---\ntype: doc\n---\n\n# {{title}}\n\n## Ours\n'
+      writeFileSync(join(dir, 'netherite/templates/doc.md'), own)
+      await cli(dir, 'init', '--update')
+      expect(read(dir, 'netherite/templates/doc.md')).toBe(own)
+      expect((await cli(dir, 'templates')).stdout).toContain(
+        'doc      workspace netherite/templates/doc.md',
+      )
+    })
+  })
+
+  test('the skills that write items point at the templates', () => {
+    const text = (name: string) => skills.find((s) => s.name === name)?.text ?? ''
+    expect(text('netherite-adr')).toContain('netherite templates adr')
+    expect(text('netherite-plan')).toContain('netherite templates task')
+    expect(text('netherite-context')).toContain('netherite templates context')
   })
 })

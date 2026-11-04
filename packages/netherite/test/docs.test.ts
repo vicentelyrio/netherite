@@ -32,6 +32,7 @@ describe('the documentation', () => {
     const known = new Set([
       'init',
       'new',
+      'templates',
       'lint',
       'renumber',
       'mcp',
