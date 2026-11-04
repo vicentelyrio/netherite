@@ -5,7 +5,7 @@ type: adr
 title: The inbox triages captures and items the repo raises
 created: 2026-11-02T20:20:04Z
 created_by: "@vicentelyrio"
-status: proposed
+status: accepted
 date: 2026-11-02
 deciders: ["@vicentelyrio"]
 project: PRJ-00007

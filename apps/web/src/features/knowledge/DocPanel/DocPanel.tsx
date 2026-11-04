@@ -7,7 +7,8 @@ import {
   OrphanTag,
   TypeBadge,
 } from '@netherite/ui'
-import { FilterTabs, LinkRow } from '@/components'
+import { useId } from 'react'
+import { LinkRow } from '@/components'
 import { isoDay } from '@/infrastructure/datetime'
 import { SupersessionChain } from '../SupersessionChain'
 import '../shared.css'
@@ -15,6 +16,7 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import './DocPanel.css'
 
 const adrStatuses = ['proposed', 'accepted', 'deprecated'] as const
+const adrIcon = { proposed: 'pending', accepted: 'check_circle', deprecated: 'block' } as const
 
 /** What the item is connected to: its type and status, freshness, links both ways, co-changes. */
 export function DocPanel({
@@ -32,6 +34,7 @@ export function DocPanel({
   readonly status?: { readonly pending: boolean; readonly set: (status: string) => void }
 }) {
   const { LL } = useI18nContext()
+  const switchName = useId()
   const type = item.type as ItemTypeName
   const fresh = item.freshness
   const front = (item.frontmatter ?? {}) as Record<string, unknown>
@@ -50,12 +53,22 @@ export function DocPanel({
           {item.orphan && <OrphanTag />}
         </div>
         {type === 'adr' && status !== undefined && item.status !== 'superseded' && (
-          <FilterTabs
-            label={LL.knowledge.doc.changeStatus()}
-            options={adrStatuses.map((s) => ({ value: s, label: LL.decisions.status[s]() }))}
-            value={(item.status as (typeof adrStatuses)[number]) ?? 'proposed'}
-            onChange={(next) => !status.pending && next !== item.status && status.set(next)}
-          />
+          <div className="kf-switch" role="radiogroup" aria-label={LL.knowledge.doc.changeStatus()}>
+            {adrStatuses.map((s) => (
+              <label key={s} data-status={s} data-on={item.status === s || undefined}>
+                <input
+                  type="radio"
+                  className="nt-visually-hidden"
+                  name={switchName}
+                  checked={item.status === s}
+                  disabled={status.pending}
+                  onChange={() => s !== item.status && status.set(s)}
+                />
+                <Icon name={adrIcon[s]} size={15} filled={item.status === s} />
+                {LL.decisions.status[s]()}
+              </label>
+            ))}
+          </div>
         )}
         {typeof owner === 'string' && (
           <p className="kf-owner">{LL.knowledge.doc.panel.owner({ name: owner })}</p>

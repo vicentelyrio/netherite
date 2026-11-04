@@ -45,6 +45,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      - name: Workspace dependencies are consistent
+        run: pnpm deps:check
       - run: pnpm typecheck
       - run: pnpm build
 

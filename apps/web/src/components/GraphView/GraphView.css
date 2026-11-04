@@ -144,10 +144,11 @@
 
 .gv-legend {
   position: absolute;
-  left: var(--gv-legend-x, 24px);
-  bottom: var(--gv-legend-y, 24px);
+  top: var(--gv-legend-y, 16px);
+  right: var(--gv-legend-x, 16px);
   z-index: 3;
   width: 548px;
+  max-width: calc(100% - 32px);
   background: rgba(24, 25, 42, 0.94);
   border: 1px solid #33364f;
   border-radius: 10px;
@@ -290,12 +291,12 @@
   bottom: 40px;
 }
 .gv:not(.gv--embedded) .gv-focus {
-  top: 84px;
-  right: 40px;
+  top: 40px;
+  right: 440px;
 }
 .gv:not(.gv--embedded) .gv-legend {
-  --gv-legend-x: 96px;
-  --gv-legend-y: 40px;
+  --gv-legend-x: 40px;
+  --gv-legend-y: 84px;
 }
 
 /* The All / Open / Done filter in the legend. */
@@ -349,4 +350,48 @@
     animation: none;
     opacity: 0;
   }
+}
+
+.gv-legend-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #969ab8;
+  cursor: pointer;
+}
+.gv-legend-toggle:hover {
+  background: #2e3148;
+  color: #e8e9f3;
+}
+.gv-legend-toggle--corner {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+.gv-legend--mini {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: auto;
+  padding: 6px 8px 6px 14px;
+}
+.gv-legend--mini label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 16px;
+  color: #b9bcd3;
+  white-space: nowrap;
+}
+.gv-legend--mini label[data-off] {
+  opacity: 0.4;
+  text-decoration: line-through;
 }

@@ -323,6 +323,22 @@ export function GraphView({
     return map
   }, [shown])
 
+  // The legend can shrink to one line; the choice is kept for next time.
+  const [legendMin, setLegendMinState] = useState(() => {
+    try {
+      return localStorage.getItem('netherite:graph-legend-min') === '1'
+    } catch {
+      return false
+    }
+  })
+  const setLegendMin = (min: boolean) => {
+    setLegendMinState(min)
+    try {
+      localStorage.setItem('netherite:graph-legend-min', min ? '1' : '0')
+    } catch {
+      // Private windows forget it.
+    }
+  }
   const [hiddenTypes, setHiddenTypes] = useState<ReadonlySet<string>>(new Set())
   // The design draws five kinds of link; the others start hidden and the legend turns them on.
   const [hiddenKinds, setHiddenKinds] = useState<ReadonlySet<string>>(
@@ -766,8 +782,48 @@ export function GraphView({
         </div>
       )}
 
-      {showTypeLegend && legend === 'panel' && (
+      {showTypeLegend && legend === 'panel' && legendMin && (
+        <aside className="gv-legend gv-legend--mini" aria-label={LL.components.graph.legend()}>
+          {typesPresent.map((t) => (
+            <label key={t} data-off={hiddenTypes.has(t) || undefined}>
+              <input
+                type="checkbox"
+                className="nt-visually-hidden"
+                checked={!hiddenTypes.has(t)}
+                onChange={() => setHiddenTypes(toggle(hiddenTypes, t))}
+              />
+              <span className="gv-glyph gv-glyph--small">
+                <svg width="10" height="10" aria-hidden="true">
+                  <Shape type={t} x={5} y={5} scale={0.5} />
+                </svg>
+              </span>
+              {typeLabels[t]} <span className="gv-count">{typeCount(t)}</span>
+            </label>
+          ))}
+          <button
+            type="button"
+            className="gv-legend-toggle"
+            aria-expanded={false}
+            aria-label={LL.components.graph.legendExpand()}
+            title={LL.components.graph.legendExpand()}
+            onClick={() => setLegendMin(false)}
+          >
+            <Icon name="unfold_more" size="inline" />
+          </button>
+        </aside>
+      )}
+      {showTypeLegend && legend === 'panel' && !legendMin && (
         <aside className="gv-legend" aria-label={LL.components.graph.legend()}>
+          <button
+            type="button"
+            className="gv-legend-toggle gv-legend-toggle--corner"
+            aria-expanded
+            aria-label={LL.components.graph.legendMinify()}
+            title={LL.components.graph.legendMinify()}
+            onClick={() => setLegendMin(true)}
+          >
+            <Icon name="unfold_less" size="inline" />
+          </button>
           <div>
             <h2 className="gv-legend-h">{LL.components.graph.nodes()}</h2>
             {typesPresent.map((t) => (

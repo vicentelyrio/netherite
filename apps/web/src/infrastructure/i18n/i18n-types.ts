@@ -67,6 +67,14 @@ type RootTranslation = {
 			untracked: string
 		}
 		graph: {
+			/**
+			 * S​h​r​i​n​k​ ​t​h​e​ ​l​e​g​e​n​d​ ​t​o​ ​o​n​e​ ​l​i​n​e
+			 */
+			legendMinify: string
+			/**
+			 * S​h​o​w​ ​t​h​e​ ​w​h​o​l​e​ ​l​e​g​e​n​d
+			 */
+			legendExpand: string
 			edges: {
 				/**
 				 * B​e​l​o​n​g​s​ ​t​o
@@ -2852,6 +2860,14 @@ export type TranslationFunctions = {
 			untracked: () => LocalizedString
 		}
 		graph: {
+			/**
+			 * Shrink the legend to one line
+			 */
+			legendMinify: () => LocalizedString
+			/**
+			 * Show the whole legend
+			 */
+			legendExpand: () => LocalizedString
 			edges: {
 				/**
 				 * Belongs to

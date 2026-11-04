@@ -32,14 +32,22 @@
     "docs:gen": "node scripts/gen-reference.mjs",
     "docs:check": "node scripts/gen-reference.mjs --check",
     "netherite:lint": "node packages/cli/dist/bin.mjs lint --fail-on warning",
-    "netherite:context": "node packages/cli/dist/bin.mjs context sync --check"
+    "netherite:context": "node packages/cli/dist/bin.mjs context sync --check",
+    "deps:check": "manypkg check",
+    "deps:fix": "manypkg fix"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.4",
     "@changesets/cli": "^3.0.3",
+    "@manypkg/cli": "^0.25.1",
     "lefthook": "^2.2.2",
     "turbo": "^2.11.10",
     "typescript": "catalog:",
     "vitest": "catalog:"
+  },
+  "manypkg": {
+    "ignoredRules": [
+      "INCORRECT_REPOSITORY_FIELD"
+    ]
   }
 }

@@ -24,28 +24,28 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@netherite/tokens": "workspace:*",
-    "@fontsource-variable/source-sans-3": "catalog:",
-    "@fontsource-variable/source-code-pro": "catalog:",
     "@fontsource-variable/material-symbols-rounded": "catalog:",
+    "@fontsource-variable/source-code-pro": "catalog:",
+    "@fontsource-variable/source-sans-3": "catalog:",
     "@mantine/core": "catalog:",
-    "@mantine/hooks": "catalog:"
+    "@mantine/hooks": "catalog:",
+    "@netherite/tokens": "workspace:*"
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",
-    "typescript": "catalog:",
-    "vitest": "catalog:",
-    "tsdown": "catalog:",
+    "@testing-library/dom": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@testing-library/user-event": "catalog:",
     "@types/node": "catalog:",
-    "react": "catalog:",
-    "react-dom": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "jsdom": "catalog:",
-    "@testing-library/react": "catalog:",
-    "@testing-library/dom": "catalog:",
-    "@testing-library/user-event": "catalog:",
-    "@testing-library/jest-dom": "catalog:"
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "react": "catalog:",

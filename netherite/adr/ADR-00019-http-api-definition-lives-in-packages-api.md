@@ -5,7 +5,7 @@ type: adr
 title: HTTP API definition lives in packages/api
 created: 2026-11-02T00:10:19Z
 created_by: "@vicentelyrio"
-status: proposed
+status: accepted
 date: 2026-11-02
 deciders: ["@vicentelyrio"]
 project: PRJ-00005

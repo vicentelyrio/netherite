@@ -3,7 +3,7 @@ id: ADR-00018
 aliases: [ADR-00018]
 type: adr
 title: A shared markdown package for parsing and remark plugins
-status: proposed
+status: accepted
 date: 2026-11-01
 deciders: ["@vicentelyrio"]
 tags: [markdown, packages, parsing]

@@ -21,12 +21,12 @@
     "effect": "catalog:"
   },
   "devDependencies": {
-    "@netherite/config": "workspace:*",
-    "@types/node": "catalog:",
-    "typescript": "catalog:",
-    "vitest": "catalog:",
-    "tsdown": "catalog:",
     "@effect/platform-node": "catalog:",
-    "@netherite/testing": "workspace:*"
+    "@netherite/config": "workspace:*",
+    "@netherite/testing": "workspace:*",
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

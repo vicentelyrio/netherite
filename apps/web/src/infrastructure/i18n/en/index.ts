@@ -23,6 +23,8 @@ const en = {
       untracked: 'Not tracked',
     },
     graph: {
+      legendMinify: 'Shrink the legend to one line',
+      legendExpand: 'Show the whole legend',
       edges: {
         belongs_to: 'Belongs to',
         implements: 'Implements',

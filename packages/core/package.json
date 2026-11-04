@@ -19,24 +19,24 @@
     "test:scale": "vitest run --config vitest.scale.config.ts"
   },
   "dependencies": {
-    "@netherite/schema": "workspace:*",
     "@netherite/git": "workspace:*",
-    "effect": "catalog:",
-    "yaml": "catalog:",
     "@netherite/markdown": "workspace:*",
+    "@netherite/schema": "workspace:*",
+    "@parcel/watcher": "catalog:",
+    "effect": "catalog:",
     "graphology": "catalog:",
     "minisearch": "catalog:",
-    "@parcel/watcher": "catalog:",
-    "picomatch": "catalog:"
+    "picomatch": "catalog:",
+    "yaml": "catalog:"
   },
   "devDependencies": {
-    "@netherite/config": "workspace:*",
-    "@types/node": "catalog:",
-    "typescript": "catalog:",
-    "vitest": "catalog:",
-    "tsdown": "catalog:",
-    "@netherite/testing": "workspace:*",
     "@effect/platform-node": "catalog:",
-    "@types/picomatch": "catalog:"
+    "@netherite/config": "workspace:*",
+    "@netherite/testing": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/picomatch": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

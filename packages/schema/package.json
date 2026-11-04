@@ -22,11 +22,11 @@
   },
   "devDependencies": {
     "@netherite/config": "workspace:*",
+    "@netherite/testing": "workspace:*",
     "@types/node": "catalog:",
+    "tsdown": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
-    "tsdown": "catalog:",
-    "yaml": "catalog:",
-    "@netherite/testing": "workspace:*"
+    "yaml": "catalog:"
   }
 }

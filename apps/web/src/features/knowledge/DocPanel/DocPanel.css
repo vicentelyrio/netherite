@@ -52,3 +52,57 @@
   font-size: 13px;
   color: #a2a5c4;
 }
+
+.kf-switch {
+  display: flex;
+  align-self: flex-start;
+  width: fit-content;
+  max-width: 100%;
+  gap: 2px;
+  margin-top: 10px;
+  padding: 3px;
+  border-radius: 8px;
+  background: #18192a;
+}
+.kf-switch label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #b9bcd3;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.kf-switch label:hover:not([data-on]) {
+  color: #e8e9f3;
+}
+.kf-switch label[data-on] {
+  font-weight: 600;
+}
+.kf-switch label[data-status="proposed"] .nt-icon {
+  color: #a5a7ff;
+}
+.kf-switch label[data-status="accepted"] .nt-icon {
+  color: #2cc27e;
+}
+.kf-switch label[data-status="deprecated"] .nt-icon {
+  color: #f0717e;
+}
+.kf-switch label[data-status="proposed"][data-on] {
+  background: rgba(165, 167, 255, 0.16);
+  color: #a5a7ff;
+}
+.kf-switch label[data-status="accepted"][data-on] {
+  background: rgba(44, 194, 126, 0.16);
+  color: #2cc27e;
+}
+.kf-switch label[data-status="deprecated"][data-on] {
+  background: rgba(240, 113, 126, 0.16);
+  color: #f0717e;
+}

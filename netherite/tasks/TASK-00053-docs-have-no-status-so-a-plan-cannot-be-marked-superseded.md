@@ -7,6 +7,7 @@ created: 2026-11-01T23:51:14Z
 created_by: "@vicentelyrio"
 project: PRJ-00004
 state: backlog
+decisions: [ADR-00025]
 related: [TASK-00025]
 ---
 
