@@ -26,10 +26,10 @@ const temp = async <A>(use: (dir: string) => Promise<A>) => {
 
 const read = (dir: string, path: string) => readFileSync(join(dir, path), 'utf8')
 const skillPath = (name: string) => `.claude/skills/${name}/SKILL.md`
-const names = ['adr', 'plan', 'task', 'refresh', 'context'].map((n) => `netherite-${n}`)
+const names = ['adr', 'plan', 'task', 'refresh', 'context', 'migrate'].map((n) => `netherite-${n}`)
 
 describe('the skills', () => {
-  test('are the five from ADR-00013, each with a name and description in its frontmatter', () => {
+  test('are the five from ADR-00013 and the migration one from ADR-00026, each with a name and description in its frontmatter', () => {
     expect(skills.map((s) => s.name)).toEqual(names)
     for (const skill of skills) {
       expect(skill.text).toMatch(
@@ -339,5 +339,45 @@ describe('the ruleset', () => {
       expect(existsSync(join(dir, rulesetPath))).toBe(false)
       expect(existsSync(join(dir, 'CLAUDE.md'))).toBe(false)
     })
+  })
+})
+
+describe('netherite-migrate', () => {
+  const text = skills.find((s) => s.name === 'netherite-migrate')?.text ?? ''
+
+  test('walks the phases of ADR-00026 and asks before it chooses', () => {
+    for (const heading of [
+      '## 1. Survey (read only)',
+      '## 2. Ask, one question at a time',
+      '## 3. Plan',
+      '## 4. Each batch',
+      '## 5. Link and check',
+      '## 6. Finish',
+    ]) {
+      expect(text, heading).toContain(heading)
+    }
+    expect(text).toContain('Recommend copy')
+    expect(text).toContain('Recommend keep')
+    expect(text).toContain('`netherite-plan`')
+    expect(text).toContain('`netherite-discover`')
+    expect(text).toContain('Do not start it unless they say yes')
+    expect(text).toContain('Never commit')
+  })
+
+  test('only names commands and flags that exist', async () => {
+    const commands = new Set(['init', 'import'])
+    for (const [, command] of text.matchAll(/`netherite ([a-z]+)[^`]*`/g)) {
+      expect(commands.has(command as string), `netherite ${command}`).toBe(true)
+    }
+    // The reference is generated from the program's own help, and a test elsewhere keeps it current.
+    const reference = readFileSync(
+      join(import.meta.dirname, '../../../docs/reference/cli.md'),
+      'utf8',
+    )
+    const importHelp = reference.slice(reference.indexOf('## `netherite import`'))
+    for (const flag of ['--dry-run', '--stub', '--update']) {
+      expect(importHelp, flag).toContain(flag)
+    }
+    expect(text).toContain('docs/reference/import.md')
   })
 })

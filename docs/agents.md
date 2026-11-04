@@ -16,6 +16,7 @@ Nothing here lets an agent commit: agents change files, and you review and commi
 | `netherite-task` | it works on a task, or you ask what to do next | finds the next task, sets it `doing`, ticks checklist items as each part is verified, sets it `done` |
 | `netherite-adr` | a choice with lasting consequences is made or changed | writes an ADR with Context, Decision and Consequences, links it, or supersedes an earlier one |
 | `netherite-context` | you ask for repository conventions or background for agents | creates or updates context items and keeps them within the token budget |
+| `netherite-migrate` | you ask it to migrate or adopt Netherite in a repository that already has docs | surveys the repository, asks at each choice (copy or move, keep ADR numbers, batch size), plans the work as a project with tasks, and imports in reviewed batches with `netherite import`; see [import](reference/import.md) |
 | `netherite-refresh` | `lint` reports a stale doc, or covered code changed | compares the doc with the code, updates what is wrong and marks it reviewed |
 
 Claude Code decides when to use a skill from its description, so you can say "plan this" or "pick up
