@@ -2,6 +2,7 @@ import type { CommitPatch, FilePatch, GitError, GitRepository } from '@netherite
 import { Effect, type FileSystem, type Path } from 'effect'
 import { parseDocument } from 'yaml'
 import { pathMap } from './gitpaths'
+import { inReservedFolder } from './reserved'
 
 export interface Author {
   readonly name: string
@@ -155,6 +156,7 @@ export const readHistory = (
             .some((part) => part.startsWith('.') || part === 'assets')
         )
           continue
+        if (inReservedFolder(path.slice(prefix.length))) continue
 
         const front = frontmatterAfter(patch)
         const known = pathId.get(path)

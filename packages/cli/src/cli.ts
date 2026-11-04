@@ -8,6 +8,7 @@ import { newItem } from './commands/new'
 import { statsCommand, timelineCommand } from './commands/progress'
 import { renumberCommand } from './commands/renumber'
 import { serveCommand } from './commands/serve'
+import { templatesCommand } from './commands/templates'
 import { type Env, type ExitCode, exitCodes } from './output'
 
 const dir = Flag.String('dir').pipe(
@@ -85,6 +86,11 @@ export const makeCli = (env: Env, state: { code: ExitCode }, version = '0.0.0') 
         Flag.optional,
         Flag.withDescription('@handle to record. Default: from git config.'),
       ),
+      template: Flag.Boolean('template').pipe(
+        Flag.withDescription(
+          "Start from the type's template, with its sections. --body and --body-file replace it.",
+        ),
+      ),
       json: jsonFlag,
     },
     (c) =>
@@ -97,11 +103,35 @@ export const makeCli = (env: Env, state: { code: ExitCode }, version = '0.0.0') 
           body: Option.getOrUndefined(c.body),
           bodyFile: Option.getOrUndefined(c.bodyFile),
           createdBy: Option.getOrUndefined(c.createdBy),
+          template: c.template,
           json: c.json,
         }),
         finish,
       ),
   ).pipe(Command.withDescription('Create an item with the next free ID.'))
+
+  const templatesCmd = Command.make(
+    'templates',
+    {
+      dir,
+      type: Argument.String('type').pipe(
+        Argument.optional,
+        Argument.withDescription(
+          'goal, project, task, adr, doc, context or runbook. Without it, list them.',
+        ),
+      ),
+      json: jsonFlag,
+    },
+    (c) =>
+      Effect.flatMap(
+        templatesCommand(env, { dir: c.dir, type: Option.getOrUndefined(c.type), json: c.json }),
+        finish,
+      ),
+  ).pipe(
+    Command.withDescription(
+      'List the starter templates, or print one to copy. A file in templates/ in the content folder replaces the built-in one.',
+    ),
+  )
 
   const lintCmd = Command.make(
     'lint',
@@ -315,6 +345,7 @@ export const makeCli = (env: Env, state: { code: ExitCode }, version = '0.0.0') 
     Command.withSubcommands([
       initCmd,
       newCmd,
+      templatesCmd,
       lintCmd,
       renumberCmd,
       mcpCmd,

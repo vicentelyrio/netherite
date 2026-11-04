@@ -4,6 +4,8 @@ import {
   type ItemType,
   itemTypes,
   openRepo,
+  readTemplates,
+  templateBody,
   workspaceGit,
 } from '@netherite/core'
 import { Effect, FileSystem, Path } from 'effect'
@@ -20,6 +22,8 @@ export interface NewOptions {
   readonly body: string | undefined
   readonly bodyFile: string | undefined
   readonly createdBy: string | undefined
+  /** Start from the type's template (the workspace's own, or the one that ships). */
+  readonly template: boolean
   readonly json: boolean
 }
 
@@ -69,11 +73,17 @@ export const newItem = (env: Env, options: NewOptions) =>
     const run = Effect.gen(function* () {
       const repo = yield* openRepo(path.resolve(env.cwd, options.dir))
       const createdBy = options.createdBy ?? (yield* gitHandle(yield* workspaceGit(repo.workspace)))
+      let text = body
+      if (options.template && text === undefined) {
+        const found = yield* readTemplates(repo.workspace)
+        const own = found.find((t) => t.type === options.type)
+        if (own !== undefined) text = templateBody(own.text, title)
+      }
       const result = yield* createItem(repo, {
         type: options.type as ItemType,
         title,
         fields: fields as never,
-        ...(body === undefined ? {} : { body }),
+        ...(text === undefined ? {} : { body: text }),
         ...(createdBy === undefined ? {} : { createdBy }),
       })
       if (options.json) json(env.out, { id: result.id, path: result.path, hash: result.hash })

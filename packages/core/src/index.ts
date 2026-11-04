@@ -165,6 +165,17 @@ export { scanItems } from './scan'
 export { type ScannedItem, scannedItemFrom, toScannedItem } from './scanned-item'
 export { type TagDuplicate, type TagEdge, type TagMap, type TagNode, tagMap } from './tag-map'
 export {
+  fillTemplate,
+  MissingTemplateValue,
+  readTemplates,
+  type TemplateSource,
+  type TemplateValues,
+  templateBody,
+  templates,
+  templatesFolder,
+  templateTypes,
+} from './templates'
+export {
   type Timeline,
   type TimelineDecision,
   type TimelineGoal,

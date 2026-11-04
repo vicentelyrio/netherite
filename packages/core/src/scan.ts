@@ -1,14 +1,15 @@
 import { Effect, FileSystem, Path } from 'effect'
 import { ItemReadError } from './errors'
 import { type ParseOptions, parseFiles } from './parse-pool'
+import { inReservedFolder } from './reserved'
 import type { ScannedItem } from './scanned-item'
 import type { Workspace } from './workspace'
 
 const skipped = (relative: string) =>
-  relative.split('/').some((part) => part.startsWith('.')) || relative.split('/')[0] === 'assets'
+  relative.split('/').some((part) => part.startsWith('.')) || inReservedFolder(relative)
 
 /**
- * Reads every Markdown file under the content root, except hidden folders and `assets/`.
+ * Reads every Markdown file under the content root, except hidden folders, `assets/` and `templates/`.
  * Files with broken frontmatter are still returned, so lint can report them.
  */
 export const scanItems = (

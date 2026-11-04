@@ -14,6 +14,7 @@ import { parseHorizon } from './horizon'
 import type { ParseOptions } from './parse-pool'
 import { scanItems } from './scan'
 import type { ScannedItem } from './scanned-item'
+import { readTemplates } from './templates'
 import type { Workspace } from './workspace'
 import { createIndex, isRetired, type WorkspaceIndex } from './workspace-index'
 
@@ -35,6 +36,7 @@ export type RuleId =
   | 'superseded-without-successor'
   | 'links-to-retired'
   | 'unknown-field'
+  | 'template-unknown-field'
   | 'due-before-created'
   | 'milestone-without-due'
   | 'invalid-horizon'
@@ -370,6 +372,38 @@ export const summarize = (diagnostics: ReadonlyArray<Diagnostic>): LintSummary =
   info: diagnostics.filter((d) => d.severity === 'info').length,
 })
 
+/**
+ * The workspace's own templates (`templates/<type>.md` under the content root) that name a
+ * frontmatter field the type does not have. A field the schema renamed or dropped would otherwise
+ * be copied into every new item without anyone noticing.
+ */
+const lintTemplates = (workspace: Workspace) =>
+  Effect.gen(function* () {
+    const known = knownFields(makeItemSchemas(workspace.config))
+    const found = yield* readTemplates(workspace)
+    const diagnostics: Diagnostic[] = []
+    for (const template of found) {
+      if (template.source !== 'workspace' || template.path === undefined) continue
+      const lines = template.text.split(/\r?\n/)
+      if (lines[0] !== '---') continue
+      const end = lines.indexOf('---', 1)
+      const front = end === -1 ? lines.slice(1) : lines.slice(1, end)
+      front.forEach((line, i) => {
+        const key = line.match(/^([A-Za-z_][\w-]*):/)?.[1]
+        if (key === undefined || known[template.type].includes(key)) return
+        diagnostics.push({
+          path: template.path as string,
+          line: i + 2,
+          column: 1,
+          rule: 'template-unknown-field',
+          severity: 'warning',
+          message: `"${key}" is not a field of a ${template.type}; items made from this template would carry it unchecked`,
+        })
+      })
+    }
+    return diagnostics
+  })
+
 /** Scans the workspace from disk, indexes it and lints it. */
 export const lintWorkspace = (
   workspace: Workspace,
@@ -398,7 +432,7 @@ export const lintWorkspace = (
             thresholds: workspace.config.freshness,
             root: workspace.root,
           })
-    return lint(index, {
+    const diagnostics = lint(index, {
       config: workspace.config,
       contentRoot,
       ...(options.only === undefined ? {} : { only: options.only }),
@@ -407,4 +441,15 @@ export const lintWorkspace = (
         ? {}
         : { freshnessSeverity: options.freshnessSeverity }),
     })
+    const own = (yield* lintTemplates(workspace)).filter(
+      (d) => options.only === undefined || options.only.includes(d.path),
+    )
+    return [...diagnostics, ...own].sort(
+      (a, b) =>
+        a.path.localeCompare(b.path) ||
+        a.line - b.line ||
+        a.column - b.column ||
+        severityOrder[a.severity] - severityOrder[b.severity] ||
+        a.rule.localeCompare(b.rule),
+    )
   })

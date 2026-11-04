@@ -12,6 +12,7 @@ import { type ConfigInvalid, ConfigReadError } from './errors'
 import type { Repo } from './ops/repo'
 import type { ParseOptions } from './parse-pool'
 import { parseFiles } from './parse-pool'
+import { inReservedFolder } from './reserved'
 import type { ScannedItem } from './scanned-item'
 import { parseConfig } from './workspace'
 
@@ -105,7 +106,7 @@ export interface Watcher {
   readonly flush: Effect.Effect<void>
 }
 
-const contentIgnore = ['**/.*/**', '**/.*', 'assets/**', '**/node_modules/**']
+const contentIgnore = ['**/.*/**', '**/.*', 'assets/**', 'templates/**', '**/node_modules/**']
 const configIgnore = ['local/**', '**/*.tmp']
 // Inside `.git` only HEAD, the index and the refs matter; objects and logs change on every commit.
 const gitIgnore = [
@@ -177,7 +178,7 @@ export const watchRepo = (repo: Repo, options: WatchOptions = {}) =>
     const inContent = (relative: string) => {
       if (!relative.startsWith(contentPrefix)) return false
       const inside = relative.slice(contentPrefix.length)
-      return notHidden(inside) && inside.split('/')[0] !== 'assets'
+      return notHidden(inside) && !inReservedFolder(inside)
     }
 
     const reloadConfig = Effect.gen(function* () {
