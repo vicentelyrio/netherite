@@ -24,11 +24,13 @@ You need Node 24 or newer and a git repository.
 
 ```sh
 cd my-repo
-npx netherite init        # config, folders, .gitignore line, agent skills
-npx netherite             # the app, at http://127.0.0.1:4747
+npx @vicentelyrio/netherite init        # config, folders, .gitignore line, agent skills
+npx @vicentelyrio/netherite             # the app, at http://127.0.0.1:4747
 ```
 
-`init` is safe to run again. `npx netherite serve --no-open` starts the same thing without opening
+To type less, install it once with `npm install --global @vicentelyrio/netherite`; the command is then just `netherite`.
+
+`init` is safe to run again. `npx @vicentelyrio/netherite serve --no-open` starts the same thing without opening
 a browser. The server listens on `127.0.0.1` only.
 
 Next: [getting started](docs/getting-started.md) walks through creating your first goal, project

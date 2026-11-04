@@ -6,7 +6,7 @@ This takes about ten minutes. You need Node 24 or newer and a git repository (an
 
 ```sh
 cd my-repo
-npx netherite init
+npx @vicentelyrio/netherite init
 ```
 
 `init` does four things, and only adds, never overwrites:
@@ -23,7 +23,7 @@ upgrade. Commit the result when you are happy with it; Netherite never commits f
 ## 2. Open the app
 
 ```sh
-npx netherite
+npx @vicentelyrio/netherite
 ```
 
 It starts a server on `http://127.0.0.1:4747` (or the next free port) and opens your browser. The
@@ -46,17 +46,17 @@ see the file beside it.
 Or use the command line:
 
 ```sh
-npx netherite new goal "Run a half marathon"
-npx netherite new project "Training plan" --set 'goals=[GOAL-00001]'
-npx netherite new task "Long run on Sunday" --set project=PRJ-00001
-npx netherite lint
+npx @vicentelyrio/netherite new goal "Run a half marathon"
+npx @vicentelyrio/netherite new project "Training plan" --set 'goals=[GOAL-00001]'
+npx @vicentelyrio/netherite new task "Long run on Sunday" --set project=PRJ-00001
+npx @vicentelyrio/netherite lint
 ```
 
 Quote values with brackets so your shell leaves them alone. Everything is a file: look at `git status` after each step.
 
 ## 4. Write down decisions and docs
 
-Record a lasting decision as an ADR (`npx netherite new adr "Use GNU Stow"`), then change its status
+Record a lasting decision as an ADR (`npx @vicentelyrio/netherite new adr "Use GNU Stow"`), then change its status
 as it is accepted. Never rewrite an accepted ADR: add a new one that supersedes it, and the
 **Decision log** shows the chain.
 
@@ -74,7 +74,7 @@ stale, in the Knowledge index and the Inbox. *Mark reviewed* resets it.
 Agents use the MCP server. For Claude Code:
 
 ```sh
-claude mcp add netherite -- npx netherite mcp
+claude mcp add netherite -- npx @vicentelyrio/netherite mcp
 ```
 
 For any client that takes a JSON config, run it over stdio:
@@ -82,12 +82,12 @@ For any client that takes a JSON config, run it over stdio:
 ```json
 {
   "mcpServers": {
-    "netherite": { "command": "npx", "args": ["netherite", "mcp"] }
+    "netherite": { "command": "npx", "args": ["@vicentelyrio/netherite", "mcp"] }
   }
 }
 ```
 
-The server finds the workspace from the folder the agent runs in. While `npx netherite` is running,
+The server finds the workspace from the folder the agent runs in. While `npx @vicentelyrio/netherite` is running,
 the same server is also at `http://127.0.0.1:4747/mcp`; the token it needs is printed when the
 server starts. The [MCP reference](reference/mcp.md) lists every tool.
 
@@ -102,7 +102,7 @@ A `context` item holds what an agent should know before it works here: conventio
 Turn on *Include in context* (or set `include_in_context: true`) and run:
 
 ```sh
-npx netherite context sync
+npx @vicentelyrio/netherite context sync
 ```
 
 This writes the included items, highest priority first and within the token budget, between markers
@@ -112,9 +112,9 @@ in `CLAUDE.md` and `AGENTS.md`. Text outside the markers is yours. In CI, `nethe
 ## 7. Keep it healthy
 
 ```sh
-npx netherite lint                 # exit 0 clean, 1 problems, 2 could not run
-npx netherite lint --fix --dry-run # show the fixes it would make
-npx netherite lint --fail-on warning
+npx @vicentelyrio/netherite lint                 # exit 0 clean, 1 problems, 2 could not run
+npx @vicentelyrio/netherite lint --fix --dry-run # show the fixes it would make
+npx @vicentelyrio/netherite lint --fail-on warning
 ```
 
 Two people can create the same ID on different branches. After the merge, `lint` reports the

@@ -111,7 +111,7 @@ jobs:
           path: apps/web/test-results
 
   package:
-    # `npx netherite` in a clean repository, from the packed package (TASK-00049). Windows is
+    # `npx @vicentelyrio/netherite` in a clean repository, from the packed package (TASK-00049). Windows is
     # best-effort (DOC-00001), but the program must still install and start there.
     name: Package smoke test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -129,8 +129,8 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm turbo run build --filter=netherite...
-      - run: pnpm --filter netherite smoke
+      - run: pnpm turbo run build --filter=@vicentelyrio/netherite...
+      - run: pnpm --filter @vicentelyrio/netherite smoke
 
   test-windows:
     # Windows support is best-effort (DOC-00001): only the git-facing packages are tested.

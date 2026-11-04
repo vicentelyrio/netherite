@@ -2,7 +2,7 @@ name: Release
 
 # On every push to main, Changesets either opens (or updates) a "Version Packages" pull request
 # that applies the pending changesets, or, when that pull request has been merged, publishes
-# `netherite` to npm and tags the release. Nothing is published until a person merges that PR.
+# `@vicentelyrio/netherite` to npm and tags the release. Nothing is published until a person merges that PR.
 
 on:
   push:
@@ -43,13 +43,13 @@ jobs:
       - run: pnpm build
       - run: pnpm test
       - run: pnpm docs:check
-      - run: pnpm --filter netherite smoke
+      - run: pnpm --filter @vicentelyrio/netherite smoke
 
       - uses: changesets/action@v1
         with:
           version: pnpm cs:version
           publish: pnpm cs:publish
-          title: "Release netherite"
+          title: "Release @vicentelyrio/netherite"
           commit: "chore: version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

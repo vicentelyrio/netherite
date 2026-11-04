@@ -1,6 +1,6 @@
 {
-  "name": "netherite",
-  "version": "1.0.0",
+  "name": "@vicentelyrio/netherite",
+  "version": "0.0.0",
   "description": "A typed, linked knowledge base in Markdown and git: a CLI, an MCP server for agents, and a local app.",
   "license": "MIT",
   "repository": {

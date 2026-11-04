@@ -35,7 +35,7 @@ try {
     cwd: install,
     stdio: 'inherit',
   })
-  const bin = join(install, 'node_modules', 'netherite', 'dist', 'bin.mjs')
+  const bin = join(install, 'node_modules', '@vicentelyrio', 'netherite', 'dist', 'bin.mjs')
   const netherite = (...args) => run('node', [bin, ...args], { cwd: repo, env })
 
   // 2. A clean repository.
