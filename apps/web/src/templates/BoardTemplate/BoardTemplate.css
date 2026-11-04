@@ -1,10 +1,13 @@
 .tpl-board {
+  /* The page margins; they shrink below the grid's compact width, the layout stays side by side. */
+  --tpl-start: var(--nt-grid-margin-start);
+  --tpl-end: var(--nt-grid-margin-end);
   display: grid;
   grid-template-columns: repeat(var(--nt-grid-columns), minmax(0, 1fr));
   column-gap: var(--nt-grid-gutter);
   height: 100%;
   padding-block: 40px;
-  padding-inline: var(--nt-grid-margin-start) var(--nt-grid-margin-end);
+  padding-inline: var(--tpl-start) var(--tpl-end);
   box-sizing: border-box;
 }
 .tpl-board-side {
@@ -19,6 +22,10 @@
   min-width: 0;
   min-height: 0;
   overflow: auto;
+}
+/* A task board runs to the right and bottom edges of the screen, with no padding of its own. */
+.tpl-board-main:has(> .board) {
+  margin: 0 calc(-1 * var(--tpl-end)) -40px 0;
 }
 /* The sticky graph can only stay in view inside the board, so the board grows with the side column. */
 .tpl-board:has(> .tpl-board-main--bleed) {
@@ -35,21 +42,12 @@
   top: 0;
   align-self: start;
   height: 100cqh;
-  margin: -40px calc(-1 * var(--nt-grid-margin-end)) -40px 0;
+  margin: -40px calc(-1 * var(--tpl-end)) -40px 0;
   overflow: hidden;
 }
 @media (max-width: 1279px) {
   .tpl-board {
-    height: auto;
-    padding-inline: var(--nt-grid-margin-compact);
-  }
-  .tpl-board-side,
-  .tpl-board-main {
-    grid-column: 1 / -1;
-  }
-  .tpl-board-main--bleed {
-    position: static;
-    height: auto;
-    margin: 0;
+    --tpl-start: var(--nt-grid-margin-compact);
+    --tpl-end: var(--nt-grid-margin-compact);
   }
 }

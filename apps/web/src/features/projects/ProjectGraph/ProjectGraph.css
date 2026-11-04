@@ -4,8 +4,8 @@
   flex-direction: column;
 
   /* To the rail on the left and the bottom edge of the screen. */
-  margin: 12px 0 -40px calc(-1 * var(--nt-grid-margin-start));
-  width: calc(100% + var(--nt-grid-margin-start));
+  margin: 12px 0 -40px calc(-1 * var(--tpl-start));
+  width: calc(100% + var(--tpl-start));
   /* All the height the side column has left under the views. */
   flex: 1;
   min-height: 404px;

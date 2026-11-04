@@ -17,12 +17,16 @@
 .board {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-columns: minmax(220px, 1fr);
   min-width: 0;
   align-items: stretch;
   gap: 12px;
   /* The board fills the page; the columns scroll sideways here and each one scrolls its cards. */
   height: 100%;
+  box-sizing: border-box;
+  /* The board runs to the screen's right and bottom edges; the columns stop short of them. */
+  padding-right: var(--tpl-end);
+  padding-bottom: 40px;
   grid-template-rows: minmax(0, 1fr);
   overflow-x: auto;
   overflow-y: hidden;
@@ -35,17 +39,6 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-}
-
-@media (max-width: 1279px) {
-  .board {
-    height: auto;
-    min-height: calc(100vh - 100px);
-    overflow-y: visible;
-  }
-  .board-cards {
-    overflow-y: visible;
-  }
 }
 
 .board-column {
