@@ -62,9 +62,11 @@
   flex-wrap: wrap;
 }
 
-.kn-rule {
-  width: 1px;
-  height: 20px;
-  background: #3a3d58;
-  margin: 0 4px;
+.kn-extra {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* The toggles and the sort stay together: they share the row when it fits, else they move down as one. */
+  flex: 1 1 auto;
+  min-width: max-content;
 }

@@ -588,6 +588,8 @@ const en = {
     waitingOn: 'Waiting on {names}',
     noDocs: 'No docs or runbooks link to this project.',
     knowledgeTable: {
+      all: 'All',
+      filter: 'Kinds of knowledge',
       label: 'Knowledge linked to the project',
       type: 'Type',
       title: 'Title',

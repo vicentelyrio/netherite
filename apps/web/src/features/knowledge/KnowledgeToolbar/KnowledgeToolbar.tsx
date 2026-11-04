@@ -57,40 +57,41 @@ export function KnowledgeToolbar() {
         options={tags}
         onChange={(tag) => set({ tag })}
       />
-      <span className="kn-rule" />
-      <button
-        type="button"
-        className="kn-pill kn-pill--stale"
-        aria-pressed={filters.stale}
-        onClick={() => set({ stale: !filters.stale })}
-      >
-        <Icon name="warning" size={15} filled /> {LL.knowledge.toolbar.stale()}{' '}
-        <span>{staleCount}</span>
-      </button>
-      <button
-        type="button"
-        className="kn-pill"
-        aria-pressed={filters.orphans}
-        onClick={() => set({ orphans: !filters.orphans })}
-      >
-        <Icon name="link_off" size={15} /> {LL.knowledge.toolbar.orphans()}{' '}
-        <span>{orphanCount}</span>
-      </button>
-      <span className="kn-spacer" />
-      <label className="kn-sort">
-        {LL.knowledge.toolbar.sort()}
-        <select
-          aria-label={LL.knowledge.toolbar.sort()}
-          value={filters.sort}
-          onChange={(e) => set({ sort: e.currentTarget.value as SortKey })}
+      <div className="kn-extra">
+        <button
+          type="button"
+          className="kn-pill kn-pill--stale"
+          aria-pressed={filters.stale}
+          onClick={() => set({ stale: !filters.stale })}
         >
-          {sorts.map((value) => (
-            <option key={value} value={value}>
-              {LL.knowledge.toolbar.sorts[value]()}
-            </option>
-          ))}
-        </select>
-      </label>
+          <Icon name="warning" size={15} filled /> {LL.knowledge.toolbar.stale()}{' '}
+          <span>{staleCount}</span>
+        </button>
+        <button
+          type="button"
+          className="kn-pill"
+          aria-pressed={filters.orphans}
+          onClick={() => set({ orphans: !filters.orphans })}
+        >
+          <Icon name="link_off" size={15} /> {LL.knowledge.toolbar.orphans()}{' '}
+          <span>{orphanCount}</span>
+        </button>
+        <span className="kn-spacer" />
+        <label className="kn-sort">
+          {LL.knowledge.toolbar.sort()}
+          <select
+            aria-label={LL.knowledge.toolbar.sort()}
+            value={filters.sort}
+            onChange={(e) => set({ sort: e.currentTarget.value as SortKey })}
+          >
+            {sorts.map((value) => (
+              <option key={value} value={value}>
+                {LL.knowledge.toolbar.sorts[value]()}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
     </div>
   )
 }

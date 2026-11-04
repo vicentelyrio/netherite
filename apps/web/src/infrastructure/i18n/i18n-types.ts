@@ -2191,6 +2191,14 @@ type RootTranslation = {
 		noDocs: string
 		knowledgeTable: {
 			/**
+			 * A​l​l
+			 */
+			all: string
+			/**
+			 * K​i​n​d​s​ ​o​f​ ​k​n​o​w​l​e​d​g​e
+			 */
+			filter: string
+			/**
 			 * K​n​o​w​l​e​d​g​e​ ​l​i​n​k​e​d​ ​t​o​ ​t​h​e​ ​p​r​o​j​e​c​t
 			 */
 			label: string
@@ -4862,6 +4870,14 @@ export type TranslationFunctions = {
 		 */
 		noDocs: () => LocalizedString
 		knowledgeTable: {
+			/**
+			 * All
+			 */
+			all: () => LocalizedString
+			/**
+			 * Kinds of knowledge
+			 */
+			filter: () => LocalizedString
 			/**
 			 * Knowledge linked to the project
 			 */

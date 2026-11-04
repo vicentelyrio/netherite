@@ -96,3 +96,12 @@
   color: #969ab8;
   text-decoration: none;
 }
+
+.pkv-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.pkv-wrap > .filter-tabs {
+  align-self: flex-start;
+}
