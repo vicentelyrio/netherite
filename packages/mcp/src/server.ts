@@ -311,6 +311,7 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
         handle: effectTool((r) => {
           const type = r.oneOf('type', itemTypes, true)
           const title = r.string('title', { required: true })
+          const explicit = r.id('id', false)
           const fields = r.object('fields')
           const body = r.string('body')
           const createdBy = r.string('created_by') ?? options.createdBy
@@ -318,6 +319,7 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           return createItem(repo, {
             type: type as ItemType,
             title,
+            ...(explicit === undefined ? {} : { id: explicit }),
             ...(fields === undefined ? {} : { fields: fields as never }),
             ...(body === undefined ? {} : { body }),
             ...(createdBy === undefined ? {} : { createdBy }),

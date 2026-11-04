@@ -486,6 +486,15 @@ describe('state, checklist, links, review, delete', () => {
     })
   })
 
+  test('create takes an explicit free ID for an import, and refuses one in use', async () => {
+    await withSession(async (s) => {
+      const made = await s.call('create', { type: 'doc', title: 'Imported', id: 'DOC-00050' })
+      expect(made.data.id).toBe('DOC-00050')
+      const again = await s.call('create', { type: 'doc', title: 'Again', id: 'DOC-00050' })
+      expect(again.data.error.issues[0].field).toBe('id')
+    })
+  })
+
   test('toggle_check ticks several items, or all of them, in one write', async () => {
     await withSession(async (s) => {
       const file = 'netherite/tasks/TASK-00001-core.md'

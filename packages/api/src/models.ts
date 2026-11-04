@@ -120,6 +120,8 @@ const Fields = Schema.Record(S, Schema.Unknown)
 export const CreatePayload = Schema.Struct({
   type: ItemTypeName,
   title: S.check(Schema.isMinLength(1)),
+  /** An explicit free ID of the type, for imports. Omit it to get the next free ID. */
+  id: opt(S),
   fields: opt(Fields),
   body: opt(S),
   /** A `@handle`. Defaults to the person running the server. */

@@ -175,6 +175,7 @@ const items = (state: ServerState) =>
           createItem(state.repo, {
             type: payload.type,
             title: payload.title,
+            ...(payload.id === undefined ? {} : { id: payload.id }),
             ...(payload.fields === undefined ? {} : { fields: payload.fields as never }),
             ...(payload.body === undefined ? {} : { body: payload.body }),
             ...((payload.createdBy ?? state.createdBy) === undefined

@@ -1,5 +1,13 @@
 import { outlineMarkdown } from '@netherite/markdown'
-import { checkItem, type FieldIssue, type ItemType, ValidationError } from '@netherite/schema'
+import {
+  checkItem,
+  type FieldIssue,
+  formatId,
+  type ItemType,
+  parseId,
+  prefixes,
+  ValidationError,
+} from '@netherite/schema'
 import { Clock, Effect, type FileSystem, type Path } from 'effect'
 import {
   appendSection as appendSectionEdit,
@@ -224,6 +232,12 @@ const fold = <E>(
 export interface CreateInput {
   readonly type: ItemType
   readonly title: string
+  /**
+   * An explicit ID, for importing items that already have one. It must be the type's prefix and a
+   * number written with the workspace's padding, and no item may use it or its number. Without it
+   * the item gets the next free ID.
+   */
+  readonly id?: string
   /** Fields beyond the title, such as `project` for a task. Defaults are filled in. */
   readonly fields?: Readonly<Record<string, Json>>
   /** Text after the title heading. An ADR gets Context, Decision and Consequences by default. */
@@ -233,6 +247,27 @@ export interface CreateInput {
 }
 
 const reserved = ['id', 'type', 'aliases', 'title', 'created']
+
+/** An ID the caller picked: right for the type, written as the workspace writes IDs, and free. */
+const explicitId = (repo: Repo, type: ItemType, given: string, padding: number) =>
+  Effect.gen(function* () {
+    const parsed = parseId(given)
+    if (parsed === undefined || parsed.type !== type) {
+      return yield* invalid(
+        ['id'],
+        `${given} is not a ${type} ID, such as ${formatId(prefixes[type], 1, padding)}`,
+      )
+    }
+    const canonical = formatId(parsed.prefix, parsed.number, padding)
+    if (given !== canonical) {
+      return yield* invalid(['id'], `Write the ID as ${canonical}`)
+    }
+    const taken = repo.index
+      .items()
+      .some((i) => [i.id, i.fileName.match(/^([A-Z]+-\d+)(?:-|$)/)?.[1]].includes(canonical))
+    if (taken) return yield* invalid(['id'], `${canonical} is already in use`)
+    return canonical
+  })
 
 const adrTemplate = '## Context\n\n## Decision\n\n## Consequences'
 
@@ -252,7 +287,11 @@ export const createItem = (repo: Repo, input: CreateInput): Op =>
       })
     }
     const now = yield* Clock.currentTimeMillis
-    const id = nextId(repo.index.items(), input.type, repo.workspace.config.id_padding)
+    const padding = repo.workspace.config.id_padding
+    const id =
+      input.id === undefined
+        ? nextId(repo.index.items(), input.type, padding)
+        : yield* explicitId(repo, input.type, input.id, padding)
 
     const firstTodo = repo.workspace.config.states.find((s) => s.category === 'todo')
     const defaults: Record<string, Json> = {

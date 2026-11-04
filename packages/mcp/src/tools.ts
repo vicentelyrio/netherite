@@ -151,7 +151,7 @@ export const toolDefinitions = (repo: Repo): ReadonlyArray<Tool> => {
     {
       name: 'create',
       description:
-        'Create an item with the next free ID. Give its type, title and fields; the file name, ID, dates and folder are handled for you.',
+        'Create an item with the next free ID, or with the `id` you give for an import: it must be a free ID of the type. Give its type, title and fields; the file name, dates and folder are handled for you.',
       inputSchema: {
         type: 'object',
         required: ['type', 'title'],
@@ -159,6 +159,7 @@ export const toolDefinitions = (repo: Repo): ReadonlyArray<Tool> => {
         properties: {
           type: { enum: [...itemTypes] },
           title: { type: 'string', minLength: 1 },
+          id: id('An explicit free ID of the type, for imports. Omit it for the next free ID.'),
           fields: {
             type: 'object',
             description: 'Fields for the type (see the schema resource for each type).',
