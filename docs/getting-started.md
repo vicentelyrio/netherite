@@ -71,7 +71,7 @@ stale, in the Knowledge index and the Inbox. *Mark reviewed* resets it.
 
 ## 5. Connect an agent
 
-Agents use the MCP server. For Claude Code:
+Agents use the MCP server. For Claude Code (other clients are in [agents](agents.md)):
 
 ```sh
 claude mcp add netherite -- npx @vicentelyrio/netherite mcp
@@ -122,6 +122,8 @@ collision and `netherite renumber <item>` gives one of them a new ID and rewrite
 
 ## Where next
 
+- [Install](install.md): `npx`, a global install, upgrading, and what `init` adds.
+- [Agents](agents.md): skills, MCP setup for Claude Code, Cursor and Codex, and troubleshooting.
 - [Concepts](concepts.md): how items, IDs, links and freshness work.
 - [Obsidian](obsidian.md): the same files open in Obsidian.
 - [Reference](reference/cli.md): every command, tool, field and setting.

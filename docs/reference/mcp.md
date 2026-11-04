@@ -44,12 +44,13 @@ Items matching filters, in ID order. Use it to browse; use `search` to find by t
 
 ### `create`
 
-Create an item with the next free ID. Give its type, title and fields; the file name, ID, dates and folder are handled for you.
+Create an item with the next free ID, or with the `id` you give for an import: it must be a free ID of the type. Give its type, title and fields; the file name, dates and folder are handled for you.
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `type` | `goal` \| `project` \| `task` \| `adr` \| `doc` \| `context` \| `runbook` | yes |  |
 | `title` | string | yes |  |
+| `id` | string |  | An explicit free ID of the type, for imports. Omit it for the next free ID. |
 | `fields` | object |  | Fields for the type (see the schema resource for each type). |
 | `body` | string |  | Text after the title heading, as Markdown. [[ID]] links to other items. |
 | `created_by` | string |  | A @handle. Defaults to the person running the server. |
@@ -68,24 +69,26 @@ Change fields and/or one section of an item. Only the lines you change are touch
 
 ### `set_state`
 
-Set a task's state, or an ADR's status. Making an ADR `superseded` needs `superseded_by` and updates both ADRs.
+Set a task's state, an ADR's status, or whether a doc, runbook or context item is `active`, `deprecated` or `superseded`. Making an item `superseded` needs `superseded_by` and updates both items. A retired item is left out of freshness and of agent context.
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `id` | string | yes | Task or ADR ID. |
-| `state` | string | yes | Task states: backlog, doing, blocked, done. ADR statuses: proposed, accepted, deprecated, superseded. |
-| `superseded_by` | string |  | The ADR that replaces this one. Required when state is superseded. |
+| `id` | string | yes | Task, ADR, doc, runbook or context ID. |
+| `state` | string | yes | Task states: backlog, doing, blocked, done. ADR statuses: proposed, accepted, deprecated, superseded. Doc, runbook and context statuses: active, deprecated, superseded. |
+| `superseded_by` | string |  | The item that replaces this one, of the same kind. Required when state is superseded. |
 | `base_hash` | string |  | The `hash` from an earlier result. The write fails if the file changed since. |
 
 ### `toggle_check`
 
-Tick or untick one checklist item in an item's text.
+Tick or untick checklist items in an item's text: one `item`, a list of `items`, or `all`, in one write. The edit is all or nothing: an item that does not exist changes none. The result lists each item as it is now.
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `id` | string | yes | Item ID. |
-| `item` | any | yes | The 0-based position of the checklist item, or its exact text. |
-| `checked` | boolean |  | Set to this state. Omit to flip it. |
+| `item` | any |  | One checklist item: its 0-based position, or its exact text. |
+| `items` | any[] |  | Several checklist items, each a position or its exact text. |
+| `all` | boolean |  | Every checklist item. Ticks them unless `checked` is false. |
+| `checked` | boolean |  | Set to this state. Omit to flip each one (with `all`, omit to tick). |
 | `base_hash` | string |  | The `hash` from an earlier result. The write fails if the file changed since. |
 
 ### `link`

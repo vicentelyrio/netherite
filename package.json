@@ -16,6 +16,7 @@
   },
   "scripts": {
     "dev": "turbo run dev --continue",
+    "dev:server": "node packages/cli/dist/bin.mjs serve --no-open --port 4747",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "lint": "biome check .",
@@ -30,7 +31,7 @@
     "test:scale": "turbo run test:scale",
     "e2e": "turbo run e2e",
     "docs:gen": "node scripts/gen-reference.mjs",
-    "docs:check": "node scripts/gen-reference.mjs --check",
+    "docs:check": "node scripts/gen-reference.mjs --check && node scripts/check-npx-name.mjs",
     "netherite:lint": "node packages/cli/dist/bin.mjs lint --fail-on warning",
     "netherite:context": "node packages/cli/dist/bin.mjs context sync --check",
     "deps:check": "manypkg check",

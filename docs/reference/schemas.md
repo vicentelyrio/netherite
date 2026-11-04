@@ -95,6 +95,9 @@ The fields of each item type, as the validator checks them (`netherite lint`, an
 | `explains` | string \| string \| string \| string \| string \| string \| string[] |  |  |
 | `covers` | string[] |  |  |
 | `reviewed_at` | string |  | pattern `^\d{4}-\d{2}-\d{2}$` |
+| `status` | `active` \| `deprecated` \| `superseded` |  |  |
+| `supersedes` | string \| string \| string \| string \| string \| string \| string[] |  |  |
+| `superseded_by` | string \| string \| string \| string \| string \| string \| string |  |  |
 
 ## `context`
 
@@ -112,6 +115,9 @@ The fields of each item type, as the validator checks them (`netherite lint`, an
 | `explains` | string \| string \| string \| string \| string \| string \| string[] |  |  |
 | `covers` | string[] |  |  |
 | `reviewed_at` | string |  | pattern `^\d{4}-\d{2}-\d{2}$` |
+| `status` | `active` \| `deprecated` \| `superseded` |  |  |
+| `supersedes` | string \| string \| string \| string \| string \| string \| string[] |  |  |
+| `superseded_by` | string \| string \| string \| string \| string \| string \| string |  |  |
 | `include_in_context` | boolean |  |  |
 | `targets` | `claude` \| `agents` \| `mcp`[] |  |  |
 | `priority` | `high` \| `normal` \| `low` |  |  |
@@ -132,4 +138,7 @@ The fields of each item type, as the validator checks them (`netherite lint`, an
 | `explains` | string \| string \| string \| string \| string \| string \| string[] |  |  |
 | `covers` | string[] |  |  |
 | `reviewed_at` | string |  | pattern `^\d{4}-\d{2}-\d{2}$` |
+| `status` | `active` \| `deprecated` \| `superseded` |  |  |
+| `supersedes` | string \| string \| string \| string \| string \| string \| string[] |  |  |
+| `superseded_by` | string \| string \| string \| string \| string \| string \| string |  |  |
 
