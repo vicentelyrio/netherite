@@ -2,6 +2,7 @@ import type { KnowledgeRow as Row } from '@netherite/api'
 import {
   type AdrStatus,
   AdrStatusPill,
+  Avatar,
   type ItemTypeName,
   OrphanTag,
   TypeBadge,
@@ -9,6 +10,7 @@ import {
 import { Link } from '@tanstack/react-router'
 import { FreshnessCell } from '@/components'
 import { ago } from '@/infrastructure/datetime'
+import { useI18nContext } from '@/infrastructure/i18n'
 import '../shared.css'
 import './KnowledgeRow.css'
 
@@ -23,6 +25,7 @@ export function KnowledgeRow({
   readonly onSelect: () => void
 }) {
   // A retired item of any type is struck through, as a superseded ADR is.
+  const { LL } = useI18nContext()
   const superseded = row.status === 'superseded' || row.status === 'deprecated'
   return (
     // biome-ignore lint/a11y/useSemanticElements: the row holds links, so it cannot be a button
@@ -49,6 +52,11 @@ export function KnowledgeRow({
           <span className="kn-title" data-superseded={superseded || undefined}>
             {row.title}
           </span>
+          {row.aiTokens !== null && (
+            <span className="kn-ai" title={LL.knowledge.row.aiContextHint()}>
+              {LL.knowledge.row.aiContext({ tokens: row.aiTokens })}
+            </span>
+          )}
           {row.orphan && <OrphanTag />}
         </div>
         <span className="kn-mono">{row.path}</span>
@@ -64,7 +72,10 @@ export function KnowledgeRow({
         {row.projects[0] !== undefined && <span className="kn-project-dot" />}
         {row.projects[0] ?? '—'}
       </span>
-      <span className="kn-modified">{ago(row.date)}</span>
+      <span className="kn-modified">
+        {row.handle !== undefined && <Avatar name={row.handle} size={20} />}
+        {ago(row.date)}
+      </span>
       <FreshnessCell freshness={row.freshness} commits={row.commits} />
     </div>
   )

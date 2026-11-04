@@ -485,6 +485,20 @@ describe('goals', () => {
     await other().call((c) => c.items.delete({ params: { id: made.id }, query: { force: 'true' } }))
   })
 
+  test('a link to an area shows only that area, with a way back to all of them', async () => {
+    const made = await other().call((c) =>
+      c.items.create({ payload: { type: 'goal', title: 'Swim', fields: { area: 'Sport' } } }),
+    )
+    renderApp('/goals?area=Sport')
+    const area = await screen.findByRole('region', { name: 'Sport' })
+    expect(within(area).getByText('Swim')).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: 'No area' })).toBeNull()
+    expect(within(area).getByText(/1 goal · 0 projects/)).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('link', { name: 'All areas' }))
+    expect(await screen.findByRole('region', { name: 'No area' })).toBeInTheDocument()
+    await other().call((c) => c.items.delete({ params: { id: made.id }, query: { force: 'true' } }))
+  })
+
   test('a goal made inside an area joins that area', async () => {
     renderApp('/goals')
     const area = await screen.findByRole('region', { name: 'No area' })

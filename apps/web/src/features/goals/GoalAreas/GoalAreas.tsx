@@ -1,5 +1,6 @@
 import { Banner, EmptyState, Grid } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
 import { CardColumn } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
@@ -10,7 +11,7 @@ import { NewGoal } from '../NewGoal'
 import { groupByArea, noArea, sum } from './areas'
 
 /** Every goal, one column per area, with a way to start a goal or a whole new area. */
-export function GoalAreas() {
+export function GoalAreas({ only }: { readonly only?: string }) {
   const { LL } = useI18nContext()
   const api = useApi()
   const query = useQuery(goalsQuery(api))
@@ -31,7 +32,28 @@ export function GoalAreas() {
       </Grid.Col>
     )
   }
-  const groups = groupByArea(query.data.goals)
+  const all = groupByArea(query.data.goals)
+  // A link to one area shows just that area, with a way back to all of them.
+  const some = only === undefined ? all : all.filter((g) => g.area === only)
+  const groups = some.length === 0 ? all : some
+  if (only !== undefined && some.length > 0) {
+    return (
+      <>
+        {groups.map(({ area, goals }) => (
+          <AreaColumn
+            key={area}
+            area={area}
+            goals={goals}
+            isUnassigned={area === noArea}
+            {...sum(goals)}
+          />
+        ))}
+        <CardColumn>
+          <Link to="/goals">{LL.goals.allAreas()}</Link>
+        </CardColumn>
+      </>
+    )
+  }
   if (groups.length === 0) {
     return (
       <Grid.Col span={12}>
@@ -56,7 +78,7 @@ export function GoalAreas() {
         />
       ))}
       <CardColumn>
-        <NewArea areas={groups.map((g) => g.area).filter((a) => a !== noArea)} />
+        <NewArea areas={all.map((g) => g.area).filter((a) => a !== noArea)} />
       </CardColumn>
     </>
   )

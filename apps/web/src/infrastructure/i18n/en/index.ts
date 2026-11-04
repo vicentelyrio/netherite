@@ -96,6 +96,10 @@ const en = {
   },
   knowledge: {
     loadError: 'Could not load knowledge',
+    row: {
+      aiContext: 'AI context · {tokens:number} tokens',
+      aiContextHint: 'Given to agents as context',
+    },
     heading: {
       title: 'Knowledge',
       empty: 'Docs, decisions and agent context · nothing in knowledge/ yet',
@@ -183,6 +187,8 @@ const en = {
         markReviewed: 'Mark reviewed',
       },
       main: {
+        gets: 'What gets better',
+        costs: 'What it costs',
         staleTitle:
           'Related code changed in {count:number} {{commit|commits}} since this doc was updated',
         reviewed: 'Reviewed {date}',
@@ -568,6 +574,9 @@ const en = {
     firstGoal: 'First goal',
     areaExists: 'That area exists: the goal will join it.',
     createArea: 'Create area',
+    allAreas: 'All areas',
+    areaSummary:
+      '{goals:number} {{goal|goals}} · {projects:number} {{project|projects}} · {done:number}/{total:number} done',
     removeArea: 'Remove area {name}',
     areaRemoved: 'Area {name} removed',
     areaRemovedText: 'Its goals are now without an area.',
@@ -596,6 +605,7 @@ const en = {
     newTaskIn: 'New {state} task',
     dropTo: 'Drop to move to {name}',
     waitingOn: 'Waiting on {names}',
+    explains: 'Explains {what}',
     knowledgeTable: {
       all: 'All',
       filter: 'Kinds of knowledge',

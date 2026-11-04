@@ -14,6 +14,8 @@ const adr = (id: string, extra: Partial<KnowledgeRow> = {}): KnowledgeRow => ({
   commits: 0,
   supersedes: [],
   supersededBy: [],
+  aiTokens: null,
+  explains: {},
   ...extra,
 })
 

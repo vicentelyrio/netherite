@@ -357,6 +357,17 @@ type RootTranslation = {
 		 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​k​n​o​w​l​e​d​g​e
 		 */
 		loadError: string
+		row: {
+			/**
+			 * A​I​ ​c​o​n​t​e​x​t​ ​·​ ​{​t​o​k​e​n​s​}​ ​t​o​k​e​n​s
+			 * @param {number} tokens
+			 */
+			aiContext: RequiredParams<'tokens'>
+			/**
+			 * G​i​v​e​n​ ​t​o​ ​a​g​e​n​t​s​ ​a​s​ ​c​o​n​t​e​x​t
+			 */
+			aiContextHint: string
+		}
 		heading: {
 			/**
 			 * K​n​o​w​l​e​d​g​e
@@ -668,6 +679,14 @@ type RootTranslation = {
 				markReviewed: string
 			}
 			main: {
+				/**
+				 * W​h​a​t​ ​g​e​t​s​ ​b​e​t​t​e​r
+				 */
+				gets: string
+				/**
+				 * W​h​a​t​ ​i​t​ ​c​o​s​t​s
+				 */
+				costs: string
 				/**
 				 * R​e​l​a​t​e​d​ ​c​o​d​e​ ​c​h​a​n​g​e​d​ ​i​n​ ​{​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}​ ​s​i​n​c​e​ ​t​h​i​s​ ​d​o​c​ ​w​a​s​ ​u​p​d​a​t​e​d
 				 * @param {number} count
@@ -2120,6 +2139,18 @@ type RootTranslation = {
 		 */
 		createArea: string
 		/**
+		 * A​l​l​ ​a​r​e​a​s
+		 */
+		allAreas: string
+		/**
+		 * {​g​o​a​l​s​}​ ​{​{​g​o​a​l​|​g​o​a​l​s​}​}​ ​·​ ​{​p​r​o​j​e​c​t​s​}​ ​{​{​p​r​o​j​e​c​t​|​p​r​o​j​e​c​t​s​}​}​ ​·​ ​{​d​o​n​e​}​/​{​t​o​t​a​l​}​ ​d​o​n​e
+		 * @param {number} done
+		 * @param {number} goals
+		 * @param {number} projects
+		 * @param {number} total
+		 */
+		areaSummary: RequiredParams<'done' | 'goals' | 'projects' | 'total'>
+		/**
 		 * R​e​m​o​v​e​ ​a​r​e​a​ ​{​n​a​m​e​}
 		 * @param {unknown} name
 		 */
@@ -2237,6 +2268,11 @@ type RootTranslation = {
 		 * @param {unknown} names
 		 */
 		waitingOn: RequiredParams<'names'>
+		/**
+		 * E​x​p​l​a​i​n​s​ ​{​w​h​a​t​}
+		 * @param {unknown} what
+		 */
+		explains: RequiredParams<'what'>
 		knowledgeTable: {
 			/**
 			 * A​l​l
@@ -3186,6 +3222,16 @@ export type TranslationFunctions = {
 		 * Could not load knowledge
 		 */
 		loadError: () => LocalizedString
+		row: {
+			/**
+			 * AI context · {tokens} tokens
+			 */
+			aiContext: (arg: { tokens: number }) => LocalizedString
+			/**
+			 * Given to agents as context
+			 */
+			aiContextHint: () => LocalizedString
+		}
 		heading: {
 			/**
 			 * Knowledge
@@ -3488,6 +3534,14 @@ export type TranslationFunctions = {
 				markReviewed: () => LocalizedString
 			}
 			main: {
+				/**
+				 * What gets better
+				 */
+				gets: () => LocalizedString
+				/**
+				 * What it costs
+				 */
+				costs: () => LocalizedString
 				/**
 				 * Related code changed in {count} {{commit|commits}} since this doc was updated
 				 */
@@ -4857,6 +4911,14 @@ export type TranslationFunctions = {
 		 */
 		createArea: () => LocalizedString
 		/**
+		 * All areas
+		 */
+		allAreas: () => LocalizedString
+		/**
+		 * {goals} {{goal|goals}} · {projects} {{project|projects}} · {done}/{total} done
+		 */
+		areaSummary: (arg: { done: number, goals: number, projects: number, total: number }) => LocalizedString
+		/**
 		 * Remove area {name}
 		 */
 		removeArea: (arg: { name: unknown }) => LocalizedString
@@ -4966,6 +5028,10 @@ export type TranslationFunctions = {
 		 * Waiting on {names}
 		 */
 		waitingOn: (arg: { names: unknown }) => LocalizedString
+		/**
+		 * Explains {what}
+		 */
+		explains: (arg: { what: unknown }) => LocalizedString
 		knowledgeTable: {
 			/**
 			 * All

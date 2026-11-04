@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import './BoardTemplate.css'
 
 export interface BoardTemplateProps {
@@ -17,6 +17,11 @@ export interface BoardTemplateProps {
   readonly bleed?: boolean
   /** A drawer or other overlay, rendered after the board. */
   readonly overlay?: ReactNode
+  /**
+   * How wide a drawer open over the left of the page is. The main area keeps clear of it, so no
+   * card sits underneath where it cannot be clicked.
+   */
+  readonly inset?: number | undefined
 }
 
 /** A project: a narrow side column and the board filling the rest. */
@@ -27,11 +32,34 @@ export function BoardTemplate({
   mainRole = 'tabpanel',
   mainLabel,
   bleed = false,
+  inset,
 }: BoardTemplateProps) {
+  const frame = useRef<HTMLDivElement>(null)
+  const areaRef = useRef<HTMLDivElement>(null)
+  const [clear, setClear] = useState(0)
+  useLayoutEffect(() => {
+    const root = frame.current
+    const area = areaRef.current
+    if (inset === undefined || root === null || area === null) {
+      setClear(0)
+      return
+    }
+    // The drawer starts where the page does; the main area starts after the side column.
+    const measure = () => {
+      const taken = area.getBoundingClientRect().left - root.getBoundingClientRect().left
+      setClear(Math.max(0, inset + 24 - taken))
+    }
+    measure()
+    const watch = new ResizeObserver(measure)
+    watch.observe(root)
+    return () => watch.disconnect()
+  }, [inset])
   return (
-    <div className="tpl-board">
+    <div ref={frame} className="tpl-board">
       <aside className="tpl-board-side">{side}</aside>
       <div
+        ref={areaRef}
+        style={clear > 0 ? { paddingInlineStart: clear } : undefined}
         className={bleed ? 'tpl-board-main tpl-board-main--bleed' : 'tpl-board-main'}
         role={mainRole}
         {...(mainLabel ? { 'aria-label': mainLabel } : {})}

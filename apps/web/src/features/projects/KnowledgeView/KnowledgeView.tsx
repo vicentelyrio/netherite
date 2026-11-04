@@ -1,5 +1,11 @@
 import type { Board, KnowledgeRow } from '@netherite/api'
-import { type AdrStatus, AdrStatusPill, type ItemTypeName, TypeBadge } from '@netherite/ui'
+import {
+  type AdrStatus,
+  AdrStatusPill,
+  type ItemTypeName,
+  TypeBadge,
+  typeLabels,
+} from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
@@ -73,7 +79,17 @@ export function KnowledgeView({ board }: { readonly board: Board }) {
 }
 
 function Row({ row, project }: { readonly row: KnowledgeRow; readonly project: string }) {
+  const { LL } = useI18nContext()
   const others = row.projects.filter((p) => p !== project)
+  // What it is for: the items it explains, then any other project it is linked to.
+  const explained = Object.entries(row.explains).map(
+    ([type, count]) =>
+      `${count} ${typeLabels[type as ItemTypeName].toLowerCase()}${count === 1 ? '' : 's'}`,
+  )
+  const linkedTo = [
+    ...(explained.length === 0 ? [] : [LL.projects.explains({ what: explained.join(', ') })]),
+    ...others,
+  ]
   return (
     <tr className="pkv-row">
       <td>
@@ -96,7 +112,7 @@ function Row({ row, project }: { readonly row: KnowledgeRow; readonly project: s
           <span className="app-muted">—</span>
         )}
       </td>
-      <td className="app-muted">{others.length === 0 ? '—' : others.join(', ')}</td>
+      <td className="app-muted">{linkedTo.length === 0 ? '—' : linkedTo.join(' · ')}</td>
       <td className="app-muted">{ago(row.date)}</td>
       <td>
         <FreshnessCell freshness={row.freshness} commits={row.commits} />

@@ -1,3 +1,4 @@
+import { estimateTokens } from './context-bundle'
 import type { Freshness } from './freshness'
 import { parseHorizon } from './horizon'
 import { contentHash } from './ops/hash'
@@ -492,6 +493,23 @@ export interface KnowledgeRow {
   readonly supersedes: ReadonlyArray<string>
   /** The ADRs that replace this one. */
   readonly supersededBy: ReadonlyArray<string>
+  /** Who owns it, else who made it: a `@handle`. */
+  readonly handle: string | undefined
+  /** Estimated tokens it adds to agent context; `null` when it is not given to agents. */
+  readonly aiTokens: number | null
+  /** What it explains, as a count per item type: `{ task: 2 }`. */
+  readonly explains: Readonly<Record<string, number>>
+}
+
+/** How many items of each type an item explains, by the `explains` links it writes. */
+const explainsOf = (repo: Repo, path: string): Record<string, number> => {
+  const counts: Record<string, number> = {}
+  for (const edge of repo.index.outgoing(path)) {
+    if (edge.kind !== 'explains') continue
+    const type = repo.index.get(edge.to)?.type
+    if (type !== undefined && type !== 'project') counts[type] = (counts[type] ?? 0) + 1
+  }
+  return counts
 }
 
 /** Every ADR, doc, context and runbook, in ID order, with what the index filters and sorts on. */
@@ -550,6 +568,17 @@ export const knowledgeRows = (
             .filter((e) => e.kind === 'supersedes')
             .map((e) => e.from),
         ),
+        handle:
+          [f.owner, f.created_by].find((v): v is string => typeof v === 'string' && v !== '') ??
+          undefined,
+        aiTokens:
+          item.type === 'context' &&
+          f.include_in_context === true &&
+          f.status !== 'superseded' &&
+          f.status !== 'deprecated'
+            ? estimateTokens(item.parsed.source.slice(item.parsed.bodyStart))
+            : null,
+        explains: explainsOf(repo, item.path),
         date:
           typeof date === 'string'
             ? date

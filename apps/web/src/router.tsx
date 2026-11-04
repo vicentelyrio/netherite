@@ -46,7 +46,16 @@ const index = createRoute({
 })
 
 const inbox = createRoute({ getParentRoute: () => root, path: '/inbox', component: InboxPage })
-const goals = createRoute({ getParentRoute: () => root, path: '/goals', component: GoalsPage })
+const goals = createRoute({
+  getParentRoute: () => root,
+  path: '/goals',
+  validateSearch: (search: Record<string, unknown>): { area?: string } =>
+    typeof search.area === 'string' && search.area !== '' ? { area: search.area } : {},
+  component: function GoalsRoute() {
+    const { area } = goals.useSearch()
+    return <GoalsPage {...(area ? { area } : {})} />
+  },
+})
 const goal = createRoute({
   getParentRoute: () => root,
   path: '/goals/$id',
@@ -76,7 +85,12 @@ const project = createRoute({
 const knowledge = createRoute({
   getParentRoute: () => root,
   path: '/knowledge',
-  component: KnowledgePage,
+  validateSearch: (search: Record<string, unknown>): { q?: string } =>
+    typeof search.q === 'string' && search.q !== '' ? { q: search.q } : {},
+  component: function KnowledgeRoute() {
+    const { q } = knowledge.useSearch()
+    return <KnowledgePage {...(q ? { q } : {})} />
+  },
 })
 const decisions = createRoute({
   getParentRoute: () => root,

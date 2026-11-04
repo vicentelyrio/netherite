@@ -47,3 +47,22 @@
   background: var(--nt-color-surface-hover, #2e3148);
   color: var(--nt-color-text, #e8e9f3);
 }
+
+.goals-area-name {
+  flex: 1;
+  min-width: 0;
+  margin-right: 16px;
+}
+.goals-area-name .editable,
+.goals-area-name > .editable-input {
+  margin-right: 0;
+}
+.goals-area-sub {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: #969ab8;
+}
+.goals-area-name > .editable-input {
+  height: 36px;
+}

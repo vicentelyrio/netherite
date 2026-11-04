@@ -18,6 +18,7 @@ export function ProjectPage({
   const [view, setView] = useState<ProjectViewId>('tasks')
   return (
     <BoardTemplate
+      inset={task !== undefined && !mode ? 912 : undefined}
       side={<ProjectSide id={id} view={view} onViewChange={setView} />}
       main={<ProjectMain id={id} view={view} task={task} />}
       overlay={

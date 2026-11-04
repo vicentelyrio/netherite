@@ -37,11 +37,18 @@ export const useKnowledgeIndex = (): KnowledgeIndexState => {
  * Loads all knowledge and holds what the index screen shares: the filters, the row picked, and the
  * title being asked for. Shows the loading and error states instead of its children.
  */
-export function KnowledgeProvider({ children }: { readonly children: ReactNode }) {
+export function KnowledgeProvider({
+  children,
+  initialQuery,
+}: {
+  readonly children: ReactNode
+  /** Text to filter by when the screen opens, such as from a link. */
+  readonly initialQuery?: string
+}) {
   const { LL } = useI18nContext()
   const api = useApi()
   const query = useQuery(knowledgeQuery(api))
-  const [filters, setFilters] = useState<Filters>(noFilters)
+  const [filters, setFilters] = useState<Filters>({ ...noFilters, q: initialQuery ?? '' })
   const [selected, setSelected] = useState<string | undefined>()
   const [creating, setCreating] = useState<KnowledgeType | undefined>()
   const createItem = useWrite(api, (a, v: { type: KnowledgeType; title: string }) =>

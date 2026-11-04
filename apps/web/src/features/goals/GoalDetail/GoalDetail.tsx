@@ -35,7 +35,14 @@ export function GoalDetail({ id }: { readonly id: string }) {
     <div className="goal-detail-main">
       <Breadcrumbs>
         <Link to="/goals">{LL.goals.title()}</Link>
-        {goal.area && <span> / {goal.area}</span>}
+        {goal.area && (
+          <>
+            <span> / </span>
+            <Link to="/goals" search={{ area: goal.area }}>
+              {goal.area}
+            </Link>
+          </>
+        )}
         <span> / </span>
         <strong>{goal.title}</strong>
       </Breadcrumbs>

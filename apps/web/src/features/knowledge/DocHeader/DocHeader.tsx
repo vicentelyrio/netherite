@@ -26,8 +26,11 @@ export function DocHeader({
     <header className="kf-head">
       <Icon name="stacks" size={16} />
       <nav className="kf-path" aria-label={LL.knowledge.doc.header.path()}>
-        <Link to="/knowledge">{LL.knowledge.doc.header.knowledge()}</Link> › <span>{folder}</span> ›{' '}
-        <strong title={file}>{file}</strong>
+        <Link to="/knowledge">{LL.knowledge.doc.header.knowledge()}</Link> ›{' '}
+        <Link to="/knowledge" search={{ q: `/${folder}/` }}>
+          {folder}
+        </Link>{' '}
+        › <strong title={file}>{file}</strong>
       </nav>
       <TypeBadge type={type} />
       {changedLines > 0 && (

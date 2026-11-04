@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Markdown } from '@/components/Markdown'
 import { isoDay } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
+import { AdrBody } from '../AdrBody'
 import { AdrLifecycle } from '../AdrLifecycle'
 import { ContextCard } from '../ContextCard'
 import { StaleWarning } from '../StaleWarning'
@@ -90,7 +91,7 @@ export function DocMain({
       )}
       {type === 'context' && data?.context && <ContextCard item={item} context={data.context} />}
       {!/^\s*#\s/.test(item.body) && <h1 className="kf-title">{item.title}</h1>}
-      <Markdown source={item.body} />
+      {type === 'adr' ? <AdrBody source={item.body} /> : <Markdown source={item.body} />}
     </div>
   )
 }

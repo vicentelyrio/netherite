@@ -36,13 +36,23 @@ export function AreaColumn({
   return (
     <CardColumn label={area}>
       <header className="goals-area-head">
-        <EditableText
-          as="h2"
-          className="goals-area-title"
-          value={area}
-          draft={isUnassigned ? '' : undefined}
-          onSave={(to) => rename.mutate(to)}
-        />
+        <div className="goals-area-name">
+          <EditableText
+            as="h2"
+            className="goals-area-title"
+            value={area}
+            draft={isUnassigned ? '' : undefined}
+            onSave={(to) => rename.mutate(to)}
+          />
+          <p className="goals-area-sub">
+            {LL.goals.areaSummary({
+              goals: goals.length,
+              projects: goals.reduce((n, g) => n + g.projects, 0),
+              done,
+              total,
+            })}
+          </p>
+        </div>
         {!isUnassigned && (
           <button
             type="button"

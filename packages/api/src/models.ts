@@ -580,6 +580,12 @@ export const KnowledgeRow = Schema.Struct({
   date: opt(S),
   supersedes: Schema.Array(S),
   supersededBy: Schema.Array(S),
+  /** Who owns it, else who made it. */
+  handle: opt(S),
+  /** Estimated tokens it adds to agent context; `null` when it is not given to agents. */
+  aiTokens: Schema.NullOr(N),
+  /** What it explains, as a count per item type. */
+  explains: Schema.Record(S, N),
 })
 export type KnowledgeRow = typeof KnowledgeRow.Type
 
