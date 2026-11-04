@@ -19,7 +19,7 @@ export function KnowledgeCard() {
     stale: LL.stats.knowledge.stale(),
     notTracked: LL.stats.knowledge.notTracked(),
   }
-  const decisions = Object.entries(data.knowledge.decisions).sort(([a], [b]) => a.localeCompare(b))
+  const decisions = Object.entries(data.knowledge.decided).sort(([a], [b]) => a.localeCompare(b))
   return (
     <ChartCard
       title={LL.stats.knowledge.title()}
@@ -54,6 +54,7 @@ export function KnowledgeCard() {
         ))}
       </ul>
       <h3 className="kn-h">{LL.stats.knowledge.decisions()}</h3>
+      {decisions.length === 0 && <p className="app-muted">{LL.stats.knowledge.noDecisions()}</p>}
       <ul className="kn-pills">
         {decisions.map(([status, count]) => (
           <li key={status} className="kn-pill" data-status={status}>

@@ -1568,9 +1568,24 @@ type RootTranslation = {
 		}
 		heat: {
 			/**
-			 * C​o​m​m​i​t​s​ ​t​h​a​t​ ​t​o​u​c​h​e​d​ ​k​n​o​w​l​e​d​g​e​ ​·​ ​l​a​s​t​ ​1​2​ ​m​o​n​t​h​s
+			 * C​o​m​m​i​t​s​ ​t​h​a​t​ ​t​o​u​c​h​e​d​ ​k​n​o​w​l​e​d​g​e​ ​·​ ​{​p​e​r​i​o​d​}
+			 * @param {unknown} period
 			 */
-			subtitle: string
+			subtitle: RequiredParams<'period'>
+			periods: {
+				/**
+				 * l​a​s​t​ ​3​0​ ​d​a​y​s
+				 */
+				'30d': string
+				/**
+				 * l​a​s​t​ ​3​ ​m​o​n​t​h​s
+				 */
+				quarter: string
+				/**
+				 * l​a​s​t​ ​1​2​ ​m​o​n​t​h​s
+				 */
+				year: string
+			}
 			/**
 			 * A​c​t​i​v​e​ ​d​a​y​s
 			 */
@@ -1605,15 +1620,17 @@ type RootTranslation = {
 			 */
 			title: string
 			/**
-			 * {​c​o​u​n​t​}​ ​i​n​ ​5​3​ ​w​e​e​k​s
+			 * {​c​o​u​n​t​}​ ​i​n​ ​{​w​e​e​k​s​}​ ​w​e​e​k​s
 			 * @param {number} count
+			 * @param {number} weeks
 			 */
-			total: RequiredParams<'count'>
+			total: RequiredParams<'count' | 'weeks'>
 			/**
-			 * {​c​o​u​n​t​}​ ​c​o​m​m​i​t​s​ ​o​v​e​r​ ​t​h​e​ ​l​a​s​t​ ​5​3​ ​w​e​e​k​s
+			 * {​c​o​u​n​t​}​ ​c​o​m​m​i​t​s​ ​o​v​e​r​ ​t​h​e​ ​l​a​s​t​ ​{​w​e​e​k​s​}​ ​w​e​e​k​s
 			 * @param {number} count
+			 * @param {number} weeks
 			 */
-			label: RequiredParams<'count'>
+			label: RequiredParams<'count' | 'weeks'>
 			/**
 			 * {​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}​ ​o​n​ ​{​d​a​t​e​}
 			 * @param {number} count
@@ -1647,9 +1664,13 @@ type RootTranslation = {
 			 */
 			notTracked: string
 			/**
-			 * D​e​c​i​s​i​o​n​s
+			 * D​e​c​i​s​i​o​n​s​ ​t​h​i​s​ ​p​e​r​i​o​d
 			 */
 			decisions: string
+			/**
+			 * N​o​ ​d​e​c​i​s​i​o​n​ ​m​o​v​e​d
+			 */
+			noDecisions: string
 			/**
 			 * O​p​e​n
 			 */
@@ -4279,9 +4300,23 @@ export type TranslationFunctions = {
 		}
 		heat: {
 			/**
-			 * Commits that touched knowledge · last 12 months
+			 * Commits that touched knowledge · {period}
 			 */
-			subtitle: () => LocalizedString
+			subtitle: (arg: { period: unknown }) => LocalizedString
+			periods: {
+				/**
+				 * last 30 days
+				 */
+				'30d': () => LocalizedString
+				/**
+				 * last 3 months
+				 */
+				quarter: () => LocalizedString
+				/**
+				 * last 12 months
+				 */
+				year: () => LocalizedString
+			}
 			/**
 			 * Active days
 			 */
@@ -4315,13 +4350,13 @@ export type TranslationFunctions = {
 			 */
 			title: () => LocalizedString
 			/**
-			 * {count} in 53 weeks
+			 * {count} in {weeks} weeks
 			 */
-			total: (arg: { count: number }) => LocalizedString
+			total: (arg: { count: number, weeks: number }) => LocalizedString
 			/**
-			 * {count} commits over the last 53 weeks
+			 * {count} commits over the last {weeks} weeks
 			 */
-			label: (arg: { count: number }) => LocalizedString
+			label: (arg: { count: number, weeks: number }) => LocalizedString
 			/**
 			 * {count} {{commit|commits}} on {date}
 			 */
@@ -4353,9 +4388,13 @@ export type TranslationFunctions = {
 			 */
 			notTracked: () => LocalizedString
 			/**
-			 * Decisions
+			 * Decisions this period
 			 */
 			decisions: () => LocalizedString
+			/**
+			 * No decision moved
+			 */
+			noDecisions: () => LocalizedString
 			/**
 			 * Open
 			 */

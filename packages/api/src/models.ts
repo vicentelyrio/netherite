@@ -435,6 +435,7 @@ export const PeriodStats = Schema.Struct({
   knowledge: Schema.Struct({
     freshness: Schema.Struct({ fresh: N, drifting: N, stale: N, notTracked: N }),
     decisions: Schema.Record(S, N),
+    decided: Schema.Record(S, N),
     undocumented: Schema.Array(Schema.Struct({ path: S, commits: N, last: S })),
   }),
   areaNames: Schema.Array(S),

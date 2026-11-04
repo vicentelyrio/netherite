@@ -1079,7 +1079,7 @@ describe('Stats', () => {
     expect(screen.getByRole('region', { name: 'Goal areas' })).toBeInTheDocument()
     expect(screen.getByRole('region', { name: 'By project' })).toBeInTheDocument()
     expect(screen.getByRole('region', { name: 'Knowledge health' })).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: /commits over the last 53 weeks/ })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /commits over the last \d+ weeks/ })).toBeInTheDocument()
   })
 
   test('the period and the area can be changed, and the numbers follow', async () => {

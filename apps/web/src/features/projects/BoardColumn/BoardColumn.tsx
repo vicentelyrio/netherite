@@ -1,9 +1,17 @@
 import { useDroppable } from '@dnd-kit/core'
 import type { BoardCard } from '@netherite/api'
-import { type StateCategory, TaskStatePill } from '@netherite/ui'
+import { Icon, type StateCategory } from '@netherite/ui'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { NewTask } from '../NewTask'
 import { TaskCard } from '../TaskCard'
+
+/** The icon that stands for each kind of state in a column's heading. */
+const categoryIcon: Readonly<Record<StateCategory, string>> = {
+  todo: 'radio_button_unchecked',
+  active: 'clock_loader_40',
+  blocked: 'pause_circle',
+  done: 'check_circle',
+}
 
 /** One state of the board: its tasks, a drop target, and a way to add a task in it. */
 export function BoardColumn({
@@ -35,7 +43,14 @@ export function BoardColumn({
       aria-label={name}
     >
       <header className="board-column-head">
-        <TaskStatePill state={name} category={category as StateCategory} />
+        <span className="board-column-icon" data-category={category}>
+          <Icon
+            name={categoryIcon[category as StateCategory] ?? 'radio_button_unchecked'}
+            size="inline"
+            filled={category === 'done'}
+          />
+        </span>
+        <h2 className="board-column-name">{name}</h2>
         <span className="board-count">{cards.length}</span>
       </header>
       <div className="board-cards">

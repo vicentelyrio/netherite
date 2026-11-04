@@ -20,11 +20,12 @@ const WEEKDAYS = [
 /** Commits per day over the last 53 weeks, a column per week from Monday, with months and weekdays. */
 export function HeatMapCard() {
   const { LL } = useI18nContext()
-  const { data } = useStats()
+  const { data, period } = useStats()
   const days = heatDays(data.heat.from, data.heat.to, data.heat.days)
   const max = Math.max(0, ...days.map((d) => d.count))
   const total = days.reduce((n, d) => n + d.count, 0)
   const summary = heatSummary(days)
+  const weeks = Math.ceil(days.length / 7)
   const wrap = useRef<HTMLDivElement>(null)
   // When the card is narrower than 53 weeks, the latest weeks are the ones in view.
   useLayoutEffect(() => {
@@ -45,8 +46,8 @@ export function HeatMapCard() {
   return (
     <ChartCard
       title={LL.stats.heat.title()}
-      subtitle={LL.stats.heat.subtitle()}
-      aside={<span className="app-muted">{LL.stats.heat.total({ count: total })}</span>}
+      subtitle={LL.stats.heat.subtitle({ period: LL.stats.heat.periods[period]() })}
+      aside={<span className="app-muted">{LL.stats.heat.total({ count: total, weeks })}</span>}
     >
       <div className="hm-wrap" ref={wrap}>
         <div className="hm-months" aria-hidden="true">
@@ -62,7 +63,7 @@ export function HeatMapCard() {
               <span key={key}>{label}</span>
             ))}
           </div>
-          <div className="hm" role="img" aria-label={LL.stats.heat.label({ count: total })}>
+          <div className="hm" role="img" aria-label={LL.stats.heat.label({ count: total, weeks })}>
             {days.map((d) => (
               <span
                 key={d.date}

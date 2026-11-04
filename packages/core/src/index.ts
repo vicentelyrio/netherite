@@ -220,6 +220,7 @@ export {
   type WatchOptions,
   watchRepo,
 } from './watch'
+export { withWorkingTree } from './working-tree'
 export {
   configFile,
   findWorkspaceRoot,

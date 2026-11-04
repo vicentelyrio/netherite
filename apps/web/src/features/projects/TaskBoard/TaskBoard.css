@@ -66,7 +66,28 @@
 .board-column-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 4px 6px 8px;
+}
+.board-column-icon {
+  display: inline-flex;
+  color: #969ab8;
+}
+.board-column-icon[data-category="active"] {
+  color: #a5a7ff;
+}
+.board-column-icon[data-category="blocked"] {
+  color: #e2ae4c;
+}
+.board-column-icon[data-category="done"] {
+  color: #2cc27e;
+}
+.board-column-name {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  text-transform: capitalize;
 }
 
 .board-draggable {
@@ -204,8 +225,11 @@
   color: #a5a7ff;
 }
 .board-count {
-  background: #2e3149;
-  border-radius: 10px;
-  padding: 0 8px;
+  background: #3a3d58;
+  color: #b9bcd3;
+  border-radius: 999px;
+  padding: 2px 7px;
   font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
 }

@@ -36,10 +36,14 @@ export function TimelineRow({ row, today, from, to, onToggle }: Props) {
         </div>
         <div className="tl-track" style={{ '--tl-hue': hue('adr') } as React.CSSProperties}>
           {line !== undefined && (
-            <span
+            <Link
+              to="/items/$id"
+              params={{ id: d.id }}
               className="tl-piece"
               data-kind={open ? 'planned' : 'active'}
               style={{ left: `${line.left}%`, width: `${line.width}%` }}
+              aria-hidden="true"
+              tabIndex={-1}
             />
           )}
           {[
@@ -49,12 +53,15 @@ export function TimelineRow({ row, today, from, to, onToggle }: Props) {
           ].map(([kind, day]) => {
             const at = day === undefined ? undefined : pointOf(day, from, to)
             return at === undefined ? null : (
-              <span
+              <Link
                 key={kind}
+                to="/items/$id"
+                params={{ id: d.id }}
                 className="tl-marker"
                 data-kind={kind}
                 style={{ left: `${at}%` }}
                 title={`${kind} ${formatDay(day as string)}`}
+                aria-label={`${d.id} ${kind}`}
               />
             )
           })}
@@ -152,22 +159,53 @@ export function TimelineRow({ row, today, from, to, onToggle }: Props) {
         )}
       </div>
       <div className="tl-track" style={{ '--tl-hue': hue(type) } as React.CSSProperties}>
-        {pieces.map((p) => (
-          <span
-            key={`${p.kind}-${p.span.left}`}
-            className="tl-piece"
-            data-kind={p.kind}
-            data-done={(p.kind === 'active' && item.status === 'done') || undefined}
-            style={{ left: `${p.span.left}%`, width: `${p.span.width}%` }}
-            title={
+        {pieces.map((p) => {
+          const props = {
+            className: 'tl-piece',
+            'data-kind': p.kind,
+            'data-done': (p.kind === 'active' && item.status === 'done') || undefined,
+            style: { left: `${p.span.left}%`, width: `${p.span.width}%` },
+            title:
               p.kind === 'hold'
                 ? LL.timeline.onHold()
                 : p.kind === 'planned'
                   ? LL.timeline.planned()
-                  : undefined
-            }
-          />
-        ))}
+                  : undefined,
+          }
+          // The bar of the item is a way into it; the thin waiting, hold and overdue bars are not.
+          if (p.kind !== 'active' && p.kind !== 'planned') {
+            return <span key={`${p.kind}-${p.span.left}`} {...props} />
+          }
+          return row.kind === 'goal' ? (
+            <Link
+              key={`${p.kind}-${p.span.left}`}
+              to="/goals/$id"
+              params={{ id: item.id }}
+              aria-hidden="true"
+              tabIndex={-1}
+              {...props}
+            />
+          ) : row.kind === 'project' ? (
+            <Link
+              key={`${p.kind}-${p.span.left}`}
+              to="/projects/$id"
+              params={{ id: item.id }}
+              aria-hidden="true"
+              tabIndex={-1}
+              {...props}
+            />
+          ) : (
+            <Link
+              key={`${p.kind}-${p.span.left}`}
+              to="/projects/$id"
+              params={{ id: row.item.project ?? '' }}
+              search={{ task: item.id }}
+              aria-hidden="true"
+              tabIndex={-1}
+              {...props}
+            />
+          )
+        })}
         {dueAt !== undefined && item.due !== undefined && (
           <span
             className="tl-due"
@@ -244,21 +282,30 @@ function DecisionLane({
       ].map(([kind, day]) => {
         const x = at(day)
         return x === undefined ? null : (
-          <span
+          <Link
             key={kind}
+            to="/items/$id"
+            params={{ id: d.id }}
             className="tl-lane-marker"
             data-kind={kind}
             style={{ left: `${x}%` }}
             title={`${d.id} ${kind} ${formatDay(day as string)}`}
+            aria-label={`${d.id} ${kind}`}
           />
         )
       })}
       {after !== undefined && (
-        <span className="tl-lane-label" style={{ left: `calc(${after}% + 10px)` }}>
+        <Link
+          to="/items/$id"
+          params={{ id: d.id }}
+          className="tl-lane-label"
+          style={{ left: `calc(${after}% + 10px)` }}
+          title={d.title}
+        >
           {decided === undefined
             ? `${d.id} · ${LL.timeline.openFor({ days: daysBetween(start, today) })}`
             : d.id}
-        </span>
+        </Link>
       )}
     </div>
   )

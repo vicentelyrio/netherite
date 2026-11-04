@@ -14,7 +14,7 @@ state: backlog
 - [x] Stats: "Commits linked to work" as a percentage, which needs commits tied to tasks
 - [ ] Doc view: boxed Decision and two-column Consequences for ADRs, and the "M N lines changed" badge in the top bar
 - [ ] Knowledge index: avatar in the modified column and the AI-context chip with its token count
-- [ ] Project board: the Knowledge view's "Linked to" text ("Explains 2 tasks"), which needs the kind of link in the knowledge list; column header as icon, name and count (the filter chips are done)
+- [ ] Project board: the Knowledge view's "Linked to" text ("Explains 2 tasks"), which needs the kind of link in the knowledge list; the filter chips and the column header (icon, name, count) are done
 - [ ] Goals overview: the area description line; breadcrumb with the area on the board and goal pages
 - [ ] Tags: decide whether the All / Tags / Labels tabs stay, since the design has none
 - [ ] Compare Search and Goal detail by eye against the design frames, and Graph and the token sheets

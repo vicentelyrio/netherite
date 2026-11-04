@@ -40,6 +40,7 @@ import {
   toggleChecklistItem,
   unlink,
   updateItem,
+  withWorkingTree,
 } from '@netherite/core'
 import { Effect } from 'effect'
 import { ArgReader } from './args'
@@ -115,12 +116,14 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           if (git === undefined) return undefined
           const head = yield* git.head
           const hit = cachedHistory
-          if (hit !== undefined && hit.head === head) return hit.history
+          if (hit !== undefined && hit.head === head) {
+            return withWorkingTree(hit.history, repo.index, new Date().toISOString())
+          }
           const read = yield* readHistory(git, repo.workspace.root, {
             contentRoot: repo.contentRoot,
           })
           cachedHistory = { head, history: read }
-          return read
+          return withWorkingTree(read, repo.index, new Date().toISOString())
         }),
       )
     const asOfProblem = (value: string | undefined) =>

@@ -335,3 +335,22 @@
   color: #d2a8f0;
   white-space: nowrap;
 }
+
+/* Nodes and bars are links into the item. */
+a.tl-piece,
+a.tl-marker,
+.tl-lane a {
+  pointer-events: auto;
+  cursor: pointer;
+  text-decoration: none;
+}
+a.tl-piece:hover {
+  filter: brightness(1.2);
+}
+a.tl-lane-marker:hover,
+a.tl-marker:hover {
+  filter: brightness(1.4);
+}
+a.tl-lane-label:hover {
+  text-decoration: underline;
+}

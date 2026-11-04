@@ -68,12 +68,28 @@ describe('period stats', () => {
     expect(other.kpis.commits).toEqual(all.kpis.commits)
   })
 
-  test('the heat map has the commits of the last 53 weeks, and knowledge counts its states', async () => {
+  test('the heat map has the commits of the period, and knowledge counts its states', async () => {
     const w = await world(files)
     const s = periodStats(w.repo, history, { period: 'quarter', now })
     expect(s.heat.days.reduce((n, d) => n + d.count, 0)).toBe(5)
     expect(s.heat.days.find((d) => d.date === '2026-02-03')?.count).toBe(1)
     expect(s.knowledge.decisions).toEqual({ accepted: 1 })
     expect(s.knowledge.freshness).toEqual({ fresh: 0, drifting: 0, stale: 0, notTracked: 0 })
+  })
+
+  test('the heat map starts at the Monday of the period, and the decisions are those that moved in it', async () => {
+    const w = await world(files)
+    const month = periodStats(w.repo, history, { period: '30d', now })
+    // 30 days back from 15 Feb is 17 Jan, a Saturday: the map starts at the Monday before.
+    expect(month.heat.from).toBe('2026-01-12')
+    expect(month.heat.days.every((d) => d.date >= '2026-01-12')).toBe(true)
+    const year = periodStats(w.repo, history, { period: 'year', now })
+    expect(year.heat.from < month.heat.from).toBe(true)
+    expect(year.heat.days.length).toBeGreaterThanOrEqual(month.heat.days.length)
+    // Decisions moved in a period only when their status changed inside it.
+    expect(Object.values(month.knowledge.decided).every((n) => n >= 0)).toBe(true)
+    expect(year.knowledge.decided.accepted ?? 0).toBeGreaterThanOrEqual(
+      month.knowledge.decided.accepted ?? 0,
+    )
   })
 })

@@ -70,7 +70,7 @@ export interface PeriodStats {
     readonly done: number
     readonly cycleDays: number | null
   }>
-  /** Commits per day over the last 53 weeks; days without commits are left out. */
+  /** Commits per day over the period, from the Monday of its first week; days without commits are left out. */
   readonly heat: {
     readonly from: string
     readonly to: string
@@ -84,6 +84,8 @@ export interface PeriodStats {
       readonly notTracked: number
     }
     readonly decisions: Readonly<Record<string, number>>
+    /** Decisions that moved in the period: how many were proposed, accepted, deprecated or superseded. */
+    readonly decided: Readonly<Record<string, number>>
     /** Code changed most often in the period with no knowledge changing alongside it. */
     readonly undocumented: ReadonlyArray<{
       readonly path: string
@@ -282,8 +284,8 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
     })
     .sort((a, b) => b.done - a.done || a.id.localeCompare(b.id))
 
-  // Heat map: 53 weeks ending this week.
-  const heatFrom = addDays(weekStart(to), -52 * 7)
+  // The map covers the period, from the Monday of its first week.
+  const heatFrom = weekStart(from)
   const counts = new Map<string, number>()
   for (const c of history.log) {
     const d = dayOf(c.date)
@@ -301,6 +303,15 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
     else freshness.notTracked++
   }
   const decisions: Record<string, number> = {}
+  const decided: Record<string, number> = {}
+  const decisionKinds = ['proposed', 'accepted', 'deprecated', 'superseded'] as const
+  for (const item of repo.index.items()) {
+    if (item.type !== 'adr' || item.id === undefined) continue
+    for (const e of life.get(item.id)?.events ?? []) {
+      const kind = decisionKinds.find((k) => k === e.kind)
+      if (kind !== undefined && inside(e.date, from, to)) decided[kind] = (decided[kind] ?? 0) + 1
+    }
+  }
   for (const item of repo.index.items()) {
     if (item.type !== 'adr') continue
     const status = fieldsOf(item).status
@@ -342,7 +353,7 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
         .map(([date, count]) => ({ date, count }))
         .sort((a, b) => a.date.localeCompare(b.date)),
     },
-    knowledge: { freshness, decisions, undocumented: options.undocumented ?? [] },
+    knowledge: { freshness, decisions, decided, undocumented: options.undocumented ?? [] },
     areaNames: [...byArea.keys()].sort(),
     approximate: history.partial,
   }

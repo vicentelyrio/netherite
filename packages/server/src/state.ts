@@ -6,6 +6,7 @@ import {
   type History,
   type Repo,
   readHistory,
+  withWorkingTree,
 } from '@netherite/core'
 import { Effect, PubSub, Semaphore } from 'effect'
 import { newToken } from './security'
@@ -59,12 +60,15 @@ export const makeState = (repo: Repo, options: ServerOptions = {}) =>
       const git = options.git
       if (git === undefined) return undefined
       const head = yield* git.head
-      if (cached !== undefined && cached.head === head) return cached.history
+      // What was committed is read once per commit; what is only in the files is laid over it each time.
+      if (cached !== undefined && cached.head === head) {
+        return withWorkingTree(cached.history, repo.index, new Date().toISOString())
+      }
       const read = yield* readHistory(git, repo.workspace.root, {
         contentRoot: repo.contentRoot,
       })
       cached = { head, history: read }
-      return read
+      return withWorkingTree(read, repo.index, new Date().toISOString())
     })
 
     return {
