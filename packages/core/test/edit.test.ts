@@ -11,6 +11,7 @@ import {
   removeFromList,
   setField,
   toggleCheck,
+  toggleChecks,
   unsetField,
 } from '../src/index'
 import { fixturePath, scanFixture } from './helpers'
@@ -128,6 +129,26 @@ describe('edits across every fixture file', () => {
         expect(run(toggleCheck(after, i)), `${path} ${i}`).toBe(source)
       }
     }
+  })
+})
+
+describe('toggling several checklist items', () => {
+  const text = '---\nid: TASK-00001\n---\n\n# T\n\n- [ ] one\n- [x] two\n- [ ] three\n'
+
+  test('ticks a list or all of them, changing only their brackets', () => {
+    const some = run(toggleChecks(text, [0, { text: 'three' }], true))
+    expect(parseMarkdown(some).checklist.map((c) => c.checked)).toEqual([true, true, true])
+    expect(some).toBe(text.replace('- [ ] one', '- [x] one').replace('- [ ] three', '- [x] three'))
+    expect(run(toggleChecks(text, { all: true }, false))).not.toContain('[x]')
+  })
+
+  test('an item named twice is changed once, and one that is missing changes nothing', () => {
+    expect(parseMarkdown(run(toggleChecks(text, [0, 0]))).checklist.map((c) => c.checked)).toEqual([
+      true,
+      true,
+      false,
+    ])
+    expect(() => run(toggleChecks(text, [0, 7], true))).toThrow()
   })
 })
 

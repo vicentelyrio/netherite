@@ -91,7 +91,7 @@ ${connection}
 
 ## While working
 
-- \`toggle_check\` each checklist item when that part is finished and verified, not before. Use the item's text or its position.
+- \`toggle_check\` checklist items when that part is finished and verified, not before. Use an item's text or position, or give \`items\` to tick several in one call and \`all: true\` once everything is done: one write, all or nothing. The result lists the checklist as it is now.
 - Record what you learned in the task body with \`update\` and a \`section\` (\`mode: append\` under \`## Notes\`).
 - Use \`base_hash\` from \`get\` when you update, so a change made by someone else is not overwritten. If you get a conflict, \`get\` again and redo the edit.
 

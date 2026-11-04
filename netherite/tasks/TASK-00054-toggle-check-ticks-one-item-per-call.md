@@ -6,7 +6,7 @@ title: "`toggle_check` ticks one item per call"
 created: 2026-11-01T23:51:14Z
 created_by: "@vicentelyrio"
 project: PRJ-00004
-state: backlog
+state: done
 related: [TASK-00025]
 ---
 
@@ -14,5 +14,5 @@ related: [TASK-00025]
 
 Marking 26 finished tasks took about 90 `toggle_check` calls. An agent closing a task wants to tick several items, or all of them, at once.
 
-- [ ] Accept a list of items, or `all: true`, in one write with one hash check
-- [ ] Update the `netherite-task` skill to use it
+- [x] Accept a list of items, or `all: true`, in one write with one hash check
+- [x] Update the `netherite-task` skill to use it

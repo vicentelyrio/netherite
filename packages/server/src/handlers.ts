@@ -11,6 +11,7 @@ import {
   addCapture,
   adrActivityByWeek,
   boardOf,
+  checkTargetOf,
   coChanged,
   completionsByWeek,
   computeFreshness,
@@ -253,23 +254,14 @@ const items = (state: ServerState) =>
         ),
       )
       .handle('toggleCheck', ({ params, payload }) => {
-        const which =
-          typeof payload.item === 'number'
-            ? payload.item
-            : payload.item === ''
-              ? undefined
-              : { text: payload.item }
-        if (which === undefined || (typeof which === 'number' && which < 0)) {
-          return Effect.fail(
-            invalid(['item'], 'Give the 0-based position or the exact text of the checklist item'),
-          )
-        }
+        const ask = checkTargetOf(payload)
+        if ('problem' in ask) return Effect.fail(invalid(['item'], ask.problem))
         return w(
           toggleChecklistItem(
             state.repo,
             params.id,
-            which,
-            payload.checked,
+            ask.target,
+            ask.checked,
             payload.baseHash ? { baseHash: payload.baseHash } : {},
           ),
         )

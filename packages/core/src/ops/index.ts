@@ -3,6 +3,7 @@ export { contentHash } from './hash'
 export { applyChanges, type Change } from './io'
 export {
   type CreateInput,
+  checkTargetOf,
   createItem,
   deleteItem,
   type FieldPatch,

@@ -6,12 +6,13 @@ import {
   appendToList,
   appendToSection as appendToSectionEdit,
   type CheckSelector,
+  type CheckTarget,
   type Json,
   removeFromList,
   renderFrontmatter,
   replaceSection as replaceSectionEdit,
   setField,
-  toggleCheck as toggleCheckEdit,
+  toggleChecks as toggleChecksEdit,
   unsetField,
 } from '../edit'
 import {
@@ -354,16 +355,20 @@ export const updateFields = (
   ])
 }
 
-/** Ticks or unticks one checklist item, by its position or its text. */
+/**
+ * Ticks or unticks checklist items, by position or text: one, several, or `{ all: true }`, in one
+ * write with one hash check. With several or all and no `checked`, each item is flipped; the
+ * caller that wants "finish them all" says `checked: true`.
+ */
 export const toggleChecklistItem = (
   repo: Repo,
   id: string,
-  which: CheckSelector,
+  which: CheckTarget,
   checked?: boolean,
   options: OpOptions = {},
 ): Op =>
   mutate(repo, [
-    { id, baseHash: options.baseHash, edit: (source) => toggleCheckEdit(source, which, checked) },
+    { id, baseHash: options.baseHash, edit: (source) => toggleChecksEdit(source, which, checked) },
   ])
 
 export interface SectionPatch {
@@ -851,3 +856,43 @@ export const renameArea = (repo: Repo, input: { from: string; to: string }) =>
     }
     return { renamed, changed: [...changed] } satisfies RenameResult
   })
+
+/**
+ * What a request to tick items asks for: one `item`, a list of `items`, or `all`. Exactly one must
+ * be given, and each item is a 0-based position or its exact text. Returns the target and the
+ * `checked` to use (`all` without `checked` ticks), or the problems with the request.
+ */
+export const checkTargetOf = (input: {
+  readonly item?: number | string | undefined
+  readonly items?: ReadonlyArray<number | string> | undefined
+  readonly all?: boolean | undefined
+  readonly checked?: boolean | undefined
+}):
+  | { readonly target: CheckTarget; readonly checked: boolean | undefined }
+  | { readonly problem: string } => {
+  const asked = [input.item !== undefined, input.items !== undefined, input.all === true].filter(
+    Boolean,
+  ).length
+  if (asked !== 1) {
+    return { problem: 'Give exactly one of item, items or all' }
+  }
+  const one = (v: number | string): CheckSelector | undefined =>
+    typeof v === 'number'
+      ? Number.isInteger(v) && v >= 0
+        ? v
+        : undefined
+      : v === ''
+        ? undefined
+        : { text: v }
+  if (input.all === true) return { target: { all: true }, checked: input.checked ?? true }
+  const picked =
+    input.items !== undefined ? input.items.map(one) : [one(input.item as number | string)]
+  if (picked.length === 0 || picked.some((p) => p === undefined)) {
+    return { problem: 'Give the 0-based position or the exact text of each checklist item' }
+  }
+  const selectors = picked as CheckSelector[]
+  return {
+    target: input.items === undefined ? (selectors[0] as CheckSelector) : selectors,
+    checked: input.checked,
+  }
+}

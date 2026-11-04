@@ -237,18 +237,32 @@ export const toolDefinitions = (repo: Repo): ReadonlyArray<Tool> => {
     },
     {
       name: 'toggle_check',
-      description: "Tick or untick one checklist item in an item's text.",
+      description:
+        "Tick or untick checklist items in an item's text: one `item`, a list of `items`, or `all`, in one write. The edit is all or nothing: an item that does not exist changes none. The result lists each item as it is now.",
       inputSchema: {
         type: 'object',
-        required: ['id', 'item'],
+        required: ['id'],
         additionalProperties: false,
         properties: {
           id: id('Item ID.'),
           item: {
             oneOf: [{ type: 'integer', minimum: 0 }, { type: 'string' }],
-            description: 'The 0-based position of the checklist item, or its exact text.',
+            description: 'One checklist item: its 0-based position, or its exact text.',
           },
-          checked: { type: 'boolean', description: 'Set to this state. Omit to flip it.' },
+          items: {
+            type: 'array',
+            minItems: 1,
+            items: { oneOf: [{ type: 'integer', minimum: 0 }, { type: 'string' }] },
+            description: 'Several checklist items, each a position or its exact text.',
+          },
+          all: {
+            type: 'boolean',
+            description: 'Every checklist item. Ticks them unless `checked` is false.',
+          },
+          checked: {
+            type: 'boolean',
+            description: 'Set to this state. Omit to flip each one (with `all`, omit to tick).',
+          },
           base_hash: hash,
         },
       },

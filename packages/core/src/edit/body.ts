@@ -6,40 +6,71 @@ import { detectEol, lineEndAfter, withEol } from './text'
 /** Selects a checklist item by its position among the file's task items, or by its text. */
 export type CheckSelector = number | { readonly text: string }
 
+/** What to tick: one item, several items, or every item of the checklist. */
+export type CheckTarget = CheckSelector | ReadonlyArray<CheckSelector> | { readonly all: true }
+
+const isAll = (target: CheckTarget): target is { readonly all: true } =>
+  typeof target === 'object' && !Array.isArray(target) && 'all' in target
+
 /**
- * Checks, unchecks or (without `checked`) toggles one checklist item. Only the character inside
- * the brackets changes.
+ * Checks, unchecks or (without `checked`) toggles checklist items: one, several, or all of them.
+ * Every item is found first, so one that does not exist fails the whole edit and nothing is
+ * changed. Only the characters inside the brackets change. Each item is changed once, even if it
+ * is named twice.
  */
+export const toggleChecks = (
+  source: string,
+  target: CheckTarget,
+  checked?: boolean,
+): Effect.Effect<string, EditError> => {
+  const list = outlineMarkdown(source).checklist
+  const selectors: ReadonlyArray<CheckSelector> = isAll(target)
+    ? list.map((_, i) => i)
+    : Array.isArray(target)
+      ? (target as ReadonlyArray<CheckSelector>)
+      : [target as CheckSelector]
+  const found = new Set<number>()
+  for (const which of selectors) {
+    const index =
+      typeof which === 'number'
+        ? which >= 0 && which < list.length
+          ? which
+          : -1
+        : (() => {
+            const matches = list.flatMap((c, i) => (c.text === which.text ? [i] : []))
+            return matches.length === 1 ? (matches[0] as number) : -1
+          })()
+    if (index === -1) {
+      return Effect.fail(
+        new EditError({
+          reason: 'no-such-check',
+          detail:
+            typeof which === 'number'
+              ? `There is no checklist item ${which} (the file has ${list.length})`
+              : `No single checklist item has the text "${which.text}"`,
+        }),
+      )
+    }
+    found.add(index)
+  }
+  // Later items first, so an edit never moves the offset of one still to be made.
+  let text = source
+  for (const index of [...found].sort((a, b) => b - a)) {
+    const item = list[index]
+    if (item === undefined) continue
+    const next = checked ?? !item.checked
+    if (next === item.checked) continue
+    text = `${text.slice(0, item.toggleOffset)}${next ? 'x' : ' '}${text.slice(item.toggleOffset + 1)}`
+  }
+  return Effect.succeed(text)
+}
+
+/** `toggleChecks` for one item. */
 export const toggleCheck = (
   source: string,
   which: CheckSelector,
   checked?: boolean,
-): Effect.Effect<string, EditError> => {
-  const list = outlineMarkdown(source).checklist
-  const item =
-    typeof which === 'number'
-      ? list[which]
-      : (() => {
-          const matches = list.filter((c) => c.text === which.text)
-          return matches.length === 1 ? matches[0] : undefined
-        })()
-  if (item === undefined) {
-    return Effect.fail(
-      new EditError({
-        reason: 'no-such-check',
-        detail:
-          typeof which === 'number'
-            ? `There is no checklist item ${which} (the file has ${list.length})`
-            : `No single checklist item has the text "${which.text}"`,
-      }),
-    )
-  }
-  const next = checked ?? !item.checked
-  if (next === item.checked) return Effect.succeed(source)
-  return Effect.succeed(
-    `${source.slice(0, item.toggleOffset)}${next ? 'x' : ' '}${source.slice(item.toggleOffset + 1)}`,
-  )
-}
+): Effect.Effect<string, EditError> => toggleChecks(source, which, checked)
 
 /** A heading to find: its text (case-insensitive), and its level to tell apart repeats. */
 export type SectionSelector = string | { readonly text: string; readonly depth?: number }

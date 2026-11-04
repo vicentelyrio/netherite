@@ -147,9 +147,13 @@ export const StatePayload = Schema.Struct({
 })
 
 export const CheckPayload = Schema.Struct({
-  /** The checklist item's 0-based position, or its exact text. */
-  item: Schema.Union([Schema.Int, S]),
-  /** Omit to flip it. */
+  /** One checklist item: its 0-based position, or its exact text. */
+  item: opt(Schema.Union([Schema.Int, S])),
+  /** Several items, each a position or exact text, ticked together. */
+  items: opt(Schema.Array(Schema.Union([Schema.Int, S]))),
+  /** Every item of the checklist; ticks them unless `checked` says otherwise. */
+  all: opt(Schema.Boolean),
+  /** Omit to flip each one; with `all`, omitting it ticks them. */
   checked: opt(Schema.Boolean),
   baseHash: opt(S),
 })

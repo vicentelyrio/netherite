@@ -11,6 +11,7 @@ import {
 import {
   appendActivity,
   buildContext,
+  checkTargetOf,
   createItem,
   deleteItem,
   type EdgeKind,
@@ -402,25 +403,45 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
 
       toggle_check: {
         write: true,
-        handle: effectTool((r) => {
-          const id = r.id('id')
-          const raw = r.raw('item')
-          const checked = r.boolean('checked')
-          const baseHash = withHash(r)
-          const which =
-            typeof raw === 'number' && Number.isInteger(raw) && raw >= 0
-              ? raw
-              : typeof raw === 'string' && raw !== ''
-                ? { text: raw }
-                : undefined
-          if (which === undefined)
-            r.issues.push({
-              path: ['item'],
-              message: 'Give the 0-based position or the exact text of the checklist item',
+        handle: effectTool(
+          (r) => {
+            const id = r.id('id')
+            const raw = r.raw('item')
+            const rawItems = r.raw('items')
+            const baseHash = withHash(r)
+            const ask = checkTargetOf({
+              ...(raw === undefined ? {} : { item: raw as number | string }),
+              ...(rawItems === undefined
+                ? {}
+                : { items: rawItems as ReadonlyArray<number | string> }),
+              ...(r.boolean('all') === undefined ? {} : { all: r.boolean('all') as boolean }),
+              ...(r.boolean('checked') === undefined
+                ? {}
+                : { checked: r.boolean('checked') as boolean }),
             })
-          if (id === undefined || which === undefined) return undefined
-          return toggleChecklistItem(repo, id, which, checked, baseHash ? { baseHash } : {})
-        }, opSummary),
+            if ('problem' in ask) {
+              r.issues.push({ path: ['item'], message: ask.problem })
+              return undefined
+            }
+            if (id === undefined) return undefined
+            return toggleChecklistItem(
+              repo,
+              id,
+              ask.target,
+              ask.checked,
+              baseHash ? { baseHash } : {},
+            )
+          },
+          (r) => ({
+            ...opSummary(r),
+            // The whole checklist as it is now, so the caller can see what the write did.
+            checklist: (repo.index.get(r.path)?.parsed.checklist ?? []).map((c, i) => ({
+              index: i,
+              text: c.text,
+              checked: c.checked,
+            })),
+          }),
+        ),
       },
 
       link: { write: true, handle: relation('link') },

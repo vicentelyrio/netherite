@@ -533,6 +533,40 @@ describe('writing items', () => {
     )
   })
 
+  test('toggleCheck ticks several items or all of them, all or nothing', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        yield* s.client.items.toggleCheck({
+          params: { id: 'TASK-00001' },
+          payload: { items: [0, 'third'], checked: true },
+        })
+        expect(read(s.dir, task1)).toContain('- [x] first')
+        expect(read(s.dir, task1)).toContain('- [x] third')
+        yield* s.client.items.toggleCheck({
+          params: { id: 'TASK-00001' },
+          payload: { all: true, checked: false },
+        })
+        expect(read(s.dir, task1)).not.toContain('[x]')
+        const before = read(s.dir, task1)
+        const bad = yield* failure(
+          s.client.items.toggleCheck({
+            params: { id: 'TASK-00001' },
+            payload: { items: [0, 'nope'], checked: true },
+          }),
+        )
+        expect(bad._tag).toBeDefined()
+        expect(read(s.dir, task1)).toBe(before)
+        const both = yield* failure(
+          s.client.items.toggleCheck({
+            params: { id: 'TASK-00001' },
+            payload: { item: 0, all: true },
+          }),
+        )
+        expect(both._tag).toBe('Invalid')
+      }),
+    )
+  })
+
   test('link and unlink', async () => {
     await withServer((s) =>
       Effect.gen(function* () {

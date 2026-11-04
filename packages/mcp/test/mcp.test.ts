@@ -486,6 +486,48 @@ describe('state, checklist, links, review, delete', () => {
     })
   })
 
+  test('toggle_check ticks several items, or all of them, in one write', async () => {
+    await withSession(async (s) => {
+      const file = 'netherite/tasks/TASK-00001-core.md'
+      // The task starts with "first" open, "second" done, "third" open.
+      const some = await s.call('toggle_check', {
+        id: 'TASK-00001',
+        items: [0, 'third'],
+        checked: true,
+      })
+      expect(s.read(file)).toContain('- [x] first')
+      expect(s.read(file)).toContain('- [x] third')
+      console.log(JSON.stringify(some.data))
+      expect(some.data.checklist).toEqual([
+        { index: 0, text: 'first', checked: true },
+        { index: 1, text: 'second', checked: true },
+        { index: 2, text: 'third', checked: true },
+      ])
+      await s.call('toggle_check', { id: 'TASK-00001', all: true, checked: false })
+      expect(s.read(file)).not.toContain('[x]')
+      // `all` without `checked` ticks.
+      await s.call('toggle_check', { id: 'TASK-00001', all: true })
+      expect(s.read(file)).not.toContain('[ ]')
+    })
+  })
+
+  test('toggle_check with a missing item changes none of them', async () => {
+    await withSession(async (s) => {
+      const file = 'netherite/tasks/TASK-00001-core.md'
+      const before = s.read(file)
+      const bad = await s.call('toggle_check', {
+        id: 'TASK-00001',
+        items: [0, 'nope'],
+        checked: true,
+      })
+      expect(bad.data.error).toMatchObject({ type: 'EditError', reason: 'no-such-check' })
+      expect(s.read(file)).toBe(before)
+      const both = await s.call('toggle_check', { id: 'TASK-00001', item: 0, all: true })
+      expect(both.data.error.issues[0].field).toBe('item')
+      expect(s.read(file)).toBe(before)
+    })
+  })
+
   test('link and unlink', async () => {
     await withSession(async (s) => {
       await s.call('unlink', { from: 'TASK-00002', to: 'TASK-00001', kind: 'depends_on' })
