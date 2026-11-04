@@ -20,8 +20,21 @@
   min-height: 0;
   overflow: auto;
 }
-/* To the right, top and bottom edges of the screen, the graph's own size: no scroll bar. */
+/* The sticky graph can only stay in view inside the board, so the board grows with the side column. */
+.tpl-board:has(> .tpl-board-main--bleed) {
+  height: auto;
+  min-height: 100%;
+}
+/*
+ * To the right, top and bottom edges of the screen, the graph's own size: no scroll bar. It is as
+ * tall as the screen and sticks to the top, so it stays in view while the page scrolls past a
+ * taller side column.
+ */
 .tpl-board-main--bleed {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100cqh;
   margin: -40px calc(-1 * var(--nt-grid-margin-end)) -40px 0;
   overflow: hidden;
 }
@@ -35,6 +48,8 @@
     grid-column: 1 / -1;
   }
   .tpl-board-main--bleed {
+    position: static;
+    height: auto;
     margin: 0;
   }
 }

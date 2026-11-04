@@ -92,8 +92,9 @@
 
 .gv-controls {
   position: absolute;
-  right: 0;
-  bottom: 0;
+  /* The same distance from the edge as the legend has at the top. */
+  right: var(--gv-legend-x, 16px);
+  bottom: var(--gv-legend-y, 16px);
   display: flex;
   flex-direction: column;
   gap: 2px;
