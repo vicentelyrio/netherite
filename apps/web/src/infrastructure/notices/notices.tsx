@@ -11,7 +11,7 @@ export interface Notice {
 }
 
 export interface Notices {
-  /** Shows a message across the top of the page. Returns a function that removes it. */
+  /** Shows a message at the bottom right of the page. Returns a function that removes it. */
   readonly notify: (notice: Omit<Notice, 'id'>) => () => void
   readonly dismissAll: () => void
 }
@@ -24,7 +24,7 @@ export const useNotices = () => {
   return value
 }
 
-/** Messages at the top of the page: conflicts, failed writes, a config that needs a restart. */
+/** Messages at the bottom right of the page: conflicts, failed writes, a config that needs a restart. */
 export function NoticeProvider({ children }: { readonly children: ReactNode }) {
   const [notices, setNotices] = useState<ReadonlyArray<Notice>>([])
   const remove = useCallback(

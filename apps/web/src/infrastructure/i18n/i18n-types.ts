@@ -291,9 +291,13 @@ type RootTranslation = {
 			 */
 			unsaved: string
 			/**
-			 * S​a​v​e
+			 * S​a​v​i​n​g​…
 			 */
-			save: string
+			saving: string
+			/**
+			 * S​a​v​e​d
+			 */
+			saved: string
 			/**
 			 * V​i​e​w
 			 */
@@ -686,6 +690,10 @@ type RootTranslation = {
 			 * L​i​f​e​c​y​c​l​e
 			 */
 			lifecycle: string
+			/**
+			 * C​h​a​n​g​e​ ​t​h​e​ ​s​t​a​t​u​s
+			 */
+			changeStatus: string
 			/**
 			 * d​e​p​r​e​c​a​t​e​d
 			 */
@@ -1167,6 +1175,27 @@ type RootTranslation = {
 			 */
 			fit: string
 		}
+		overview: {
+			/**
+			 * A​l​l​ ​t​a​g​s
+			 */
+			title: string
+			/**
+			 * {​t​a​g​s​}​ ​t​a​g​s​ ​·​ ​{​l​a​b​e​l​s​}​ ​l​a​b​e​l​s​ ​·​ ​{​i​t​e​m​s​}​ ​i​t​e​m​s
+			 * @param {number} items
+			 * @param {number} labels
+			 * @param {number} tags
+			 */
+			summary: RequiredParams<'items' | 'labels' | 'tags'>
+			/**
+			 * M​o​s​t​ ​u​s​e​d
+			 */
+			mostUsed: string
+			/**
+			 * G​r​o​u​p​s
+			 */
+			clusters: string
+		}
 		legend: {
 			/**
 			 * H​o​w​ ​t​o​ ​r​e​a​d​ ​t​h​e​ ​m​a​p
@@ -1398,6 +1427,15 @@ type RootTranslation = {
 			 */
 			commitsCaption: string
 			/**
+			 * C​o​m​m​i​t​s​ ​l​i​n​k​e​d​ ​t​o​ ​w​o​r​k
+			 */
+			linked: string
+			/**
+			 * o​f​ ​{​t​o​t​a​l​}​ ​c​o​m​m​i​t​s
+			 * @param {number} total
+			 */
+			ofCommits: RequiredParams<'total'>
+			/**
 			 * S​t​a​l​e​ ​d​o​c​s
 			 */
 			stale: string
@@ -1525,6 +1563,23 @@ type RootTranslation = {
 			 * C​o​m​m​i​t​s​ ​t​h​a​t​ ​t​o​u​c​h​e​d​ ​k​n​o​w​l​e​d​g​e​ ​·​ ​l​a​s​t​ ​1​2​ ​m​o​n​t​h​s
 			 */
 			subtitle: string
+			/**
+			 * A​c​t​i​v​e​ ​d​a​y​s
+			 */
+			activeDays: string
+			/**
+			 * L​o​n​g​e​s​t​ ​r​u​n
+			 */
+			streak: string
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​d​a​y​|​d​a​y​s​}​}
+			 * @param {number} count
+			 */
+			days: RequiredParams<'count'>
+			/**
+			 * B​u​s​i​e​s​t​ ​d​a​y
+			 */
+			busiest: string
 			/**
 			 * H​o​v​e​r​ ​a​ ​d​a​y​ ​f​o​r​ ​i​t​s​ ​c​o​m​m​i​t​ ​c​o​u​n​t
 			 */
@@ -3004,9 +3059,13 @@ export type TranslationFunctions = {
 			 */
 			unsaved: () => LocalizedString
 			/**
-			 * Save
+			 * Saving…
 			 */
-			save: () => LocalizedString
+			saving: () => LocalizedString
+			/**
+			 * Saved
+			 */
+			saved: () => LocalizedString
 			/**
 			 * View
 			 */
@@ -3387,6 +3446,10 @@ export type TranslationFunctions = {
 			 * Lifecycle
 			 */
 			lifecycle: () => LocalizedString
+			/**
+			 * Change the status
+			 */
+			changeStatus: () => LocalizedString
 			/**
 			 * deprecated
 			 */
@@ -3842,6 +3905,24 @@ export type TranslationFunctions = {
 			 */
 			fit: () => LocalizedString
 		}
+		overview: {
+			/**
+			 * All tags
+			 */
+			title: () => LocalizedString
+			/**
+			 * {tags} tags · {labels} labels · {items} items
+			 */
+			summary: (arg: { items: number, labels: number, tags: number }) => LocalizedString
+			/**
+			 * Most used
+			 */
+			mostUsed: () => LocalizedString
+			/**
+			 * Groups
+			 */
+			clusters: () => LocalizedString
+		}
 		legend: {
 			/**
 			 * How to read the map
@@ -4058,6 +4139,14 @@ export type TranslationFunctions = {
 			 */
 			commitsCaption: () => LocalizedString
 			/**
+			 * Commits linked to work
+			 */
+			linked: () => LocalizedString
+			/**
+			 * of {total} commits
+			 */
+			ofCommits: (arg: { total: number }) => LocalizedString
+			/**
 			 * Stale docs
 			 */
 			stale: () => LocalizedString
@@ -4169,6 +4258,22 @@ export type TranslationFunctions = {
 			 * Commits that touched knowledge · last 12 months
 			 */
 			subtitle: () => LocalizedString
+			/**
+			 * Active days
+			 */
+			activeDays: () => LocalizedString
+			/**
+			 * Longest run
+			 */
+			streak: () => LocalizedString
+			/**
+			 * {count} {{day|days}}
+			 */
+			days: (arg: { count: number }) => LocalizedString
+			/**
+			 * Busiest day
+			 */
+			busiest: () => LocalizedString
 			/**
 			 * Hover a day for its commit count
 			 */

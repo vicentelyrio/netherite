@@ -93,3 +93,49 @@
   font-size: 13px;
   color: #969ab8;
 }
+
+.ar-goal-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ar-goal-rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 160px 44px 36px;
+  align-items: center;
+  column-gap: 12px;
+  height: 28px;
+  font-size: 13px;
+  color: #b9bcd3;
+}
+.ar-goal-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ar-goal-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: #34374f;
+  overflow: hidden;
+}
+.ar-goal-bar span {
+  display: block;
+  height: 100%;
+  background: #2cc27e;
+}
+.ar-goal-pct {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.ar-goal-gain {
+  text-align: right;
+  font-size: 12px;
+  color: #969ab8;
+}
+.ar-goal-gain[data-up] {
+  color: #2cc27e;
+}

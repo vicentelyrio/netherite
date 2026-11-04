@@ -70,3 +70,26 @@
   align-items: center;
   gap: 4px;
 }
+
+.hm-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid #2f3250;
+}
+.hm-summary dt {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #969ab8;
+}
+.hm-summary dd {
+  margin: 4px 0 0;
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}

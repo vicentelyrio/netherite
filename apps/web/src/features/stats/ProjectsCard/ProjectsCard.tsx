@@ -20,7 +20,7 @@ export function ProjectsCard() {
             <li key={p.id} className="pj-row">
               <Link to="/projects/$id" params={{ id: p.id }} className="pj-name">
                 <span className="pj-dot" aria-hidden="true" />
-                {p.title}
+                <span className="pj-title">{p.title}</span>
               </Link>
               <span className="pj-bar" aria-hidden="true">
                 <span style={{ width: `${(p.done / peak) * 100}%` }} />

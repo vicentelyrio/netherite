@@ -95,3 +95,16 @@
   display: flex;
   flex-direction: column;
 }
+
+/* The dim is only for looks: clicks go through to the board. */
+.drawer-overlay {
+  pointer-events: none;
+}
+
+.drawer-crumbs a {
+  color: #a5a7ff;
+  text-decoration: none;
+}
+.drawer-crumbs a:hover {
+  text-decoration: underline;
+}

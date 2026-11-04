@@ -42,6 +42,8 @@ const setup = (props: Partial<ItemEditorProps> = {}) => {
           onSave={onSave}
           lint={lint}
           targets={[]}
+          // Saving by itself would answer before a test looks; the tests that want it ask.
+          autosaveDelay={60_000}
           onReady={(v) => (view = v)}
           {...p}
         />
@@ -110,27 +112,36 @@ describe('the editor', () => {
 })
 
 describe('saving', () => {
-  test('is off until something changes, then on; an edit that is undone is not a change', async () => {
+  test('says saved until something changes, then unsaved; an edit that is undone is not a change', async () => {
     const { view } = setup()
-    const save = screen.getByRole('button', { name: /Save/ })
-    expect(save).toBeDisabled()
+    expect(screen.queryByRole('button', { name: /Save/ })).toBeNull()
+    expect(screen.getByText('Saved')).toBeInTheDocument()
     type(view(), 0, 'x')
-    await waitFor(() => expect(save).toBeEnabled())
-    expect(screen.getByText('Unsaved')).toBeInTheDocument()
+    await waitFor(() => expect(screen.getByText('Unsaved')).toBeInTheDocument())
     type(view(), 0, '', 1)
-    await waitFor(() => expect(save).toBeDisabled())
+    await waitFor(() => expect(screen.getByText('Saved')).toBeInTheDocument())
   })
 
-  test('saves the whole text over the version it started from, and is then clean', async () => {
-    const { view, onSave } = setup()
+  test('saves by itself a moment after the typing stops, over the version it started from', async () => {
+    const { view, onSave } = setup({ autosaveDelay: 50 })
     type(view(), text.indexOf('first'), 'my ')
-    await userEvent.click(await screen.findByRole('button', { name: /Save/ }))
     await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1))
     expect(onSave.mock.calls[0]).toEqual([text.replace('first', 'my first'), 'h1'])
-    await waitFor(() => expect(screen.queryByText('Unsaved')).toBeNull())
+    await waitFor(() => expect(screen.getByText('Saved')).toBeInTheDocument())
   })
 
-  test('Control-S saves too, and does nothing when there is nothing to save', async () => {
+  test('does not save text the server found errors in', async () => {
+    const lint = vi.fn(async () => [
+      { line: 5, column: 1, rule: 'schema', severity: 'error' as const, message: 'bad' },
+    ])
+    const { view, onSave } = setup({ autosaveDelay: 50, lint })
+    type(view(), 0, 'x')
+    await waitFor(() => expect(screen.getByTitle('1 error')).toBeInTheDocument())
+    await new Promise((r) => setTimeout(r, 300))
+    expect(onSave).not.toHaveBeenCalled()
+  })
+
+  test('Control-S saves at once, and does nothing when there is nothing to save', async () => {
     const { view, onSave } = setup()
     const content = document.querySelector('.cm-content') as HTMLElement
     fireEvent.keyDown(content, { key: 's', ctrlKey: true })
@@ -140,12 +151,13 @@ describe('saving', () => {
     await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1))
   })
 
-  test('a refused save leaves the text as it is, still unsaved', async () => {
-    const { view, onSave } = setup()
-    onSave.mockRejectedValueOnce(new Error('refused'))
+  test('a refused save leaves the text as it is, still unsaved, and the same text is not tried again', async () => {
+    const { view, onSave } = setup({ autosaveDelay: 50 })
+    onSave.mockRejectedValue(new Error('refused'))
     type(view(), 0, 'x')
-    await userEvent.click(await screen.findByRole('button', { name: /Save/ }))
-    await waitFor(() => expect(onSave).toHaveBeenCalled())
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1))
+    await new Promise((r) => setTimeout(r, 300))
+    expect(onSave).toHaveBeenCalledTimes(1)
     expect(view().state.doc.toString().startsWith('x')).toBe(true)
     expect(screen.getByText('Unsaved')).toBeInTheDocument()
   })
@@ -286,7 +298,8 @@ describe('changed on disk', () => {
     expect(await screen.findByText('Changed on disk')).toBeInTheDocument()
     expect(view().state.doc.toString().startsWith('mine ')).toBe(true)
     expect(view().state.doc.toString()).toContain('first')
-    expect(screen.getByRole('button', { name: /Save/ })).toBeDisabled()
+    // Nothing is saved over the new version while the person has not chosen.
+    expect(screen.getByText('Unsaved')).toBeInTheDocument()
   })
 
   test('Reload takes the new version and drops the edits', async () => {
@@ -306,7 +319,10 @@ describe('changed on disk', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Keep mine' }))
     await waitFor(() => expect(screen.queryByText('Changed on disk')).toBeNull())
     expect(view().state.doc.toString().startsWith('mine ')).toBe(true)
-    await userEvent.click(screen.getByRole('button', { name: /Save/ }))
+    fireEvent.keyDown(document.querySelector('.cm-content') as HTMLElement, {
+      key: 's',
+      ctrlKey: true,
+    })
     await waitFor(() => expect(onSave).toHaveBeenCalled())
     expect((onSave.mock.calls[0] as unknown as [string, string])[1]).toBe('h2')
   })

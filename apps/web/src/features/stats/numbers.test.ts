@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { changeOf, heatDays, heatLevel, percent } from './numbers'
+import { changeOf, heatDays, heatLevel, heatSummary, percent } from './numbers'
 
 describe('stats numbers', () => {
   test('a change is signed, equal, or unknown', () => {
@@ -30,5 +30,24 @@ describe('stats numbers', () => {
       '2026-02-02',
     ])
     expect(days.map((d) => d.count)).toEqual([0, 0, 3, 0])
+  })
+})
+
+describe('heatSummary', () => {
+  test('counts the days with commits, the longest run and the busiest day', () => {
+    const days = [0, 2, 1, 0, 3, 3, 3, 0].map((count, i) => ({ date: `2026-11-0${i + 1}`, count }))
+    expect(heatSummary(days)).toEqual({
+      active: 5,
+      longest: 3,
+      busiest: { date: '2026-11-05', count: 3 },
+    })
+  })
+
+  test('nothing committed has no busiest day', () => {
+    expect(heatSummary([{ date: '2026-11-01', count: 0 }])).toEqual({
+      active: 0,
+      longest: 0,
+      busiest: undefined,
+    })
   })
 })

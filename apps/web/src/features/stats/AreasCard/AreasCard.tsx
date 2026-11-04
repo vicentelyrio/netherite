@@ -41,6 +41,20 @@ export function AreasCard() {
                   <span className="ar-base" style={{ width: `${share - gained}%` }} />
                   <span className="ar-add" style={{ width: `${gained}%` }} />
                 </span>
+                <ul className="ar-goal-rows">
+                  {a.goalRows.map((g) => (
+                    <li key={g.title}>
+                      <span className="ar-goal-title">{g.title}</span>
+                      <span className="ar-goal-bar" aria-hidden="true">
+                        <span style={{ width: `${Math.round(g.share * 100)}%` }} />
+                      </span>
+                      <span className="ar-goal-pct">{Math.round(g.share * 100)}%</span>
+                      <span className="ar-goal-gain" data-up={g.gained > 0 || undefined}>
+                        {g.gained > 0 ? `+${g.gained}` : ''}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </li>
             )
           })}

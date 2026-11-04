@@ -1,13 +1,12 @@
 .app-notices {
   position: fixed;
-  top: var(--nt-space-3);
-  left: calc(var(--nt-layout-rail-width) + var(--nt-space-4));
+  bottom: var(--nt-space-4);
   right: var(--nt-space-4);
   z-index: var(--nt-z-modal);
   display: flex;
   flex-direction: column;
   gap: var(--nt-space-2);
-  max-width: 720px;
+  width: min(420px, calc(100vw - var(--nt-layout-rail-width) - var(--nt-space-4) * 2));
 }
 
 .app-notices .nt-banner {

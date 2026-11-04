@@ -46,6 +46,12 @@ export function DocView({
     { reload },
   )
   const review = { pending: markReviewed.isPending, run: () => markReviewed.mutate(item.hash) }
+  const setStatus = useWrite(
+    api,
+    (a, state: string) =>
+      a.call((c) => c.items.setState({ params: { id: item.id }, payload: { state } })),
+    { reload: () => void client.invalidateQueries() },
+  )
 
   const fresh = item.freshness
   const stale = fresh !== null && (fresh.state === 'stale' || fresh.state === 'drifting')
@@ -70,7 +76,13 @@ export function DocView({
             preview={
               <div className="kf-split">
                 <DocMain item={item} data={view.data} stale={stale} steps={steps} review={review} />
-                <DocPanel item={item} data={view.data} preview={preview.data} stale={stale} />
+                <DocPanel
+                  item={item}
+                  data={view.data}
+                  preview={preview.data}
+                  stale={stale}
+                  status={{ pending: setStatus.isPending, set: (s) => setStatus.mutate(s) }}
+                />
               </div>
             }
             mode={mode}

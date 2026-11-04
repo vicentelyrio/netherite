@@ -1,6 +1,6 @@
 import type { ItemDetail } from '@netherite/api'
 import { Button, Icon, type ItemTypeName, TypeBadge } from '@netherite/ui'
-import { useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useI18nContext } from '@/infrastructure/i18n'
 import type { ReviewAction } from '../DocMain'
 import './DocHeader.css'
@@ -26,7 +26,7 @@ export function DocHeader({
     <header className="kf-head">
       <Icon name="stacks" size={16} />
       <nav className="kf-path" aria-label={LL.knowledge.doc.header.path()}>
-        <span>{LL.knowledge.doc.header.knowledge()}</span> › <span>{folder}</span> ›{' '}
+        <Link to="/knowledge">{LL.knowledge.doc.header.knowledge()}</Link> › <span>{folder}</span> ›{' '}
         <strong>{file}</strong>
       </nav>
       <TypeBadge type={type} />

@@ -143,3 +143,30 @@
   gap: 8px;
   margin-top: 12px;
 }
+
+.td {
+  min-height: clamp(520px, calc(100vh - 300px), 900px);
+  box-sizing: border-box;
+}
+.td-clusters {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.td-clusters li {
+  display: flex;
+  justify-content: space-between;
+  height: 28px;
+  align-items: center;
+  font-size: 14px;
+}
+.td-hint {
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid #2f3250;
+  font-size: 13px;
+  color: #969ab8;
+}

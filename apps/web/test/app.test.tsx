@@ -128,6 +128,21 @@ describe('reading an item', () => {
     expect(railButton('Knowledge')).toHaveAttribute('aria-current', 'page')
   })
 
+  test('an ADR changes its status from its own view, and the file follows', async () => {
+    renderApp('/items/ADR-00003')
+    await screen.findByRole('heading', { level: 1 })
+    const api = other()
+    const status = async () =>
+      (await api.call((c) => c.items.get({ params: { id: 'ADR-00003' } }))).status
+    expect(await status()).toBe('proposed')
+    await userEvent.click(screen.getByRole('radio', { name: 'Accepted' }))
+    await waitFor(async () => expect(await status()).toBe('accepted'))
+    await waitFor(() => expect(screen.getByRole('radio', { name: 'Accepted' })).toBeChecked())
+    // Put it back for the tests after this one.
+    await userEvent.click(screen.getByRole('radio', { name: 'Proposed' }))
+    await waitFor(async () => expect(await status()).toBe('proposed'))
+  })
+
   test('a wikilink in the text is a link to the other item, followed without reloading', async () => {
     renderApp('/items/ADR-00001')
     const link = await screen.findByRole('link', { name: 'ADR-00002' })
@@ -283,8 +298,9 @@ describe('editing the source of an item', () => {
     const view = await open('TASK-00002')
     const marker = `Edited in the editor ${Date.now()}.`
     type(view, `\n${marker}\n`)
-    await userEvent.click(screen.getByRole('button', { name: /^Save/ }))
-    await waitFor(() => expect(taskFile()).toContain(marker))
+    // No button: the editor saves by itself a moment after the typing stops.
+    expect(screen.queryByRole('button', { name: /^Save/ })).toBeNull()
+    await waitFor(() => expect(taskFile()).toContain(marker), { timeout: 8000 })
     await waitFor(() => expect(screen.queryByText('Unsaved')).toBeNull())
     expect(screen.queryByRole('alert')).toBeNull()
   })
@@ -318,7 +334,11 @@ describe('editing the source of an item', () => {
           changes: { from: at, to: at + 'state: doing'.length, insert: 'state: nonsense' },
         }),
     )
-    await userEvent.click(screen.getByRole('button', { name: /^Save/ }))
+    // Typing does not save what lint rejects; Control-S asks the server anyway, and it explains.
+    fireEvent.keyDown(document.querySelector('.cm-content') as HTMLElement, {
+      key: 's',
+      ctrlKey: true,
+    })
     expect(await screen.findByRole('alert', {}, { timeout: 8000 })).toHaveTextContent('not valid')
     expect(taskFile()).toBe(before)
     expect(view.state.doc.toString()).toContain('state: nonsense')
@@ -509,6 +529,22 @@ describe('the task drawer', () => {
     await userEvent.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
     expect(screen.getByRole('region', { name: 'backlog' })).toBeInTheDocument()
+  })
+
+  test('a click outside the drawer closes it', async () => {
+    renderApp('/projects/PRJ-00001?task=TASK-00001')
+    await screen.findByRole('dialog')
+    await userEvent.click(await screen.findByRole('region', { name: 'backlog', hidden: true }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+  })
+
+  test('a click anywhere on a card opens it, not only on its title', async () => {
+    renderApp('/projects/PRJ-00001')
+    const link = await screen.findByRole('link', { name: 'Core' })
+    const card = link.closest('.board-draggable') as HTMLElement
+    // The line above the title is not a link.
+    await userEvent.click(card.querySelector('.board-overline') ?? card)
+    expect(await screen.findByRole('dialog')).toBeInTheDocument()
   })
 
   test('is a link: the address opens the drawer', async () => {

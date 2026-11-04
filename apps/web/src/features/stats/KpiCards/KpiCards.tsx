@@ -4,11 +4,19 @@ import { changeOf } from '../numbers'
 import { useStats } from '../StatsProvider'
 import './KpiCards.css'
 
+/** How a percentage moved, in points: `+5 pts`. */
+const pointsOf = (value: number, previous: number | undefined) => {
+  const change = changeOf(value, previous)
+  return change === undefined || change.direction === 'same'
+    ? change
+    : { ...change, text: `${change.text} pts` }
+}
+
 /** The headline numbers, each against the period before. */
 export function KpiCards() {
   const { LL } = useI18nContext()
   const { data } = useStats()
-  const { done, created, cycleDays, commits, staleDocs } = data.kpis
+  const { done, created, cycleDays, commits, staleDocs, linked } = data.kpis
   const f = data.knowledge.freshness
   const tracked = f.fresh + f.drifting + f.stale
   const card = (
@@ -71,14 +79,23 @@ export function KpiCards() {
         cycleDays?.previous,
         false,
       )}
-      {card(
-        LL.stats.kpi.commits(),
-        commits.value,
-        LL.stats.kpi.commitsCaption(),
-        changeOf(commits.value, commits.previous),
-        commits.previous,
-        null,
-      )}
+      {linked === undefined
+        ? card(
+            LL.stats.kpi.commits(),
+            commits.value,
+            LL.stats.kpi.commitsCaption(),
+            changeOf(commits.value, commits.previous),
+            commits.previous,
+            null,
+          )
+        : card(
+            LL.stats.kpi.linked(),
+            `${linked.percent}%`,
+            LL.stats.kpi.ofCommits({ total: linked.total }),
+            pointsOf(linked.percent, linked.previous),
+            linked.previous,
+            true,
+          )}
       {card(
         LL.stats.kpi.stale(),
         staleDocs.value,

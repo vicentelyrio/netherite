@@ -32,6 +32,7 @@ import {
   knowledgeRows,
   lifecycles,
   link,
+  linkedCommits,
   lint,
   lintText,
   listItems,
@@ -808,6 +809,25 @@ const stats = (state: ServerState) =>
                   from: first,
                   to: today,
                 }).pipe(Effect.orElseSucceed(() => []))
+          // Commits tied to tracked work, this period and the one before, for the "linked" card.
+          const dayBack = (day: string, n: number) =>
+            new Date(Date.parse(`${day}T00:00:00Z`) - n * 86_400_000).toISOString().slice(0, 10)
+          const before = { from: dayBack(first, length), to: dayBack(first, 1) }
+          const none = { total: 0, linked: 0 }
+          const linkage =
+            state.git === undefined
+              ? undefined
+              : {
+                  current: yield* linkedCommits(state.git, state.repo.workspace.root, {
+                    contentRoot: state.repo.workspace.config.content,
+                    from: first,
+                    to: today,
+                  }).pipe(Effect.orElseSucceed(() => none)),
+                  previous: yield* linkedCommits(state.git, state.repo.workspace.root, {
+                    contentRoot: state.repo.workspace.config.content,
+                    ...before,
+                  }).pipe(Effect.orElseSucceed(() => none)),
+                }
           return yield* withHistory(state, (h) =>
             Effect.succeed(
               periodStats(state.repo, h, {
@@ -816,6 +836,7 @@ const stats = (state: ServerState) =>
                 ...(query.area === undefined || query.area === '' ? {} : { area: query.area }),
                 ...(fresh === undefined ? {} : { freshness: fresh }),
                 undocumented,
+                ...(linkage === undefined ? {} : { linkage }),
               }),
             ),
           )

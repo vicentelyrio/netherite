@@ -76,7 +76,12 @@
   color: var(--nt-color-status-warning-text);
 }
 
-.ed-dirty {
+.ed-save {
+  color: var(--nt-color-text-muted, #969ab8);
+}
+
+.ed-save[data-state="unsaved"],
+.ed-save[data-state="saving"] {
   color: var(--nt-color-accent-fg);
   font-weight: var(--nt-font-weight-medium);
 }

@@ -408,6 +408,9 @@ export const PeriodStats = Schema.Struct({
     cycleDays: Schema.NullOr(Delta),
     commits: Delta,
     staleDocs: Delta,
+    linked: Schema.optionalKey(
+      Schema.Struct({ percent: N, total: N, previous: Schema.optionalKey(N) }),
+    ),
   }),
   throughput: Schema.Array(Schema.Struct({ start: S, created: N, done: N })),
   areas: Schema.Array(
@@ -420,6 +423,7 @@ export const PeriodStats = Schema.Struct({
       idle: N,
       achievedGoals: Schema.Array(S),
       idleGoals: Schema.Array(S),
+      goalRows: Schema.Array(Schema.Struct({ title: S, share: N, gained: N })),
     }),
   ),
   projects: Schema.Array(Schema.Struct({ id: S, title: S, done: N, cycleDays: Schema.NullOr(N) })),

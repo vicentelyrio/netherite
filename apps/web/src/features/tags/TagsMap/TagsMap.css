@@ -1,6 +1,6 @@
 .tm {
   position: relative;
-  height: min(640px, 70vh);
+  height: clamp(520px, calc(100vh - 300px), 900px);
   background: #212336;
   border: 1px solid #2f3250;
   border-radius: 14px;

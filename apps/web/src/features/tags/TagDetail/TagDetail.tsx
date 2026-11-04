@@ -32,9 +32,63 @@ export function TagDetail() {
     a.call((c) => c.tags.rename({ payload: input })),
   )
   if (selected === undefined) {
+    const top = [...all]
+      .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name))
+      .slice(0, 8)
+    const peak = Math.max(1, ...top.map((t) => t.total))
+    const clusters = [
+      ...all.reduce(
+        (m, t) => m.set(t.cluster, (m.get(t.cluster) ?? 0) + 1),
+        new Map<string, number>(),
+      ),
+    ]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .slice(0, 8)
+    const tagged = new Set(all.flatMap((t) => t.ids)).size
     return (
-      <section className="td td-empty" aria-label={LL.tags.detail.title()}>
-        <p className="app-muted">{LL.tags.detail.pick()}</p>
+      <section className="td" aria-label={LL.tags.detail.title()}>
+        <header className="td-head">
+          <div>
+            <h2 className="td-name">
+              <Icon name="sell" size={20} />
+              {LL.tags.overview.title()}
+            </h2>
+            <span className="td-meta">
+              {LL.tags.overview.summary({
+                tags: all.filter((t) => t.field === 'tags').length,
+                labels: all.filter((t) => t.field === 'labels').length,
+                items: tagged,
+              })}
+            </span>
+          </div>
+        </header>
+        <h3 className="td-h">{LL.tags.overview.mostUsed()}</h3>
+        <div className="td-chips">
+          {top.map((t) => (
+            <button
+              key={keyOf(t)}
+              type="button"
+              className="td-chip"
+              onClick={() => select(keyOf(t))}
+            >
+              <span className="td-chip-name">{t.name}</span>
+              <span className="td-chip-bar" aria-hidden="true">
+                <span style={{ width: `${(t.total / peak) * 100}%` }} />
+              </span>
+              <span className="td-chip-n">{LL.tags.detail.count({ count: t.total })}</span>
+            </button>
+          ))}
+        </div>
+        <h3 className="td-h">{LL.tags.overview.clusters()}</h3>
+        <ul className="td-clusters">
+          {clusters.map(([name, count]) => (
+            <li key={name}>
+              <span>{name}</span>
+              <span className="app-muted">{count}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="td-hint">{LL.tags.detail.pick()}</p>
       </section>
     )
   }

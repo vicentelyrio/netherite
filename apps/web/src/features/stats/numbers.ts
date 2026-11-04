@@ -33,3 +33,22 @@ export const heatDays = (
   const byDay = new Map(counts.map((c) => [c.date, c.count]))
   return eachDay(from, to).map((date) => ({ date, count: byDay.get(date) ?? 0 }))
 }
+
+/** What a heat map says in words: how many days had commits, the busiest day and the longest run. */
+export const heatSummary = (
+  days: ReadonlyArray<{ readonly date: string; readonly count: number }>,
+) => {
+  let active = 0
+  let streak = 0
+  let longest = 0
+  let busiest: { date: string; count: number } | undefined
+  for (const d of days) {
+    if (d.count > 0) {
+      active++
+      streak++
+      longest = Math.max(longest, streak)
+      if (busiest === undefined || d.count > busiest.count) busiest = d
+    } else streak = 0
+  }
+  return { active, longest, busiest }
+}

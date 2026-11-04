@@ -1,7 +1,7 @@
 import { Drawer, Icon } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useApi } from '@/infrastructure/api'
 import { boardQuery, itemQuery, useHealth } from '@/infrastructure/query'
 import './TaskDrawer.css'
@@ -32,6 +32,20 @@ export function TaskDrawer({
   const health = useHealth(api)
   const [mode, setMode] = useState<'text' | 'code'>(initial ?? 'text')
   const [changedLines, setChangedLines] = useState(0)
+  // A click outside the drawer closes it. The overlay lets clicks through to the board, so this is
+  // heard on the page instead; a task card is left alone, because it opens that task.
+  const opened = id !== undefined
+  useEffect(() => {
+    if (!opened) return
+    const outside = (e: PointerEvent) => {
+      const target = e.target as HTMLElement | null
+      if (target?.closest('.drawer-content, .board-draggable, [role="dialog"], [data-portal]'))
+        return
+      onClose()
+    }
+    document.addEventListener('pointerdown', outside)
+    return () => document.removeEventListener('pointerdown', outside)
+  }, [opened, onClose])
   const file = task.data ? `${task.data.id.replace(/^[A-Z]+-0*/, '')} - ${task.data.title}.md` : ''
   const preview =
     id === undefined ? null : (
@@ -47,6 +61,11 @@ export function TaskDrawer({
       opened={id !== undefined}
       onClose={onClose}
       position="left"
+      // The board stays usable beside the drawer: a click on another card opens that task,
+      // instead of the first click only closing the drawer.
+      lockScroll={false}
+      trapFocus={false}
+      closeOnClickOutside={false}
       size={mode === 'code' ? 'min(1792px, calc(100vw - 128px))' : 912}
       classNames={{
         body: 'drawer-frame',
@@ -60,9 +79,11 @@ export function TaskDrawer({
         id === undefined ? undefined : (
           <nav className="drawer-crumbs" aria-label={LL.tasks.drawer.path()}>
             <Icon name="description" />
-            <span>{LL.tasks.drawer.projects()}</span> ›{' '}
-            <span>{projectTitle ?? task.data?.project}</span> ›{' '}
-            <span>{LL.tasks.drawer.tasks()}</span> › <strong>{file || id}</strong>
+            <Link to="/projects">{LL.tasks.drawer.projects()}</Link> ›{' '}
+            <Link to="/projects/$id" params={{ id: projectId }}>
+              {projectTitle ?? task.data?.project}
+            </Link>{' '}
+            › <span>{LL.tasks.drawer.tasks()}</span> › <strong>{file || id}</strong>
             {changedLines > 0 && (
               <span className="drawer-lines">
                 {LL.tasks.drawer.changedLines({ count: changedLines })}

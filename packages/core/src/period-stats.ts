@@ -7,6 +7,9 @@ import { fieldsOf } from './views'
 
 export type Period = '30d' | 'quarter' | 'year'
 
+const percentOf = (l: { total: number; linked: number }) =>
+  l.total === 0 ? 0 : Math.round((l.linked / l.total) * 100)
+
 const lengths: Record<Period, number> = { '30d': 30, quarter: 90, year: 365 }
 
 export interface Delta {
@@ -28,6 +31,12 @@ export interface PeriodStats {
     /** Commits to the content folder. */
     readonly commits: Delta
     readonly staleDocs: Delta
+    /** Commits tied to tracked work, as a share of all commits; missing when git was not asked. */
+    readonly linked?: {
+      readonly percent: number
+      readonly total: number
+      readonly previous?: number
+    }
   }
   /** Tasks created and finished per week (30 days, quarter) or per month (year). */
   readonly throughput: ReadonlyArray<{
@@ -46,6 +55,12 @@ export interface PeriodStats {
     /** The titles of the goals reached in the period, and of those that saw no task done. */
     readonly achievedGoals: ReadonlyArray<string>
     readonly idleGoals: ReadonlyArray<string>
+    /** Each goal of the area: how much is done, and how many points the period added. */
+    readonly goalRows: ReadonlyArray<{
+      readonly title: string
+      readonly share: number
+      readonly gained: number
+    }>
     /** Goals still in progress that gained nothing. */
     readonly idle: number
   }>
@@ -85,6 +100,11 @@ export interface PeriodOptions {
   readonly period: Period
   readonly now?: string
   readonly freshness?: ReadonlyMap<string, Freshness>
+  /** Commits tied to tracked work, this period and the one before (`linkedCommits`). */
+  readonly linkage?: {
+    readonly current: { readonly total: number; readonly linked: number }
+    readonly previous: { readonly total: number; readonly linked: number }
+  }
   /** Code changed without a doc update in this period (`undocumentedChurn`). */
   readonly undocumented?: ReadonlyArray<{
     readonly path: string
@@ -208,6 +228,7 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
       was: number
       achievedGoals: string[]
       idleGoals: string[]
+      goalRows: Array<{ title: string; share: number; gained: number }>
     }
   >()
   for (const g of end.nodes.filter((n) => n.type === 'goal')) {
@@ -218,10 +239,16 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
       was: 0,
       achievedGoals: [],
       idleGoals: [],
+      goalRows: [],
     }
     const before = start.get(g.id)?.progress ?? 0
     const progress = g.progress ?? 0
     row.goals++
+    row.goalRows.push({
+      title: g.title,
+      share: Math.round(progress * 100) / 100,
+      gained: Math.round((progress - before) * 100),
+    })
     row.share += progress
     row.was += before
     if (g.status === 'done' && start.get(g.id)?.status !== 'done') row.achievedGoals.push(g.title)
@@ -238,6 +265,7 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
       idle: r.idleGoals.length,
       achievedGoals: r.achievedGoals,
       idleGoals: r.idleGoals,
+      goalRows: r.goalRows,
     }))
     .sort((a, b) => a.area.localeCompare(b.area))
 
@@ -292,6 +320,17 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
           : { value: cycleNow, ...(cyclePrev === null ? {} : { previous: cyclePrev }) },
       commits: { value: commitsIn(from, to), previous: commitsIn(prevFrom, prevTo) },
       staleDocs: { value: freshness.stale },
+      ...(options.linkage === undefined
+        ? {}
+        : {
+            linked: {
+              total: options.linkage.current.total,
+              percent: percentOf(options.linkage.current),
+              ...(options.linkage.previous.total === 0
+                ? {}
+                : { previous: percentOf(options.linkage.previous) }),
+            },
+          }),
     },
     throughput: [...buckets].map(([s, r]) => ({ start: s, ...r })),
     areas,

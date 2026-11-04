@@ -1,7 +1,8 @@
+import { useLayoutEffect, useRef } from 'react'
 import { ChartCard } from '@/components'
-import { formatDate } from '@/infrastructure/datetime'
+import { formatDate, formatDay } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
-import { heatDays, heatLevel } from '../numbers'
+import { heatDays, heatLevel, heatSummary } from '../numbers'
 import { useStats } from '../StatsProvider'
 import './HeatMapCard.css'
 
@@ -23,6 +24,12 @@ export function HeatMapCard() {
   const days = heatDays(data.heat.from, data.heat.to, data.heat.days)
   const max = Math.max(0, ...days.map((d) => d.count))
   const total = days.reduce((n, d) => n + d.count, 0)
+  const summary = heatSummary(days)
+  const wrap = useRef<HTMLDivElement>(null)
+  // When the card is narrower than 53 weeks, the latest weeks are the ones in view.
+  useLayoutEffect(() => {
+    if (wrap.current !== null) wrap.current.scrollLeft = wrap.current.scrollWidth
+  }, [days.length])
   // A month is written above the first week that starts in its first seven days.
   const months: Array<{ label: string; week: number }> = []
   let last = -1
@@ -41,7 +48,7 @@ export function HeatMapCard() {
       subtitle={LL.stats.heat.subtitle()}
       aside={<span className="app-muted">{LL.stats.heat.total({ count: total })}</span>}
     >
-      <div className="hm-wrap">
+      <div className="hm-wrap" ref={wrap}>
         <div className="hm-months" aria-hidden="true">
           {months.map((m) => (
             <span key={m.week} style={{ left: m.week * 14 }}>
@@ -67,6 +74,24 @@ export function HeatMapCard() {
           </div>
         </div>
       </div>
+      <dl className="hm-summary">
+        <div>
+          <dt>{LL.stats.heat.activeDays()}</dt>
+          <dd>{summary.active}</dd>
+        </div>
+        <div>
+          <dt>{LL.stats.heat.streak()}</dt>
+          <dd>{LL.stats.heat.days({ count: summary.longest })}</dd>
+        </div>
+        <div>
+          <dt>{LL.stats.heat.busiest()}</dt>
+          <dd>
+            {summary.busiest === undefined
+              ? '—'
+              : `${formatDay(summary.busiest.date)} · ${summary.busiest.count}`}
+          </dd>
+        </div>
+      </dl>
       <div className="hm-foot">
         <span>{LL.stats.heat.hover()}</span>
         <span className="hm-scale" aria-hidden="true">

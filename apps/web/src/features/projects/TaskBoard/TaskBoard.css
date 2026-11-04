@@ -71,7 +71,9 @@
 
 .board-draggable {
   touch-action: none;
-  cursor: grab;
+  cursor: pointer;
+  /* A click on the card opens it; it should not select the text under the pointer. */
+  user-select: none;
 }
 
 .board-draggable[data-dragging] {

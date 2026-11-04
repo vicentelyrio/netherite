@@ -7,12 +7,14 @@ import {
   OrphanTag,
   TypeBadge,
 } from '@netherite/ui'
-import { LinkRow } from '@/components'
+import { FilterTabs, LinkRow } from '@/components'
 import { isoDay } from '@/infrastructure/datetime'
 import { SupersessionChain } from '../SupersessionChain'
 import '../shared.css'
 import { useI18nContext } from '@/infrastructure/i18n'
 import './DocPanel.css'
+
+const adrStatuses = ['proposed', 'accepted', 'deprecated'] as const
 
 /** What the item is connected to: its type and status, freshness, links both ways, co-changes. */
 export function DocPanel({
@@ -20,11 +22,14 @@ export function DocPanel({
   data,
   preview,
   stale,
+  status,
 }: {
   readonly item: ItemDetail
   readonly data: KnowledgeView | undefined
   readonly preview: KnowledgePreview | undefined
   readonly stale: boolean
+  /** Changes an ADR's status; superseding is done by the new decision, not from here. */
+  readonly status?: { readonly pending: boolean; readonly set: (status: string) => void }
 }) {
   const { LL } = useI18nContext()
   const type = item.type as ItemTypeName
@@ -37,11 +42,21 @@ export function DocPanel({
         <h2 className="kf-h">{LL.knowledge.doc.panel.typeStatus()}</h2>
         <div className="kf-status-row">
           <TypeBadge type={type} />
-          {type === 'adr' && item.status !== undefined && (
-            <AdrStatusPill status={item.status as AdrStatus} />
-          )}
+          {type === 'adr' &&
+            item.status !== undefined &&
+            (status === undefined || item.status === 'superseded') && (
+              <AdrStatusPill status={item.status as AdrStatus} />
+            )}
           {item.orphan && <OrphanTag />}
         </div>
+        {type === 'adr' && status !== undefined && item.status !== 'superseded' && (
+          <FilterTabs
+            label={LL.knowledge.doc.changeStatus()}
+            options={adrStatuses.map((s) => ({ value: s, label: LL.decisions.status[s]() }))}
+            value={(item.status as (typeof adrStatuses)[number]) ?? 'proposed'}
+            onChange={(next) => !status.pending && next !== item.status && status.set(next)}
+          />
+        )}
         {typeof owner === 'string' && (
           <p className="kf-owner">{LL.knowledge.doc.panel.owner({ name: owner })}</p>
         )}

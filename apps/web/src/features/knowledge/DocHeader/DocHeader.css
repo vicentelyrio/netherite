@@ -56,3 +56,11 @@
   background: #33364f;
   color: #e8e9f3;
 }
+
+.kf-path a {
+  color: #a5a7ff;
+  text-decoration: none;
+}
+.kf-path a:hover {
+  text-decoration: underline;
+}

@@ -84,3 +84,41 @@ export const undocumentedChurn = (
       .sort((a, b) => b.commits - a.commits || a.path.localeCompare(b.path))
       .slice(0, options.limit ?? 5)
   })
+
+export interface Linkage {
+  /** Commits in the period. */
+  readonly total: number
+  /** Those that changed a file of the content folder or name an item (`TASK-00012`). */
+  readonly linked: number
+}
+
+const itemId = /\b(?:GOAL|PRJ|TASK|ADR|DOC|CTX|RUN)-\d{5}\b/
+
+/**
+ * How many commits in a period are tied to work the workspace tracks: they change a file in the
+ * content folder, or their message names an item. The rest changed code with nothing recorded.
+ */
+export const linkedCommits = (
+  git: GitRepository,
+  workspaceRoot: string,
+  options: { readonly contentRoot: string; readonly from: string; readonly to: string },
+): Effect.Effect<
+  Linkage,
+  GitError,
+  import('effect').FileSystem.FileSystem | import('effect').Path.Path
+> =>
+  Effect.gen(function* () {
+    const map = yield* pathMap(git, workspaceRoot)
+    const prefix = `${options.contentRoot.replace(/\/$/, '')}/`
+    const commits = yield* git.log({ after: dayBefore(options.from), files: 'names' })
+    let total = 0
+    let linked = 0
+    for (const commit of commits) {
+      const date = commit.committerDate.slice(0, 10)
+      if (date < options.from || date > options.to) continue
+      total++
+      const touches = commit.files.some((f) => map.fromGit(f.path)?.startsWith(prefix) === true)
+      if (touches || itemId.test(commit.subject)) linked++
+    }
+    return { total, linked }
+  })

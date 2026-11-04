@@ -11,7 +11,7 @@ state: backlog
 
 # Close the design differences left after the comparison
 
-- [ ] Stats: "Commits linked to work" as a percentage, which needs commits tied to tasks
+- [x] Stats: "Commits linked to work" as a percentage, which needs commits tied to tasks
 - [ ] Doc view: boxed Decision and two-column Consequences for ADRs, and the "M N lines changed" badge in the top bar
 - [ ] Knowledge index: avatar in the modified column and the AI-context chip with its token count
 - [ ] Project board: the Knowledge view's "Linked to" column and filter chips; column header as icon, name and count
@@ -21,3 +21,5 @@ state: backlog
 - [ ] Check every screen at 1280 and 1440 against the design once the Chrome extension can open it
 
 Source: the findings in TASK-00078.
+- [ ] Breadcrumbs: the area on the goal page and the folder in the doc view are text because no page lists them; give them a page or a filtered Knowledge link
+- [ ] Project board: with the task drawer open, the cards under the drawer cannot be clicked until it is closed; consider a narrower drawer or a drawer that does not cover the first columns

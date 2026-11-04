@@ -42,6 +42,8 @@ export interface ItemEditorProps {
   readonly onStats?: (stats: { readonly changedLines: number }) => void
   /** The checked-out branch, shown in the status bar. */
   readonly branch?: string | undefined
+  /** How long after the last keystroke an edit is saved by itself, in milliseconds. Default 1000. */
+  readonly autosaveDelay?: number
 }
 
 /** The text after the frontmatter, which is what the rendered view shows. */
@@ -67,6 +69,7 @@ export function ItemEditor({
   preview,
   onStats,
   branch,
+  autosaveDelay = 1000,
 }: ItemEditorProps) {
   const { LL } = useI18nContext()
   const host = useRef<HTMLDivElement>(null)
@@ -105,13 +108,18 @@ export function ItemEditor({
     try {
       dispatch({ type: 'saved', version: await write(current.buffer, current.base.hash) })
     } catch {
-      // The caller says why (a conflict, an invalid file); the buffer stays as it is.
+      // The caller says why (a conflict, an invalid file); the buffer stays as it is, and the
+      // same text is not tried again until it changes.
+      refused.current = current.buffer
     } finally {
       setSaving(false)
     }
   }, [saving])
   const saveRef = useRef(save)
   saveRef.current = save
+  const refused = useRef<string | undefined>(undefined)
+  // What the server's lint last judged, so an edit is never saved before it has been checked.
+  const linted = useRef<{ text: string; errors: number } | undefined>(undefined)
 
   // 3. Linting what is typed, a moment after the typing stops.
   const lintTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -124,6 +132,7 @@ export function ItemEditor({
         // An answer for text that has since changed is not placed.
         if (generation !== lintGeneration.current || viewRef.current !== view) return
         const placed = placeProblems(text, found)
+        linted.current = { text, errors: counts(placed).errors }
         view.dispatch({ effects: setProblems.of(placed) })
         setProblemsState(placed)
       },
@@ -197,6 +206,19 @@ export function ItemEditor({
   const { errors, warnings } = counts(problems)
   const dirty = isDirty(session)
 
+  // 5. Saving by itself: a pause after the last edit, once the server's lint has judged that text
+  // and found no errors, and the file has not changed under the person.
+  const buffer = session.buffer
+  const conflicted = session.conflict !== undefined
+  useEffect(() => {
+    if (!dirty || conflicted || saving || refused.current === buffer) return
+    const timer = setTimeout(() => {
+      const judged = linted.current
+      if (judged?.text === buffer && judged.errors === 0) void saveRef.current()
+    }, autosaveDelay)
+    return () => clearTimeout(timer)
+  }, [buffer, dirty, conflicted, saving, autosaveDelay, problems])
+
   return (
     <section
       className="ed"
@@ -258,15 +280,13 @@ export function ItemEditor({
             <Icon name="commit" size={15} /> {branch}
           </span>
         )}
-        {dirty && <span className="ed-dirty">{LL.components.editor.unsaved()}</span>}
-        <Button
-          icon="save"
-          loading={saving}
-          disabled={!dirty || session.conflict !== undefined}
-          onClick={() => void save()}
-        >
-          {LL.components.editor.save()}
-        </Button>
+        <span className="ed-save" data-state={saving ? 'saving' : dirty ? 'unsaved' : 'saved'}>
+          {saving
+            ? LL.components.editor.saving()
+            : dirty
+              ? LL.components.editor.unsaved()
+              : LL.components.editor.saved()}
+        </span>
         <SegmentedControl
           value={mode}
           onChange={(value) => (onModeChange ?? setLocalMode)(value as EditorMode)}
