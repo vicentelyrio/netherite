@@ -5,7 +5,7 @@ type: adr
 title: The documentation site is built from docs/ in the repository and published on GitHub Pages
 created: 2026-11-04T20:10:01Z
 created_by: "@vicentelyrio"
-status: proposed
+status: accepted
 date: 2026-11-04
 deciders: ["@vicentelyrio"]
 project: PRJ-00008

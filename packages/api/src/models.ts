@@ -610,6 +610,10 @@ export const KnowledgePreview = Schema.Struct({
   ),
   /** The commit that last changed the file; missing without git or before its first commit. */
   lastCommit: opt(CommitView),
+  /** Where an imported item came from: a path or URL. Missing for an item written here. */
+  source: opt(S),
+  /** The day it was imported, `YYYY-MM-DD`. */
+  importedAt: opt(S),
 })
 export type KnowledgePreview = typeof KnowledgePreview.Type
 

@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { EditorView } from '@codemirror/view'
-import { act, fireEvent, screen, waitFor, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, test } from 'vitest'
 import { changesField } from '@/components/ItemEditor/extensions'
@@ -156,6 +156,34 @@ describe('reading an item', () => {
     // Put it back for the tests after this one: active again means no status in the file.
     await userEvent.click(screen.getByRole('radio', { name: 'Active' }))
     await waitFor(async () => expect(await status()).toBeUndefined())
+  })
+
+  test('an imported doc says where it came from, in its view and in the Knowledge preview', async () => {
+    const api = other()
+    await api.call((c) =>
+      c.items.update({
+        params: { id: 'DOC-00001' },
+        payload: { set: { source: 'docs/old/setup.md', imported_at: '2026-03-05' } },
+      }),
+    )
+    try {
+      renderApp('/items/DOC-00001')
+      expect(await screen.findByText('Imported from docs/old/setup.md')).toBeInTheDocument()
+      expect(screen.getByText('On 2026-03-05')).toBeInTheDocument()
+      cleanup()
+      renderApp('/knowledge')
+      await userEvent.click(await screen.findByText('Overview'))
+      const preview = await screen.findByRole('complementary', { name: 'Preview of DOC-00001' })
+      const line = await within(preview).findByText(/Imported from docs\/old\/setup\.md/)
+      expect(line).toHaveTextContent('Imported from docs/old/setup.md · 2026-03-05')
+    } finally {
+      await api.call((c) =>
+        c.items.update({
+          params: { id: 'DOC-00001' },
+          payload: { unset: ['source', 'imported_at'] },
+        }),
+      )
+    }
   })
 
   test('a wikilink in the text is a link to the other item, followed without reloading', async () => {

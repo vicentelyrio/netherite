@@ -368,6 +368,134 @@ describe('new --template and templates', () => {
   })
 })
 
+describe('import', () => {
+  const batch = (dir: string, value: unknown) =>
+    writeFileSync(join(dir, 'batch.json'), JSON.stringify(value))
+  const sources = (dir: string) => {
+    mkdirSync(join(dir, 'docs/old'), { recursive: true })
+    writeFileSync(join(dir, 'docs/old/setup.md'), '# Setup\n\nInstall it.\n')
+    writeFileSync(join(dir, 'docs/old/0004-use-stow.md'), '# Use GNU Stow\n\nWe stow.\n')
+  }
+  const entries = [
+    { source: 'docs/old/setup.md', type: 'doc' },
+    {
+      source: 'docs/old/0004-use-stow.md',
+      type: 'adr',
+      id: 'ADR-00004',
+      fields: { status: 'accepted', date: '2019-04-02' },
+    },
+  ]
+
+  test('writes the batch, says what it did, records the sources, and never commits', async () => {
+    await temp(async (dir) => {
+      git(dir, 'init', '-q', '-b', 'main')
+      await cli(dir, 'init', '--no-skills')
+      sources(dir)
+      batch(dir, { entries })
+      const result = await cli(dir, 'import', 'batch.json')
+      expect(result.code).toBe(0)
+      expect(result.stdout).toContain(
+        'created  DOC-00001  docs/old/setup.md -> netherite/docs/DOC-00001-setup.md',
+      )
+      expect(result.stdout).toContain(
+        'created  ADR-00004  docs/old/0004-use-stow.md -> netherite/adr/ADR-00004-use-gnu-stow.md',
+      )
+      expect(result.stdout).toContain('2 created, 0 skipped, 0 failed')
+      expect(read(dir, 'netherite/docs/DOC-00001-setup.md')).toContain('source: docs/old/setup.md')
+      expect(read(dir, 'docs/old/setup.md')).toBe('# Setup\n\nInstall it.\n')
+      expect((await cli(dir, 'lint', '--fail-on', 'warning')).code).toBe(0)
+      expect(git(dir, 'rev-list', '--all', '--count').trim()).toBe('0')
+    })
+  })
+
+  test('running it again skips everything, and --update refreshes', async () => {
+    await temp(async (dir) => {
+      await cli(dir, 'init', '--no-skills')
+      sources(dir)
+      batch(dir, entries)
+      await cli(dir, 'import', 'batch.json')
+      const again = await cli(dir, 'import', 'batch.json')
+      expect(again.code).toBe(0)
+      expect(again.stdout).toContain('0 created, 2 skipped, 0 failed')
+      writeFileSync(join(dir, 'docs/old/setup.md'), '# Setup\n\nInstall it better.\n')
+      const updated = await cli(dir, 'import', 'batch.json', '--update')
+      expect(updated.stdout).toContain('updated  DOC-00001  docs/old/setup.md')
+      expect(read(dir, 'netherite/docs/DOC-00001-setup.md')).toContain('Install it better.')
+    })
+  })
+
+  test('--dry-run writes nothing', async () => {
+    await temp(async (dir) => {
+      await cli(dir, 'init', '--no-skills')
+      sources(dir)
+      batch(dir, entries)
+      const result = await cli(dir, 'import', 'batch.json', '--dry-run')
+      expect(result.code).toBe(0)
+      expect(result.stdout[0]).toBe('Dry run: nothing was written.')
+      expect(result.stdout.join('\n')).toContain('would create')
+      expect(existsSync(join(dir, 'netherite/docs/DOC-00001-setup.md'))).toBe(false)
+    })
+  })
+
+  test('--json reports every entry; a failed one makes the exit code 1 and the rest still go in', async () => {
+    await temp(async (dir) => {
+      await cli(dir, 'init', '--no-skills')
+      sources(dir)
+      batch(dir, [{ source: 'docs/missing.md', type: 'doc' }, entries[0]])
+      const result = await cli(dir, 'import', 'batch.json', '--json')
+      expect(result.code).toBe(1)
+      const report = json<{
+        counts: Record<string, number>
+        results: Array<{ status: string; entry: number; reason?: string }>
+      }>(result)
+      expect(report.counts).toEqual({ created: 1, updated: 0, skipped: 0, failed: 1 })
+      expect(report.results.map((r) => [r.entry, r.status])).toEqual([
+        [1, 'failed'],
+        [2, 'created'],
+      ])
+      expect(report.results[0]?.reason).toContain('Cannot read docs/missing.md')
+    })
+  })
+
+  test('--stub with a move leaves a note where the original was', async () => {
+    await temp(async (dir) => {
+      await cli(dir, 'init', '--no-skills')
+      sources(dir)
+      batch(dir, { mode: 'move', entries: [entries[0]] })
+      const result = await cli(dir, 'import', 'batch.json', '--stub')
+      expect(result.code).toBe(0)
+      expect(read(dir, 'docs/old/setup.md')).toBe(
+        'Moved to netherite/docs/DOC-00001-setup.md (DOC-00001).\n',
+      )
+      batch(dir, { mode: 'move', entries: [{ source: 'docs/old/0004-use-stow.md', type: 'doc' }] })
+      await cli(dir, 'import', 'batch.json')
+      expect(existsSync(join(dir, 'docs/old/0004-use-stow.md'))).toBe(false)
+    })
+  })
+
+  test('a missing or malformed batch file is a usage error', async () => {
+    await temp(async (dir) => {
+      await cli(dir, 'init', '--no-skills')
+      expect((await cli(dir, 'import', 'nope.json')).code).toBe(2)
+      writeFileSync(join(dir, 'batch.json'), '{ not json')
+      const bad = await cli(dir, 'import', 'batch.json')
+      expect(bad.code).toBe(2)
+      expect(bad.stderr.join('\n')).toContain('is not valid JSON')
+      writeFileSync(join(dir, 'batch.json'), '{"items": []}')
+      expect((await cli(dir, 'import', 'batch.json')).code).toBe(2)
+      writeFileSync(join(dir, 'batch.json'), '{"mode": "delete", "entries": []}')
+      expect((await cli(dir, 'import', 'batch.json')).code).toBe(2)
+    })
+  })
+
+  test('no workspace is exit 2', async () => {
+    await temp(async (dir) => {
+      batch(dir, entries)
+      expect((await cli(dir, 'import', 'batch.json')).code).toBe(2)
+    })
+  })
+})
+
 describe('lint', () => {
   test('a clean workspace passes', async () => {
     await temp(async (dir) => {

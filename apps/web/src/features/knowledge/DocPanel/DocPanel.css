@@ -47,6 +47,13 @@
   white-space: nowrap;
 }
 
+.kf-source {
+  margin: 0 0 4px;
+  font-size: 13px;
+  color: #c9cbe3;
+  word-break: break-word;
+}
+
 .kf-owner {
   margin: 8px 0 0;
   font-size: 13px;

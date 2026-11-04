@@ -71,6 +71,17 @@ import { HttpApiBuilder } from 'effect/http-api'
 import { toApiError } from './errors'
 import type { ServerState } from './state'
 
+/** Where an imported item came from, and when, if its frontmatter says. */
+const provenanceOf = (frontmatter: unknown) => {
+  const data = (
+    typeof frontmatter === 'object' && frontmatter !== null ? frontmatter : {}
+  ) as Record<string, unknown>
+  return {
+    ...(typeof data.source === 'string' && data.source !== '' ? { source: data.source } : {}),
+    ...(typeof data.imported_at === 'string' ? { importedAt: data.imported_at } : {}),
+  }
+}
+
 const written = (r: OpResult): WriteResult => ({
   id: r.id,
   path: r.path,
@@ -452,6 +463,7 @@ const knowledge = (state: ServerState) =>
             summary: summaryOf(detail.body),
             backlinks: detail.backlinks,
             coChanged: changed,
+            ...provenanceOf(detail.frontmatter),
             ...(latest === undefined
               ? {}
               : {

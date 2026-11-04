@@ -5,7 +5,7 @@ type: adr
 title: Each item type has a starter template that init copies and new can print
 created: 2026-11-04T20:10:01Z
 created_by: "@vicentelyrio"
-status: proposed
+status: accepted
 date: 2026-11-04
 deciders: ["@vicentelyrio"]
 project: PRJ-00008

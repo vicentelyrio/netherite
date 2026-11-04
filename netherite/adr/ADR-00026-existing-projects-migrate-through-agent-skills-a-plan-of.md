@@ -5,7 +5,7 @@ type: adr
 title: Existing projects migrate through agent skills, a plan of tasks and a standing ruleset
 created: 2026-11-04T11:36:56Z
 created_by: "@vicentelyrio"
-status: proposed
+status: accepted
 date: 2026-11-04
 deciders: ["@vicentelyrio"]
 project: PRJ-00004

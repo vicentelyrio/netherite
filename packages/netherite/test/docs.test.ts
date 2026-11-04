@@ -33,6 +33,7 @@ describe('the documentation', () => {
       'init',
       'new',
       'templates',
+      'import',
       'lint',
       'renumber',
       'mcp',

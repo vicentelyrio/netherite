@@ -577,6 +577,11 @@ type RootTranslation = {
 			 */
 			noSummary: string
 			/**
+			 * I​m​p​o​r​t​e​d​ ​f​r​o​m​ ​{​s​o​u​r​c​e​}
+			 * @param {unknown} source
+			 */
+			importedFrom: RequiredParams<'source'>
+			/**
 			 * B​a​c​k​l​i​n​k​s​ ​·​ ​{​c​o​u​n​t​}
 			 * @param {number} count
 			 */
@@ -843,6 +848,20 @@ type RootTranslation = {
 				 * @param {unknown} name
 				 */
 				owner: RequiredParams<'name'>
+				/**
+				 * S​o​u​r​c​e
+				 */
+				source: string
+				/**
+				 * I​m​p​o​r​t​e​d​ ​f​r​o​m​ ​{​s​o​u​r​c​e​}
+				 * @param {unknown} source
+				 */
+				importedFrom: RequiredParams<'source'>
+				/**
+				 * O​n​ ​{​d​a​t​e​}
+				 * @param {unknown} date
+				 */
+				importedOn: RequiredParams<'date'>
 				/**
 				 * B​a​c​k​l​i​n​k​s​ ​·​ ​{​c​o​u​n​t​}
 				 * @param {number} count
@@ -3436,6 +3455,10 @@ export type TranslationFunctions = {
 			 */
 			noSummary: () => LocalizedString
 			/**
+			 * Imported from {source}
+			 */
+			importedFrom: (arg: { source: unknown }) => LocalizedString
+			/**
 			 * Backlinks · {count}
 			 */
 			backlinks: (arg: { count: number }) => LocalizedString
@@ -3690,6 +3713,18 @@ export type TranslationFunctions = {
 				 * Owner {name}
 				 */
 				owner: (arg: { name: unknown }) => LocalizedString
+				/**
+				 * Source
+				 */
+				source: () => LocalizedString
+				/**
+				 * Imported from {source}
+				 */
+				importedFrom: (arg: { source: unknown }) => LocalizedString
+				/**
+				 * On {date}
+				 */
+				importedOn: (arg: { date: unknown }) => LocalizedString
 				/**
 				 * Backlinks · {count}
 				 */

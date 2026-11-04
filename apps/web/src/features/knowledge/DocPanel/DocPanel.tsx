@@ -50,6 +50,8 @@ export function DocPanel({
   const current = item.status ?? (type === 'adr' ? undefined : 'active')
   const front = (item.frontmatter ?? {}) as Record<string, unknown>
   const owner = [front.owner, front.created_by].find((v) => typeof v === 'string' && v !== '')
+  const source = typeof front.source === 'string' && front.source !== '' ? front.source : undefined
+  const importedAt = typeof front.imported_at === 'string' ? front.imported_at : undefined
   return (
     <aside className="kf-panel" aria-label={LL.knowledge.doc.panel.label()}>
       <section className="kf-section">
@@ -85,6 +87,15 @@ export function DocPanel({
           <p className="kf-owner">{LL.knowledge.doc.panel.owner({ name: owner })}</p>
         )}
       </section>
+      {source !== undefined && (
+        <section className="kf-section">
+          <h2 className="kf-h">{LL.knowledge.doc.panel.source()}</h2>
+          <p className="kf-source">{LL.knowledge.doc.panel.importedFrom({ source })}</p>
+          {importedAt !== undefined && (
+            <p className="app-muted">{LL.knowledge.doc.panel.importedOn({ date: importedAt })}</p>
+          )}
+        </section>
+      )}
       {type === 'adr' && data && <SupersessionChain id={item.id} chain={data.chain} />}
       {!stale && type !== 'adr' && fresh !== null && fresh.state === 'fresh' && (
         <section className="kf-section">

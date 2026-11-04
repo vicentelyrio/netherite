@@ -63,6 +63,7 @@ The same pages are published as a searchable site: <https://vicentelyrio.github.
 | [CLI reference](docs/reference/cli.md) | every command and flag |
 | [MCP reference](docs/reference/mcp.md) | the tools and resources an agent sees |
 | [Item schemas](docs/reference/schemas.md) | the fields of each item type |
+| [Import](docs/reference/import.md) | bring existing docs, runbooks and ADRs in from a reviewed batch file |
 | [Lint rules](docs/reference/lint.md) | what `netherite lint` reports and which problems it fixes |
 | [Configuration](docs/reference/config.md) | `.netherite/config.yml` |
 | [Obsidian](docs/obsidian.md) | opening the same files in Obsidian |

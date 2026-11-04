@@ -34,6 +34,12 @@ function Preview({ row }: { readonly row: KnowledgeRow }) {
           {row.id} · {row.title}
         </h2>
         <div className="kn-mono">{row.path}</div>
+        {data?.source !== undefined && (
+          <div className="kn-source">
+            {LL.knowledge.preview.importedFrom({ source: data.source })}
+            {data.importedAt !== undefined && ` · ${data.importedAt}`}
+          </div>
+        )}
       </div>
       {row.freshness === 'stale' && (
         <div className="kn-warning">

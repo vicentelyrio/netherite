@@ -1,5 +1,16 @@
 export { applyFixes, type FixChange, type FixReport } from './fix'
 export { contentHash } from './hash'
+export {
+  type EntryResult,
+  type EntryStatus,
+  type ImportEntry,
+  type ImportOptions,
+  type ImportReport,
+  type ImportType,
+  importBatch,
+  importTypes,
+  splitSource,
+} from './import'
 export { applyChanges, type Change } from './io'
 export {
   type CreateInput,

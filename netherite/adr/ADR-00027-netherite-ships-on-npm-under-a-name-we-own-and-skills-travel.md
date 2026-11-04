@@ -5,7 +5,7 @@ type: adr
 title: Netherite ships on npm under a name we own, and skills travel inside the package
 created: 2026-11-04T20:10:00Z
 created_by: "@vicentelyrio"
-status: proposed
+status: accepted
 date: 2026-11-04
 deciders: ["@vicentelyrio"]
 project: PRJ-00008

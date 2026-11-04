@@ -39,6 +39,7 @@ export default defineConfig({
           { text: 'CLI', link: '/reference/cli' },
           { text: 'Configuration', link: '/reference/config' },
           { text: 'Lint rules', link: '/reference/lint' },
+          { text: 'Import', link: '/reference/import' },
           { text: 'MCP', link: '/reference/mcp' },
           { text: 'Item schemas', link: '/reference/schemas' },
         ],

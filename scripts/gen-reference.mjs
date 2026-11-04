@@ -32,6 +32,7 @@ const commands = [
   [['init'], 'netherite init'],
   [['new'], 'netherite new'],
   [['templates'], 'netherite templates'],
+  [['import'], 'netherite import'],
   [['lint'], 'netherite lint'],
   [['renumber'], 'netherite renumber'],
   [['mcp'], 'netherite mcp'],

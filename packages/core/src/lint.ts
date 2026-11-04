@@ -7,13 +7,14 @@ import {
   knownFields,
   makeItemSchemas,
 } from '@netherite/schema'
-import { Effect } from 'effect'
+import { Effect, FileSystem, Path } from 'effect'
 import { fileSlug, typeFolders } from './filenames'
 import { computeFreshness, type Freshness } from './freshness'
 import { parseHorizon } from './horizon'
 import type { ParseOptions } from './parse-pool'
 import { scanItems } from './scan'
 import type { ScannedItem } from './scanned-item'
+import { classifySource } from './source'
 import { readTemplates } from './templates'
 import type { Workspace } from './workspace'
 import { createIndex, isRetired, type WorkspaceIndex } from './workspace-index'
@@ -37,6 +38,7 @@ export type RuleId =
   | 'links-to-retired'
   | 'unknown-field'
   | 'template-unknown-field'
+  | 'source-missing'
   | 'due-before-created'
   | 'milestone-without-due'
   | 'invalid-horizon'
@@ -404,6 +406,42 @@ const lintTemplates = (workspace: Workspace) =>
     return diagnostics
   })
 
+/**
+ * An imported item whose `source` is a path in the repository that is no longer there: the
+ * original may have been moved or deleted, so the link back to it is stale (ADR-00026).
+ */
+const lintSources = (workspace: Workspace, items: ReadonlyArray<ScannedItem>) =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem.FileSystem
+    const path = yield* Path.Path
+    const diagnostics: Diagnostic[] = []
+    for (const item of items) {
+      const data = item.parsed.frontmatter?.data
+      const source =
+        typeof data === 'object' && data !== null
+          ? (data as Record<string, unknown>).source
+          : undefined
+      if (typeof source !== 'string' || source === '') continue
+      const located = classifySource(source)
+      if (located.kind !== 'path') continue
+      const relative = located.path
+      const exists = yield* fs
+        .exists(path.join(workspace.root, relative))
+        .pipe(Effect.orElseSucceed(() => true))
+      if (exists) continue
+      const where = item.parsed.frontmatter?.fields.source ?? top
+      diagnostics.push({
+        path: item.path,
+        line: where.line,
+        column: where.column,
+        rule: 'source-missing',
+        severity: 'info',
+        message: `source "${source}" is no longer in the repository; the original may have been moved or deleted`,
+      })
+    }
+    return diagnostics
+  })
+
 /** Scans the workspace from disk, indexes it and lints it. */
 export const lintWorkspace = (
   workspace: Workspace,
@@ -441,9 +479,10 @@ export const lintWorkspace = (
         ? {}
         : { freshnessSeverity: options.freshnessSeverity }),
     })
-    const own = (yield* lintTemplates(workspace)).filter(
-      (d) => options.only === undefined || options.only.includes(d.path),
-    )
+    const own = [
+      ...(yield* lintTemplates(workspace)),
+      ...(yield* lintSources(workspace, items)),
+    ].filter((d) => options.only === undefined || options.only.includes(d.path))
     return [...diagnostics, ...own].sort(
       (a, b) =>
         a.path.localeCompare(b.path) ||

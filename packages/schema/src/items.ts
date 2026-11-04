@@ -32,6 +32,15 @@ const common = <const T extends ItemType, I extends Schema.Constraint>(type: T, 
 
 const optional = Schema.optionalKey
 
+/**
+ * Where an imported item came from (ADR-00026): a path inside the repository, or a URL, and the
+ * day it was brought in. Importing the same source again finds the item by it.
+ */
+const provenance = {
+  source: optional(Text),
+  imported_at: optional(IsoDate),
+}
+
 const Goal = open(
   Schema.Struct({
     ...common('goal', GoalId),
@@ -66,6 +75,7 @@ const Adr = open(
     project: optional(ProjectId),
     supersedes: optional(ids(AdrId)),
     superseded_by: optional(AdrId),
+    ...provenance,
   }),
 )
 
@@ -83,6 +93,7 @@ const knowledge = <const T extends 'doc' | 'runbook' | 'context', I extends Sche
   status: optional(Schema.Literals(['active', 'deprecated', 'superseded'])),
   supersedes: optional(ids(ItemId)),
   superseded_by: optional(ItemId),
+  ...provenance,
 })
 
 const Doc = open(Schema.Struct(knowledge('doc', DocId)))

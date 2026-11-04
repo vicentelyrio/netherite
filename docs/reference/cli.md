@@ -97,6 +97,27 @@ FLAGS
   --json              Print machine-readable JSON instead of text.
 ```
 
+## `netherite import`
+
+```text
+DESCRIPTION
+  Bring existing docs, runbooks, context files and ADRs in from a reviewed batch file. Records where each came from, skips what is already imported, and never commits.
+
+USAGE
+  netherite import [flags] <batch>
+
+ARGUMENTS
+  batch string    A JSON file: a list of entries, or { "mode": "copy", "entries": [...] }. Each entry has source, type (doc, runbook, context or adr) and optionally title, id, fields, body and mode.
+
+FLAGS
+  --dir, -C string       Folder to work in (default: the current one). The workspace is found by walking up from it.
+  --update               Bring items that were already imported up to date with their source.
+  --dry-run              Say what would happen and write nothing.
+  --stub                 With mode "move", leave a one-line note where the original was.
+  --created-by string    @handle to record. Default: from git config.
+  --json                 Print machine-readable JSON instead of text.
+```
+
 ## `netherite lint`
 
 ```text

@@ -248,6 +248,23 @@ describe('search, graph, lint', () => {
     )
   })
 
+  test('a preview says where an imported item came from, and says nothing for one written here', async () => {
+    await withServer((s) =>
+      Effect.gen(function* () {
+        const plain = yield* s.client.knowledge.preview({ params: { id: 'DOC-00001' } })
+        expect(plain.source).toBeUndefined()
+        expect(plain.importedAt).toBeUndefined()
+        yield* s.client.items.update({
+          params: { id: 'DOC-00001' },
+          payload: { set: { source: 'docs/old/setup.md', imported_at: '2026-03-05' } },
+        })
+        const imported = yield* s.client.knowledge.preview({ params: { id: 'DOC-00001' } })
+        expect(imported.source).toBe('docs/old/setup.md')
+        expect(imported.importedAt).toBe('2026-03-05')
+      }),
+    )
+  })
+
   test('a knowledge view has the supersession chain, and for a context item where it is synced', async () => {
     await withServer((s) =>
       Effect.gen(function* () {

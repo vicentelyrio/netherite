@@ -78,6 +78,8 @@ The fields of each item type, as the validator checks them (`netherite lint`, an
 | `project` | string |  | pattern `^PRJ-\d+$` |
 | `supersedes` | string[] |  |  |
 | `superseded_by` | string |  | pattern `^ADR-\d+$` |
+| `source` | string |  |  |
+| `imported_at` | string |  | pattern `^\d{4}-\d{2}-\d{2}$` |
 
 ## `doc`
 
@@ -98,6 +100,8 @@ The fields of each item type, as the validator checks them (`netherite lint`, an
 | `status` | `active` \| `deprecated` \| `superseded` |  |  |
 | `supersedes` | string \| string \| string \| string \| string \| string \| string[] |  |  |
 | `superseded_by` | string \| string \| string \| string \| string \| string \| string |  |  |
+| `source` | string |  |  |
+| `imported_at` | string |  | pattern `^\d{4}-\d{2}-\d{2}$` |
 
 ## `context`
 
@@ -118,6 +122,8 @@ The fields of each item type, as the validator checks them (`netherite lint`, an
 | `status` | `active` \| `deprecated` \| `superseded` |  |  |
 | `supersedes` | string \| string \| string \| string \| string \| string \| string[] |  |  |
 | `superseded_by` | string \| string \| string \| string \| string \| string \| string |  |  |
+| `source` | string |  |  |
+| `imported_at` | string |  | pattern `^\d{4}-\d{2}-\d{2}$` |
 | `include_in_context` | boolean |  |  |
 | `targets` | `claude` \| `agents` \| `mcp`[] |  |  |
 | `priority` | `high` \| `normal` \| `low` |  |  |
@@ -141,4 +147,6 @@ The fields of each item type, as the validator checks them (`netherite lint`, an
 | `status` | `active` \| `deprecated` \| `superseded` |  |  |
 | `supersedes` | string \| string \| string \| string \| string \| string \| string[] |  |  |
 | `superseded_by` | string \| string \| string \| string \| string \| string \| string |  |  |
+| `source` | string |  |  |
+| `imported_at` | string |  | pattern `^\d{4}-\d{2}-\d{2}$` |
 
