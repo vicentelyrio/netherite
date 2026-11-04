@@ -76,6 +76,17 @@ export const isRetired = (item: ScannedItem): boolean => {
   return status === 'superseded' || status === 'deprecated'
 }
 
+/** A context item given to agents is used by `context sync`, so nothing needs to link to it. */
+const isGivenToAgents = (item: ScannedItem): boolean => {
+  const data = item.parsed.frontmatter?.data
+  return (
+    item.type === 'context' &&
+    typeof data === 'object' &&
+    data !== null &&
+    (data as Record<string, unknown>).include_in_context === true
+  )
+}
+
 const stringList = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []
 
@@ -436,7 +447,12 @@ export const createIndex = (options: IndexOptions) => {
     /** Knowledge (docs, ADRs, context, runbooks) that nothing links to. */
     isOrphan: (path: string) => {
       const item = entries.get(path)?.item
-      if (item === undefined || !knowledgeTypes.has(item.type ?? '') || isRetired(item))
+      if (
+        item === undefined ||
+        !knowledgeTypes.has(item.type ?? '') ||
+        isRetired(item) ||
+        isGivenToAgents(item)
+      )
         return false
       return incoming(path).length === 0
     },
@@ -446,6 +462,7 @@ export const createIndex = (options: IndexOptions) => {
           ({ item }) =>
             knowledgeTypes.has(item.type ?? '') &&
             !isRetired(item) &&
+            !isGivenToAgents(item) &&
             graph.inDegree(item.path) === 0,
         )
         .map((e) => e.item.path)

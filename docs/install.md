@@ -49,9 +49,10 @@ npx @vicentelyrio/netherite init
 | `.claude/skills/netherite-*` | the agent skills, see [agents](agents.md) |
 | a section in `AGENTS.md`, between `netherite:skills` markers | a short note telling any agent how this repository tracks work |
 | `.netherite/skills.json` | a record of the installed skills, so your edits are kept on upgrade |
+| a context item, "How agents work in this repository", and `CLAUDE.md` | the ruleset every agent reads: plan first, track as you go, record decisions, ask when it is your call; see [agents](agents.md) |
 
 Options: `--content docs/tracker` keeps the items somewhere other than `netherite/`, and
-`--no-skills` leaves the skills and `AGENTS.md` alone. Then start the app with `npx
+`--no-skills` leaves the skills, `AGENTS.md` and the ruleset alone. Then start the app with `npx
 @vicentelyrio/netherite`, or carry on with [getting started](getting-started.md).
 
 Netherite never commits for you. Look at `git status`, then commit the result when you are happy.

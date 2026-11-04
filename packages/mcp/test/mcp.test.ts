@@ -17,6 +17,8 @@ describe('the protocol', () => {
       const instructions = s.client.getInstructions() ?? ''
       expect(instructions).toContain('only by ID')
       expect(instructions).toContain('base_hash')
+      expect(instructions).toContain('netherite://context')
+      expect(instructions).toContain('how to plan and track work')
     })
   })
 

@@ -283,6 +283,19 @@ describe('links', () => {
 })
 
 describe('orphans and unknown fields', () => {
+  test('a context item given to agents is not an orphan, since sync uses it; one that is not, is', () => {
+    const ctx = (id: string, extra: string) =>
+      item(
+        `n/context/${id}-x.md`,
+        `id: ${id}\naliases: [${id}]\ntype: context\ntitle: T ${id}\n${extra}`,
+      )
+    const found = run([
+      ctx('CTX-00001', 'include_in_context: true'),
+      ctx('CTX-00002', 'include_in_context: false'),
+    ])
+    expect(only(found, 'orphan').map((d) => d.path)).toEqual(['n/context/CTX-00002-x.md'])
+  })
+
   test('an orphan is info', () => {
     const found = run([item('n/docs/DOC-00001-a.md', doc('DOC-00001'))])
     expect(only(found, 'orphan')).toMatchObject([{ severity: 'info', line: 1, column: 1 }])

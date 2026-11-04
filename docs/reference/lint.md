@@ -22,7 +22,7 @@ check uses `warning`). `netherite lint --fix` applies the fixes marked below, ne
 | `milestone-without-due` | warning | a project has a `milestone` but no `due` date, so it cannot sit on the Timeline | |
 | `invalid-horizon` | warning | a goal's `horizon` is not `forever` or a length such as `10 years`, `6 months`, `90d` | |
 | `template-unknown-field` | warning | a template of your own under `templates/` in the content folder names a frontmatter field its type does not have, so every item made from it would carry that field unchecked | |
-| `orphan` | info | nothing links to this item | |
+| `orphan` | info | nothing links to this item (a context item given to agents is exempt: `context sync` uses it) | |
 | `unknown-field` | info | a frontmatter field the schema does not know (it is kept as it is) | |
 
 `stale` and `drifting` need git history and are skipped with `--no-git` or when the workspace is not

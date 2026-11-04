@@ -236,7 +236,8 @@ describe('init --update', () => {
       const result = await cli(dir, 'init', '--update')
       expect(result.code).toBe(0)
       expect(result.stdout.join('\n')).toContain('skipped  AGENTS.md')
-      expect(read(dir, 'AGENTS.md')).toBe(bad)
+      // The damaged block is left as it was; the ruleset is added after it, between its own markers.
+      expect(read(dir, 'AGENTS.md').startsWith(bad)).toBe(true)
     })
   })
 
@@ -260,5 +261,83 @@ describe('init --update', () => {
     expect(text('netherite-adr')).toContain('netherite templates adr')
     expect(text('netherite-plan')).toContain('netherite templates task')
     expect(text('netherite-context')).toContain('netherite templates context')
+  })
+})
+
+describe('the ruleset', () => {
+  const rulesetPath = 'netherite/context/CTX-00001-how-agents-work-in-this-repository.md'
+
+  test('init creates it as a high priority context item and writes it to CLAUDE.md and AGENTS.md', async () => {
+    await temp(async (dir) => {
+      git(dir, 'init', '-q', '-b', 'main')
+      const result = await cli(dir, 'init')
+      expect(result.code).toBe(0)
+      expect(result.stdout).toContain('created  CTX-00001  How agents work in this repository')
+      expect(result.stdout).toContain('synced   CLAUDE.md')
+      expect(result.stdout).toContain('synced   AGENTS.md')
+      const item = read(dir, rulesetPath)
+      expect(item).toContain('include_in_context: true')
+      expect(item).toContain('priority: high')
+      expect(item).toContain('targets: [claude, agents, mcp]')
+      expect(item).toContain('tags: [netherite-ruleset]')
+      for (const file of ['CLAUDE.md', 'AGENTS.md']) {
+        const text = read(dir, file)
+        expect(text, file).toContain('## Plan first')
+        expect(text, file).toContain('Do not commit, push or merge unless asked.')
+      }
+      // It is the person's to edit, and a short one: it costs tokens on every run.
+      expect((await cli(dir, 'context', 'sync', '--check')).code).toBe(0)
+      expect((await cli(dir, 'lint', '--fail-on', 'info')).code).toBe(0)
+      expect(item.length).toBeLessThan(2000)
+    })
+  })
+
+  test('init again changes nothing, and an edited ruleset stays as it was edited', async () => {
+    await temp(async (dir) => {
+      git(dir, 'init', '-q', '-b', 'main')
+      await cli(dir, 'init')
+      const before = ['CLAUDE.md', 'AGENTS.md', rulesetPath].map((f) => read(dir, f))
+      const again = await cli(dir, 'init')
+      expect(again.stdout.join('\n')).not.toContain('CTX-')
+      expect(['CLAUDE.md', 'AGENTS.md', rulesetPath].map((f) => read(dir, f))).toEqual(before)
+
+      writeFileSync(join(dir, rulesetPath), read(dir, rulesetPath).replace('Plan first', 'Plan'))
+      await cli(dir, 'init', '--update')
+      expect(read(dir, rulesetPath)).toContain('## Plan\n')
+      expect(
+        existsSync(join(dir, 'netherite/context/CTX-00002-how-agents-work-in-this-repository.md')),
+      ).toBe(false)
+    })
+  })
+
+  test('an existing workspace without one gets it from init, and keeps its other context', async () => {
+    await temp(async (dir) => {
+      git(dir, 'init', '-q', '-b', 'main')
+      await cli(dir, 'init', '--no-skills')
+      await cli(
+        dir,
+        'new',
+        'context',
+        'House rules',
+        '--set',
+        'include_in_context=true',
+        '--body',
+        'Be brief.',
+      )
+      const result = await cli(dir, 'init')
+      expect(result.stdout).toContain('created  CTX-00002  How agents work in this repository')
+      expect(read(dir, 'CLAUDE.md')).toContain('Be brief.')
+      expect(read(dir, 'CLAUDE.md')).toContain('## Plan first')
+    })
+  })
+
+  test('--no-skills leaves the ruleset out', async () => {
+    await temp(async (dir) => {
+      git(dir, 'init', '-q', '-b', 'main')
+      const result = await cli(dir, 'init', '--no-skills')
+      expect(result.stdout.join('\n')).not.toContain('CTX-')
+      expect(existsSync(join(dir, rulesetPath))).toBe(false)
+      expect(existsSync(join(dir, 'CLAUDE.md'))).toBe(false)
+    })
   })
 })

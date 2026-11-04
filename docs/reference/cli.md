@@ -53,7 +53,7 @@ FLAGS
   --dir, -C string    Folder to work in (default: the current one). The workspace is found by walking up from it.
   --content string    Folder for the items.
   --update            Refresh the installed agent skills and AGENTS.md section. Skills you edited are kept.
-  --no-skills         Do not install agent skills or the AGENTS.md section.
+  --no-skills         Do not install agent skills, the AGENTS.md section or the agent ruleset.
   --json              Print machine-readable JSON instead of text.
 ```
 

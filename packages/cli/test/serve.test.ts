@@ -55,7 +55,7 @@ describe('netherite serve', () => {
         expect(text).toContain(`claude mcp add --transport http netherite ${s.url}/mcp`)
         expect(text).toContain('netherite mcp')
         expect(s.opened).toEqual([s.url])
-        expect((await api(s, '/api/health')).json()).toMatchObject({ name: 'netherite', items: 3 })
+        expect((await api(s, '/api/health')).json()).toMatchObject({ name: 'netherite', items: 4 })
       }),
     )
   })

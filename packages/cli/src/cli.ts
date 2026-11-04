@@ -48,7 +48,9 @@ export const makeCli = (env: Env, state: { code: ExitCode }, version = '0.0.0') 
       ),
       noSkills: Flag.Boolean('no-skills').pipe(
         Flag.withDefault(false),
-        Flag.withDescription('Do not install agent skills or the AGENTS.md section.'),
+        Flag.withDescription(
+          'Do not install agent skills, the AGENTS.md section or the agent ruleset.',
+        ),
       ),
       json: jsonFlag,
     },

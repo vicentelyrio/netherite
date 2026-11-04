@@ -9,12 +9,13 @@ cd my-repo
 npx @vicentelyrio/netherite init
 ```
 
-`init` does four things, and only adds, never overwrites:
+`init` does five things, and only adds, never overwrites:
 
 1. writes `.netherite/config.yml` (see [configuration](reference/config.md)),
 2. creates the content folders under `netherite/` (with a `.gitkeep` so git keeps them),
 3. adds `.netherite/local/` to `.gitignore` (per-user state such as the agent activity log),
-4. installs agent skills into `.claude/skills/` and a short section in `AGENTS.md`.
+4. installs agent skills into `.claude/skills/` and a short section in `AGENTS.md`,
+5. creates the ruleset every agent reads, as a context item, and writes it to `CLAUDE.md` and `AGENTS.md` (see [agents](agents.md#the-ruleset)).
 
 Use `--content docs/tracker` to keep the items somewhere other than `netherite/`, and `--no-skills`
 to leave the skills and `AGENTS.md` alone. `netherite init --update` refreshes the skills after an

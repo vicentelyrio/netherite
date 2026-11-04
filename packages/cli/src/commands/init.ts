@@ -1,6 +1,7 @@
 import { configFile } from '@netherite/core'
 import { Effect, FileSystem, Path } from 'effect'
 import { type Env, type ExitCode, exitCodes, json } from '../output'
+import { ensureRuleset, type RulesetReport, rulesetTitle } from '../ruleset'
 import { installSkills, type SkillsReport } from './skills-install'
 
 const folders = [
@@ -42,7 +43,7 @@ export interface InitOptions {
   readonly json: boolean
   /** Refresh the installed skills and the AGENTS.md section to this version. */
   readonly update?: boolean
-  /** Do not install the agent skills or the AGENTS.md section. */
+  /** Do not install the agent skills, the AGENTS.md section or the agent ruleset. */
   readonly noSkills?: boolean
 }
 
@@ -52,6 +53,8 @@ export interface InitReport {
   readonly existed: ReadonlyArray<string>
   /** What happened to the agent skills and AGENTS.md section. Absent with `--no-skills`. */
   readonly skills?: SkillsReport
+  /** The ruleset every agent reads. Absent with `--no-skills`. */
+  readonly ruleset?: RulesetReport
 }
 
 /**
@@ -127,12 +130,16 @@ export const init = (env: Env, options: InitOptions) =>
         ? undefined
         : yield* installSkills(root, { update: options.update === true })
 
+    // The ruleset is a context item, so it needs the folders and config above.
+    const ruleset = options.noSkills === true ? undefined : yield* ensureRuleset(root)
+
     if (options.json) {
       json(env.out, {
         root,
         created,
         existed,
         ...(installed === undefined ? {} : { skills: installed }),
+        ...(ruleset === undefined ? {} : { ruleset }),
       } satisfies InitReport)
     } else {
       for (const item of created) env.out.line(`created  ${item}`)
@@ -146,6 +153,10 @@ export const init = (env: Env, options: InitOptions) =>
             : `${installed.agents.padEnd(8)} AGENTS.md`,
         )
       }
+      if (ruleset?.status === 'created') {
+        env.out.line(`created  ${ruleset.id}  ${rulesetTitle}`)
+        for (const file of ruleset.synced) env.out.line(`synced   ${file}`)
+      }
       if (changed.some((s) => s.status === 'outdated')) {
         env.out.line('Some skills are older than this version. Run `netherite init --update`.')
       }
@@ -155,7 +166,8 @@ export const init = (env: Env, options: InitOptions) =>
       const nothingNew =
         created.length === 0 &&
         !changed.some((s) => s.status === 'created' || s.status === 'updated') &&
-        (installed === undefined || ['unchanged', 'damaged'].includes(installed.agents))
+        (installed === undefined || ['unchanged', 'damaged'].includes(installed.agents)) &&
+        ruleset?.status !== 'created'
       env.out.line(
         nothingNew
           ? 'Already set up.'

@@ -29,6 +29,25 @@ conventions from `AGENTS.md`, below.
 IDs, use the MCP server, never rename files or edit IDs by hand, record decisions as ADRs, run
 `lint` before finishing. Text outside the markers is yours.
 
+## The ruleset
+
+`init` also creates a context item, *How agents work in this repository*, and runs `context sync`
+so `CLAUDE.md` and `AGENTS.md` carry it. It is a short standing instruction, about 300 tokens, and
+it is what makes an agent use Netherite without being reminded:
+
+- **Plan first:** before work of more than one step, find a task or project that covers it, or plan
+  one with `netherite-plan`.
+- **Track as you go:** set the task `doing`, tick checklist items when each part is done and
+  verified, set it `done` only when all are ticked, and write what it learned in the task's Notes.
+- **Record decisions:** a lasting choice is a `proposed` ADR. It never marks one `accepted` itself.
+- **Keep docs honest:** when code a doc covers changes, review the doc in the same work.
+- **Ask when it is your call:** scope, naming and trade-offs go to you with a recommendation. It
+  does not commit, push or merge unless you ask, and it runs `lint` before it finishes.
+
+It is a normal context item (CTX-00001 in a new workspace, tagged `netherite-ruleset`): edit it,
+shorten it or turn off *Include in context*, and `init` will not put the original back. The MCP
+server's instructions send agents to it first. `init --no-skills` leaves it out.
+
 ## Connect the MCP server
 
 The server runs over standard input and output and finds the workspace from the folder the agent was
