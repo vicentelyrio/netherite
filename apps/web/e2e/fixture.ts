@@ -23,10 +23,14 @@ export interface Workspace {
   readonly git: (args: string[], date?: string) => string
 }
 
-export const test = base.extend<{ workspace: Workspace }>({
-  workspace: async ({ page: _page }, use) => {
+export const test = base.extend<{ seeded: boolean; workspace: Workspace }>({
+  seeded: [true, { option: true }],
+  workspace: async ({ page: _page, seeded }, use) => {
     const dir = realpathSync(mkdtempSync(join(tmpdir(), 'netherite-e2e-')))
-    for (const [path, text] of Object.entries({ ...cleanWorkspaceFiles(dir), ...context(dir) })) {
+    const files = seeded
+      ? { ...cleanWorkspaceFiles(dir), ...context(dir) }
+      : { [`${dir}/.netherite/config.yml`]: 'version: 1\n' }
+    for (const [path, text] of Object.entries(files)) {
       mkdirSync(dirname(path), { recursive: true })
       writeFileSync(path, text)
     }

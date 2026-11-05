@@ -59,8 +59,8 @@ export function GoalAreas({ only }: { readonly only?: string }) {
           icon="track_changes"
           title={LL.goals.empty.title()}
           description={LL.goals.empty.text()}
+          actions={<NewGoal area={undefined} compact />}
         />
-        <NewGoal area={undefined} />
       </Grid.Col>
     )
   }

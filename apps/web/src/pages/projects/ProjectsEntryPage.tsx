@@ -1,5 +1,10 @@
-import { ProjectsEntry } from '@/features/projects'
+import { ProjectsEntry, ProjectsHeading } from '@/features/projects'
+import { CardGridTemplate } from '@/templates'
 
 export function ProjectsEntryPage() {
-  return <ProjectsEntry />
+  return (
+    <CardGridTemplate header={<ProjectsHeading />}>
+      <ProjectsEntry />
+    </CardGridTemplate>
+  )
 }

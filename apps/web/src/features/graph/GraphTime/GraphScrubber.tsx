@@ -1,9 +1,11 @@
 import { TimeScrubber } from '@/components'
-import { useGraphTime } from './GraphTime'
+import { useGraphAt, useGraphTime } from './GraphTime'
 
 export function GraphScrubber() {
   const { asOf, setAsOf, playing, togglePlay, range } = useGraphTime()
+  const query = useGraphAt()
   if (range === undefined) return null
+  if (query.data?.nodes.length === 0 && asOf === undefined) return null
   return (
     <TimeScrubber
       from={range.from}

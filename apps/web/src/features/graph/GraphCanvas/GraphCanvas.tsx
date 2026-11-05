@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { GraphView } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useGraphAt, useGraphTime } from '../GraphTime'
+import './GraphCanvas.css'
 
 export function GraphCanvas({ focus }: { readonly focus?: string | undefined }) {
   const { LL } = useI18nContext()
@@ -31,7 +32,7 @@ export function GraphCanvas({ focus }: { readonly focus?: string | undefined }) 
   }
   if (query.data.nodes.length === 0 && asOf === undefined) {
     return (
-      <div className="app-page">
+      <div className="graph-empty">
         <EmptyState icon="hub" title={LL.graph.empty.title()} description={LL.graph.empty.text()} />
       </div>
     )

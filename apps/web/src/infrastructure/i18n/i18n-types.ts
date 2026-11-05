@@ -374,11 +374,11 @@ type RootTranslation = {
 			 */
 			title: string
 			/**
-			 * D​o​c​s​,​ ​d​e​c​i​s​i​o​n​s​ ​a​n​d​ ​a​g​e​n​t​ ​c​o​n​t​e​x​t​ ​·​ ​n​o​t​h​i​n​g​ ​i​n​ ​k​n​o​w​l​e​d​g​e​/​ ​y​e​t
+			 * D​o​c​s​,​ ​d​e​c​i​s​i​o​n​s​ ​a​n​d​ ​a​g​e​n​t​ ​c​o​n​t​e​x​t​ ​·​ ​n​o​t​h​i​n​g​ ​h​e​r​e​ ​y​e​t
 			 */
 			empty: string
 			/**
-			 * D​o​c​s​,​ ​d​e​c​i​s​i​o​n​s​ ​a​n​d​ ​a​g​e​n​t​ ​c​o​n​t​e​x​t​ ​·​ ​{​c​o​u​n​t​}​ ​f​i​l​e​s​ ​i​n​ ​k​n​o​w​l​e​d​g​e​/
+			 * D​o​c​s​,​ ​d​e​c​i​s​i​o​n​s​ ​a​n​d​ ​a​g​e​n​t​ ​c​o​n​t​e​x​t​ ​·​ ​{​c​o​u​n​t​}​ ​f​i​l​e​s
 			 * @param {number} count
 			 */
 			summary: RequiredParams<'count'>
@@ -614,10 +614,9 @@ type RootTranslation = {
 			 */
 			title: string
 			/**
-			 * D​o​c​s​,​ ​d​e​c​i​s​i​o​n​s​ ​a​n​d​ ​a​g​e​n​t​ ​c​o​n​t​e​x​t​ ​a​r​e​ ​M​a​r​k​d​o​w​n​ ​f​i​l​e​s​ ​w​i​t​h​ ​t​y​p​e​d​ ​f​r​o​n​t​m​a​t​t​e​r​ ​i​n​ ​{​f​o​l​d​e​r​}​.​ ​T​h​e​y​ ​l​i​n​k​ ​t​o​ ​y​o​u​r​ ​g​o​a​l​s​,​ ​p​r​o​j​e​c​t​s​ ​a​n​d​ ​t​a​s​k​s​ ​l​i​k​e​ ​e​v​e​r​y​t​h​i​n​g​ ​e​l​s​e​.
-			 * @param {unknown} folder
+			 * D​o​c​s​,​ ​d​e​c​i​s​i​o​n​s​ ​a​n​d​ ​a​g​e​n​t​ ​c​o​n​t​e​x​t​ ​a​r​e​ ​M​a​r​k​d​o​w​n​ ​f​i​l​e​s​ ​w​i​t​h​ ​t​y​p​e​d​ ​f​r​o​n​t​m​a​t​t​e​r​.​ ​T​h​e​y​ ​l​i​n​k​ ​t​o​ ​y​o​u​r​ ​g​o​a​l​s​,​ ​p​r​o​j​e​c​t​s​ ​a​n​d​ ​t​a​s​k​s​ ​l​i​k​e​ ​e​v​e​r​y​t​h​i​n​g​ ​e​l​s​e​.
 			 */
-			text: RequiredParams<'folder'>
+			text: string
 			/**
 			 * R​e​c​o​r​d​ ​f​i​r​s​t​ ​d​e​c​i​s​i​o​n
 			 */
@@ -1000,10 +999,9 @@ type RootTranslation = {
 			 */
 			knowledge: string
 			/**
-			 * S​t​a​t​u​s​ ​c​h​a​n​g​e​s​ ​f​r​o​m​ ​{​c​o​m​m​a​n​d​}​ ​·​ ​n​e​w​e​s​t​ ​f​i​r​s​t
-			 * @param {unknown} command
+			 * S​t​a​t​u​s​ ​c​h​a​n​g​e​s​ ​f​r​o​m​ ​g​i​t​ ​h​i​s​t​o​r​y​ ​·​ ​n​e​w​e​s​t​ ​f​i​r​s​t
 			 */
-			text: RequiredParams<'command'>
+			text: string
 		}
 		empty: {
 			/**
@@ -1417,6 +1415,20 @@ type RootTranslation = {
 		 * T​h​i​s​ ​i​s​ ​a​ ​s​h​a​l​l​o​w​ ​c​l​o​n​e​,​ ​s​o​ ​t​h​e​ ​e​a​r​l​i​e​s​t​ ​w​e​e​k​s​ ​a​r​e​ ​m​i​s​s​i​n​g​.
 		 */
 		partialText: string
+		empty: {
+			/**
+			 * N​o​t​h​i​n​g​ ​t​o​ ​m​e​a​s​u​r​e​ ​y​e​t
+			 */
+			title: string
+			/**
+			 * N​u​m​b​e​r​s​ ​f​i​l​l​ ​i​n​ ​o​n​c​e​ ​y​o​u​ ​h​a​v​e​ ​g​o​a​l​s​ ​o​r​ ​d​o​c​s​.
+			 */
+			text: string
+			/**
+			 * G​o​ ​t​o​ ​g​o​a​l​s
+			 */
+			action: string
+		}
 		/**
 		 * A​r​e​a
 		 */
@@ -2237,6 +2249,10 @@ type RootTranslation = {
 		}
 	}
 	projects: {
+		/**
+		 * P​r​o​j​e​c​t​s
+		 */
+		title: string
 		views: {
 			/**
 			 * V​i​e​w​s
@@ -2385,6 +2401,10 @@ type RootTranslation = {
 			 * C​r​e​a​t​e​ ​o​n​e​ ​f​r​o​m​ ​a​ ​g​o​a​l​,​ ​a​n​d​ ​i​t​s​ ​t​a​s​k​s​ ​s​h​o​w​ ​u​p​ ​h​e​r​e​ ​a​s​ ​a​ ​b​o​a​r​d​.
 			 */
 			text: string
+			/**
+			 * G​o​ ​t​o​ ​g​o​a​l​s
+			 */
+			action: string
 		}
 	}
 	tasks: {
@@ -3257,11 +3277,11 @@ export type TranslationFunctions = {
 			 */
 			title: () => LocalizedString
 			/**
-			 * Docs, decisions and agent context · nothing in knowledge/ yet
+			 * Docs, decisions and agent context · nothing here yet
 			 */
 			empty: () => LocalizedString
 			/**
-			 * Docs, decisions and agent context · {count} files in knowledge/
+			 * Docs, decisions and agent context · {count} files
 			 */
 			summary: (arg: { count: number }) => LocalizedString
 		}
@@ -3489,9 +3509,9 @@ export type TranslationFunctions = {
 			 */
 			title: () => LocalizedString
 			/**
-			 * Docs, decisions and agent context are Markdown files with typed frontmatter in {folder}. They link to your goals, projects and tasks like everything else.
+			 * Docs, decisions and agent context are Markdown files with typed frontmatter. They link to your goals, projects and tasks like everything else.
 			 */
-			text: (arg: { folder: unknown }) => LocalizedString
+			text: () => LocalizedString
 			/**
 			 * Record first decision
 			 */
@@ -3859,9 +3879,9 @@ export type TranslationFunctions = {
 			 */
 			knowledge: () => LocalizedString
 			/**
-			 * Status changes from {command} · newest first
+			 * Status changes from git history · newest first
 			 */
-			text: (arg: { command: unknown }) => LocalizedString
+			text: () => LocalizedString
 		}
 		empty: {
 			/**
@@ -4245,6 +4265,20 @@ export type TranslationFunctions = {
 		 * This is a shallow clone, so the earliest weeks are missing.
 		 */
 		partialText: () => LocalizedString
+		empty: {
+			/**
+			 * Nothing to measure yet
+			 */
+			title: () => LocalizedString
+			/**
+			 * Numbers fill in once you have goals or docs.
+			 */
+			text: () => LocalizedString
+			/**
+			 * Go to goals
+			 */
+			action: () => LocalizedString
+		}
 		/**
 		 * Area
 		 */
@@ -5017,6 +5051,10 @@ export type TranslationFunctions = {
 		}
 	}
 	projects: {
+		/**
+		 * Projects
+		 */
+		title: () => LocalizedString
 		views: {
 			/**
 			 * Views
@@ -5158,6 +5196,10 @@ export type TranslationFunctions = {
 			 * Create one from a goal, and its tasks show up here as a board.
 			 */
 			text: () => LocalizedString
+			/**
+			 * Go to goals
+			 */
+			action: () => LocalizedString
 		}
 	}
 	tasks: {
