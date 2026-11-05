@@ -8,7 +8,7 @@ allowBuilds:
   lefthook: true
 
 catalog:
-  "@types/node": ^24.0.0
+  "@types/node": ^26.6.6
   typesafe-i18n: ^5.26.2
   tsdown: ^0.23.4
   typescript: ^7.0.2
