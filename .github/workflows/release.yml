@@ -45,13 +45,18 @@ jobs:
       - run: pnpm docs:check
       - run: pnpm --filter @vicentelyrio/netherite smoke
 
-      - uses: changesets/action@v1
+      # Version 2 of the action goes with Changesets v3. Version 1 could not read what `changeset
+      # publish` prints now, so it never saw the package as published: no tag was pushed and no
+      # GitHub release was created (1.0.0 and 1.1.0 had to be tagged by hand). Version 2 also pushes
+      # the version commit and the tags through the GitHub API, which signs them.
+      - uses: changesets/action@v2
         with:
-          version: pnpm cs:version
-          publish: pnpm cs:publish
-          title: "Release @vicentelyrio/netherite"
-          commit: "chore: version packages"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          version-script: pnpm cs:version
+          publish-script: pnpm cs:publish
+          pr-title: "Release @vicentelyrio/netherite"
+          commit-message: "chore: version packages"
+          create-github-releases: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"
