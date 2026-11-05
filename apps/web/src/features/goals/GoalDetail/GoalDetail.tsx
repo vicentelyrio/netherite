@@ -2,11 +2,11 @@ import { NotFound } from '@netherite/api'
 import { Banner, ProgressRing } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-import { Breadcrumbs } from '@/components'
+import { Breadcrumbs, EditableText } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { now } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
-import { goalQuery } from '@/infrastructure/query'
+import { goalQuery, useWrite } from '@/infrastructure/query'
 import { GoalProjects } from '../GoalProjects'
 import { horizonElapsed, horizonLabel } from '../horizon'
 import './GoalDetail.css'
@@ -15,6 +15,9 @@ export function GoalDetail({ id }: { readonly id: string }) {
   const { LL } = useI18nContext()
   const api = useApi()
   const query = useQuery(goalQuery(api, id))
+  const retitle = useWrite(api, (a, title: string) =>
+    a.call((c) => c.items.update({ params: { id }, payload: { set: { title } } })),
+  )
   if (query.isPending) return <div className="app-muted">{LL.common.loading()}</div>
   if (query.isError) {
     const missing = query.error instanceof NotFound
@@ -46,7 +49,12 @@ export function GoalDetail({ id }: { readonly id: string }) {
         <strong>{goal.title}</strong>
       </Breadcrumbs>
       <header className="goal-head">
-        <h1 className="app-title goal-title">{goal.title}</h1>
+        <EditableText
+          as="h1"
+          className="app-title goal-title"
+          value={goal.title}
+          onSave={(title) => retitle.mutate(title)}
+        />
         <div className="goal-rings">
           {goal.horizon && (
             <div className="goal-ring">

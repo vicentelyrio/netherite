@@ -13,6 +13,10 @@
 .goal-title {
   margin: 0;
 }
+.editable-input.goal-title {
+  flex: 1;
+  height: calc(var(--nt-text-display-line-height) + 8px);
+}
 .goal-ring {
   display: flex;
   flex-direction: column;
@@ -21,6 +25,7 @@
 }
 
 .goal-rings {
+  flex: none;
   display: flex;
   gap: 24px;
 }

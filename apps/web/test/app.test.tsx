@@ -456,6 +456,25 @@ describe('goals', () => {
     expect(screen.getByRole('link', { name: 'Goals' })).toBeInTheDocument()
   })
 
+  test('the pencil beside a goal name renames it, and the heading in its file follows', async () => {
+    const made = await other().call((c) =>
+      c.items.create({ payload: { type: 'goal', title: 'Old goal' } }),
+    )
+    renderApp(`/goals/${made.id}`)
+    await userEvent.click(await screen.findByRole('button', { name: 'Rename Old goal' }))
+    await userEvent.clear(screen.getByRole('textbox', { name: 'Rename Old goal' }))
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Rename Old goal' }),
+      'New goal name{Enter}',
+    )
+    expect(
+      await screen.findByRole('heading', { name: 'New goal name', level: 1 }),
+    ).toBeInTheDocument()
+    const source = await other().call((c) => c.items.source({ params: { id: made.id } }))
+    expect(JSON.stringify(source)).toContain('# New goal name')
+    await other().call((c) => c.items.delete({ params: { id: made.id }, query: { force: 'true' } }))
+  })
+
   test('an unknown or non-goal ID says so', async () => {
     renderApp('/goals/TASK-00001')
     expect(await screen.findByText('No goal TASK-00001')).toBeInTheDocument()
