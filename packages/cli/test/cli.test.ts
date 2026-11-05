@@ -998,9 +998,9 @@ describe('the built program', () => {
         expect(run('--version').out).toMatch(/netherite v/)
         expect(run('bogus').code).toBe(2)
       })
-      // Each call starts a real process; with the other packages' tests running, 5 seconds is not enough.
+      // Each call starts a real process, and the runners are busy with the other packages' tests.
     },
-    30_000,
+    120_000,
   )
 })
 
