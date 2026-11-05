@@ -5,6 +5,16 @@ convention files such as `CLAUDE.md`, and existing decision records) into Nether
 decides what each file is and a person reviews the list; this command does the writing, through the
 same checks as every other write. It never commits.
 
+It does not look for files: you give it the list. `netherite scan` drafts one for you by looking
+through the repository, and the [migrate skill](../migrate.md) drives both.
+
+```sh
+netherite scan                                   # writes .netherite/local/scan.json
+netherite import .netherite/local/scan.json --dry-run
+```
+
+Or with a file of your own:
+
 ```sh
 netherite import batch.json --dry-run   # say what would happen, write nothing
 netherite import batch.json             # write it

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "dev": "vite",
     "build": "vite build",
     "e2e": "playwright test",
