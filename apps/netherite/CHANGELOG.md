@@ -1,5 +1,11 @@
 # @vicentelyrio/netherite
 
+## 1.1.0
+
+### Minor Changes
+
+- 45d9a9a: scan cli command
+
 ## 1.0.0
 
 ### Major Changes
