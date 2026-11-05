@@ -113,12 +113,17 @@ jobs:
   package:
     # `npx @vicentelyrio/netherite` in a clean repository, from the packed package (TASK-00049). Windows is
     # best-effort (DOC-00001), but the program must still install and start there.
-    name: Package smoke test (${{ matrix.os }})
+    name: Package smoke test (${{ matrix.os }}${{ matrix.node && format(', node {0}', matrix.node) || '' }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+        # The version in .nvmrc is what we develop on. `engines` says Node 24 or newer, so the
+        # oldest version we promise is run once too.
+        include:
+          - os: ubuntu-latest
+            node: "24"
     steps:
       - uses: actions/checkout@v5
         with:
@@ -126,7 +131,8 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v5
         with:
-          node-version-file: .nvmrc
+          node-version: ${{ matrix.node }}
+          node-version-file: ${{ matrix.node && '' || '.nvmrc' }}
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm turbo run build --filter=@vicentelyrio/netherite...
