@@ -1,9 +1,13 @@
 import '@testing-library/jest-dom/vitest'
-import { cleanup } from '@testing-library/react'
+import { cleanup, configure } from '@testing-library/react'
 import { EventSource } from 'eventsource'
 import { afterEach } from 'vitest'
 
 afterEach(() => cleanup())
+
+// `findBy` and `waitFor` give up after one second by default. A shared CI runner running every
+// package's tests at once is slower than that for a menu that opens in a portal.
+configure({ asyncUtilTimeout: 5000 })
 
 // jsdom has no layout engine or event streams; the UI library and the app ask for these.
 if (typeof window !== 'undefined') {
