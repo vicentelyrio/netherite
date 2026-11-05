@@ -47,7 +47,8 @@ Two kinds, and both end up in the graph:
 | `explains` | doc, runbook | describes these items |
 
 Backlinks are computed, not stored: an item never needs editing because something links to it. An
-item that no other item links to is an *orphan*; the Inbox lists them.
+item that no other item links to is an *orphan*. Knowledge can filter to them, and the Inbox lists
+the orphaned decisions; a doc or runbook is raised there only when it goes stale.
 
 ## States
 

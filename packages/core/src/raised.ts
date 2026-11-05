@@ -101,6 +101,7 @@ export const raised = (repo: Repo, input: RaisedInput = {}): ReadonlyArray<Raise
   if (on.has('orphan'))
     for (const item of items) {
       if (item.id === undefined || !repo.index.isOrphan(item.path)) continue
+      if (item.type === 'doc' || item.type === 'runbook') continue
       out.push({
         key: `orphan:${item.id}`,
         rule: 'orphan',

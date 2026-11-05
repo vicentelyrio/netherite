@@ -83,6 +83,18 @@ describe('raised', () => {
     expect(out[0]?.rule).toBe('new-todo')
   })
 
+  test('an orphaned decision is raised, but an orphaned doc or runbook is not', async () => {
+    const w = await world({
+      ...files(),
+      '/repo/netherite/runbooks/RUN-00001-r.md': item('runbook', 'RUN-00001', ''),
+    })
+    const keys = raised(w.repo, { now }).map((r) => r.key)
+    expect(w.repo.index.orphans()).toHaveLength(3)
+    expect(keys).toContain('orphan:ADR-00001')
+    expect(keys).not.toContain('orphan:DOC-00001')
+    expect(keys).not.toContain('orphan:RUN-00001')
+  })
+
   test('a rule is off when the config says so', async () => {
     const w = await world(
       files('version: 1\ninbox:\n  rules:\n    proposed-adr: false\n    orphan: false\n'),
