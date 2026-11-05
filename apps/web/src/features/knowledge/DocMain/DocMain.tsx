@@ -16,11 +16,6 @@ export interface ReviewAction {
   readonly run: () => void
 }
 
-/**
- * The middle of the doc view: what is special about the type (a stale doc's warning and the
- * commits behind it, a superseded ADR's banner and lifecycle, a context item's switch) above the
- * rendered text.
- */
 export function DocMain({
   item,
   data,

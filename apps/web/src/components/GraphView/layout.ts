@@ -15,12 +15,9 @@ export interface GraphNodeData {
   readonly id: string
   readonly type: string
   readonly title: string
-  /** Goals, projects and tasks: where they stand, and how much is done (0 to 1). */
   readonly status?: 'backlog' | 'progress' | 'hold' | 'done' | undefined
   readonly progress?: number | undefined
-  /** A doc whose code changed in many commits since it was reviewed. */
   readonly stale?: boolean | undefined
-  /** When it reached its status, ISO 8601. */
   readonly since?: string | undefined
 }
 
@@ -40,7 +37,6 @@ export interface Placed extends GraphNodeData {
   readonly y: number
 }
 
-/** The nodes in `scope` and the edges between them. No scope is the whole graph. */
 export const subgraph = (data: GraphData, scope?: ReadonlySet<string>): GraphData => {
   if (scope === undefined) return data
   return {
@@ -49,7 +45,6 @@ export const subgraph = (data: GraphData, scope?: ReadonlySet<string>): GraphDat
   }
 }
 
-/** The graph as graphology holds it, for asking who is next to whom. Edges to missing nodes are left out. */
 export const toGraphology = (data: GraphData): Graph => {
   const graph = new Graph({ multi: true, type: 'undirected' })
   for (const n of data.nodes) graph.addNode(n.id)
@@ -61,7 +56,6 @@ export const toGraphology = (data: GraphData): Graph => {
   return graph
 }
 
-/** The nodes next to `id`, and `id` itself. */
 export const neighbourhood = (graph: Graph, id: string): Set<string> =>
   graph.hasNode(id) ? new Set([id, ...graph.neighbors(id)]) : new Set()
 
@@ -70,13 +64,11 @@ interface SimNode extends SimulationNodeDatum {
   type: string
 }
 
-/** How strongly an edge pulls its ends together: belonging is tight, a mention is loose. */
 const linkStrength = (kind: string) =>
   kind === 'belongs_to' ? 0.9 : kind === 'reference' ? 0.1 : 0.35
 
 const bigger = (type: string) => (type === 'goal' ? 34 : type === 'project' ? 26 : 18)
 
-/** The forces over some nodes: links pull, nodes push apart, and everything drifts to the middle. */
 const buildSimulation = (data: GraphData, nodes: SimNode[]) => {
   const known = new Set(nodes.map((n) => n.id))
   const links: Array<SimulationLinkDatum<SimNode> & { kind: string }> = data.edges
@@ -104,10 +96,6 @@ const buildSimulation = (data: GraphData, nodes: SimNode[]) => {
     .force('center', forceCenter(0, 0))
 }
 
-/**
- * Places the nodes with a force simulation run to rest, so the picture is the same every time the
- * same graph is drawn and does not move under the pointer. Nodes start on a circle, in order.
- */
 export const layout = (
   data: GraphData,
   options: { readonly ticks?: number } = {},
@@ -132,19 +120,12 @@ export const layout = (
 }
 
 export interface Live {
-  /** Holds a node at a place in layout space; the others move to make room. */
   readonly hold: (id: string, x: number, y: number) => void
-  /** Lets the node go, and the picture settle. */
   readonly release: (id: string) => void
-  /** Called after every step with where each node is now. */
   readonly onTick: (listener: (at: ReadonlyMap<string, { x: number; y: number }>) => void) => void
   readonly stop: () => void
 }
 
-/**
- * A simulation that runs while a node is being dragged, starting from where the nodes are now.
- * Dragging a node pulls the ones linked to it, and letting go lets them settle.
- */
 export const live = (data: GraphData, from: ReadonlyArray<Placed>): Live => {
   const nodes: SimNode[] = from.map((p) => ({ id: p.id, type: p.type, x: p.x, y: p.y }))
   const byId = new Map(nodes.map((n) => [n.id, n]))
@@ -186,7 +167,6 @@ export interface Box {
   readonly height: number
 }
 
-/** The zoom and offset that fit these points in a view, with `pad` to spare. */
 export const fitTo = (
   points: ReadonlyArray<{ x: number; y: number }>,
   view: { width: number; height: number },

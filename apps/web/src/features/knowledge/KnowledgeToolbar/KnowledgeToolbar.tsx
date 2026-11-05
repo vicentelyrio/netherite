@@ -11,7 +11,6 @@ const adrStatuses = ['proposed', 'accepted', 'deprecated', 'superseded']
 
 const sorts: ReadonlyArray<SortKey> = ['date', 'id', 'title', 'freshness']
 
-/** Search, type tabs, drop-down filters, the stale and orphan toggles, and the sort. */
 export function KnowledgeToolbar() {
   const { LL } = useI18nContext()
   const { rows, filters, set, counts } = useKnowledgeIndex()

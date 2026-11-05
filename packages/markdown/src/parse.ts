@@ -9,11 +9,6 @@ import { remarkGfmLite } from './gfm-lite'
 import { uniqueSlugs } from './slug'
 import { remarkWikiLinks, type WikiLink } from './wikilink'
 
-/**
- * The unified processor Netherite uses. The app renders with the same plugins (ADR-00011).
- * By default it supports full GFM; `autolinks: false` leaves out bare-URL detection, which is
- * not needed to index a file and costs about a third of the parse time.
- */
 export const createProcessor = ({ autolinks = true }: { autolinks?: boolean } = {}) =>
   unified()
     .use(remarkParse)
@@ -23,32 +18,24 @@ export const createProcessor = ({ autolinks = true }: { autolinks?: boolean } = 
 
 export interface FrontmatterError {
   readonly message: string
-  /** 1-based, in the whole file. */
   readonly line: number
-  /** 1-based. */
   readonly column: number
 }
 
 export interface Frontmatter {
-  /** The YAML between the `---` fences, without them. */
   readonly raw: string
-  /** Parsed value. `undefined` when the YAML has errors. */
   readonly data: unknown
   readonly errors: ReadonlyArray<FrontmatterError>
-  /** Where each top-level key is written, 1-based, in the whole file. */
   readonly fields: Readonly<Record<string, { readonly line: number; readonly column: number }>>
-  /** Offset of the opening `---` and just past the closing one. */
   readonly start: number
   readonly end: number
 }
 
 export interface HeadingInfo {
   readonly depth: 1 | 2 | 3 | 4 | 5 | 6
-  /** Plain text of the heading. */
   readonly text: string
   readonly slug: string
   readonly position: Position
-  /** Offset where the section ends: the next heading of the same or higher level, or the end. */
   readonly sectionEnd: number
 }
 
@@ -62,35 +49,24 @@ export interface LinkInfo {
 
 export interface ChecklistItem {
   readonly checked: boolean
-  /** Text of the item's first line, without the marker. */
   readonly text: string
   readonly position: Position
-  /** Offset of the character inside `[ ]`; replace it with ` ` or `x` to toggle the item. */
   readonly toggleOffset: number
-  /** How deep the item is nested in other lists, starting at 0. */
   readonly depth: number
-  /** Text of the closest heading above the item. */
   readonly section: string | undefined
 }
 
-/**
- * Everything extracted from a file, without the syntax tree. Small and plain data, so it can be
- * kept for thousands of files and passed between threads.
- */
 export interface Outline {
   readonly source: string
   readonly frontmatter: Frontmatter | undefined
-  /** Offset where the content after the frontmatter begins. */
   readonly bodyStart: number
   readonly headings: ReadonlyArray<HeadingInfo>
   readonly links: ReadonlyArray<LinkInfo>
   readonly checklist: ReadonlyArray<ChecklistItem>
-  /** Readable text for search and previews. Excludes the frontmatter. */
   readonly text: string
 }
 
 export interface ParsedMarkdown extends Outline {
-  /** The mdast tree, including the frontmatter node and `wikiLink` nodes. Positions are absolute. */
   readonly tree: Root
 }
 
@@ -157,10 +133,6 @@ const readFrontmatter = (tree: Root): Frontmatter | undefined => {
 
 const markerPattern = /^[ \t]*(?:[-*+]|\d+[.)])[ \t]+\[( |x|X)\]/
 
-/**
- * Parses a Markdown file with optional YAML frontmatter and extracts what Netherite needs:
- * links, headings, the checklist and plain text, all with source positions.
- */
 export const parseMarkdown = (source: string): ParsedMarkdown => {
   const file = { value: source }
   const tree = processor.runSync(processor.parse(source), file as never) as Root
@@ -229,7 +201,6 @@ export const parseMarkdown = (source: string): ParsedMarkdown => {
   }
 }
 
-/** Like `parseMarkdown`, but drops the tree. Use it to index many files. */
 export const outlineMarkdown = (source: string): Outline => {
   const { tree: _tree, ...outline } = parseMarkdown(source)
   return outline

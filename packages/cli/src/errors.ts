@@ -9,11 +9,6 @@ interface Tagged {
 const isTagged = (value: unknown): value is Tagged =>
   typeof value === 'object' && value !== null && '_tag' in value && 'message' in value
 
-/**
- * Prints a failure from core the way a person wants to read it, and says how the program
- * should exit: 1 when the request was understood and refused (invalid input, a conflict), 2 when
- * it could not run at all (no workspace, bad config, a file that cannot be read).
- */
 export const reportFailure = (env: Env, error: unknown): ExitCode => {
   if (!isTagged(error)) throw error
   switch (error._tag) {

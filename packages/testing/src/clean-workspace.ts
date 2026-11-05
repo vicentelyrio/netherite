@@ -1,7 +1,5 @@
-/** A small valid workspace (goal, project, tasks, ADRs, doc) that lints with no errors. */
 const front = (lines: string[]) => `---\n${lines.join('\n')}\n---\n`
 
-/** A small valid workspace, rooted at /repo, with no lint errors. */
 export const cleanWorkspaceFiles = (root = '/repo'): Record<string, string> => ({
   [`${root}/.netherite/config.yml`]: 'version: 1\n',
   [`${root}/netherite/goals/GOAL-00001-ship.md`]: `${front([

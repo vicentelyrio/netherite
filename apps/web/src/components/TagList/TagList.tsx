@@ -4,7 +4,6 @@ export interface TagListProps {
   readonly tags: ReadonlyArray<string>
 }
 
-/** Tags as small chips; nothing when there are none. */
 export function TagList({ tags }: TagListProps) {
   if (tags.length === 0) return null
   return (

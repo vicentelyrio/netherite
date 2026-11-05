@@ -5,7 +5,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import type { ReviewAction } from '../DocMain'
 import './DocHeader.css'
 
-/** The top bar of the doc view: the file's path, its type, unsaved changes, review and close. */
 export function DocHeader({
   item,
   stale,

@@ -5,7 +5,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { useStats } from '../StatsProvider'
 import './ThroughputCard.css'
 
-/** Tasks created and done per week (per month for a year), side by side, with a tooltip. */
 export function ThroughputCard() {
   const { LL } = useI18nContext()
   const { data, period } = useStats()

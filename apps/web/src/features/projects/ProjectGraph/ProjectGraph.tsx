@@ -8,7 +8,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { graphQuery } from '@/infrastructure/query'
 import './ProjectGraph.css'
 
-/** The project and what is next to it, small, with a way to open the full graph. */
 export function ProjectGraph({ board }: { readonly board: Board }) {
   const { LL } = useI18nContext()
   const api = useApi()

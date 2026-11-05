@@ -71,7 +71,6 @@ import { HttpApiBuilder } from 'effect/http-api'
 import { toApiError } from './errors'
 import type { ServerState } from './state'
 
-/** Where an imported item came from, and when, if its frontmatter says. */
 const provenanceOf = (frontmatter: unknown) => {
   const data = (
     typeof frontmatter === 'object' && frontmatter !== null ? frontmatter : {}
@@ -93,10 +92,6 @@ const written = (r: OpResult): WriteResult => ({
 const invalid = (path: ReadonlyArray<string | number>, message: string) =>
   new Invalid({ message, issues: [{ path: [...path], message }] })
 
-/**
- * Something this server changed: refresh what is cached and tell connected clients. Changes made
- * by an editor or `git` reach clients through the watcher instead (see `live.ts`).
- */
 export const notifyChanged = (
   state: ServerState,
   upserted: ReadonlyArray<string>,
@@ -117,7 +112,6 @@ export const notifyChanged = (
     })
   })
 
-/** A write: runs alone, maps core failures to API errors, and refreshes what was cached. */
 const write =
   (state: ServerState) =>
   <E, R>(effect: Effect.Effect<OpResult, E, R>) =>
@@ -936,7 +930,6 @@ const meta = (state: ServerState) =>
       }),
   )
 
-/** The handlers for every group of the API, over one repository. */
 export const handlersLayer = (state: ServerState) =>
   Layer.mergeAll(
     items(state),
@@ -956,7 +949,6 @@ export const handlersLayer = (state: ServerState) =>
     meta(state),
   )
 
-/** The whole API as a layer: add it to an `HttpRouter` and serve it. */
 export const apiLayer = (state: ServerState) =>
   HttpApiBuilder.layer(NetheriteApi, { openapiPath: '/api/openapi.json' }).pipe(
     Layer.provide(handlersLayer(state)),

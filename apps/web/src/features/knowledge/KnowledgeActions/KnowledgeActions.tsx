@@ -7,7 +7,6 @@ import './KnowledgeActions.css'
 
 const kinds: ReadonlyArray<KnowledgeType> = ['doc', 'adr', 'context', 'runbook']
 
-/** The decision log link and the "New" menu that starts a doc, ADR, context or runbook. */
 export function KnowledgeActions() {
   const { LL } = useI18nContext()
   const { startCreating } = useKnowledgeIndex()
@@ -40,7 +39,6 @@ export function KnowledgeActions() {
   )
 }
 
-/** Asks for the title of the item being created; nothing while none is. */
 export function KnowledgeCreateForm() {
   const { LL } = useI18nContext()
   const { creating, startCreating, create } = useKnowledgeIndex()

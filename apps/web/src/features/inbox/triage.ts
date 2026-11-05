@@ -3,15 +3,11 @@ import dayjs from 'dayjs'
 import { addDays } from '@/infrastructure/datetime'
 
 export type Raised = (typeof Inbox.Type)['raised'][number]
-/** What an entry is about: a rule the repo raised, or a line captured in `inbox.md`. */
 export type Rule = Raised['rule'] | 'capture'
-/** A line of the Inbox: something the repo raised or a capture, in one shape. */
 export type Entry = Omit<Raised, 'rule'> & { readonly rule: Rule }
 export type Tab = 'all' | 'captured' | 'review' | 'commits' | 'changes'
-/** The groups the list is split into, in the order they are drawn. */
 export const groups = ['captured', 'review', 'commits'] as const satisfies ReadonlyArray<Tab>
 
-/** A capture as an entry, keyed by its text so the selection survives a refresh. */
 export const captureEntry = (text: string): Entry => ({
   key: `capture:${text}`,
   rule: 'capture',
@@ -19,7 +15,6 @@ export const captureEntry = (text: string): Entry => ({
   detail: '',
 })
 
-/** The icon and colour that stand for each kind of entry. */
 export const ruleLook: Readonly<Record<Rule, { icon: string; tone: string }>> = {
   capture: { icon: 'edit_note', tone: '#b9bcd3' },
   'stale-doc': { icon: 'warning', tone: '#e2ae4c' },
@@ -31,7 +26,6 @@ export const ruleLook: Readonly<Record<Rule, { icon: string; tone: string }>> = 
   'similar-tag': { icon: 'sell', tone: '#a5a7ff' },
 }
 
-/** What each tab holds: the repo raising work to review, or work that commits point at. */
 export const tabOf = (rule: Rule): (typeof groups)[number] =>
   rule === 'capture'
     ? 'captured'
@@ -60,18 +54,15 @@ export const writeHidden = (hidden: Hidden) => {
   } catch {}
 }
 
-/** Archived for good, or snoozed until a time that has not come yet. */
 export const isHidden = (hidden: Hidden, key: string, now: number) => {
   const h = hidden[key]
   return h !== undefined && (h.kind === 'archive' || dayjs(h.until).valueOf() > now)
 }
 
-/** Tomorrow at 09:00, local time. */
 export const snoozeUntil = (now: Date) => {
   return dayjs(now).add(1, 'day').hour(9).minute(0).second(0).millisecond(0).toISOString()
 }
 
-/** The two tags of a `similar-tag` item: the second is merged into the first. */
 export const tagPair = (item: Pick<Entry, 'key'>) => {
   const m = /^similar-tag:(tags|labels):(.*)\|(.*)$/.exec(item.key)
   return m === null
@@ -79,14 +70,12 @@ export const tagPair = (item: Pick<Entry, 'key'>) => {
     : { field: m[1] as 'tags' | 'labels', keep: m[2] as string, merge: m[3] as string }
 }
 
-/** The day a week after `date` (or after today if it has none), as `YYYY-MM-DD`. */
 export const weekAfter = (date: string | undefined, now: Date) => {
   const today = dayjs(now).format('YYYY-MM-DD')
   const from = date === undefined ? today : date.slice(0, 10)
   return addDays([from, today].sort().at(-1) as string, 7)
 }
 
-/** The next item after moving `delta` steps in a list from the one picked; stays inside the list. */
 export const step = (keys: ReadonlyArray<string>, current: string | undefined, delta: number) => {
   if (keys.length === 0) return undefined
   const at = current === undefined ? -1 : keys.indexOf(current)
@@ -94,7 +83,6 @@ export const step = (keys: ReadonlyArray<string>, current: string | undefined, d
   return keys[Math.max(0, Math.min(keys.length - 1, next))]
 }
 
-/** A task title from a `TODO` line: the comment markers and the word itself are dropped. */
 export const todoTitle = (text: string) => {
   const title = text
     .replace(/^\s*(?:\/\/+|\/\*+|\*+|#+|--|<!--)\s*/, '')
@@ -106,10 +94,6 @@ export const todoTitle = (text: string) => {
 
 const words = (text: string) => text.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []
 
-/**
- * What a capture is probably about: the project whose name shares a word with it, and the existing
- * tags it mentions. Only guesses for the person to confirm, never written without a click.
- */
 export const suggestFor = (
   text: string,
   projects: ReadonlyArray<{ readonly id: string; readonly title: string }>,
@@ -123,7 +107,6 @@ export const suggestFor = (
   }
 }
 
-/** The folder a kind of item lives in, under the content folder. */
 export const folderOf = {
   task: 'tasks',
   doc: 'docs',
@@ -132,5 +115,4 @@ export const folderOf = {
   context: 'context',
 } as const
 
-/** A file name from a title: lower case words joined by dashes, as the CLI and MCP write them. */
 export const slugOf = (title: string) => words(title).slice(0, 8).join('-') || 'untitled'

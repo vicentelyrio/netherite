@@ -3,24 +3,15 @@ import { Effect, FileSystem, Path } from 'effect'
 import { type Document, isNode, LineCounter, parseDocument } from 'yaml'
 import { ConfigInvalid, type ConfigIssue, ConfigReadError, WorkspaceNotFound } from './errors'
 
-/** Location of the config file, relative to the workspace root. */
 export const configFile = '.netherite/config.yml'
 
 export interface Workspace {
-  /** Absolute path of the repository root: the directory that holds `.netherite/`. */
   readonly root: string
-  /** Absolute path of `.netherite/config.yml`. */
   readonly configPath: string
-  /** Absolute path of the folder that holds the items (`content` in the config). */
   readonly contentRoot: string
-  /** The config with every default applied. */
   readonly config: Config
 }
 
-/**
- * Finds the workspace root by walking up from `startDir` to the first directory that contains
- * `.netherite/config.yml`.
- */
 export const findWorkspaceRoot = (startDir: string) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
@@ -89,14 +80,9 @@ const parseWithLocator = (text: string, file: string) =>
     return { config, locate }
   })
 
-/**
- * Parses and validates config text. Fails with every YAML syntax error, or every schema error,
- * each with the line and column in the file.
- */
 export const parseConfig = (text: string, file: string) =>
   Effect.map(parseWithLocator(text, file), ({ config }) => config)
 
-/** Reads, parses and validates the config of the workspace at `root`. */
 export const loadWorkspace = (root: string) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
@@ -126,6 +112,5 @@ export const loadWorkspace = (root: string) =>
     return { root, configPath, contentRoot, config } satisfies Workspace
   })
 
-/** Finds the workspace from `startDir` and loads it. */
 export const openWorkspace = (startDir: string) =>
   Effect.flatMap(findWorkspaceRoot(startDir), loadWorkspace)

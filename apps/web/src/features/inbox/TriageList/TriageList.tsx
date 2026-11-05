@@ -5,7 +5,6 @@ import { useInboxState } from '../InboxProvider'
 import { groups, ruleLook, tabOf } from '../triage'
 import './TriageList.css'
 
-/** What the repo raises, a card per group with a row each; the picked row opens in the panel beside it. */
 export function TriageList() {
   const { LL } = useI18nContext()
   const { shown, selected, select, snoozed, tab } = useInboxState()

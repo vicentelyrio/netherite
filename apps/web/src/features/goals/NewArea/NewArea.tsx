@@ -7,10 +7,6 @@ import { useWrite } from '@/infrastructure/query'
 import '../NewGoal/NewGoal.css'
 import './NewArea.css'
 
-/**
- * An area exists because a goal names it, so a new area starts with its first goal: the form asks
- * for both. Areas already in use are offered so a typo does not make a second one.
- */
 export function NewArea({ areas }: { readonly areas: ReadonlyArray<string> }) {
   const { LL } = useI18nContext()
   const api = useApi()

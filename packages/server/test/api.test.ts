@@ -10,7 +10,6 @@ beforeAll(isolateGit)
 const read = (dir: string, path: string) => readFileSync(join(dir, path), 'utf8')
 const task1 = 'netherite/tasks/TASK-00001-core.md'
 
-/** The error a call fails with, as a value. */
 const failure = <A, E>(effect: Effect.Effect<A, E>): Effect.Effect<any> =>
   Effect.flip(effect) as Effect.Effect<any>
 

@@ -7,43 +7,29 @@ export interface ContextItem {
   readonly path: string
   readonly title: string
   readonly priority: 'high' | 'normal' | 'low'
-  /** Estimated tokens for this item as rendered. */
   readonly tokens: number
 }
 
 export interface ContextBundle {
-  /** The text to give an agent. */
   readonly text: string
-  /** What is in `text`, in order. */
   readonly included: ReadonlyArray<ContextItem>
-  /** Wanted but left out because the budget ran out, highest priority first. */
   readonly omitted: ReadonlyArray<ContextItem>
-  /** Estimated tokens in `text`. */
   readonly tokens: number
   readonly budget: number
 }
 
 export interface ContextOptions {
-  /** Token budget. Default 8,000 (the config's `context.budget`). */
   readonly budget?: number
-  /** Only context for this target. Items with no `targets` are for all of them. Default: `mcp`. */
   readonly target?: ContextTarget
-  /** Only items scoped to this project, or to no project. */
   readonly project?: string
 }
 
 const priorityRank = { high: 0, normal: 1, low: 2 } as const
 
-/** A rough token count: about four characters to a token. Good enough to budget with. */
 export const estimateTokens = (text: string) => Math.ceil(text.length / 4)
 
 const dataOf = (source: string, start: number) => source.slice(start)
 
-/**
- * The context bundle (ADR-00013): every context item with `include_in_context: true`, highest
- * priority first and then by ID, rendered as Markdown and kept within a token budget. An item
- * that would not fit is left out and listed, and smaller, lower-priority items may still go in.
- */
 export const buildContext = (
   index: WorkspaceIndex,
   options: ContextOptions = {},

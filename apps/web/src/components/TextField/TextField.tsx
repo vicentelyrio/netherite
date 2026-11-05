@@ -1,18 +1,14 @@
 import './TextField.css'
 
 export interface TextFieldProps {
-  /** The accessible name. */
   readonly label: string
   readonly value: string
   readonly onChange: (value: string) => void
   readonly placeholder?: string
-  /** Focus the field when it appears; for forms the person just asked for. */
   readonly autoFocus?: boolean
-  /** Called when Escape is pressed in the field. */
   readonly onEscape?: () => void
 }
 
-/** A single-line text input in the app's style. */
 export function TextField({
   label,
   value,

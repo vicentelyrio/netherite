@@ -16,17 +16,11 @@ import { DocMain } from '../DocMain'
 import { DocPanel } from '../DocPanel'
 import './DocView.css'
 
-/**
- * A doc, ADR, context or runbook, as designed (DocView.dc.html): a header with where the file is,
- * the file beside its rendered text with what is special about its type above, a panel of what it
- * is connected to, and a status bar.
- */
 export function DocView({
   item,
   mode: start,
 }: {
   readonly item: ItemDetail
-  /** `split` opens with the file beside the text. */
   readonly mode?: 'split'
 }) {
   const api = useApi()

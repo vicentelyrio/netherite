@@ -3,7 +3,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { useInboxState } from '../InboxProvider'
 import './InboxActions.css'
 
-/** The keys that work the list, and "Mark as seen" (nothing is left to mark when nothing changed). */
 export function InboxActions() {
   const { LL } = useI18nContext()
   const { seen, changed } = useInboxState()

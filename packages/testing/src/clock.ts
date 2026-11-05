@@ -1,6 +1,5 @@
 import { type Clock, Effect } from 'effect'
 
-/** A clock stuck at one moment, for tests that write dates. Provide it with `Effect.provideService(Clock.Clock, ...)`. */
 export const fixedClock = (iso: string): Clock.Clock => {
   const ms = new Date(iso).getTime()
   return {

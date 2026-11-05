@@ -1,6 +1,5 @@
 import { Data } from 'effect'
 
-/** `git` is not installed, or not on the `PATH`. */
 export class GitNotInstalled extends Data.TaggedError('GitNotInstalled')<{
   readonly detail: string
 }> {
@@ -9,7 +8,6 @@ export class GitNotInstalled extends Data.TaggedError('GitNotInstalled')<{
   }
 }
 
-/** The folder is not inside a git work tree. */
 export class NotARepository extends Data.TaggedError('NotARepository')<{
   readonly dir: string
 }> {
@@ -18,7 +16,6 @@ export class NotARepository extends Data.TaggedError('NotARepository')<{
   }
 }
 
-/** A git command ran and failed. */
 export class GitCommandFailed extends Data.TaggedError('GitCommandFailed')<{
   readonly args: ReadonlyArray<string>
   readonly exitCode: number
@@ -29,7 +26,6 @@ export class GitCommandFailed extends Data.TaggedError('GitCommandFailed')<{
   }
 }
 
-/** A git command took too long and was stopped. */
 export class GitTimeout extends Data.TaggedError('GitTimeout')<{
   readonly args: ReadonlyArray<string>
   readonly ms: number
@@ -39,7 +35,6 @@ export class GitTimeout extends Data.TaggedError('GitTimeout')<{
   }
 }
 
-/** The adapter was asked for a command that could change the repository. */
 export class ForbiddenGitCommand extends Data.TaggedError('ForbiddenGitCommand')<{
   readonly args: ReadonlyArray<string>
   readonly reason: string
@@ -49,7 +44,6 @@ export class ForbiddenGitCommand extends Data.TaggedError('ForbiddenGitCommand')
   }
 }
 
-/** An argument looks like an option or contains something git would read as one. */
 export class InvalidGitArgument extends Data.TaggedError('InvalidGitArgument')<{
   readonly name: string
   readonly value: string

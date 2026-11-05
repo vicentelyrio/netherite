@@ -108,7 +108,6 @@ function Preview({ row }: { readonly row: KnowledgeRow }) {
   )
 }
 
-/** The file picked in the table, with its summary, backlinks and the files that change with it. */
 export function KnowledgePreview() {
   const { current } = useKnowledgeIndex()
   return current ? <Preview row={current} /> : null

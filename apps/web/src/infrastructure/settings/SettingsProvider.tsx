@@ -7,7 +7,6 @@ import {
   storageKey,
 } from './settings'
 
-/** The part of `localStorage` the settings need; a test passes its own. */
 export interface SettingsStorage {
   getItem(key: string): string | null
   setItem(key: string, value: string): void
@@ -15,9 +14,7 @@ export interface SettingsStorage {
 
 export interface SettingsContextValue {
   readonly settings: Settings
-  /** Changes some settings and keeps them. */
   readonly update: (change: (current: Settings) => Settings) => void
-  /** Goes back to the defaults. */
   readonly reset: () => void
 }
 
@@ -37,7 +34,6 @@ const browserStorage = (): SettingsStorage | undefined => {
   }
 }
 
-/** Holds the person's settings, loads them once and saves every change. */
 export function SettingsProvider({
   children,
   storage = browserStorage(),

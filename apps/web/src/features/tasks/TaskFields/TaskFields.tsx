@@ -7,7 +7,6 @@ import { type BoardColumnInfo, field, strings } from '../fields'
 import './TaskFields.css'
 import '../shared.css'
 
-/** The row of facts about a task: its state (changeable), when and by whom it was made, who has it. */
 export function TaskFields({
   task,
   columns,

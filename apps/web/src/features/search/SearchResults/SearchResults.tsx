@@ -3,7 +3,6 @@ import type { arrange, SearchHit } from '../results'
 import { SearchResultRow } from '../SearchResultRow'
 import './SearchResults.css'
 
-/** The results in their groups, or what to type, or that nothing matched. */
 export function SearchResults({
   arranged,
   flat,
@@ -16,7 +15,6 @@ export function SearchResults({
 }: {
   readonly arranged: ReturnType<typeof arrange>
   readonly flat: ReadonlyArray<SearchHit>
-  /** What was searched for (after the typing pause). */
   readonly q: string
   readonly pending: boolean
   readonly failed: boolean

@@ -18,20 +18,14 @@ type Scale = readonly [
 const toHex = (rgb: readonly number[]) =>
   `#${rgb.map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')}`
 
-/** Mixes two colours: `t` = 0 is `a`, 1 is `b`. */
 export const mix = (a: string, b: string, t: number) => {
   const [r1, g1, b1] = hexToRgb(a)
   const [r2, g2, b2] = hexToRgb(b)
   return toHex([r1 + (r2 - r1) * t, g1 + (g2 - g1) * t, b1 + (b2 - b1) * t])
 }
 
-/** The step of every scale that holds the colour itself; the theme's `primaryShade` points here. */
 export const baseShade = 6
 
-/**
- * The ten-step scale the UI library wants, around one colour: step 6 is the colour, lighter steps
- * mix toward white and darker ones toward the design's deepest background.
- */
 export const scaleOf = (base: string): Scale => [
   mix(base, '#ffffff', 0.82),
   mix(base, '#ffffff', 0.68),
@@ -60,10 +54,6 @@ const colors = {
 
 const px = (n: number) => `${n}px`
 
-/**
- * The theme for the UI library, as plain data: `packages/ui` passes it to `createTheme`. It is
- * data and not a call to the library because only `packages/ui` may import it (ADR-00011).
- */
 export const mantineTheme = {
   primaryColor: 'lavender',
   primaryShade: baseShade,
@@ -93,10 +83,6 @@ export const mantineTheme = {
     lg: px(textStyle.heading.lineHeight),
     xl: px(textStyle.title.lineHeight),
   },
-  /**
-   * Responsive props (`span={{ base: 12, lg: 8 }}`) switch at these widths. `lg` is where the page
-   * grid stops using its compact margins; `xl` is the width the screens are designed at.
-   */
   breakpoints: {
     xs: '36em',
     sm: '48em',

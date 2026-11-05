@@ -5,7 +5,6 @@ import { groupsOf, keyOf, shareOf } from '../rules'
 import { useTags } from '../TagsProvider'
 import './TagsList.css'
 
-/** Every tag that passes the filters, with how much it is used, what it goes with, and its cluster. */
 export function TagsList() {
   const { LL } = useI18nContext()
   const { shown, selected, select } = useTags()
@@ -57,7 +56,6 @@ export function TagsList() {
   )
 }
 
-/** Shown instead of the views when no item has a tag at all. */
 export function NoTags() {
   const { LL } = useI18nContext()
   return <EmptyState icon="sell" title={LL.tags.empty.title()} description={LL.tags.empty.text()} />

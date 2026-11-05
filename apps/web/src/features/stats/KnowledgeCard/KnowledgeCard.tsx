@@ -7,7 +7,6 @@ import './KnowledgeCard.css'
 
 const order = ['fresh', 'drifting', 'stale', 'notTracked'] as const
 
-/** How fresh the docs are, and how many decisions are in each status. */
 export function KnowledgeCard() {
   const { LL } = useI18nContext()
   const { data } = useStats()

@@ -1,6 +1,5 @@
 import './Highlight.css'
 
-/** Some text with the first match of `q` marked, whatever the case. */
 export function Highlight({ text, q }: { readonly text: string; readonly q: string }) {
   const needle = q.trim()
   const at = needle === '' ? -1 : text.toLowerCase().indexOf(needle.toLowerCase())

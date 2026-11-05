@@ -1,7 +1,6 @@
 import { useI18nContext } from '@/infrastructure/i18n'
 import './SearchFooter.css'
 
-/** The keys the palette answers to, and how many results there are. */
 export function SearchFooter({ count }: { readonly count: number }) {
   const { LL } = useI18nContext()
   return (

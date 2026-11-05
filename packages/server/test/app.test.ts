@@ -14,7 +14,6 @@ const get = async (s: Running, path: string, headers: Record<string, string> = {
   return { status: response.status, headers: response.headers, text: await response.text() }
 }
 
-/** A tiny built app in `<dir>/dist`, with a file outside it to try to reach. */
 const app = (dir: string) => {
   const root = join(dir, 'dist')
   mkdirSync(join(root, 'assets'), { recursive: true })

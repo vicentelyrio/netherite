@@ -6,7 +6,6 @@ import { ChildProcessSpawner } from 'effect/process'
 
 export const services = NodeServices.layer
 
-/** Every git command line started through the spawner, subcommand first. */
 export interface Recorder {
   readonly commands: Array<ReadonlyArray<string>>
   readonly layer: Layer.Layer<ChildProcessSpawner.ChildProcessSpawner, never, never>

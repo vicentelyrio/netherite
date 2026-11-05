@@ -5,10 +5,6 @@ import MiniSearch from 'minisearch'
 import { createResolver, lookupKeys, type Resolution, targetKey } from './resolve'
 import type { ScannedItem } from './scanned-item'
 
-/**
- * Typed edges come from frontmatter (ADR-00003). `reference` is an untyped `[[wikilink]]` in
- * a body. `related` is a task's `related` list.
- */
 export type EdgeKind =
   | 'belongs_to'
   | 'implements'
@@ -18,17 +14,12 @@ export type EdgeKind =
   | 'related'
   | 'reference'
 
-/** A link written in an item, before it is resolved. */
 export interface Ref {
   readonly kind: EdgeKind
-  /** An ID or alias from frontmatter, or the target of a `[[wikilink]]`. */
   readonly target: string
   readonly heading?: string
-  /** `out`: the edge goes from this item to the target. `in`: from the target to this item. */
   readonly direction: 'out' | 'in'
-  /** The frontmatter field, or `body` for a wikilink. */
   readonly field: string
-  /** Where the wikilink is in the file. Only for body links. */
   readonly position?: LinkInfo['position']
 }
 
@@ -61,14 +52,12 @@ export interface SearchOptions {
   readonly limit?: number
 }
 
-/** What an update touched: the item itself and every item whose links now resolve differently. */
 export interface IndexChange {
   readonly changed: ReadonlyArray<string>
 }
 
 const knowledgeTypes = new Set(['doc', 'adr', 'context', 'runbook'])
 
-/** Superseded and deprecated items are retired: nothing is asked of them any more (ADR-00025). */
 export const isRetired = (item: ScannedItem): boolean => {
   const data = item.parsed.frontmatter?.data
   const status =
@@ -76,7 +65,6 @@ export const isRetired = (item: ScannedItem): boolean => {
   return status === 'superseded' || status === 'deprecated'
 }
 
-/** A context item given to agents is used by `context sync`, so nothing needs to link to it. */
 const isGivenToAgents = (item: ScannedItem): boolean => {
   const data = item.parsed.frontmatter?.data
   return (
@@ -130,7 +118,6 @@ const frontmatterFields: Record<string, ReadonlyArray<FieldSpec>> = {
   ],
 }
 
-/** Every link an item writes: relationship fields in frontmatter, and wikilinks in the body. */
 export const extractRefs = (item: ScannedItem): Ref[] => {
   const data = item.parsed.frontmatter?.data
   const fields = typeof data === 'object' && data !== null ? (data as Record<string, unknown>) : {}
@@ -156,7 +143,6 @@ interface Entry {
   item: ScannedItem
   refs: Ref[]
   resolved: ResolvedRef[]
-  /** Edges this item asserts. An edge asserted from both ends has two owners. */
   owned: Set<string>
 }
 
@@ -178,25 +164,17 @@ export interface EdgeAttributes {
   kind: EdgeKind
 }
 
-/** The graph type, named so it can be used in declarations. Nodes are file paths. */
 export type IndexGraph = MultiDirectedGraph<NodeAttributes, EdgeAttributes, Record<string, never>>
 
 export interface IndexOptions {
-  /** Used to tell which task states count as done. */
   readonly config: Pick<Config, 'states'>
 }
 
-/**
- * The in-memory view of a workspace (ADR-00014): items, a graph of typed edges and references,
- * and full-text search. Derived values (backlinks, orphans, progress) are computed from it on
- * demand, never stored. `upsert` and `remove` keep everything consistent after a file changes.
- */
 export const createIndex = (options: IndexOptions) => {
   const entries = new Map<string, Entry>()
   const resolver = createResolver()
   const graph: IndexGraph = new MultiDirectedGraph()
   const owners = new Map<string, Set<string>>()
-  /** Paths that link to a target, by the lowercase key of the target as written. */
   const referrers = new Map<string, Set<string>>()
   const search = new MiniSearch({
     idField: 'path',
@@ -392,16 +370,13 @@ export const createIndex = (options: IndexOptions) => {
       .map((e) => e.from)
 
   return {
-    /** The graph: nodes are file paths; edges are typed. Treat it as read-only. */
     graph,
     resolver,
     upsert,
     remove,
 
-    /** Applies a changed configuration: which states count as done. */
     setConfig,
 
-    /** Adds many items at once. Faster than `upsert` in a loop because links resolve once. */
     build: (items: Iterable<ScannedItem>) => {
       for (const item of items) {
         const entry: Entry = { item, refs: extractRefs(item), resolved: [], owned: new Set() }
@@ -424,9 +399,7 @@ export const createIndex = (options: IndexOptions) => {
     findById: (id: string) =>
       [...entries.values()].filter((e) => e.item.id === id).map((e) => e.item),
 
-    /** Every link the item writes, with how each one resolved. */
     refs: (path: string): ReadonlyArray<ResolvedRef> => entries.get(path)?.resolved ?? [],
-    /** Links that do not resolve to exactly one item, or point at a missing heading. */
     unresolved: () =>
       [...entries.values()].flatMap((entry) =>
         entry.resolved
@@ -438,11 +411,9 @@ export const createIndex = (options: IndexOptions) => {
       ),
 
     outgoing,
-    /** Everything that links to the item: its backlinks. Filter by `kind` for a specific relation. */
     incoming,
     backlinks: (path: string) => incoming(path),
 
-    /** Knowledge (docs, ADRs, context, runbooks) that nothing links to. */
     isOrphan: (path: string) => {
       const item = entries.get(path)?.item
       if (
@@ -466,10 +437,6 @@ export const createIndex = (options: IndexOptions) => {
         .map((e) => e.item.path)
         .sort(),
 
-    /**
-     * Task: checked items of its checklist. Project: tasks in a done state. Goal: the same over
-     * the tasks of all its projects. `undefined` when there is nothing to count.
-     */
     progress: (path: string): Progress | undefined => {
       const item = entries.get(path)?.item
       if (item === undefined) return undefined
@@ -493,10 +460,8 @@ export const createIndex = (options: IndexOptions) => {
       return undefined
     },
 
-    /** Builds the text index now instead of at the first search. Call it after start-up. */
     warmSearch: ensureSearch,
 
-    /** Full-text search over ID, aliases, title, path and body, with prefix and fuzzy matching. */
     search: (query: string, searchOptions: SearchOptions = {}): SearchHit[] => {
       ensureSearch()
       const types = searchOptions.types

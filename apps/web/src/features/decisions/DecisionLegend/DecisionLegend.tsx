@@ -5,7 +5,6 @@ import { useDecisions } from '../DecisionProvider'
 import { noProject, statusLabel, statusStyle } from '../lanes'
 import './DecisionLegend.css'
 
-/** What each colour means, and a filter that narrows the log to one project. */
 export function DecisionLegend() {
   const { LL } = useI18nContext()
   const { all, project, setProject } = useDecisions()

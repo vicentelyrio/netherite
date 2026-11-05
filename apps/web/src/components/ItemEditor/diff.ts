@@ -1,10 +1,6 @@
-/** Which lines of the text differ from the committed text. Line numbers are 1-based, in the new text. */
 export interface LineChanges {
-  /** Lines that are new. */
   readonly added: ReadonlySet<number>
-  /** Lines that replace committed lines. */
   readonly modified: ReadonlySet<number>
-  /** Lines after which committed lines were removed (0 means before the first line). */
   readonly deleted: ReadonlySet<number>
 }
 
@@ -12,7 +8,6 @@ export const noChanges: LineChanges = { added: new Set(), modified: new Set(), d
 
 type Op = 'same' | 'add' | 'remove'
 
-/** Beyond this many table cells, an exact diff costs too much; a coarser one is used. */
 const maxCells = 4_000_000
 
 const align = (a: ReadonlyArray<string>, b: ReadonlyArray<string>): Op[] => {
@@ -64,14 +59,9 @@ const align = (a: ReadonlyArray<string>, b: ReadonlyArray<string>): Op[] => {
   return ops
 }
 
-/** The lines of a text. A newline at the end finishes the last line; it does not start another. */
 const lines = (text: string) =>
   text === '' ? [] : (text.endsWith('\n') ? text.slice(0, -1) : text).split('\n')
 
-/**
- * Compares the text with the committed version, as an editor's change gutter shows it: lines that
- * are new, lines that replace committed ones, and places where committed lines were removed.
- */
 export const diffLines = (committed: string, current: string): LineChanges => {
   const ops = align(lines(committed), lines(current))
   const added = new Set<number>()
@@ -102,5 +92,4 @@ export const diffLines = (committed: string, current: string): LineChanges => {
   return { added, modified, deleted }
 }
 
-/** Does the text differ from the committed text at all? */
 export const hasChanges = (c: LineChanges) => c.added.size + c.modified.size + c.deleted.size > 0

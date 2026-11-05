@@ -19,10 +19,6 @@ import {
 } from '@mantine/core'
 import { color, grid, layout, mantineTheme } from '@netherite/tokens'
 
-/**
- * The class names the theme gives each component's parts, styled in `components.css`. Keeping
- * them in one place lets a test check that every one has a rule.
- */
 export const classNames = {
   button: { root: 'nt-button', label: 'nt-button-label', section: 'nt-button-section' },
   actionIcon: { root: 'nt-action-icon' },
@@ -64,10 +60,6 @@ export const classNames = {
   },
 } as const
 
-/**
- * The tokens' theme with each component's defaults and classes: sizes are dense, corners are
- * small, tooltips wait a moment, and modals and drawers use the design's widths.
- */
 export const theme: MantineThemeOverride = createTheme({
   ...(mantineTheme as unknown as MantineThemeOverride),
   components: {

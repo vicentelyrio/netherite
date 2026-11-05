@@ -10,7 +10,6 @@ export interface LinkRowProps {
   }
 }
 
-/** One relation of an item: a dot, a link to the other item (or its path), and the kind of link. */
 export function LinkRow({ link }: LinkRowProps) {
   return (
     <div className="link-row">

@@ -35,7 +35,6 @@ const NODE_SCALE = 1.25
 const styleOf = (kind: string) => edgeStyle[kind as EdgeKind] ?? edgeStyle.reference
 const canvas = '#282A3F'
 
-/** A node's shape at a diameter, as the design draws it (Graph.dc.html). */
 function Shape({
   type,
   x,
@@ -96,7 +95,6 @@ function Shape({
 
 type NodeStatus = NonNullable<GraphNodeData['status']>
 
-/** The pie's filled part: a wedge from the top, clockwise, for `share` of the circle. */
 const wedge = (x: number, y: number, r: number, share: number) => {
   if (share >= 1) return `M${x - r},${y} a${r},${r} 0 1 0 ${2 * r},0 a${r},${r} 0 1 0 ${-2 * r},0`
   const angle = share * Math.PI * 2
@@ -105,11 +103,6 @@ const wedge = (x: number, y: number, r: number, share: number) => {
   return `M${x},${y} L${x},${y - r} A${r},${r} 0 ${share > 0.5 ? 1 : 0} 1 ${ex},${ey} Z`
 }
 
-/**
- * A goal, project or task with its status (ADR-00021), as the status glyph is drawn in HTML: a pie
- * filled to the share done on a ring (dashed and grey on hold), a halo while in progress, solid
- * with a check when done. Hue stays the type's.
- */
 function StatusShape({
   type,
   status,
@@ -173,7 +166,6 @@ function StatusShape({
   )
 }
 
-/** The amber dot on a doc whose code has moved on since it was reviewed. */
 function StaleDot({ x, y, r }: { readonly x: number; readonly y: number; readonly r: number }) {
   return (
     <circle
@@ -187,7 +179,6 @@ function StaleDot({ x, y, r }: { readonly x: number; readonly y: number; readonl
   )
 }
 
-/** A node's name on a dark pill, beside or under the node. */
 function Label({
   node,
   x,
@@ -234,34 +225,19 @@ function Label({
 
 export interface GraphViewProps {
   readonly data: GraphData
-  /** Draw only these nodes and the edges between them. */
   readonly scope?: ReadonlySet<string> | undefined
-  /** What a screen reader hears for the picture. */
   readonly label: string
-  /** `embedded` sits inside a page: it pans and zooms, but has no hint, and small ones no buttons. */
   readonly variant?: 'full' | 'embedded'
-  /** The node to start focused on. */
   readonly focus?: string | undefined
-  /** `panel` has counts for every type and link kind; `row` is one line of types; `none` has no legend. */
   readonly legend?: 'panel' | 'row' | 'none'
-  /** Whose names are written: the focus only, it and its neighbours, or everyone. */
   readonly labels?: 'focus' | 'neighbors' | 'all'
-  /** How big the nodes are against the design's sizes. */
   readonly nodeScale?: number
-  /** Space around the fitted picture. */
   readonly pad?: number
   readonly padBottom?: number
-  /** Show the zoom buttons. By default the full view and wide embedded ones have them. */
   readonly zoomButtons?: boolean
-  /** Nodes that just appeared (while scrubbing time): they pulse once. */
   readonly glow?: ReadonlySet<string> | undefined
 }
 
-/**
- * The graph (ADR-00014, Graph.dc.html): SVG over a force layout. Hovering or focusing a node dims
- * everything that is not next to it; the legend hides types and kinds of link; the full view zooms,
- * pans and fits.
- */
 export function GraphView({
   data,
   scope,
@@ -281,7 +257,6 @@ export function GraphView({
     (LL.components.graph.edges as Record<string, (() => string) | undefined>)[kind]?.() ?? kind
   const embedded = variant === 'embedded'
   const navigate = useNavigate()
-  /** Opens a node's page: double-click or Enter. */
   const open = (id: string) => {
     const node = data.nodes.find((n) => n.id === id)
     if (node) void navigate(graphTarget(node, data) as never)
@@ -361,7 +336,6 @@ export function GraphView({
   }, [laid])
   useEffect(() => () => sim.current?.stop(), [])
 
-  /** Picks a node up: it follows the pointer, and the nodes linked to it follow it. */
   const startNodeDrag = (id: string, e: React.PointerEvent) => {
     e.stopPropagation()
     if (e.button !== 0) return
@@ -466,7 +440,6 @@ export function GraphView({
     return next
   }
 
-  /** Does the node pass the All / Open / Done filter? Items with no status always do. */
   const passes = (p: Placed) =>
     p.status === undefined ||
     statusFilter === 'all' ||

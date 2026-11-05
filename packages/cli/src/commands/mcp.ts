@@ -6,15 +6,10 @@ import { type Env, type ExitCode, exitCodes } from '../output'
 
 export interface McpCommandOptions {
   readonly dir: string
-  /** Do not watch for changes made outside the server. */
   readonly noWatch: boolean
   readonly version: string
 }
 
-/**
- * Runs the MCP server on standard input and output, until the client disconnects. Standard
- * output carries only protocol messages, so everything meant for a person goes to standard error.
- */
 export const mcpCommand = (env: Env, options: McpCommandOptions) =>
   Effect.gen(function* () {
     const path = yield* Path.Path

@@ -22,29 +22,21 @@ export const raisedRules: ReadonlyArray<RaisedRule> = [
   'similar-tag',
 ]
 
-/** One thing the repo raises for a person to look at. */
 export interface Raised {
-  /** Stable across refreshes while the cause stays, so dismiss and snooze can remember it. */
   readonly key: string
   readonly rule: RaisedRule
   readonly title: string
-  /** One line saying why it is here. */
   readonly detail: string
-  /** The item it is about. */
   readonly id?: string
   readonly path?: string
   readonly line?: number
-  /** When the cause began, ISO 8601, for ordering. */
   readonly date?: string
-  /** The commit it comes from, for `closing-commit` and `new-todo`. */
   readonly commit?: string
 }
 
 export interface RaisedInput {
   readonly freshness?: ReadonlyMap<string, Freshness>
-  /** Recent commits, newest first. */
   readonly commits?: ReadonlyArray<{ hash: string; date: string; subject: string }>
-  /** `TODO` lines added by recent commits to files outside the content folder. */
   readonly todos?: ReadonlyArray<{
     hash: string
     date: string
@@ -55,7 +47,6 @@ export interface RaisedInput {
   readonly now?: string
 }
 
-/** A rule is on unless `inbox.rules.<rule>: false` is in the config. */
 export const enabledRules = (repo: Repo): ReadonlySet<RaisedRule> => {
   const inbox = (repo.workspace.config as Record<string, unknown>).inbox
   const rules =
@@ -68,11 +59,6 @@ export const enabledRules = (repo: Repo): ReadonlySet<RaisedRule> => {
 
 const closing = /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\b[^\n]*?\b(TASK-\d+)/gi
 
-/**
- * What the repo itself raises: docs gone stale, decisions waiting, orphans, late tasks, commits
- * that say they finish a task still open, new TODOs in code, and tags that look like one tag.
- * Pure: the caller reads git and passes what it found.
- */
 export const raised = (repo: Repo, input: RaisedInput = {}): ReadonlyArray<Raised> => {
   const on = enabledRules(repo)
   const out: Raised[] = []

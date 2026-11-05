@@ -3,7 +3,6 @@ import type { ReactNode } from 'react'
 import '../shared.css'
 import './StaleWarning.css'
 
-/** An amber callout: what is wrong, a line of detail, and optional actions. */
 export function StaleWarning({
   title,
   detail,

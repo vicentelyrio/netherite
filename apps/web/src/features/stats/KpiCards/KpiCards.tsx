@@ -4,7 +4,6 @@ import { changeOf } from '../numbers'
 import { useStats } from '../StatsProvider'
 import './KpiCards.css'
 
-/** How a percentage moved, in points: `+5 pts`. */
 const pointsOf = (value: number, previous: number | undefined) => {
   const change = changeOf(value, previous)
   return change === undefined || change.direction === 'same'
@@ -12,7 +11,6 @@ const pointsOf = (value: number, previous: number | undefined) => {
     : { ...change, text: `${change.text} pts` }
 }
 
-/** The headline numbers, each against the period before. */
 export function KpiCards() {
   const { LL } = useI18nContext()
   const { data } = useStats()
@@ -25,7 +23,6 @@ export function KpiCards() {
     caption: string,
     change: ReturnType<typeof changeOf>,
     previous: number | undefined,
-    /** Whether going up is good news; `null` when neither is. */
     upIsGood: boolean | null,
     warn = false,
   ) => (

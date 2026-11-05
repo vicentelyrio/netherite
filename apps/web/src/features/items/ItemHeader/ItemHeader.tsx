@@ -13,7 +13,6 @@ import './ItemHeader.css'
 
 const reviewable = new Set(['doc', 'runbook', 'context'])
 
-/** What kind of item this is, its ID, state and freshness, and how to edit or review it. */
 export function ItemHeader({
   item,
   editing,

@@ -14,10 +14,8 @@ export interface World {
   readonly files: () => Record<string, string>
   readonly read: (path: string) => string | undefined
   readonly layer: Layer.Layer<never>
-  /** Changes files behind the repo's back, as another program would. */
   readonly write: (path: string, content: string) => void
   readonly remove: (path: string) => void
-  /** Runs an operation against the in-memory files, at a fixed time. */
   readonly run: <A, E>(
     effect: Effect.Effect<A, E, never | import('effect').FileSystem.FileSystem | Path.Path>,
   ) => Promise<A>
@@ -28,7 +26,6 @@ export interface World {
 
 export const now = '2026-03-05T10:30:00.000Z'
 
-/** Opens a repo over in-memory files. `/repo/...` paths in, workspace-relative paths out. */
 export const world = async (
   files: Record<string, string> = cleanFiles(),
   options: MemoryFileSystemOptions = {},

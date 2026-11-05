@@ -1,8 +1,6 @@
 import { type ActionId, isActionId } from '../shortcuts/actions'
 
-/** What a person can change about the app, kept in the browser (not in the repository). */
 export interface Settings {
-  /** Their own keys for an action; an action not listed keeps its default. */
   readonly shortcuts: Readonly<Partial<Record<ActionId, string>>>
 }
 
@@ -10,10 +8,6 @@ export const defaultSettings: Settings = { shortcuts: {} }
 
 export const storageKey = 'netherite.settings'
 
-/**
- * Settings from stored text. Anything unreadable, unknown or of the wrong type is dropped, so an
- * old or hand-edited value never stops the app from starting.
- */
 export const parseSettings = (raw: string | null | undefined): Settings => {
   if (!raw) return defaultSettings
   let value: unknown

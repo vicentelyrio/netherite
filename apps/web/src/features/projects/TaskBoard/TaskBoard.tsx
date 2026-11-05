@@ -16,7 +16,6 @@ import { BoardColumn } from '../BoardColumn'
 import { TaskCardBody } from '../TaskCard'
 import './TaskBoard.css'
 
-/** The state change a drop asks for, or `undefined` when it dropped outside or on its own column. */
 export const moveFor = (
   tasks: ReadonlyArray<{ id: string; state: string }>,
   taskId: string,
@@ -28,7 +27,6 @@ export const moveFor = (
     : { id: taskId, state: columnName }
 }
 
-/** The project's tasks in a column per state; dropping a card in another column changes its state. */
 export function TaskBoard({
   board,
   selected,

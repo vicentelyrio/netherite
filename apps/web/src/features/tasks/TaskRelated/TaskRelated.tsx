@@ -4,7 +4,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import './TaskRelated.css'
 import '../shared.css'
 
-/** Everything linked to or from the task apart from its project and the ADRs it implements. */
 export function TaskRelated({ task }: { readonly task: ItemDetail }) {
   const { LL } = useI18nContext()
   const related = [

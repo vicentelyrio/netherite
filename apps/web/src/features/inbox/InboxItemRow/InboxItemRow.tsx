@@ -3,7 +3,6 @@ import { Link } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import '../shared.css'
 
-/** A row in an Inbox group: an item, with a note and something at the end. */
 export function InboxItemRow({
   id,
   title,

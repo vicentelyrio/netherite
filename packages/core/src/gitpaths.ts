@@ -1,15 +1,8 @@
 import type { GitRepository } from '@netherite/git'
 import { Effect, FileSystem, Path } from 'effect'
 
-/**
- * Translates between workspace paths (relative to the folder that holds `.netherite/`) and the
- * paths git reports (relative to the top of the repository). They differ only when the
- * workspace is a subfolder of a larger repository.
- */
 export interface PathMap {
-  /** Workspace path to git path. */
   readonly toGit: (workspacePath: string) => string
-  /** Git path to workspace path, or `undefined` for a file outside the workspace. */
   readonly fromGit: (gitPath: string) => string | undefined
 }
 

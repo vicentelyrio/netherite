@@ -12,17 +12,12 @@ import type { ScannedItem } from '../scanned-item'
 import { openWorkspace, type Workspace } from '../workspace'
 import { createIndex, type WorkspaceIndex } from '../workspace-index'
 
-/** A workspace together with its live index. Operations read and update both. */
 export interface Repo {
-  /** The workspace and its config. Replaced when the config file changes. */
   readonly workspace: Workspace
   readonly index: WorkspaceIndex
   readonly schemas: ItemSchemas
-  /** Field names of each type in schema order, so new fields are inserted in order. */
   readonly fieldOrder: Readonly<Record<ItemType, ReadonlyArray<string>>>
-  /** Content root relative to the workspace root, such as `netherite`. */
   readonly contentRoot: string
-  /** Switches to a new configuration, for the schemas, field order and index. */
   readonly applyConfig: (config: Config) => void
 }
 
@@ -57,7 +52,6 @@ export const makeRepo = (workspace: Workspace, items: Iterable<ScannedItem>): Re
   }
 }
 
-/** Finds the workspace from `startDir`, scans it and builds the index. */
 export const openRepo = (startDir: string, parse?: ParseOptions) =>
   Effect.gen(function* () {
     const workspace = yield* openWorkspace(startDir)

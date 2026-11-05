@@ -5,15 +5,10 @@ import { type Env, type ExitCode, exitCodes, json } from '../output'
 
 export interface TemplatesOptions {
   readonly dir: string
-  /** Print this type's template; without it, list every type and where its template comes from. */
   readonly type: string | undefined
   readonly json: boolean
 }
 
-/**
- * Lists the starter templates, or prints one to copy: the workspace's own file under
- * `templates/` in the content folder when there is one, else the one that ships.
- */
 export const templatesCommand = (env: Env, options: TemplatesOptions) =>
   Effect.gen(function* () {
     const path = yield* Path.Path

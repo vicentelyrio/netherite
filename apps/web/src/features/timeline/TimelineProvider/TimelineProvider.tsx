@@ -10,7 +10,6 @@ import { fitWindow, type Timeline, windowFor, type Zoom } from '../layout'
 
 export interface TimelineState {
   readonly data: Timeline
-  /** The days the track shows. */
   readonly window: { readonly from: string; readonly to: string }
   readonly zoom: Zoom
   readonly setZoom: (zoom: Zoom) => void
@@ -18,7 +17,6 @@ export interface TimelineState {
   readonly setShowTasks: (show: boolean) => void
   readonly showDecisions: boolean
   readonly setShowDecisions: (show: boolean) => void
-  /** Projects whose tasks are listed under them. */
   readonly expanded: ReadonlySet<string>
   readonly toggle: (projectId: string) => void
 }
@@ -31,7 +29,6 @@ export const useTimeline = (): TimelineState => {
   return value
 }
 
-/** Loads the timeline for the zoom; says so instead when there is no git history, or loading fails. */
 export function TimelineProvider({ children }: { readonly children: ReactNode }) {
   const { LL } = useI18nContext()
   const api = useApi()

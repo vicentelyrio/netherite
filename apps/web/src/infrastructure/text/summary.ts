@@ -1,4 +1,3 @@
-/** The first plain paragraph of some Markdown, without headings, lists, code or link marks. */
 export const summaryOf = (body: string): string => {
   const first = body
     .split(/\r?\n\s*\r?\n/)

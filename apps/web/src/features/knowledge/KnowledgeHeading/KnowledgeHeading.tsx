@@ -2,7 +2,6 @@ import { Breadcrumbs } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useKnowledgeIndex } from '../KnowledgeProvider'
 
-/** Breadcrumb, title and how many files there are. */
 export function KnowledgeHeading() {
   const { LL } = useI18nContext()
   const { rows } = useKnowledgeIndex()

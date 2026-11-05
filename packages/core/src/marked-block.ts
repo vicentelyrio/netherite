@@ -1,14 +1,11 @@
 import { BadMarkers } from './errors'
 
-/** The comments that fence a generated block inside a file a person also edits. */
 export interface Markers {
   readonly start: string
   readonly end: string
-  /** A comment placed inside the block, saying it is generated. */
   readonly notice: string
 }
 
-/** The block's text, markers included, in the given line ending. */
 export const renderMarkedBlock = (markers: Markers, text: string, eol = '\n') => {
   const body = text.replace(/\r\n/g, '\n').trim()
   return [markers.start, markers.notice, '', ...(body === '' ? [] : [body, '']), markers.end]
@@ -16,12 +13,6 @@ export const renderMarkedBlock = (markers: Markers, text: string, eol = '\n') =>
     .replace(/\n/g, eol)
 }
 
-/**
- * Puts a generated block into `existing`: replaces what is between the markers (and the markers),
- * or appends the block if there are none. Text outside the markers comes back byte for byte.
- * Returns `null` when the file does not exist and there is nothing to write. Throws `BadMarkers`
- * when the markers are damaged.
- */
 export const applyMarkedBlock = (
   markers: Markers,
   path: string,

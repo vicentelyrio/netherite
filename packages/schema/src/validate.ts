@@ -2,13 +2,11 @@ import { Data, Effect, Exit, Schema, SchemaIssue } from 'effect'
 import { type ItemType, itemTypes } from './ids'
 import type { ItemSchemas } from './items'
 
-/** One problem with one field. `path` is empty when the problem is with the whole value. */
 export interface FieldIssue {
   readonly path: ReadonlyArray<string | number>
   readonly message: string
 }
 
-/** A value did not match its schema. Carries a field-level message for every problem found. */
 export class ValidationError extends Data.TaggedError('ValidationError')<{
   readonly issues: ReadonlyArray<FieldIssue>
 }> {
@@ -22,7 +20,6 @@ export const formatFieldIssue = (issue: FieldIssue) =>
 
 const formatIssues = SchemaIssue.makeFormatterStandardSchemaV1()
 
-/** Decodes unknown input against a schema, reporting every field problem, not just the first. */
 export const validate = <S extends Schema.ConstraintDecoder<unknown>>(schema: S) => {
   const decode = Schema.decodeUnknownExit(schema)
   return (input: unknown): Effect.Effect<S['Type'], ValidationError> => {
@@ -44,7 +41,6 @@ export const validate = <S extends Schema.ConstraintDecoder<unknown>>(schema: S)
 const isType = (value: unknown): value is ItemType =>
   typeof value === 'string' && (itemTypes as string[]).includes(value)
 
-/** Validates a parsed frontmatter object, choosing the schema from its `type` field. */
 export const validateItem = (schemas: ItemSchemas) => {
   const validators = Object.fromEntries(
     itemTypes.map((type) => [type, validate(schemas[type])]),
@@ -72,10 +68,6 @@ export const validateItem = (schemas: ItemSchemas) => {
   }
 }
 
-/**
- * A synchronous check of a parsed frontmatter object. Returns every field problem, or an empty
- * list when the item is valid. Uses the `type` field to choose the schema.
- */
 export const checkItem = (schemas: ItemSchemas) => {
   const validator = validateItem(schemas)
   return (input: unknown): ReadonlyArray<FieldIssue> => {

@@ -8,13 +8,11 @@ import type { EdgeKind } from './workspace-index'
 
 type Fields = Record<string, unknown>
 
-/** An item's frontmatter as a plain object (empty when it has none or it is not a mapping). */
 export const fieldsOf = (item: ScannedItem): Fields => {
   const data = item.parsed.frontmatter?.data
   return typeof data === 'object' && data !== null && !Array.isArray(data) ? (data as Fields) : {}
 }
 
-/** What a list or search result shows about an item. */
 export interface ItemSummary {
   readonly id: string | undefined
   readonly type: string | undefined
@@ -41,11 +39,8 @@ export const itemSummary = (item: ScannedItem): ItemSummary => {
 }
 
 export interface ItemFilter {
-  /** An ADR status or a task state. */
   readonly status?: string | undefined
-  /** A project ID; goals match on the projects that belong to them. */
   readonly project?: string | undefined
-  /** A tag or label. */
   readonly tag?: string | undefined
 }
 
@@ -75,7 +70,6 @@ export interface ListOptions extends ItemFilter {
   readonly offset?: number
 }
 
-/** Items matching the filters, in ID order, one page of them. */
 export const listItems = (repo: Repo, options: ListOptions = {}) => {
   const limit = options.limit ?? 50
   const offset = options.offset ?? 0
@@ -89,7 +83,6 @@ export const listItems = (repo: Repo, options: ListOptions = {}) => {
   return { total: all.length, offset, items: all.slice(offset, offset + limit).map(itemSummary) }
 }
 
-/** A line of the text around the first place the query appears, trimmed to about 90 characters. */
 export const snippetOf = (body: string, query: string): string | undefined => {
   const q = query.trim().toLowerCase()
   if (q === '') return undefined
@@ -106,7 +99,6 @@ export interface ItemSearchOptions extends ItemFilter {
   readonly limit?: number
 }
 
-/** Full-text search, best first. Filters apply after the search, so it looks at 10x the limit. */
 export const searchItems = (repo: Repo, query: string, options: ItemSearchOptions = {}) => {
   const limit = options.limit ?? 20
   const wide = repo.index.search(query, {
@@ -137,7 +129,6 @@ export interface LinkView {
   readonly path: string
 }
 
-/** One item in full: fields, text, links both ways, progress, orphan flag and freshness. */
 export const itemDetail = (
   repo: Repo,
   item: ScannedItem,
@@ -180,7 +171,6 @@ export const itemDetail = (
 
 export type NodeStatus = 'backlog' | 'progress' | 'hold' | 'done'
 
-/** A task state's category decides its status (ADR-00021). */
 const statusOfCategory = {
   todo: 'backlog',
   active: 'progress',
@@ -191,11 +181,6 @@ const statusOfCategory = {
 const ratio = (progress: { readonly done: number; readonly total: number } | undefined) =>
   progress === undefined || progress.total <= 0 ? 0 : progress.done / progress.total
 
-/**
- * Where a goal, project or task stands, and how much of it is done (0 to 1). A task's status comes
- * from its state's category; a project's and a goal's from their own status and how many of their
- * tasks are done. Other types have none.
- */
 const standing = (
   repo: Repo,
   item: ScannedItem,
@@ -229,11 +214,6 @@ const standing = (
   return undefined
 }
 
-/**
- * Every item and every typed link between them, for the graph view. Goals, projects and tasks carry
- * their status and progress (and since when, given the lifecycles), an item its parent (what it
- * belongs to), and a doc whether it is stale.
- */
 export const graphOf = (
   repo: Repo,
   freshness?: ReadonlyMap<string, Freshness>,
@@ -289,14 +269,10 @@ export interface GoalRow {
   readonly status: string
   readonly area: string | undefined
   readonly due: string | undefined
-  /** When the goal was made, for how far along its horizon it is. */
   readonly created: string | undefined
-  /** How far ahead it looks, as written: `forever`, `5 years`. */
   readonly horizon: string | undefined
-  /** The horizon in days; missing for `forever` and for text that is not a horizon. */
   readonly horizonDays: number | undefined
   readonly tags: ReadonlyArray<string>
-  /** Tasks done over tasks, across all its projects. `null` when it has none. */
   readonly progress: { readonly done: number; readonly total: number } | null
   readonly projects: number
 }
@@ -308,7 +284,6 @@ export interface ProjectRow {
   readonly status: string | undefined
   readonly tags: ReadonlyArray<string>
   readonly progress: { readonly done: number; readonly total: number } | null
-  /** The goals it belongs to, in the order it lists them. */
   readonly goals: ReadonlyArray<{ readonly id: string; readonly title: string }>
 }
 
@@ -361,7 +336,6 @@ const projectRow = (repo: Repo, item: ScannedItem): ProjectRow => {
   }
 }
 
-/** Every goal, grouped by area (goals with no area last), each area's goals in ID order. */
 export const goalRows = (repo: Repo): GoalRow[] =>
   repo.index
     .items()
@@ -372,7 +346,6 @@ export const goalRows = (repo: Repo): GoalRow[] =>
       return (a.area ?? '').localeCompare(b.area ?? '') || a.id.localeCompare(b.id)
     })
 
-/** One goal with the projects that belong to it, in ID order. */
 export const goalDetail = (repo: Repo, item: ScannedItem) => ({
   ...goalRow(repo, item),
   projectRows: projectsOf(repo, item.path)
@@ -389,7 +362,6 @@ export interface BoardCard {
   readonly assignees: ReadonlyArray<string>
   readonly due: string | undefined
   readonly checklist: { readonly done: number; readonly total: number } | null
-  /** Tasks it depends on that are not done yet. */
   readonly waitingOn: ReadonlyArray<{ readonly id: string; readonly title: string }>
 }
 
@@ -398,7 +370,6 @@ export interface BoardColumn {
   readonly category: string
 }
 
-/** What belongs to a project besides its tasks, for the board's other views. */
 export interface BoardItem {
   readonly id: string
   readonly type: string
@@ -428,7 +399,6 @@ const taskCard = (repo: Repo, item: ScannedItem, doneStates: ReadonlySet<string>
   }
 }
 
-/** Every project, in ID order. */
 export const projectRows = (repo: Repo): ProjectRow[] =>
   repo.index
     .items()
@@ -436,7 +406,6 @@ export const projectRows = (repo: Repo): ProjectRow[] =>
     .sort((a, b) => (a.id ?? '').localeCompare(b.id ?? ''))
     .map((i) => projectRow(repo, i))
 
-/** A project's tasks by configured state (in the order of the config), and what else is linked to it. */
 export const boardOf = (repo: Repo, project: ScannedItem) => {
   const states = repo.workspace.config.states
   const doneStates = new Set(states.filter((s) => s.category === 'done').map((s) => s.name))
@@ -472,30 +441,20 @@ export interface KnowledgeRow {
   readonly type: string
   readonly title: string
   readonly path: string
-  /** An ADR's status. */
   readonly status: string | undefined
-  /** The projects it is linked to, in either direction. */
   readonly projects: ReadonlyArray<string>
   readonly tags: ReadonlyArray<string>
   readonly freshness: 'fresh' | 'drifting' | 'stale' | 'unknown' | null
   readonly orphan: boolean
-  /** Commits since review that touched what it covers; 0 when not tracked. */
   readonly commits: number
-  /** An ADR's date, or when the item was last reviewed, or when it was made. */
   readonly date: string | undefined
-  /** The ADRs this one replaces. */
   readonly supersedes: ReadonlyArray<string>
-  /** The ADRs that replace this one. */
   readonly supersededBy: ReadonlyArray<string>
-  /** Who owns it, else who made it: a `@handle`. */
   readonly handle: string | undefined
-  /** Estimated tokens it adds to agent context; `null` when it is not given to agents. */
   readonly aiTokens: number | null
-  /** What it explains, as a count per item type: `{ task: 2 }`. */
   readonly explains: Readonly<Record<string, number>>
 }
 
-/** How many items of each type an item explains, by the `explains` links it writes. */
 const explainsOf = (repo: Repo, path: string): Record<string, number> => {
   const counts: Record<string, number> = {}
   for (const edge of repo.index.outgoing(path)) {
@@ -506,7 +465,6 @@ const explainsOf = (repo: Repo, path: string): Record<string, number> => {
   return counts
 }
 
-/** Every ADR, doc, context and runbook, in ID order, with what the index filters and sorts on. */
 export const knowledgeRows = (
   repo: Repo,
   freshness: ReadonlyMap<string, Freshness> | undefined,
@@ -583,7 +541,6 @@ export const knowledgeRows = (
     })
 }
 
-/** The first paragraph of the text, with Markdown marks and headings dropped. */
 export const summaryOf = (body: string): string => {
   const paragraphs = body
     .split(/\r?\n\s*\r?\n/)
@@ -604,10 +561,6 @@ export interface ChainLink {
   readonly status: string | undefined
 }
 
-/**
- * The ADRs an ADR replaced and the ones that replaced it, oldest first, itself included. Follows
- * `supersedes` links both ways, and stops at a repeat so a bad cycle cannot loop.
- */
 export const supersessionChain = (repo: Repo, item: ScannedItem): ChainLink[] => {
   const link = (i: ScannedItem): ChainLink => ({
     id: i.id as string,

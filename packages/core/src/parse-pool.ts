@@ -8,15 +8,12 @@ import { Effect } from 'effect'
 import { type ScannedItem, scannedItemFrom } from './scanned-item'
 
 export interface SourceFile {
-  /** Path relative to the workspace root. */
   readonly path: string
   readonly source: string
 }
 
 export interface ParseOptions {
-  /** Maximum number of worker threads. `0` parses on the calling thread. Default: up to 4. */
   readonly workers?: number
-  /** Below this many files, parse on the calling thread. Starting workers costs about 100 ms. */
   readonly parallelThreshold?: number
 }
 
@@ -36,12 +33,6 @@ parentPort.on('message', (batch) => {
 })
 `
 
-/**
- * Where the worker threads import the Markdown parser from: the workspace package when this runs
- * from source or a checkout, or `markdown.mjs` next to the program when it runs from the published
- * `netherite` package, which bundles everything into one file. Throws when neither is there, and
- * the caller then parses on its own thread.
- */
 const markdownUrl = () => {
   try {
     return pathToFileURL(createRequire(import.meta.url).resolve('@netherite/markdown')).href
@@ -54,7 +45,6 @@ const markdownUrl = () => {
 
 interface Parsed {
   readonly path: string
-  /** The outline without `source`, which the main thread already has. */
   readonly outline: Omit<Outline, 'source'>
 }
 
@@ -74,12 +64,6 @@ const runWorker = (batch: ReadonlyArray<SourceFile>, url: string) =>
 const inProcess = (files: ReadonlyArray<SourceFile>): ScannedItem[] =>
   files.map(({ path, source }) => scannedItemFrom(path, outlineMarkdown(source)))
 
-/**
- * Parses many files into scanned items. Large sets are split across worker threads, because
- * parsing Markdown is CPU-bound and the editor's start-up target is 2 s for 5,000 files
- * (ADR-00014). Results keep the order of `files`. If threads are unavailable it parses on the
- * calling thread, so the result is the same either way.
- */
 export const parseFiles = (files: ReadonlyArray<SourceFile>, options: ParseOptions = {}) =>
   Effect.promise(async (): Promise<ScannedItem[]> => {
     const threshold = options.parallelThreshold ?? defaultThreshold

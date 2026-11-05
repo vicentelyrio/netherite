@@ -3,7 +3,6 @@ import { ago } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useInboxState } from '../InboxProvider'
 
-/** Breadcrumb, title, how many things need you and how far back the changes go. */
 export function InboxHeading() {
   const { LL } = useI18nContext()
   const { open, since } = useInboxState()

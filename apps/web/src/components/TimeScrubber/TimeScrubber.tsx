@@ -5,12 +5,9 @@ import { dayAt, dayIndex } from './days'
 import './TimeScrubber.css'
 
 export interface TimeScrubberProps {
-  /** First and last day of the range, `YYYY-MM-DD`. The last is today. */
   readonly from: string
   readonly to: string
-  /** The day shown. */
   readonly value: string
-  /** Commits per week, for the histogram under the slider. */
   readonly activity: ReadonlyArray<{ readonly week: string; readonly count: number }>
   readonly playing: boolean
   readonly onChange: (day: string) => void
@@ -18,7 +15,6 @@ export interface TimeScrubberProps {
   readonly onToday: () => void
 }
 
-/** A date slider over an activity histogram, with play and a Today button. */
 export function TimeScrubber({
   from,
   to,

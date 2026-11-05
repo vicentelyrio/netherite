@@ -6,7 +6,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { useWrite } from '@/infrastructure/query'
 import './NewGoal.css'
 
-/** A dashed button that opens a title form and creates a goal, in an area when it has one. */
 export function NewGoal({ area }: { readonly area: string | undefined }) {
   const { LL } = useI18nContext()
   const api = useApi()

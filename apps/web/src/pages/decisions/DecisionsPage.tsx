@@ -7,7 +7,6 @@ import {
 } from '@/features/decisions'
 import { PageTemplate } from '@/templates'
 
-/** The decision log: every ADR status change, a lane per project. */
 export function DecisionsPage() {
   return (
     <DecisionProvider>

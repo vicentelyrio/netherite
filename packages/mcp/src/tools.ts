@@ -18,10 +18,6 @@ const relationKinds = [
 
 const reserved = new Set(['id', 'aliases', 'type', 'title', 'created'])
 
-/**
- * The fields a `create` call may give for one type, taken from the type's JSON Schema, so the
- * tool schema can never drift from what validation accepts.
- */
 const fieldsFor = (schemas: Record<string, unknown>, type: string): Json => {
   const schema = schemas[type] as { properties?: Json; required?: string[] }
   const properties = Object.fromEntries(
@@ -37,10 +33,6 @@ const fieldsFor = (schemas: Record<string, unknown>, type: string): Json => {
   }
 }
 
-/**
- * "If the type is X, then the fields look like this" in JSON Schema. `then` is a JSON Schema
- * keyword, so the object is built from entries rather than written with that property name.
- */
 const conditional = (type: string, schemas: Record<string, unknown>): Json => {
   const needsFields = ((schemas[type] as { required?: string[] }).required ?? []).some(
     (n) => !reserved.has(n),
@@ -65,11 +57,6 @@ const readOnly = {
 }
 const write = { readOnlyHint: false, destructiveHint: false, openWorldHint: false }
 
-/**
- * The tools this server offers (ADR-00012). Their input schemas are plain JSON Schema; the ones
- * for `create` are generated from the item schemas, so a field's allowed values (task states,
- * statuses) always match the workspace's configuration.
- */
 export const toolDefinitions = (repo: Repo): ReadonlyArray<Tool> => {
   const schemas = itemJsonSchemas(repo.schemas) as unknown as Record<string, unknown>
   const hash = {

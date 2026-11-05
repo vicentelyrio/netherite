@@ -4,28 +4,17 @@ import type { CSSProperties } from 'react'
 export type StatusType = 'goal' | 'project' | 'task'
 
 export interface StatusGlyphProps {
-  /** Whose colour it wears: hue is always the type. */
   readonly type: StatusType
   readonly status: StatusName
-  /** How much is done, from 0 to 1: the filled part of the pie. Ignored when done. */
   readonly progress?: number
-  /** The diameter in pixels, from 6 (a task in the graph) to 32 (a goal). */
   readonly size?: number
-  /** Say it aloud, e.g. "In progress, 60%". Without it the glyph is decoration. */
   readonly label?: string
-  /** Draw done items a little fainter, as the graph does. */
   readonly dimDone?: boolean
-  /** A colour of its own, for samples in a legend; otherwise the type's. */
   readonly color?: string
 }
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value))
 
-/**
- * Where a goal, project or task stands (ADR-00021), by fill and never by hue: a pie filled to the
- * share done; a halo while in progress; a grey pie and a dashed ring on hold; a solid fill with a
- * check when done. Hue stays the type's.
- */
 export function StatusGlyph({
   type,
   status,

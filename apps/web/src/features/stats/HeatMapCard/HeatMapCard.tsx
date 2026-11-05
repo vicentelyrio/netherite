@@ -17,7 +17,6 @@ const WEEKDAYS = [
   ['sun', ''],
 ] as const
 
-/** Commits per day over the last 53 weeks, a column per week from Monday, with months and weekdays. */
 export function HeatMapCard() {
   const { LL } = useI18nContext()
   const { data, period } = useStats()

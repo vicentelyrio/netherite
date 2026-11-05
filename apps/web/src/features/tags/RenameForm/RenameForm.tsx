@@ -9,7 +9,6 @@ import { useWrite } from '@/infrastructure/query'
 import { renameOutcome } from '../rules'
 import './RenameForm.css'
 
-/** Renames a tag everywhere at once; a name already in use merges the two. */
 export function RenameForm({
   tag,
   tags,

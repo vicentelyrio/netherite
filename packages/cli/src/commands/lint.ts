@@ -17,19 +17,16 @@ export type FailOn = 'error' | 'warning' | 'info' | 'never'
 
 export interface LintCommandOptions {
   readonly dir: string
-  /** Limit the report to these files or folders (relative to the current folder). */
   readonly paths: ReadonlyArray<string>
   readonly json: boolean
   readonly fix: boolean
   readonly dryRun: boolean
   readonly failOn: FailOn
-  /** Skip freshness, which needs git. */
   readonly noGit: boolean
 }
 
 const rank: Record<Severity, number> = { error: 0, warning: 1, info: 2 }
 
-/** `path`, then one line per problem: `line:col  severity  rule  message`. */
 export const formatDiagnostics = (diagnostics: ReadonlyArray<Diagnostic>): string[] => {
   const lines: string[] = []
   let current: string | undefined
@@ -55,7 +52,6 @@ export const summaryLine = (diagnostics: ReadonlyArray<Diagnostic>) => {
 const exceeds = (diagnostics: ReadonlyArray<Diagnostic>, failOn: FailOn) =>
   failOn !== 'never' && diagnostics.some((d) => rank[d.severity] <= rank[failOn])
 
-/** One diff per file; a rename shows as the old path moving to the new one, with any edit inside it. */
 const describeFixes = (report: FixReport, dryRun: boolean) => {
   if (!dryRun) return []
   const renames = new Map(
@@ -83,12 +79,6 @@ const describeFixes = (report: FixReport, dryRun: boolean) => {
   return lines.filter((line) => line !== '')
 }
 
-/**
- * Checks the workspace and reports problems. Exit code: 0 when nothing at or above `--fail-on`
- * (default `error`) is left, 1 when something is, 2 when the check could not run. `--fix` applies
- * the fixes lint offers and then reports what remains; `--fix --dry-run` only shows the diff.
- * Nothing is ever committed.
- */
 export const lintCommand = (env: Env, options: LintCommandOptions) =>
   Effect.gen(function* () {
     const path = yield* Path.Path
@@ -163,7 +153,6 @@ export const lintCommand = (env: Env, options: LintCommandOptions) =>
     return yield* Effect.catch(run, (error) => Effect.succeed(reportFailure(env, error)))
   })
 
-/** A test for "is this diagnostic under one of these paths", paths given relative to the current folder. */
 const resolveFilter = (
   path: Path.Path,
   cwd: string,

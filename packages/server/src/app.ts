@@ -20,7 +20,6 @@ const types: Record<string, string> = {
   '.webmanifest': 'application/manifest+json',
 }
 
-/** Sent with every page: no framing, no outside scripts, connections only to this server. */
 const pageHeaders = {
   'cache-control': 'no-store',
   'x-content-type-options': 'nosniff',
@@ -32,16 +31,11 @@ const pageHeaders = {
 const escapeAttribute = (text: string) =>
   text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-/**
- * Puts the session into a page: the token the app sends with writes, and the server version.
- * Done on the server so the token never appears in a URL, where history and logs would keep it.
- */
 export const withSession = (html: string, state: Pick<ServerState, 'token' | 'version'>) => {
   const tags = `<meta name="netherite-token" content="${escapeAttribute(state.token)}"><meta name="netherite-version" content="${escapeAttribute(state.version)}">`
   return /<\/head>/i.test(html) ? html.replace(/<\/head>/i, `${tags}</head>`) : `${tags}${html}`
 }
 
-/** Shown until the app is built and bundled (TASK-00034, TASK-00049). */
 export const placeholderPage = `<!doctype html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Netherite</title>
@@ -56,11 +50,6 @@ export const placeholderPage = `<!doctype html>
 </html>
 `
 
-/**
- * Serves the built app from `root`: files as they are, and `index.html` (with the session in it)
- * for any path without a file extension, so client-side routes survive a reload. Paths cannot
- * climb out of `root`, not even through a symlink. Without a built app, a placeholder is served.
- */
 export const appRoutes = (state: ServerState, root: string | undefined) =>
   HttpRouter.add(
     'GET',

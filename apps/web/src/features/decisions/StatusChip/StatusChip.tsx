@@ -3,7 +3,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { statusLabel, statusStyle } from '../lanes'
 import './StatusChip.css'
 
-/** An ADR status as a small coloured chip; faded for the status it came from. */
 export function StatusChip({
   status,
   faded,

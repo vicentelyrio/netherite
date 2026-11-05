@@ -1,7 +1,6 @@
 import type { StateCategory } from '@netherite/schema'
 import type { FieldValue, History, ItemHistory, Transition } from './history'
 
-/** Where an item stands in its life, whatever its type calls it. */
 export type Phase = StateCategory
 
 export type LifecycleKind =
@@ -19,17 +18,13 @@ export type LifecycleKind =
 
 export interface LifecycleEvent {
   readonly kind: LifecycleKind
-  /** Commit date, ISO 8601. */
   readonly date: string
   readonly hash: string
-  /** The value before and after, for `rescheduled` the due dates. */
   readonly from?: string
   readonly to?: string
-  /** `true` when the date is only the first time the history window shows the item. */
   readonly approximate: boolean
 }
 
-/** A stretch of time an item spent in one phase. `to` is missing while it is still there. */
 export interface Span {
   readonly phase: Phase
   readonly from: string
@@ -41,27 +36,18 @@ export interface Lifecycle {
   readonly type: string | undefined
   readonly events: ReadonlyArray<LifecycleEvent>
   readonly spans: ReadonlyArray<Span>
-  /** When the item came to exist. */
   readonly created?: string
-  /** When work first began; for projects and goals, when their first task or project did. */
   readonly started?: string
-  /** When it last became done (or an ADR was accepted); missing while it is open. */
   readonly finished?: string
-  /** When an ADR was deprecated or superseded. */
   readonly ended?: string
-  /** Days spent blocked or paused, up to `now` for a stretch that is still going. */
   readonly waitingDays: number
-  /** The `due` date now, and how many times it moved. */
   readonly due?: string
   readonly rescheduled: number
-  /** `true` when some dates are only as early as the available history goes. */
   readonly approximate: boolean
 }
 
 export interface LifecycleOptions {
-  /** Task states and their categories, from the config. */
   readonly states: ReadonlyArray<{ readonly name: string; readonly category: StateCategory }>
-  /** The moment open stretches end at (ISO 8601). Default: the current time. */
   readonly now?: string
 }
 
@@ -208,12 +194,6 @@ const lastList = (item: ItemHistory, field: string): ReadonlyArray<string> => {
   return typeof last === 'string' ? [last] : []
 }
 
-/**
- * The life of every item, read from its history (ADR-00020): when it was created, started,
- * held, finished or reopened, how long it waited, and how often its due date moved. Nothing is
- * stored; the same history always gives the same answer. A project starts when its first task
- * does, and a goal when its first project does.
- */
 export const lifecycles = (
   history: History,
   options: LifecycleOptions,

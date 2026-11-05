@@ -1,16 +1,5 @@
 import { posix } from 'node:path'
 
-/**
- * Turns the relative Markdown links of an imported file into links between items. A link such as
- * `[the session](./0025-session.md)` in a file that was imported becomes `[[ADR-00025|the session]]`
- * when the file it points at was imported too, so the graph, backlinks and `lint` see it. Links to
- * anything else, to a heading in the same file, to a URL or to an image are left as they are, and
- * so is everything in a code block or a code span. A `#heading` after the path is dropped: the
- * link goes to the item.
- *
- * `ids` maps a source path, from the repository root with `/` separators, to an item ID. `from` is
- * the path of the file the text came from.
- */
 export const rewriteLinks = (
   text: string,
   from: string,

@@ -7,14 +7,12 @@ import { apiLayer } from './handlers'
 import { guard, isLoopbackHost } from './security'
 import type { ServerState } from './state'
 
-/** The server was asked to listen on an address other than loopback. */
 export class NotLoopback extends Data.TaggedError('NotLoopback')<{ readonly host: string }> {
   override get message() {
     return `Refusing to listen on "${this.host}": the Netherite server only listens on loopback (127.0.0.1) because it can write to your files.`
   }
 }
 
-/** The port asked for is taken (and no fallback was allowed, or every fallback is taken too). */
 export class PortInUse extends Data.TaggedError('PortInUse')<{
   readonly port: number
   readonly lastPort: number
@@ -27,28 +25,16 @@ export class PortInUse extends Data.TaggedError('PortInUse')<{
 }
 
 export interface ListenOptions {
-  /** Default `127.0.0.1`. Only loopback addresses are accepted. */
   readonly host?: string
-  /** Default 4747. `0` picks any free port. */
   readonly port?: number
-  /**
-   * When the port is taken, try the next ones (up to 50) instead of failing. Use it for the
-   * default port; a port the user asked for should fail loudly. Default `false`.
-   */
   readonly fallback?: boolean
-  /** The folder with the built app (`index.html` and assets). Without it a placeholder page is served. */
   readonly appRoot?: string | undefined
-  /**
-   * More routes behind the same Host, Origin and token checks, such as MCP at `/mcp`. They are
-   * added next to the API and the app.
-   */
   readonly routes?: Layer.Layer<never, never, HttpRouter.HttpRouter>
 }
 
 export interface Running {
   readonly url: string
   readonly port: number
-  /** The secret the app sends with every write. Never log it. */
   readonly token: string
 }
 
@@ -61,10 +47,6 @@ const inUse = (error: unknown): boolean => {
   return cause?.code === 'EADDRINUSE' || text.includes('EADDRINUSE')
 }
 
-/**
- * Starts the API and the app on loopback, behind the Host, Origin and token checks (ADR-00010).
- * Stops when the scope closes.
- */
 export const listen = (
   state: ServerState,
   options: ListenOptions = {},

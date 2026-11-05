@@ -17,12 +17,10 @@ export interface NewOptions {
   readonly dir: string
   readonly type: string
   readonly title: ReadonlyArray<string>
-  /** `key=value` pairs. Values are read as YAML, so `labels=[a,b]` is a list and `3` a number. */
   readonly set: Readonly<Record<string, string>>
   readonly body: string | undefined
   readonly bodyFile: string | undefined
   readonly createdBy: string | undefined
-  /** Start from the type's template (the workspace's own, or the one that ships). */
   readonly template: boolean
   readonly json: boolean
 }
@@ -35,7 +33,6 @@ const readValue = (text: string): unknown => {
   }
 }
 
-/** Creates an item: `netherite new task "Write the docs" --set project=PRJ-00001`. */
 export const newItem = (env: Env, options: NewOptions) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem

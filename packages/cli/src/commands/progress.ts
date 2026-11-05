@@ -103,7 +103,6 @@ const statsText = (env: Env, s: PeriodStats) => {
   )
 }
 
-/** Prints what the Timeline screen shows: goals, projects, tasks and decisions on one axis. */
 export const timelineCommand = (env: Env, options: TimelineCommandOptions) =>
   Effect.gen(function* () {
     const path = yield* Path.Path
@@ -134,7 +133,6 @@ export const timelineCommand = (env: Env, options: TimelineCommandOptions) =>
     return yield* Effect.catch(run, (error) => Effect.succeed(reportFailure(env, error)))
   })
 
-/** Prints the Stats screen's numbers for a period, against the period before. */
 export const statsCommand = (env: Env, options: StatsCommandOptions) =>
   Effect.gen(function* () {
     const path = yield* Path.Path

@@ -16,36 +16,25 @@ import { inReservedFolder } from './reserved'
 import type { ScannedItem } from './scanned-item'
 import { parseConfig } from './workspace'
 
-/** What changed in the workspace on disk, after the index has been brought up to date. */
 export type ChangeEvent =
   | {
       readonly _tag: 'ItemsChanged'
-      /** Items that were added or whose text changed. */
       readonly upserted: ReadonlyArray<string>
-      /** Items whose files are gone. */
       readonly removed: ReadonlyArray<string>
-      /**
-       * Every item that is different now: the ones above, plus items whose links resolve
-       * differently because of them (for example a link that now has a target).
-       */
       readonly affected: ReadonlyArray<string>
     }
   | {
-      /** The current commit, the branch, the index or a ref changed: `git status` may differ. */
       readonly _tag: 'GitChanged'
     }
   | {
       readonly _tag: 'ConfigChanged'
-      /** The `content` folder moved, which needs a restart. Nothing was applied. */
       readonly requiresRestart: boolean
     }
   | {
       readonly _tag: 'ConfigInvalid'
-      /** The previous configuration stays in use. */
       readonly error: ConfigInvalid | ConfigReadError
     }
 
-/** The file watcher could not start. */
 export class WatchError extends Data.TaggedError('WatchError')<{
   readonly path: string
   readonly cause: unknown
@@ -55,12 +44,10 @@ export class WatchError extends Data.TaggedError('WatchError')<{
   }
 }
 
-/** A raw file system event. Only the path matters: what to do is decided from the disk. */
 export interface RawEvent {
   readonly path: string
 }
 
-/** Something that reports file changes under a folder. */
 export interface WatchBackend {
   readonly subscribe: (
     dir: string,
@@ -69,7 +56,6 @@ export interface WatchBackend {
   ) => Promise<{ readonly unsubscribe: () => Promise<void> }>
 }
 
-/** The default backend: `@parcel/watcher` (FSEvents, inotify, ReadDirectoryChangesW). */
 export const parcelBackend: WatchBackend = {
   subscribe: async (dir, onEvents, options) => {
     const module = await import('@parcel/watcher')
@@ -85,24 +71,15 @@ export const parcelBackend: WatchBackend = {
 }
 
 export interface WatchOptions {
-  /** How long to wait after the last event before applying a batch. Default 100 ms. */
   readonly debounceMs?: number
   readonly backend?: WatchBackend
-  /** Passed to the parser when a big batch (for example a branch switch) arrives. */
   readonly parse?: ParseOptions
-  /**
-   * The repository's `.git` folder. When given, changes to `HEAD`, `index` and the refs are
-   * reported as `GitChanged`, so views of uncommitted changes and history can refresh.
-   */
   readonly gitDir?: string
 }
 
 export interface Watcher {
-  /** Change events as a stream. Subscribers only see events published after they subscribe. */
   readonly events: Stream.Stream<ChangeEvent>
-  /** Calls `listener` for every event, immediately. Returns a function that stops listening. */
   readonly listen: (listener: (event: ChangeEvent) => void) => () => void
-  /** Applies pending changes now instead of waiting for the debounce, and waits until done. */
   readonly flush: Effect.Effect<void>
 }
 
@@ -118,7 +95,6 @@ const gitIgnore = [
   '**/*.tmp',
 ]
 
-/** Does a path inside the git folder show a change of commit, branch or staged content? */
 const gitRelevant = (relative: string) =>
   relative === 'HEAD' ||
   relative === 'index' ||
@@ -129,13 +105,6 @@ const asPosix = (p: string) => p.split('\\').join('/')
 
 const notHidden = (relative: string) => !relative.split('/').some((part) => part.startsWith('.'))
 
-/**
- * Keeps a repo's index in step with the files on disk, whoever changes them: an editor,
- * Obsidian, an agent, or a `git checkout`. Changes are collected for `debounceMs`, applied in
- * one batch (re-reading each file from disk, so event order does not matter), and reported as
- * typed events. Changes the repo's own operations already made produce no event. Watching stops
- * when the scope closes.
- */
 export const watchRepo = (repo: Repo, options: WatchOptions = {}) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem

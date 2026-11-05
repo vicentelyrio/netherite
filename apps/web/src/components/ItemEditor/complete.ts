@@ -1,4 +1,3 @@
-/** An item a wikilink can point at. */
 export interface LinkTarget {
   readonly id: string
   readonly title: string
@@ -9,11 +8,9 @@ export interface LinkOption {
   readonly label: string
   readonly detail: string
   readonly type: string
-  /** Text that goes in after `[[`, closing the link. */
   readonly apply: string
 }
 
-/** Matches an unfinished wikilink before the cursor: `[[` and what has been typed of the target. */
 export const openWikiLink = /\[\[([^\]\n|#]*)$/
 
 const rank = (target: LinkTarget, query: string) => {
@@ -30,10 +27,6 @@ const rank = (target: LinkTarget, query: string) => {
   return words.length > 1 && words.every((w) => id.includes(w) || title.includes(w)) ? 5 : undefined
 }
 
-/**
- * What to suggest after `[[`: items whose ID or title matches what was typed, best first, by
- * ID order within a rank. The suggestion completes the link: `[[ADR-00007]]`.
- */
 export const linkOptions = (
   targets: ReadonlyArray<LinkTarget>,
   query: string,

@@ -12,7 +12,6 @@ export interface TagsState {
   readonly all: ReadonlyArray<TagNode>
   readonly shown: ReadonlyArray<TagNode>
   readonly edges: ReadonlyArray<{ readonly a: string; readonly b: string; readonly count: number }>
-  /** Likely duplicates that have not been waved off with "Keep both". */
   readonly duplicates: ReadonlyArray<TagPair>
   readonly keepBoth: (pair: TagPair) => void
   readonly view: TagsView
@@ -23,7 +22,6 @@ export interface TagsState {
   readonly setField: (field: FieldFilter) => void
   readonly q: string
   readonly setQ: (q: string) => void
-  /** How many tags the kind tab would show. */
   readonly count: (field: FieldFilter) => number
 }
 
@@ -35,7 +33,6 @@ export const useTags = (): TagsState => {
   return value
 }
 
-/** Loads the tag map and holds the view, the selection and the filters. */
 export function TagsProvider({ children }: { readonly children: ReactNode }) {
   const { LL } = useI18nContext()
   const api = useApi()

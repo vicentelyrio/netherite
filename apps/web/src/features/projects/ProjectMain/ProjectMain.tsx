@@ -5,7 +5,6 @@ import { KnowledgeView } from '../KnowledgeView'
 import { TaskBoard } from '../TaskBoard'
 import type { ProjectViewId } from '../views'
 
-/** The chosen view of a project: its task board, or what it knows: decisions, docs and context. */
 export function ProjectMain({
   id,
   view,
@@ -13,7 +12,6 @@ export function ProjectMain({
 }: {
   readonly id: string
   readonly view: ProjectViewId
-  /** The task open in the drawer, marked on the board. */
   readonly task: string | undefined
 }) {
   const api = useApi()

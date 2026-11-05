@@ -1,10 +1,8 @@
 export interface AdrSections {
-  /** The title and whatever comes before the first `##` heading. */
   readonly intro: string
   readonly sections: ReadonlyArray<{ readonly title: string; readonly text: string }>
 }
 
-/** Splits an ADR's text at its `## ` headings, ignoring any inside a code fence. */
 export const adrSections = (source: string): AdrSections => {
   const lines = source.split('\n')
   const intro: string[] = []
@@ -23,13 +21,11 @@ export const adrSections = (source: string): AdrSections => {
 }
 
 export interface Consequences {
-  /** What is said before the first sign. */
   readonly lead: string
   readonly good: ReadonlyArray<string>
   readonly bad: ReadonlyArray<string>
 }
 
-/** `- + text` or `- \+ text` is a good consequence, `- - text` or `- \- text` a bad one. */
 export const consequencesOf = (text: string): Consequences | undefined => {
   const good: string[] = []
   const bad: string[] = []

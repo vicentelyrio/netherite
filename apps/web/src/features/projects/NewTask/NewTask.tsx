@@ -5,7 +5,6 @@ import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useWrite } from '@/infrastructure/query'
 
-/** Adds a task to a column: a button that opens a title form. */
 export function NewTask({
   projectId,
   state,

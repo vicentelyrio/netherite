@@ -19,7 +19,6 @@ const until = (condition: () => boolean, what: string, ms = 3000) =>
     }
   })
 
-/** Connects an event stream and collects what arrives, after `ready`. */
 const connect = (s: Running) =>
   Effect.gen(function* () {
     const seen: ServerEvent[] = []
@@ -35,7 +34,6 @@ const connect = (s: Running) =>
 const ofType = <T extends ServerEvent['type']>(seen: ServerEvent[], type: T) =>
   seen.filter((e): e is Extract<ServerEvent, { type: T }> => e.type === type)
 
-/** Changes a file on disk behind the server and tells the watcher, then waits for the index. */
 const editOutside = (s: Running, path: string, change: (text: string) => string) =>
   Effect.gen(function* () {
     const file = join(s.dir, path)

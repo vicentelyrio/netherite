@@ -31,11 +31,9 @@ export interface ButtonProps
   extends Omit<MantineButtonProps, 'variant' | 'color' | 'leftSection' | 'rightSection'>,
     Omit<ComponentPropsWithoutRef<'button'>, keyof MantineButtonProps> {
   readonly variant?: ButtonVariant
-  /** A Material Symbols name shown before the label. */
   readonly icon?: string
 }
 
-/** A button. `primary` is the one main action of a view; `danger` is for deleting. */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   { variant = 'secondary', icon, children, ...rest },
   ref,
@@ -55,16 +53,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 export interface ActionIconProps
   extends Omit<MantineActionIconProps, 'children'>,
     Omit<ComponentPropsWithoutRef<'button'>, keyof MantineActionIconProps | 'aria-label'> {
-  /** The Material Symbols name. */
   readonly icon: string
-  /** What the button does. Required: an icon alone says nothing to a screen reader. Also its tooltip. */
   readonly label: string
-  /** The button is on, like a toggle. */
   readonly active?: boolean
   readonly tooltip?: boolean
 }
 
-/** An icon-only button with an accessible name and a tooltip. */
 export const ActionIcon = forwardRef<HTMLButtonElement, ActionIconProps>(function ActionIcon(
   { icon, label, active, tooltip = true, ...rest },
   ref,
@@ -84,10 +78,8 @@ export const ActionIcon = forwardRef<HTMLButtonElement, ActionIconProps>(functio
   return tooltip ? <Tooltip label={label}>{button}</Tooltip> : button
 })
 
-/** The design's own avatar is amber; others take the next colours of the palette. */
 const avatarColors = ['warning', 'lavender', 'success', 'adr', 'doc', 'context', 'runbook'] as const
 
-/** One to two letters from a name or `@handle`. */
 export const initialsOf = (name: string) => {
   const words = name
     .replace(/^@/, '')
@@ -100,7 +92,6 @@ export const initialsOf = (name: string) => {
   return letters.toUpperCase()
 }
 
-/** The same person always gets the same colour. */
 export const avatarColorOf = (name: string) => {
   let hash = 0
   for (const ch of name.toLowerCase()) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0
@@ -108,15 +99,12 @@ export const avatarColorOf = (name: string) => {
 }
 
 export interface AvatarProps {
-  /** A name or `@handle`. */
   readonly name: string
   readonly src?: string
   readonly size?: 'xs' | 'sm' | 'md' | 'lg' | number
-  /** A colour of the theme. Default: one picked from the name, so a person keeps theirs. */
   readonly color?: string
 }
 
-/** A person: their picture if there is one, otherwise their initials on a colour of their own. */
 export function Avatar({ name, src, size = 'sm', color }: AvatarProps) {
   return (
     <MantineAvatar
@@ -133,17 +121,13 @@ export function Avatar({ name, src, size = 'sm', color }: AvatarProps) {
 }
 
 export interface CardProps extends MantineCardProps {
-  /** The card is the current choice (a selected row or the open item). */
   readonly selected?: boolean
-  /** Something being dragged would land here. */
   readonly dropTarget?: boolean
-  /** The card can be clicked: it gets hover feedback and can be reached with the keyboard. */
   readonly interactive?: boolean
   readonly onClick?: () => void
   readonly children?: ReactNode
 }
 
-/** A card with the states the board needs: hover, selected, and drop target. */
 export function Card({ selected, dropTarget, interactive, onClick, children, ...rest }: CardProps) {
   const clickable = interactive === true || onClick !== undefined
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -172,21 +156,17 @@ export function Card({ selected, dropTarget, interactive, onClick, children, ...
   )
 }
 
-/** Share done, 0 to 100. Nothing to do counts as nothing done. */
 export const percentOf = (done: number, total: number) =>
   total <= 0 ? 0 : Math.max(0, Math.min(100, Math.round((done / total) * 100)))
 
-/** Progress is green in the design, finished or not. */
 const progressColor = () => 'success'
 
 export interface ProgressProps {
   readonly done: number
   readonly total: number
-  /** Describes what is measured, for screen readers. */
   readonly label?: string
 }
 
-/** A bar: how much of the checklist, the project or the goal is done. */
 export function Progress({ done, total, label = 'Progress' }: ProgressProps) {
   const percent = percentOf(done, total)
   return (
@@ -201,14 +181,9 @@ export function Progress({ done, total, label = 'Progress' }: ProgressProps) {
 
 export interface ProgressRingProps extends ProgressProps {
   readonly size?: number
-  /** Show the count (`3/5`) in the middle instead of the percentage. */
   readonly showCount?: boolean
 }
 
-/**
- * A ring, for goals and projects overviews: a conic fill over the track with the canvas showing
- * through the middle, and the percentage (or, with `showCount`, the count) in green.
- */
 export function ProgressRing({
   done,
   total,
@@ -247,20 +222,15 @@ export function ProgressRing({
 }
 
 export interface SearchSelectProps {
-  /** The accessible name. */
   readonly label: string
   readonly placeholder: string
-  /** The choices; the picked one, or `undefined` for none. */
   readonly options: ReadonlyArray<string>
   readonly value: string | undefined
   readonly onChange: (value: string | undefined) => void
-  /** Said when typing matches nothing. */
   readonly nothingFound: string
-  /** Fixed width in pixels, so a longer choice never resizes the control. */
   readonly width?: number
 }
 
-/** A drop-down you can type into to narrow the choices, and clear. Its width does not change. */
 export function SearchSelect({
   label,
   placeholder,

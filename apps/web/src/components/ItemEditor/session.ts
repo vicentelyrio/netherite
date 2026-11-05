@@ -1,13 +1,8 @@
-/** A version of the file: its text and the hash the server knows it by. */
 export interface Version {
   readonly text: string
   readonly hash: string
 }
 
-/**
- * What an open editor knows. `base` is the version the buffer started from (and is saved over);
- * `conflict` is a newer version found on disk while the buffer had changes of its own.
- */
 export interface Session {
   readonly base: Version
   readonly buffer: string
@@ -15,15 +10,10 @@ export interface Session {
 }
 
 export type SessionEvent =
-  /** Something typed: the buffer is now this. */
   | { readonly type: 'edit'; readonly text: string }
-  /** The server reports the file as it is now. */
   | { readonly type: 'remote'; readonly version: Version }
-  /** A save went through: the buffer is the file. */
   | { readonly type: 'saved'; readonly version: Version }
-  /** Throw the buffer away and take what is on disk. */
   | { readonly type: 'reload' }
-  /** Keep the buffer, and save over the newer version. */
   | { readonly type: 'keep-mine' }
 
 export const startSession = (version: Version): Session => ({
@@ -34,13 +24,6 @@ export const startSession = (version: Version): Session => ({
 
 export const isDirty = (s: Session) => s.buffer !== s.base.text
 
-/**
- * "Changed on disk" (TASK-00036). A new version of the file arrives:
- * - if the buffer has no changes of its own, it just follows the file, silently;
- * - if it has, nothing is lost and nothing is overwritten: the newer version is held as a
- *   `conflict`, and the person chooses to reload (drop their changes) or keep them (and save over).
- * A version the editor already has, or an older one it is being told about late, changes nothing.
- */
 export const reduce = (s: Session, event: SessionEvent): Session => {
   switch (event.type) {
     case 'edit':

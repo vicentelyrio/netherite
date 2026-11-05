@@ -5,7 +5,6 @@ import { type Env, type ExitCode, exitCodes, json } from '../output'
 
 export interface ContextSyncOptions {
   readonly dir: string
-  /** Write nothing; exit 1 if a file is out of date. */
   readonly check: boolean
   readonly json: boolean
 }
@@ -17,7 +16,6 @@ const describe = (t: TargetReport, check: boolean) => {
   return `${t.path.padEnd(10)} ${state.padEnd(11)} ≈${count(t.tokens)} of ${count(t.budget)} tokens, ${t.included.length} ${t.included.length === 1 ? 'item' : 'items'}`
 }
 
-/** Renders the context items into `CLAUDE.md` and `AGENTS.md`, or with `--check` only compares. */
 export const contextSync = (env: Env, options: ContextSyncOptions) =>
   Effect.gen(function* () {
     const path = yield* Path.Path

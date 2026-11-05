@@ -7,7 +7,6 @@ import { horizonLabel } from '../horizon'
 import { statusOfProgress } from '../status'
 import './GoalCard.css'
 
-/** A goal as a card: title, due date, tags and how much of it is done. */
 export function GoalCard({ goal }: { readonly goal: GoalRow }) {
   const { LL } = useI18nContext()
   const achieved = goal.status === 'achieved'

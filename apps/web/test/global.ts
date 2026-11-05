@@ -14,10 +14,6 @@ declare module 'vitest' {
   }
 }
 
-/**
- * Starts a real `netherite serve` over a small workspace, once for all tests, so the app is tried
- * against the real API and event stream. The workspace is a clean sample (see @netherite/testing).
- */
 async function start(project: TestProject) {
   const dir = realpathSync(mkdtempSync(join(tmpdir(), 'netherite-web-')))
   for (const [path, text] of Object.entries(cleanWorkspaceFiles(dir))) {
@@ -86,11 +82,6 @@ async function start(project: TestProject) {
   }
 }
 
-/**
- * Anything thrown from here stops the whole run before its first test, and on some runs vitest then
- * cannot print the error: its own source map code throws instead (`code.charCodeAt is not a
- * function`), and what is left says only "No test files found". So the cause is written first.
- */
 export default async function setup(project: TestProject) {
   try {
     return await start(project)

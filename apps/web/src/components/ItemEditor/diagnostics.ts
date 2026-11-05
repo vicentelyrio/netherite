@@ -1,4 +1,3 @@
-/** A problem the server found in the text, as `POST /api/lint/text` reports it. */
 export interface ServerDiagnostic {
   readonly line: number
   readonly column: number
@@ -7,7 +6,6 @@ export interface ServerDiagnostic {
   readonly message: string
 }
 
-/** A problem placed in the document: character offsets, and the line it starts on. */
 export interface Problem {
   readonly from: number
   readonly to: number
@@ -17,18 +15,12 @@ export interface Problem {
   readonly rule: string
 }
 
-/** The text of a document, line by line, with where each line starts. */
 const starts = (text: string) => {
   const result = [0]
   for (let i = 0; i < text.length; i++) if (text[i] === '\n') result.push(i + 1)
   return result
 }
 
-/**
- * Puts the server's problems into the text. A problem has a line and a column; it is underlined
- * from there to the end of the word, so a key such as `related:` gets its whole name marked.
- * Information (an orphan, say) is not shown in the editor. Problems outside the text are dropped.
- */
 export const placeProblems = (text: string, found: ReadonlyArray<ServerDiagnostic>): Problem[] => {
   const lineStarts = starts(text)
   const problems = found.flatMap((d): Problem[] => {

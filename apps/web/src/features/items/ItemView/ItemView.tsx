@@ -11,11 +11,6 @@ import { ItemHeader } from '../ItemHeader'
 import { ItemLinks } from '../ItemLinks'
 import './ItemView.css'
 
-/**
- * One item, read: its fields, its text rendered with the shared Markdown plugins, and what links
- * to it and from it. `special` can take over an item it knows how to show better (the knowledge
- * screens do), by returning what to show instead.
- */
 export function ItemView({
   id,
   special,

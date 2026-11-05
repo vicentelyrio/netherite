@@ -17,11 +17,6 @@ import { cli, git, isolateGit, json } from './helpers'
 
 beforeAll(isolateGit)
 
-/**
- * The migration of ADR-00026 from the command's side: a repository that already has a README, a
- * `docs/` folder, MADR-style decision records and a `CLAUDE.md`. The batch file is what the
- * `netherite-migrate` skill writes after it has surveyed the repository and asked the person.
- */
 const fixture: Record<string, string> = {
   'README.md': '# Shop\n\nA small shop. See [setup](docs/setup.md).\n',
   'src/cart/index.ts': 'export const cart = []\n',

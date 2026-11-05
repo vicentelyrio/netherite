@@ -11,13 +11,10 @@ import { createAppRouter } from './router'
 
 export interface AppProps {
   readonly config: AppConfig
-  /** A memory history for tests; the browser's by default. */
   readonly history?: RouterHistory
-  /** `test` turns off the component library's transitions and portals. */
   readonly env?: 'default' | 'test'
 }
 
-/** The whole app: theme, server client, queries, messages and routes. */
 export function App({ config, history, env }: AppProps) {
   const api = useMemo(() => createApi(config), [config])
   const client = useMemo(

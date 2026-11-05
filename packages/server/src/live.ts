@@ -9,21 +9,13 @@ import { Effect, PubSub, Stream } from 'effect'
 import type { ServerState } from './state'
 
 export interface LiveOptions extends Pick<WatchOptions, 'backend' | 'debounceMs'> {
-  /** Do not watch the disk. Writes through the API still reach clients. */
   readonly watch?: boolean
-  /** How long to wait after a burst of changes before recomputing lint. Default 50 ms. */
   readonly lintDebounceMs?: number
 }
 
 const summaryKey = (s: { error: number; warning: number; info: number }) =>
   `${s.error}/${s.warning}/${s.info}`
 
-/**
- * Turns changes into events for connected clients (ADR-00010): the watcher's item, git and
- * config changes, and a `lint` event whenever the lint result differs from the last one sent.
- * Runs until the scope closes. Changes made through the API are published by the handlers, so
- * lint follows them too.
- */
 export const startLive = (state: ServerState, options: LiveOptions = {}) =>
   Effect.gen(function* () {
     const { repo } = state

@@ -4,17 +4,14 @@ import { dayAt, dayIndex, stepFor } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { graphQuery, timelineQuery } from '@/infrastructure/query'
 
-/** How long one frame of playback lasts, and how many frames are fetched ahead. */
 const FRAME_MS = 350
 const AHEAD = 6
 
 export interface GraphTimeState {
-  /** The day shown, or `undefined` for today (the live graph). */
   readonly asOf: string | undefined
   readonly setAsOf: (day: string | undefined) => void
   readonly playing: boolean
   readonly togglePlay: () => void
-  /** The range to scrub over; missing without git, when there is no history to go back through. */
   readonly range:
     | {
         readonly from: string
@@ -32,10 +29,6 @@ export const useGraphTime = (): GraphTimeState => {
   return value
 }
 
-/**
- * The date the graph is shown at, and playback through it. While it plays, the next few days are
- * fetched ahead so a frame never waits on the network.
- */
 export function GraphTimeProvider({ children }: { readonly children: ReactNode }) {
   const api = useApi()
   const client = useQueryClient()
@@ -94,7 +87,6 @@ export function GraphTimeProvider({ children }: { readonly children: ReactNode }
   return <Context.Provider value={value}>{children}</Context.Provider>
 }
 
-/** The graph at the chosen day; the previous one stays up while the next loads. */
 export const useGraphAt = () => {
   const api = useApi()
   const { asOf } = useGraphTime()

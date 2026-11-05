@@ -4,7 +4,6 @@ import { AppRail, ConnectionStatus } from '@/features/navigation'
 import { SearchPalette } from '@/features/search'
 import { AppShell } from '@/templates'
 
-/** The frame around every screen: the rail, the connection bar, the search palette. */
 export function ShellPage() {
   const [searchOpen, setSearchOpen] = useState(false)
   return (

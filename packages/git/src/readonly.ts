@@ -1,9 +1,5 @@
 import { ForbiddenGitCommand } from './errors'
 
-/**
- * The only git subcommands this package ever runs. None of them changes commits, branches, the
- * index or the work tree. Anything else is refused before a process is started.
- */
 export const readOnlySubcommands = [
   'status',
   'log',
@@ -39,10 +35,6 @@ const writingFlags = [
   '-f',
 ]
 
-/**
- * Checks a command line is read-only. `config` is allowed only to read (`--get`,
- * `--get-all`, `--list`), and no argument may be a flag that makes a command write.
- */
 export const assertReadOnly = (args: ReadonlyArray<string>) => {
   const [subcommand, ...allRest] = args
   const end = allRest.indexOf('--')

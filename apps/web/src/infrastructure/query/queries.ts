@@ -1,10 +1,6 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import type { Api } from '../api'
 
-/**
- * Query keys, grouped so one invalidation can cover a family: `['items']` is every list and
- * every item, `['item', id]` is one.
- */
 export const keys = {
   health: ['health'] as const,
   items: (params: object = {}) => ['items', 'list', params] as const,
@@ -69,7 +65,6 @@ export const inboxQuery = (api: Api, since?: string) =>
 export const useHealth = (api: Api) => useQuery(healthQuery(api))
 export const useInbox = (api: Api) => useQuery(inboxQuery(api))
 
-/** The whole file, for the editor. Refreshes with every other item query. */
 export const sourceQuery = (api: Api, id: string) =>
   queryOptions({
     queryKey: keys.source(id),
@@ -87,7 +82,6 @@ export const goalQuery = (api: Api, id: string) =>
     retry: false,
   })
 
-/** The graph now, or as it stood on a day (`YYYY-MM-DD`). A past day never changes, so it is kept. */
 export const graphQuery = (api: Api, asOf?: string) =>
   queryOptions({
     queryKey: asOf === undefined ? keys.graph : ([...keys.graph, asOf] as const),
@@ -174,7 +168,6 @@ export const tagMapQuery = (api: Api) =>
 export const tagsQuery = (api: Api) =>
   queryOptions({ queryKey: keys.tags, queryFn: () => api.call((c) => c.tags.list()) })
 
-/** What waits for a person, as the Inbox counts it (and the rail badge, by the same rule). */
 export const waitingCount = (inbox: {
   readonly proposed: ReadonlyArray<unknown>
   readonly freshness: ReadonlyArray<unknown>

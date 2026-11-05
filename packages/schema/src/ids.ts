@@ -1,6 +1,5 @@
 import { Schema } from 'effect'
 
-/** Item types and their ID prefixes (ADR-00003, ADR-00004). */
 export const prefixes = {
   goal: 'GOAL',
   project: 'PRJ',
@@ -16,7 +15,6 @@ export type Prefix = (typeof prefixes)[ItemType]
 
 export const itemTypes = Object.keys(prefixes) as [ItemType, ...ItemType[]]
 
-/** Default number of digits an allocated ID is padded to; configurable per workspace. */
 export const defaultIdPadding = 5
 
 const idString = (prefix: Prefix) =>
@@ -38,11 +36,9 @@ export type DocId = typeof DocId.Type
 export type ContextId = typeof ContextId.Type
 export type RunbookId = typeof RunbookId.Type
 
-/** Any item ID, for relationships that may point at any type (`related`, `explains`). */
 export const ItemId = Schema.Union([GoalId, ProjectId, TaskId, AdrId, DocId, ContextId, RunbookId])
 export type ItemId = typeof ItemId.Type
 
-/** A git identity written as `@handle`. */
 export const Handle = Schema.String.check(Schema.isPattern(/^@[A-Za-z0-9][A-Za-z0-9_.-]*$/u)).pipe(
   Schema.brand('Handle'),
 )
@@ -50,11 +46,9 @@ export type Handle = typeof Handle.Type
 
 const idPattern = new RegExp(`^(${Object.values(prefixes).join('|')})-(\\d+)$`, 'u')
 
-/** Formats an ID, such as `formatId('TASK', 42)` gives `TASK-00042`. */
 export const formatId = (prefix: Prefix, number: number, padding = defaultIdPadding) =>
   `${prefix}-${String(number).padStart(padding, '0')}`
 
-/** Splits an ID into its prefix, type and number. Returns `undefined` if it is not an item ID. */
 export const parseId = (id: string) => {
   const match = idPattern.exec(id)
   if (!match) return undefined

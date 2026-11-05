@@ -5,7 +5,6 @@ import { ProgressBar, TagList } from '@/components'
 import '../GoalCard/GoalCard.css'
 import { statusOfProgress } from '../status'
 
-/** A project as a card: the goals it serves, its title, tags and progress. */
 export function ProjectCard({ project }: { readonly project: ProjectRow }) {
   const progress = project.progress ?? { done: 0, total: 0 }
   return (

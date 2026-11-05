@@ -145,7 +145,6 @@ const routeTree = root.addChildren([
   preview,
 ])
 
-/** The app's routes. Pass a memory history for tests. */
 export const createAppRouter = (history?: RouterHistory) =>
   createRouter({ routeTree, ...(history ? { history } : {}), defaultPreload: 'intent' })
 

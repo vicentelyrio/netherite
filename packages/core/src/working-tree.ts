@@ -10,14 +10,6 @@ const asValue = (value: unknown): FieldValue => {
 
 const same = (a: FieldValue, b: FieldValue) => JSON.stringify(a) === JSON.stringify(b)
 
-/**
- * History is what was committed, but Netherite never commits for you: an ADR accepted in the app
- * or a task ticked off by an agent is in the file long before it is in git. This puts those
- * changes on the end of the history, dated `now`, so the views that read history (Timeline,
- * Stats, the as-of graph) show the work as it stands. A change that is committed later replaces
- * its stand-in with the real commit and date. Items with no history yet are left to the views
- * that already treat a new file as starting now.
- */
 export const withWorkingTree = (
   history: History,
   index: WorkspaceIndex,

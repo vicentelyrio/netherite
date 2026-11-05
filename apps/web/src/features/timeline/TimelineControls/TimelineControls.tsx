@@ -4,7 +4,6 @@ import { zooms } from '../layout'
 import { useTimeline } from '../TimelineProvider'
 import './TimelineControls.css'
 
-/** Zoom between a quarter and two years, and whether tasks and decisions are drawn. */
 export function TimelineControls() {
   const { LL } = useI18nContext()
   const { zoom, setZoom, showTasks, setShowTasks, showDecisions, setShowDecisions } = useTimeline()

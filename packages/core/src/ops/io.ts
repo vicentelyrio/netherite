@@ -4,15 +4,9 @@ import { toScannedItem } from '../scanned-item'
 import { contentHash } from './hash'
 import type { Repo } from './repo'
 
-/** One file to write (`content` is text), create, or delete (`content` is `null`). */
 export interface Change {
-  /** Path relative to the workspace root. */
   readonly path: string
   readonly content: string | null
-  /**
-   * The text this change is based on. The write is refused if the file on disk no longer has
-   * exactly this text. `null` means the file must not exist yet.
-   */
   readonly before: string | null
 }
 
@@ -25,7 +19,6 @@ export const absolute = (repo: Repo, path: string) =>
     return p.join(repo.workspace.root, path)
   })
 
-/** Reads a file's current text from disk. */
 export const readText = (repo: Repo, path: string) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
@@ -42,12 +35,6 @@ const current = (repo: Repo, path: string) =>
     return yield* fs.readFileString(file).pipe(Effect.mapError(io(path, 'read')))
   })
 
-/**
- * Applies several changes as one unit. Each file is written to a temporary file next to its
- * target first, then every precondition is checked (nothing changed on disk since the edit was
- * based on it), then the files are moved into place. If any step fails, the files already moved
- * are put back and nothing is left behind. The index is updated only on success.
- */
 export const applyChanges = (repo: Repo, changes: ReadonlyArray<Change>) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem

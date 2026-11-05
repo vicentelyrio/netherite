@@ -25,7 +25,6 @@ const run = <A, E>(effect: Effect.Effect<A, E, NodeServices.NodeServices>) =>
 
 const guide = 'docs/guide.md'
 
-/** A guide that changes with src/a.ts and src/b.ts most of the time. */
 const history: Commit[] = [
   {
     message: 'c1',

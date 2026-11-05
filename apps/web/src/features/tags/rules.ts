@@ -8,7 +8,6 @@ export type FieldFilter = 'all' | 'tags' | 'labels'
 
 export const keyOf = (t: TagRef) => `${t.field}:${t.name}`
 
-/** What the page shows: the field tabs and the text filter apply together; the order is the server's. */
 export const filterTags = <T extends TagRef>(
   tags: ReadonlyArray<T>,
   field: FieldFilter,
@@ -20,7 +19,6 @@ export const filterTags = <T extends TagRef>(
       (q.trim() === '' || t.name.toLowerCase().includes(q.trim().toLowerCase())),
   )
 
-/** What a new name does to a tag: nothing, an error, or a merge into one that exists. */
 export const renameOutcome = (
   tags: ReadonlyArray<TagRef>,
   tag: TagRef,
@@ -33,22 +31,17 @@ export const renameOutcome = (
   return tags.some((t) => t.field === tag.field && t.name === to) ? 'merge' : 'rename'
 }
 
-/** The search that finds the same files by hand: every file whose frontmatter lists the tag. */
 export const grepFor = (tag: TagRef) =>
   `grep -rnE '^${tag.field}:.*[[ ,]${tag.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[], ]' netherite`
 
-/** The newest items first: IDs only ever count up. */
 export const recentIds = (ids: ReadonlyArray<string>, count = 5) =>
   [...ids].sort((a, b) => b.localeCompare(a)).slice(0, count)
 
-/** The pair as one key, so dismissing it survives a reload of the same list. */
 export const pairKey = (pair: Pick<TagPair, 'a' | 'b'>) =>
   [keyOf(pair.a), keyOf(pair.b)].sort().join('|')
 
-/** Usage as a share of the most used tag, for the bar in the list. */
 export const shareOf = (total: number, max: number) => (max <= 0 ? 0 : total / max)
 
-/** How a tag's usage splits across the four groups the screen names. */
 export const groupsOf = (byType: Readonly<Record<string, number>>) => ({
   goals: byType.goal ?? 0,
   projects: byType.project ?? 0,

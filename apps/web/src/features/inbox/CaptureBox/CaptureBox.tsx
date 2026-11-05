@@ -6,7 +6,6 @@ import { useWrite } from '@/infrastructure/query'
 import { useInboxState } from '../InboxProvider'
 import './CaptureBox.css'
 
-/** One line, added to the bottom of `inbox.md` with Enter; triage turns it into an item later. */
 export function CaptureBox() {
   const { LL } = useI18nContext()
   const api = useApi()

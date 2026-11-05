@@ -5,7 +5,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { NewTask } from '../NewTask'
 import { TaskCard } from '../TaskCard'
 
-/** The icon that stands for each kind of state in a column's heading. */
 const categoryIcon: Readonly<Record<StateCategory, string>> = {
   todo: 'radio_button_unchecked',
   active: 'clock_loader_40',
@@ -13,7 +12,6 @@ const categoryIcon: Readonly<Record<StateCategory, string>> = {
   done: 'check_circle',
 }
 
-/** One state of the board: its tasks, a drop target, and a way to add a task in it. */
 export function BoardColumn({
   name,
   category,
@@ -29,7 +27,6 @@ export function BoardColumn({
   readonly cards: ReadonlyArray<BoardCard>
   readonly selected: string | undefined
   readonly overline?: string | undefined
-  /** The task being dragged, if any. */
   readonly dragging: BoardCard | undefined
 }) {
   const { LL } = useI18nContext()

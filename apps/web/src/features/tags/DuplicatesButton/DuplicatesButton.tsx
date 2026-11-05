@@ -4,7 +4,6 @@ import { keyOf } from '../rules'
 import { useTags } from '../TagsProvider'
 import './DuplicatesButton.css'
 
-/** How many tags look like duplicates; a click picks the first, whose panel says what to do. */
 export function DuplicatesButton() {
   const { LL } = useI18nContext()
   const { duplicates, select } = useTags()

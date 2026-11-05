@@ -1,8 +1,3 @@
-/**
- * Every action the app can run from the keyboard, with the keys it has out of the box. A person's
- * own choice (see `settings`) replaces `keys`; `aliases` are extra keys for shortcuts a browser
- * keeps for itself (Command-L focuses the address bar), and apply only to the default.
- */
 export const actions = {
   'search.open': { label: 'Search', keys: 'mod+k' },
   'go.inbox': { label: 'Inbox', keys: 'mod+i' },

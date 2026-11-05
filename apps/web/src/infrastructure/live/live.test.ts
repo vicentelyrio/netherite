@@ -43,7 +43,6 @@ describe('what each event makes stale', () => {
   })
 })
 
-/** An event stream the test drives by hand. */
 class FakeSource {
   static last: FakeSource | undefined
   onopen: (() => void) | null = null

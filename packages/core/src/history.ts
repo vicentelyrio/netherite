@@ -9,30 +9,22 @@ export interface Author {
   readonly email: string
 }
 
-/** A frontmatter field's value in history. Lists such as `goals` are kept as lists. */
 export type FieldValue = string | ReadonlyArray<string> | undefined
 
 export interface Transition {
-  /** The item's ID, so a renamed or renumbered file keeps one history. */
   readonly id: string
   readonly type: string | undefined
   readonly field: string
   readonly from: FieldValue
   readonly to: FieldValue
-  /**
-   * `created`: the commit added the file. `changed`: the value changed. `seen`: the first
-   * time it was seen in a limited window of history, so its earlier value is not known.
-   */
   readonly kind: 'created' | 'changed' | 'seen'
   readonly hash: string
-  /** Commit date, ISO 8601. */
   readonly date: string
   readonly author: Author
 }
 
 export interface AuthorSummary extends Author {
   readonly commits: number
-  /** `YYYY-MM-DD`. */
   readonly first: string
   readonly last: string
 }
@@ -40,46 +32,32 @@ export interface AuthorSummary extends Author {
 export interface ItemHistory {
   readonly id: string
   readonly type: string | undefined
-  /** Every path the item has had, in the order it had them. */
   readonly paths: ReadonlyArray<string>
   readonly transitions: ReadonlyArray<Transition>
-  /** Who changed the item, most commits first. */
   readonly authors: ReadonlyArray<AuthorSummary>
   readonly created:
     | { readonly hash: string; readonly date: string; readonly author: Author }
     | undefined
-  /** Set when the file was removed and not brought back. */
   readonly deletedAt: string | undefined
   readonly commits: number
 }
 
 export interface History {
   readonly items: ReadonlyMap<string, ItemHistory>
-  /** Commits that touched the content folder. */
   readonly commits: number
-  /** Those commits, newest first, with their hash and date. */
   readonly log: ReadonlyArray<{ readonly hash: string; readonly date: string }>
-  /** `true` when old history is missing: a shallow clone, or a `limit` or `after` window. */
   readonly partial: boolean
 }
 
 export interface HistoryOptions {
-  /** Content root relative to the workspace, such as `netherite`. */
   readonly contentRoot: string
-  /** Frontmatter fields to follow. Default: `status`, `state`, `due`, `project`, `goals`. */
   readonly fields?: ReadonlyArray<string>
-  /** Only commits after this date (ISO 8601). */
   readonly after?: string
-  /** Only this many of the latest commits. */
   readonly limit?: number
 }
 
 export const defaultTrackedFields = ['status', 'state', 'due', 'project', 'goals'] as const
 
-/**
- * The top of the file's frontmatter after the commit, if the diff shows it: `null` if the file
- * was deleted, `undefined` if the commit did not show the frontmatter (a body-only change).
- */
 const frontmatterAfter = (patch: FilePatch): Record<string, unknown> | null | undefined => {
   if (patch.deleted) return null
   const hunk = patch.hunks.find((h) => h.newStart === 1)
@@ -112,16 +90,9 @@ interface Builder {
   created: ItemHistory['created']
   deletedAt: string | undefined
   commits: number
-  /** The latest commit already counted, so a commit that touches two paths of one item counts once. */
   lastCounted: string | undefined
 }
 
-/**
- * Reads how items changed over time from git (ADR-00007). It looks at every commit that touched
- * the content folder, reads each changed file's frontmatter after the commit from the diff, and
- * records every time a followed field changed, who changed each item, and when it was created
- * or removed. Items are tracked by ID, so renaming or renumbering a file keeps its history.
- */
 export const readHistory = (
   git: GitRepository,
   workspaceRoot: string,
@@ -264,36 +235,27 @@ export const readHistory = (
 
 const byTime = (a: { date: string }, b: { date: string }) => Date.parse(a.date) - Date.parse(b.date)
 
-/** Who changed an item, most commits first. Empty for an unknown ID. */
 export const authorsOf = (history: History, id: string): ReadonlyArray<AuthorSummary> =>
   history.items.get(id)?.authors ?? []
 
-/** Every `status` change of every ADR, oldest first: the decision log. */
 export const decisionLog = (history: History): ReadonlyArray<Transition> =>
   [...history.items.values()]
     .filter((item) => item.type === 'adr')
     .flatMap((item) => item.transitions.filter((t) => t.field === 'status'))
     .sort(byTime)
 
-/** Every `state` change of every task, oldest first. */
 export const taskTransitions = (history: History): ReadonlyArray<Transition> =>
   [...history.items.values()]
     .filter((item) => item.type === 'task')
     .flatMap((item) => item.transitions.filter((t) => t.field === 'state'))
     .sort(byTime)
 
-/**
- * The UTC calendar day of an ISO 8601 timestamp, as `YYYY-MM-DD`. Commit dates carry their
- * author's offset (`2026-11-01T21:07:44-03:00` is already November 2 in UTC), and weeks are
- * counted in UTC so they are the same on every machine. A plain date is returned as it is.
- */
 const utcDay = (iso: string) => {
   if (iso.length <= 10) return iso
   const time = Date.parse(iso)
   return Number.isNaN(time) ? iso.slice(0, 10) : new Date(time).toISOString().slice(0, 10)
 }
 
-/** The Monday (UTC) of the week a date falls in, as `YYYY-MM-DD`. */
 export const weekStart = (date: string) => {
   const d = new Date(`${utcDay(date)}T00:00:00Z`)
   const back = (d.getUTCDay() + 6) % 7
@@ -307,7 +269,6 @@ const addDays = (date: string, days: number) => {
   return d.toISOString().slice(0, 10)
 }
 
-/** Every week from `from` to `to` (inclusive), as Monday dates. */
 const weeksBetween = (from: string, to: string) => {
   const weeks: string[] = []
   for (let week = weekStart(from); week <= weekStart(to); week = addDays(week, 7)) weeks.push(week)
@@ -315,19 +276,15 @@ const weeksBetween = (from: string, to: string) => {
 }
 
 export interface WeekRange {
-  /** First day to include, `YYYY-MM-DD`. Default: the earliest event. */
   readonly from?: string
-  /** Last day to include. Default: the latest event. */
   readonly to?: string
 }
 
 export interface WeekCount {
-  /** The Monday that starts the week. */
   readonly week: string
   readonly count: number
 }
 
-/** Commits to the content folder per week, empty weeks included. */
 export const commitsByWeek = (
   history: History,
   range: WeekRange = {},
@@ -344,11 +301,6 @@ export const commitsByWeek = (
   return [...counts].map(([week, count]) => ({ week, count }))
 }
 
-/**
- * Tasks that reached a done state, per week. A task counts each time it moves into a done state
- * from one that is not (so reopening and finishing again counts twice); a task created already
- * done counts once. Weeks with none are included with 0.
- */
 export const completionsByWeek = (
   history: History,
   doneStates: ReadonlySet<string>,
@@ -384,7 +336,6 @@ export interface AdrWeek {
   readonly superseded: number
 }
 
-/** ADR status changes per week, by the status they moved to. */
 export const adrActivityByWeek = (
   history: History,
   range: WeekRange = {},
@@ -413,7 +364,6 @@ export const adrActivityByWeek = (
 }
 
 export interface ProgressPoint {
-  /** The Monday that starts the week; the counts are as of the end of that week. */
   readonly week: string
   readonly done: number
   readonly total: number
@@ -434,11 +384,6 @@ const valueAt = (item: ItemHistory, field: string, before: number): FieldValue =
   return value
 }
 
-/**
- * How many tasks each project and goal had, and how many were done, at the end of each week.
- * It replays history: a task counts from the commit that created it until the one that deleted
- * it, in the project it belonged to at the time; a goal counts the tasks of its projects.
- */
 export const progressSeries = (
   history: History,
   doneStates: ReadonlySet<string>,

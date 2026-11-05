@@ -5,9 +5,7 @@ import type { Repo } from './ops/repo'
 import { fieldsOf, type NodeStatus } from './views'
 
 export interface TimelineHold {
-  /** `YYYY-MM-DD`. */
   readonly from: string
-  /** Missing while it is still on hold. */
   readonly to?: string
 }
 
@@ -15,19 +13,14 @@ interface TimelineBase {
   readonly id: string
   readonly title: string
   readonly status: NodeStatus
-  /** Done over all, 0 to 1. */
   readonly progress: number
-  /** `YYYY-MM-DD` dates, missing when unknown. */
   readonly created?: string
   readonly started?: string
   readonly finished?: string
   readonly due?: string
-  /** Not done, and its due date is before today. */
   readonly overdue: boolean
-  /** Not started yet. */
   readonly planned: boolean
   readonly holds: ReadonlyArray<TimelineHold>
-  /** Dates are only as early as the available history goes. */
   readonly approximate: boolean
 }
 
@@ -62,17 +55,13 @@ export interface Timeline {
   readonly projects: ReadonlyArray<TimelineProject>
   readonly tasks: ReadonlyArray<TimelineTask>
   readonly decisions: ReadonlyArray<TimelineDecision>
-  /** Commits per week over the window, for the activity strip. */
   readonly activity: ReadonlyArray<WeekCount>
   readonly approximate: boolean
 }
 
 export interface TimelineOptions {
-  /** First day of the window, `YYYY-MM-DD`. Default: the earliest date in the workspace. */
   readonly from?: string
-  /** Last day of the window. Default: today, or the latest due date if that is later. */
   readonly to?: string
-  /** The current moment (ISO 8601). Default: now. */
   readonly now?: string
 }
 
@@ -89,12 +78,6 @@ const holdsOf = (spans: ReadonlyArray<Span>): ReadonlyArray<TimelineHold> =>
 
 const text = (value: unknown) => (typeof value === 'string' ? value : undefined)
 
-/**
- * Everything the Timeline draws, in one read (ADR-00023): goals, projects, tasks and decisions
- * with their dates, holds, due dates and flags, and a weekly commit count for the activity
- * strip. Only items whose life touches the window are returned. Overdue and planned are decided
- * here, from today, so every client agrees.
- */
 export const timelineOf = (
   repo: Repo,
   history: History,

@@ -12,7 +12,6 @@ const tabs = [
   'changes',
 ] as const satisfies ReadonlyArray<Tab>
 
-/** Tabs for what needs review, what commits point at and what changed; J K E H work the list. */
 export function InboxToolbar() {
   const { LL } = useI18nContext()
   const { tab, setTab, countOf, inbox, selected, move, archive, snooze } = useInboxState()

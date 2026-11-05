@@ -4,7 +4,6 @@ import { formatDate } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useStats } from '../StatsProvider'
 
-/** Breadcrumb and title, the dates the numbers cover, and a warning when the history is cut short. */
 export function StatsHeading() {
   const { LL } = useI18nContext()
   const { data } = useStats()

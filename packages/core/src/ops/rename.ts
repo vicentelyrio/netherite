@@ -11,11 +11,6 @@ const stem = (path: string) => path.slice(path.lastIndexOf('/') + 1).replace(/\.
 
 const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-/**
- * Moves an item's file to another path, keeping its ID. Links written by file name
- * (`[[TASK-00001-core]]`) are rewritten to follow, in every file that has one. Links by ID or
- * title are not affected by a rename. Fails if something is already at the new path.
- */
 export const renameFile = (
   repo: Repo,
   from: string,

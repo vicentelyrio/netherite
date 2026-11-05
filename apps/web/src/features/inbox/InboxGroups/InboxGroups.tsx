@@ -7,7 +7,6 @@ import '../shared.css'
 import { useI18nContext } from '@/infrastructure/i18n'
 import './InboxGroups.css'
 
-/** What waits for you and what changed, in a group each; "All clear" when there is nothing. */
 export function InboxGroups() {
   const { LL } = useI18nContext()
   const { inbox, changed, all, showAll } = useInboxState()

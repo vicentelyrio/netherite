@@ -5,7 +5,6 @@ import { CommitCard } from '../CommitCard'
 import { useDecisions } from '../DecisionProvider'
 import './DecisionLanes.css'
 
-/** One column per project, each a timeline of the commits that changed its ADRs. */
 export function DecisionLanes() {
   const { LL } = useI18nContext()
   const { lanes } = useDecisions()

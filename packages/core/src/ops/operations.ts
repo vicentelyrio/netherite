@@ -53,23 +53,15 @@ export type OpError =
 export type OpEnv = FileSystem.FileSystem | Path.Path
 
 export interface OpOptions {
-  /**
-   * Hash of the file the caller read (from a previous result or `contentHash`). If the file has
-   * changed since, the operation fails with `ConflictError` instead of overwriting.
-   */
   readonly baseHash?: string
 }
 
 export interface OpResult {
-  /** The item the operation was about. */
   readonly id: string
   readonly path: string
   readonly item: ScannedItem
-  /** Hash of the item's file now; pass it as `baseHash` to the next operation. */
   readonly hash: string
-  /** Every file the operation wrote, created or deleted. */
   readonly changed: ReadonlyArray<string>
-  /** `true` when the file already was as requested and nothing was written. */
   readonly unchanged: boolean
 }
 
@@ -98,17 +90,12 @@ const data = (source: string): Record<string, unknown> | undefined => {
 const isoDate = (ms: number) => new Date(ms).toISOString().slice(0, 10)
 const isoDateTime = (ms: number) => new Date(ms).toISOString().replace(/\.\d{3}Z$/, 'Z')
 
-/**
- * Identifies a problem by its field, its message and the value in the field. The value matters:
- * a field that was invalid and is set to another invalid value has a new problem.
- */
 const key = (issue: FieldIssue, source: string) => {
   const field = issue.path[0]
   const value = typeof field === 'string' ? data(source)?.[field] : undefined
   return `${issue.path.join('.')}\u0000${issue.message}\u0000${JSON.stringify(value)}`
 }
 
-/** Everything wrong with an item's frontmatter: schema problems, aliases, broken references. */
 const problems = (repo: Repo, path: string, source: string): FieldIssue[] => {
   const item = toScannedItem(path, source)
   const fm = item.parsed.frontmatter
@@ -132,7 +119,6 @@ const problems = (repo: Repo, path: string, source: string): FieldIssue[] => {
   return found
 }
 
-/** Fails if the new text has a problem the old text did not have. */
 const validate = (
   repo: Repo,
   path: string,
@@ -172,10 +158,6 @@ interface Step {
   ) => Effect.Effect<string, EditError | ValidationError>
 }
 
-/**
- * Edits one or more existing items as a unit: reads each from disk, applies its edit, checks the
- * result is not worse than before, and writes them all or none.
- */
 const mutate = (repo: Repo, steps: ReadonlyArray<Step>): Op =>
   Effect.gen(function* () {
     const changes: Change[] = []
@@ -206,7 +188,6 @@ const mutate = (repo: Repo, steps: ReadonlyArray<Step>): Op =>
     )
   })
 
-/** Removes a value from a list field, and drops the field when that leaves it empty. */
 const removeAndPrune = (source: string, field: string, value: string) =>
   Effect.flatMap(removeFromList(source, field, value), (next) => {
     const list = data(next)?.[field]
@@ -226,25 +207,15 @@ const fold = <E>(
 export interface CreateInput {
   readonly type: ItemType
   readonly title: string
-  /**
-   * An explicit ID, for importing items that already have one. It must be the type's prefix and a
-   * number written with the workspace's padding, and no item may use it or its number. Without it
-   * the item gets the next free ID.
-   */
   readonly id?: string
-  /** Fields beyond the title, such as `project` for a task. Defaults are filled in. */
   readonly fields?: Readonly<Record<string, Json>>
-  /** Text after the title heading. An ADR gets Context, Decision and Consequences by default. */
   readonly body?: string
-  /** A git identity such as `@ada`, recorded as `created_by`. */
   readonly createdBy?: string
-  /** An ADR's deciders. Default: the person creating it. An empty list leaves the field out. */
   readonly deciders?: ReadonlyArray<string>
 }
 
 const reserved = ['id', 'type', 'aliases', 'title', 'created']
 
-/** An ID the caller picked: right for the type, written as the workspace writes IDs, and free. */
 const explicitId = (repo: Repo, type: ItemType, given: string, padding: number) =>
   Effect.gen(function* () {
     const parsed = parseId(given)
@@ -267,10 +238,6 @@ const explicitId = (repo: Repo, type: ItemType, given: string, padding: number) 
 
 const adrTemplate = '## Context\n\n## Decision\n\n## Consequences'
 
-/**
- * Creates a new item with the next free ID, in its type's folder. The result is validated as a
- * whole first, including that every item it points at exists.
- */
 export const createItem = (repo: Repo, input: CreateInput): Op =>
   Effect.gen(function* () {
     const bad = Object.keys(input.fields ?? {}).filter((f) => reserved.includes(f))
@@ -335,7 +302,6 @@ export interface FieldPatch {
 
 const immutable = ['id', 'type']
 
-/** Keeps the first `# ` heading after the frontmatter in step with a new `title`. */
 const retitleHeading = (text: string, title: string) => {
   const end = text.match(/^---\r?\n[\s\S]*?\r?\n---[ \t]*(?:\r?\n|$)/)?.[0].length ?? 0
   const rest = text.slice(end)
@@ -343,7 +309,6 @@ const retitleHeading = (text: string, title: string) => {
   return heading.test(rest) ? text.slice(0, end) + rest.replace(heading, () => `# ${title}`) : text
 }
 
-/** Sets and removes frontmatter fields. `id` and `type` cannot be changed this way. */
 export const updateFields = (
   repo: Repo,
   id: string,
@@ -388,11 +353,6 @@ export const updateFields = (
   ])
 }
 
-/**
- * Ticks or unticks checklist items, by position or text: one, several, or `{ all: true }`, in one
- * write with one hash check. With several or all and no `checked`, each item is flipped; the
- * caller that wants "finish them all" says `checked: true`.
- */
 export const toggleChecklistItem = (
   repo: Repo,
   id: string,
@@ -407,12 +367,10 @@ export const toggleChecklistItem = (
 export interface SectionPatch {
   readonly heading: string
   readonly content: string
-  /** `replace` (default) swaps the section's text; `append` adds to it; `create` adds a new section. */
   readonly mode?: 'replace' | 'append' | 'create'
   readonly depth?: 1 | 2 | 3 | 4 | 5 | 6
 }
 
-/** Changes one section of an item's body. */
 export const updateSection = (
   repo: Repo,
   id: string,
@@ -437,7 +395,6 @@ export const updateSection = (
     },
   ])
 
-/** Sets `reviewed_at` on a doc, runbook or context item. Defaults to today. */
 export const markReviewed = (
   repo: Repo,
   id: string,
@@ -462,7 +419,6 @@ export const markReviewed = (
 
 const knowledgeTypes = ['doc', 'runbook', 'context']
 
-/** The statuses an item type can be given: an ADR's lifecycle, or whether a doc is still current. */
 const statusesOf = (type: string | undefined) =>
   type === 'adr'
     ? ['proposed', 'accepted', 'deprecated', 'superseded']
@@ -470,7 +426,6 @@ const statusesOf = (type: string | undefined) =>
       ? ['active', 'deprecated', 'superseded']
       : []
 
-/** An item is replaced by one of its own type: an ADR by an ADR, a doc by a doc. */
 const sameKind = (item: ScannedItem, other: ScannedItem) =>
   item.type === other.type && statusesOf(item.type).includes('superseded')
     ? Effect.succeed(item)
@@ -481,7 +436,6 @@ const sameKind = (item: ScannedItem, other: ScannedItem) =>
         ),
       )
 
-/** Marks `old` as superseded by `by`, and records that `by` supersedes `old`: both files change. */
 export const supersede = (
   repo: Repo,
   input: { readonly old: string; readonly by: string },
@@ -510,7 +464,6 @@ export const supersede = (
     ])
   })
 
-/** Undoes `supersede`: the old item gets a new status, and the newer one stops listing it. */
 const restore = (repo: Repo, oldId: string, status: string, options: OpOptions): Op =>
   Effect.gen(function* () {
     const item = yield* locate(repo, oldId)
@@ -536,11 +489,6 @@ const restore = (repo: Repo, oldId: string, status: string, options: OpOptions):
     return yield* mutate(repo, steps)
   })
 
-/**
- * Sets a task's state, or the status of an ADR, doc, runbook or context item. Making an item
- * `superseded` needs `supersededBy`, and updates both items. Moving an item out of `superseded`
- * clears that link on both. A doc made `active` loses its `status`, as a missing one means active.
- */
 export const setState = (
   repo: Repo,
   id: string,
@@ -617,10 +565,6 @@ const relationFor = (repo: Repo, input: LinkInput) =>
     return relation
   })
 
-/**
- * Adds a typed relationship from one item to another by editing the right field. `supersedes`
- * updates both ADRs. A single-valued field such as a task's `project` is replaced.
- */
 export const link = (repo: Repo, input: LinkInput, options: OpOptions = {}): Op =>
   Effect.gen(function* () {
     if (input.kind === 'supersedes') {
@@ -641,7 +585,6 @@ export const link = (repo: Repo, input: LinkInput, options: OpOptions = {}): Op 
     ])
   })
 
-/** Removes a typed relationship. Removing a required one, such as a task's project, is refused. */
 export const unlink = (repo: Repo, input: LinkInput, options: OpOptions = {}): Op =>
   Effect.gen(function* () {
     if (input.kind === 'supersedes') {
@@ -670,7 +613,6 @@ export const unlink = (repo: Repo, input: LinkInput, options: OpOptions = {}): O
     ])
   })
 
-/** Deletes an item's file. Refuses while other items link to it, unless `force` is set. */
 export const deleteItem = (
   repo: Repo,
   id: string,
@@ -703,12 +645,6 @@ export interface ItemPatch {
   readonly section?: SectionPatch
 }
 
-/**
- * Sets and unsets fields and/or changes one section, as one request. Each step chains on the
- * hash the previous one left, so a stale `baseHash` is caught by the first. The result lists
- * every file written; `unchanged` is `true` only if no step changed anything. `undefined` when
- * the patch asked for nothing.
- */
 export const updateItem = (repo: Repo, id: string, patch: ItemPatch, options: OpOptions = {}) =>
   Effect.gen(function* () {
     let result: OpResult | undefined
@@ -736,7 +672,6 @@ export const updateItem = (repo: Repo, id: string, patch: ItemPatch, options: Op
       : ({ ...result, changed: [...changed], unchanged: changed.size === 0 } satisfies OpResult)
   })
 
-/** The whole text of an item's file, as it is on disk now, and its hash. */
 export const readSource = (repo: Repo, id: string) =>
   Effect.gen(function* () {
     const item = yield* locate(repo, id)
@@ -744,11 +679,6 @@ export const readSource = (repo: Repo, id: string) =>
     return { path: item.path, text, hash: contentHash(text) }
   })
 
-/**
- * Replaces an item's whole file, as an editor saves it. The new text goes through the same checks
- * as any other write: it may not have a problem the old text did not have. It must also stay the
- * same item: `id` and `type` cannot change this way.
- */
 export const replaceSource = (repo: Repo, id: string, text: string, options: OpOptions = {}) =>
   mutate(repo, [
     {
@@ -777,7 +707,6 @@ export interface TagUse {
   readonly field: TagField
   readonly name: string
   readonly total: number
-  /** How many items of each type carry it. */
   readonly byType: Readonly<Record<string, number>>
   readonly ids: ReadonlyArray<string>
 }
@@ -785,7 +714,6 @@ export interface TagUse {
 const listOf = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []
 
-/** Every tag and label in use, most used first, with how many items of each type carry it. */
 export const tagUsage = (repo: Repo): TagUse[] => {
   const uses = new Map<
     string,
@@ -813,17 +741,10 @@ export const tagUsage = (repo: Repo): TagUse[] => {
 }
 
 export interface RenameResult {
-  /** How many items were changed. */
   readonly renamed: number
-  /** Every file written. */
   readonly changed: ReadonlyArray<string>
 }
 
-/**
- * Renames a tag or label in every item that has it, one file at a time through `updateItem`, so
- * each file is checked against its schema and keeps its formatting. If the new name is already
- * on an item, the two merge into one. Nothing is written when the name is empty or unchanged.
- */
 export const renameTag = (repo: Repo, input: { field: TagField; from: string; to: string }) =>
   Effect.gen(function* () {
     const to = input.to.trim()
@@ -849,11 +770,6 @@ export const renameTag = (repo: Repo, input: { field: TagField; from: string; to
     return { renamed, changed: [...changed] } satisfies RenameResult
   })
 
-/**
- * Renames an area in every goal that has it, one file at a time through `updateItem`. If the new
- * name is already an area, the two merge. An empty `from` is the goals that have no area yet; an
- * empty `to` removes the area from its goals. Nothing is written when the name is unchanged.
- */
 export const renameArea = (repo: Repo, input: { from: string; to: string }) =>
   Effect.gen(function* () {
     const to = input.to.trim()
@@ -877,11 +793,6 @@ export const renameArea = (repo: Repo, input: { from: string; to: string }) =>
     return { renamed, changed: [...changed] } satisfies RenameResult
   })
 
-/**
- * What a request to tick items asks for: one `item`, a list of `items`, or `all`. Exactly one must
- * be given, and each item is a 0-based position or its exact text. Returns the target and the
- * `checked` to use (`all` without `checked` ticks), or the problems with the request.
- */
 export const checkTargetOf = (input: {
   readonly item?: number | string | undefined
   readonly items?: ReadonlyArray<number | string> | undefined

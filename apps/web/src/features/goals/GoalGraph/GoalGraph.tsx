@@ -5,7 +5,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { goalQuery, graphQuery } from '@/infrastructure/query'
 import './GoalGraph.css'
 
-/** The goal and what hangs from it, in the graph. */
 export function GoalGraph({ id }: { readonly id: string }) {
   const { LL } = useI18nContext()
   const api = useApi()

@@ -5,7 +5,6 @@ import { type ScannedItem, scanItems, toScannedItem } from '../src/index'
 
 const real = Layer.merge(NodeFileSystem.layer, NodePath.layer)
 
-/** Scans a copy of `fixtures/basic` from disk. */
 export const scanFixture = async (name = 'basic'): Promise<ReadonlyArray<ScannedItem>> =>
   withTempDir(name, (dir) =>
     Effect.runPromise(
@@ -13,11 +12,9 @@ export const scanFixture = async (name = 'basic'): Promise<ReadonlyArray<Scanned
     ),
   )
 
-/** Builds scanned items from `{ path: file text }` without touching disk. */
 export const itemsFrom = (files: Record<string, string>) =>
   Object.entries(files).map(([path, text]) => toScannedItem(path, text))
 
-/** A minimal item file with the given frontmatter fields. */
 export const itemFile = (
   fields: { id?: string; aliases?: string[]; title?: string; type?: string },
   body = '',

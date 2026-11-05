@@ -7,55 +7,37 @@ import { rewriteLinks } from './import-links'
 import { createItem, readSource, replaceSource, updateFields } from './operations'
 import type { Repo } from './repo'
 
-/** The types an import brings in: what a repository already has written down. */
 export const importTypes = ['doc', 'runbook', 'context', 'adr'] as const
 export type ImportType = (typeof importTypes)[number]
 
-/** One candidate of a batch, as the agent and the person settled it. */
 export interface ImportEntry {
-  /** A file of the repository, as a path from its root, or a URL. The item records it. */
   readonly source: string
   readonly type: ImportType
-  /** Default: the first heading of the source, else its file name. */
   readonly title?: string
-  /** Keep an existing number, such as `ADR-00004`. Default: the next free one. */
   readonly id?: string
-  /** Fields beyond the title, such as `covers` or an ADR's `status`. */
   readonly fields?: Readonly<Record<string, Json>>
-  /** The text, when the source is not a file to read or the agent rewrote it. */
   readonly body?: string
-  /** `copy` leaves the original alone; `move` removes it once the item is written. */
   readonly mode: 'copy' | 'move'
 }
 
 export interface ImportOptions {
-  /** Bring an already imported item up to date with its source, instead of skipping it. */
   readonly update?: boolean
-  /** Report what would happen; write nothing. */
   readonly dryRun?: boolean
-  /** With `mode: move`, leave a one-line note where the original was. */
   readonly stub?: boolean
-  /** A git identity such as `@ada`, recorded as `created_by`. */
   readonly createdBy?: string
-  /** The `mode` of entries that do not say. Default `copy`. */
   readonly mode?: 'copy' | 'move'
 }
 
 export type EntryStatus = 'created' | 'updated' | 'skipped' | 'failed'
 
 export interface EntryResult {
-  /** The entry's place in the batch, from 1. */
   readonly entry: number
   readonly source: string | undefined
   readonly status: EntryStatus
   readonly id?: string
-  /** The item's path, relative to the repository root. */
   readonly path?: string
-  /** Why it was skipped or failed. */
   readonly reason?: string
-  /** What the schema did not like, when that is why it failed. */
   readonly issues?: ReadonlyArray<FieldIssue>
-  /** What happened to the original of a `move`. */
   readonly original?: 'removed' | 'stub' | 'kept'
 }
 
@@ -63,7 +45,6 @@ export interface ImportReport {
   readonly dryRun: boolean
   readonly results: ReadonlyArray<EntryResult>
   readonly counts: Readonly<Record<EntryStatus, number>>
-  /** Links between imported files that were rewritten as links between items. */
   readonly relinked: { readonly items: number; readonly links: number }
 }
 
@@ -109,18 +90,12 @@ const parseEntry = (raw: unknown, defaultMode: 'copy' | 'move'): Parsed => {
   }
 }
 
-/**
- * Text that Netherite wrote into a file itself, between `<!-- netherite:...:start -->` and
- * `<!-- netherite:...:end -->`, such as the context block in `CLAUDE.md`. It is not the file's own
- * writing, and `context sync` puts it back, so an import leaves it out.
- */
 export const withoutManagedBlocks = (text: string): string =>
   text.replace(
     /<!-- netherite:[a-z-]+:start -->[\s\S]*?<!-- netherite:[a-z-]+:end -->[ \t]*\r?\n?/gu,
     '',
   )
 
-/** The text of a source without its frontmatter and its first `# ` heading, and that heading. */
 export const splitSource = (text: string): { readonly title?: string; readonly body: string } => {
   const end = text.match(/^---\r?\n[\s\S]*?\r?\n---[ \t]*(?:\r?\n|$)/)?.[0].length ?? 0
   const rest = text.slice(end)
@@ -129,13 +104,11 @@ export const splitSource = (text: string): { readonly title?: string; readonly b
   return { title: heading[1] as string, body: rest.slice(heading[0].length).trim() }
 }
 
-/** A decision record's number in front of its title: `0062 — Use X`, `3. Use X`, `ADR-7: Use X`. */
 const withoutNumber = (title: string) => {
   const rest = title.replace(/^(?:adr[-_ ]*)?\d+\s*[.:—–)-]\s*/iu, '').trim()
   return rest === '' ? title : rest
 }
 
-/** A title from a file name: `old-setup_guide.md` gives `Old setup guide`. */
 const titleFromFile = (path: string, type: ImportType) => {
   const base = (path.split('/').pop() ?? path).replace(/\.[^.]*$/u, '').replace(/^\./u, '')
   const name = type === 'adr' ? base.replace(/^(?:adr[-_ ]*)?\d+[-_ ]+/iu, '') : base
@@ -174,12 +147,6 @@ const describe = (error: unknown): { reason: string; issues?: ReadonlyArray<Fiel
 
 const isoDate = (ms: number) => new Date(ms).toISOString().slice(0, 10)
 
-/**
- * Applies a batch of accepted candidates (ADR-00026): the agent classified them, this writes
- * them, through the same validated operations as every other write. An item is found again by its
- * `source`, so running a batch twice does not duplicate anything. An entry that fails does not
- * stop the others, and nothing is committed.
- */
 export const importBatch = (
   repo: Repo,
   rawEntries: ReadonlyArray<unknown>,

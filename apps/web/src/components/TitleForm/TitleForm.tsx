@@ -10,7 +10,6 @@ export interface TitleFormProps {
   readonly onCancel: () => void
 }
 
-/** Asks for a title in place, then hands it over. Escape or an empty title cancels. */
 export function TitleForm({ label, onSubmit, onCancel }: TitleFormProps) {
   const { LL } = useI18nContext()
   const [title, setTitle] = useState('')

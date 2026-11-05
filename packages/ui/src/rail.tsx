@@ -7,21 +7,10 @@ import { formatShortcut, useShortcuts } from './shortcuts'
 export interface RailItem {
   readonly id: string
   readonly label: string
-  /** A Material Symbols name. */
   readonly icon: string
-  /** For example `mod+k`. Pressing it anywhere selects the item. Shown in the tooltip. */
   readonly shortcut?: string
-  /**
-   * More keys that do the same. For shortcuts a browser keeps for itself (such as Command-L),
-   * which a page cannot take.
-   */
   readonly aliases?: ReadonlyArray<string>
-  /** A count to show on the item, such as items waiting in the Inbox. Hidden at 0. */
   readonly badge?: number
-  /**
-   * Items next to each other with the same group sit together on one sunken ground. An item with
-   * no group stands on its own, like Search at the top.
-   */
   readonly group?: string
 }
 
@@ -29,18 +18,13 @@ export interface RailProps {
   readonly items: ReadonlyArray<RailItem>
   readonly active: string
   readonly onSelect: (id: string) => void
-  /** The mark at the top. Default: the letter N on the accent. */
   readonly brand?: ReactNode
-  /** What sits at the foot, such as the person's avatar. */
   readonly footer?: ReactNode
-  /** Listen for the items' shortcuts on the whole page. Default `true`. */
   readonly shortcuts?: boolean
-  /** Treat the platform as a Mac (or not). For tests and previews. */
   readonly mac?: boolean
   readonly label?: string
 }
 
-/** Runs of consecutive items that share a group, and single items that have none. */
 const runsOf = (items: ReadonlyArray<RailItem>) => {
   const runs: Array<{ group: string | undefined; items: RailItem[] }> = []
   for (const item of items) {
@@ -52,11 +36,6 @@ const runsOf = (items: ReadonlyArray<RailItem>) => {
   return runs
 }
 
-/**
- * The navigation rail down the side of the app (Rail.dc.html): 64px wide, 40px items with 22px
- * icons, grouped on a sunken ground, an edge bar beside the active item. Each item can have a
- * keyboard shortcut that works from anywhere; the arrow keys move between items.
- */
 export function Rail({
   items,
   active,

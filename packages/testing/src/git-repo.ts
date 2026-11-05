@@ -5,34 +5,24 @@ import { dirname, join } from 'node:path'
 import { fixturePath } from './fixtures'
 import { emptyGitConfig } from './git-config'
 
-/** One scripted commit. File paths are relative to the repository root. */
 export interface Commit {
   readonly message: string
-  /** ISO 8601 date, used for author and committer so hashes are reproducible. */
   readonly date: string
   readonly author?: { readonly name: string; readonly email: string }
-  /** Files to write, replacing existing content. */
   readonly write?: Readonly<Record<string, string>>
-  /** Files to delete. */
   readonly remove?: readonly string[]
 }
 
 export interface GitRepoOptions {
-  /** Fixture folder name to copy into the first commit. Omit for an empty repository. */
   readonly fixture?: string
-  /** Message and date of the first commit, which holds the whole fixture. */
   readonly initial?: { readonly message: string; readonly date: string }
-  /** Commits made after the first one, in order. */
   readonly history?: readonly Commit[]
-  /** Files written after the last commit and left uncommitted. */
   readonly uncommitted?: Readonly<Record<string, string>>
 }
 
 export interface GitRepo {
   readonly root: string
-  /** Runs `git` in the repository and returns trimmed standard output. */
   readonly git: (...args: string[]) => string
-  /** Deletes the repository. */
   readonly cleanup: () => Promise<void>
 }
 
@@ -61,11 +51,6 @@ const writeFiles = async (root: string, files: Readonly<Record<string, string>>)
   }
 }
 
-/**
- * Creates a temporary git repository with a scripted, reproducible history.
- * The first commit holds the fixture; `history` adds commits on top; `uncommitted`
- * leaves working-tree changes behind. Call `cleanup` when done.
- */
 export const createGitRepo = async (options: GitRepoOptions = {}): Promise<GitRepo> => {
   const root = await mkdtemp(join(tmpdir(), 'netherite-git-'))
 

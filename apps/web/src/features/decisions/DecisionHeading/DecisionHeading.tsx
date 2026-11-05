@@ -3,7 +3,6 @@ import { Breadcrumbs } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 import './DecisionHeading.css'
 
-/** Breadcrumb, title and where the changes come from. */
 export function DecisionHeading() {
   const { LL } = useI18nContext()
   return (

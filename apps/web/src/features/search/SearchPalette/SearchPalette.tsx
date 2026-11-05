@@ -11,10 +11,6 @@ import { SearchFooter } from '../SearchFooter'
 import { SearchResults } from '../SearchResults'
 import './SearchPalette.css'
 
-/**
- * Search across everything (SearchPalette.dc.html): type to find goals, projects, tasks and
- * knowledge by title, ID, path or text. Arrow keys move, Enter opens, Tab cycles the type chips.
- */
 export function SearchPalette({
   opened,
   onClose,

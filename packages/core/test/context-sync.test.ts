@@ -9,7 +9,6 @@ import {
 } from '../src/index'
 import { cleanFiles, type World, world } from './ops-helpers'
 
-/** Changes a file behind the repo's back, then tells the index, as the watcher would. */
 const edit = (w: World, path: string, change: (text: string) => string) => {
   const next = change(w.read(path) as string)
   w.write(path, next)

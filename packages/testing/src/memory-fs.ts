@@ -28,26 +28,13 @@ const notFound = (method: string, path: string) =>
 
 export interface MemoryFileSystem {
   readonly layer: Layer.Layer<FileSystem.FileSystem>
-  /** Current content of a file, or `undefined` if it does not exist. */
   readonly read: (path: string) => string | undefined
-  /** Paths of all files, sorted. */
   readonly files: () => ReadonlyArray<string>
-  /** Writes a file directly, as if another program had. */
   readonly write: (path: string, content: string) => void
-  /** Deletes a file or folder directly, as if another program had. */
   readonly remove: (path: string) => void
 }
 
-/**
- * An in-memory `FileSystem` with POSIX-style absolute paths, for tests that must not touch disk.
- * Parent directories are created implicitly. Only the operations Netherite uses are implemented;
- * the rest fail with an error.
- */
 export interface MemoryFileSystemOptions {
-  /**
-   * Called before each operation (`rename`, `writeFileString`, ...) with the path it works on.
-   * Return an error message to make that call fail, to test rollback.
-   */
   readonly failWhen?: (method: string, path: string) => string | undefined
 }
 

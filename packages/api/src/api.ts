@@ -58,7 +58,6 @@ import {
 const id = { id: Schema.String }
 const writes = [Invalid, Conflict, NotFound, Refused, Failure] as const
 
-/** Reading and writing items. Every write returns the new `hash` and the files it changed. */
 export class ItemsGroup extends HttpApiGroup.make('items').add(
   HttpApiEndpoint.get('list', '/items', {
     query: ListQuery,
@@ -261,7 +260,6 @@ export class TimelineGroup extends HttpApiGroup.make('timeline').add(
   }),
 ) {}
 
-/** Server-sent events: connect with `EventSource` or the typed client. */
 export class EventsGroup extends HttpApiGroup.make('events').add(
   HttpApiEndpoint.get('events', '/events', {
     success: HttpApiSchema.StreamSse({ data: ServerEvent }),
@@ -277,10 +275,6 @@ export class MetaGroup extends HttpApiGroup.make('meta').add(
   }),
 ) {}
 
-/**
- * The local server's HTTP API (ADR-00010), defined once. The server implements it, the app
- * calls it through `makeClient`, and the OpenAPI document is derived from it.
- */
 export class NetheriteApi extends HttpApi.make('netherite')
   .add(
     ItemsGroup,

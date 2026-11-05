@@ -22,7 +22,6 @@ function Main() {
   )
 }
 
-/** The Inbox: what the repo raises for you to triage, and what changed since you last looked. */
 export function InboxPage() {
   return (
     <InboxProvider>

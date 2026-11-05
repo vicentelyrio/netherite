@@ -5,7 +5,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import './TaskDecisions.css'
 import '../shared.css'
 
-/** The ADRs a task implements, and a menu of the others to link. */
 export function TaskDecisions({
   decisions,
   choices,

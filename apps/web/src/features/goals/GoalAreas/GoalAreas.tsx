@@ -10,7 +10,6 @@ import { NewArea } from '../NewArea'
 import { NewGoal } from '../NewGoal'
 import { groupByArea, noArea, sum } from './areas'
 
-/** Every goal, one column per area, with a way to start a goal or a whole new area. */
 export function GoalAreas({ only }: { readonly only?: string }) {
   const { LL } = useI18nContext()
   const api = useApi()

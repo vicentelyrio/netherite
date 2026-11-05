@@ -4,7 +4,6 @@ import { GraphView } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useGraphAt, useGraphTime } from '../GraphTime'
 
-/** Every item and the links between them, full size; or why there is nothing to show. */
 export function GraphCanvas({ focus }: { readonly focus?: string | undefined }) {
   const { LL } = useI18nContext()
   const query = useGraphAt()
