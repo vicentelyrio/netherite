@@ -23,7 +23,6 @@ describe('the unfinished link before the cursor', () => {
     '%j is not open',
     (before) => {
       const m = openWikiLink.exec(before)
-      // "[[a]] and [[" is open at the second link; the others are not.
       expect(Boolean(m)).toBe(before === '[[a]] and [[')
     },
   )

@@ -1,4 +1,3 @@
-// Copies the built app (apps/web/dist) next to the program, where `netherite serve` looks for it.
 import { copyFileSync, cpSync, existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -15,8 +14,6 @@ rmSync(to, { recursive: true, force: true })
 cpSync(from, to, { recursive: true })
 console.log(`Bundled the app into ${to}`)
 
-// The package page on npm shows the README, where the repository's relative links would not work,
-// so the links to the documentation point at the published site.
 const site = 'https://vicentelyrio.github.io/netherite/'
 const readme = readFileSync(join(here, '../../../README.md'), 'utf8').replace(
   /\]\(apps\/docs\/([^)#]+?)(?:\.md)?(#[^)]*)?\)/g,

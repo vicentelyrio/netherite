@@ -55,7 +55,6 @@ describe('init', () => {
         expect(existsSync(join(dir, 'netherite', folder, '.gitkeep')), folder).toBe(true)
       }
       expect(read(dir, '.gitignore')).toBe('.netherite/local/\n')
-      // Config, 8 folders and .gitignore, then 7 skills, AGENTS.md and the ruleset.
       expect(result.stdout.filter((l) => l.startsWith('created'))).toHaveLength(19)
     })
   })
@@ -64,7 +63,6 @@ describe('init', () => {
     await temp(async (dir) => {
       await cli(dir, 'init')
       expect(read(dir, '.netherite/config.yml')).toMatch(/^version: 1$/m)
-      // A workspace that lints (so the config parsed) and has no problems.
       expect((await cli(dir, 'lint')).code).toBe(0)
     })
   })
@@ -258,7 +256,7 @@ describe('new', () => {
 
   test('an unknown type, no workspace, and both body flags are usage errors', async () => {
     await temp(async (dir) => {
-      expect((await cli(dir, 'new', 'doc', 'x')).code).toBe(2) // no workspace
+      expect((await cli(dir, 'new', 'doc', 'x')).code).toBe(2)
       await cli(dir, 'init')
       const unknown = await cli(dir, 'new', 'epic', 'x')
       expect(unknown.code).toBe(2)
@@ -544,7 +542,7 @@ describe('lint', () => {
     await withTempDir('basic', async (dir) => {
       expect((await cli(dir, 'lint', '--fail-on', 'never')).code).toBe(0)
       expect((await cli(dir, 'lint', '--fail-on', 'info')).code).toBe(1)
-      expect((await cli(dir, 'lint', 'netherite/docs/DOC-00002-orphan-notes.md')).code).toBe(0) // only an info
+      expect((await cli(dir, 'lint', 'netherite/docs/DOC-00002-orphan-notes.md')).code).toBe(0)
       expect(
         (await cli(dir, 'lint', 'netherite/docs/DOC-00002-orphan-notes.md', '--fail-on', 'info'))
           .code,
@@ -643,7 +641,7 @@ describe('lint', () => {
         join(dir, file),
         read(dir, file).replace('aliases: [TASK-00001]', 'aliases: []'),
       )
-      git(dir, 'mv', '-f', file, 'netherite/tasks/core-task.md') // not tracked: fall back to plain move below
+      git(dir, 'mv', '-f', file, 'netherite/tasks/core-task.md')
     }
 
     const breakIt = async (dir: string) => {
@@ -665,7 +663,7 @@ describe('lint', () => {
         await breakIt(dir)
         const before = read(dir, 'netherite/tasks/core-task.md')
         const result = await cli(dir, 'lint', '--fix', '--dry-run')
-        expect(result.code).toBe(1) // problems still there: nothing was changed
+        expect(result.code).toBe(1)
         const text = result.text
         expect(text).toContain('rename from netherite/tasks/core-task.md')
         expect(text).toContain('rename to netherite/tasks/TASK-00001-core-task.md')
@@ -998,7 +996,6 @@ describe('the built program', () => {
         expect(run('--version').out).toMatch(/netherite v/)
         expect(run('bogus').code).toBe(2)
       })
-      // Each call starts a real process, and the runners are busy with the other packages' tests.
     },
     120_000,
   )

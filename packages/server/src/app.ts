@@ -83,7 +83,6 @@ export const appRoutes = (state: ServerState, root: string | undefined) =>
       ) {
         return HttpServerResponse.text('Bad request', { status: 400 })
       }
-      // Unknown API paths are errors, never the app.
       if (pathname === '/api' || pathname.startsWith('/api/')) {
         return yield* HttpServerResponse.json(
           { _tag: 'NotFound', message: `No such endpoint: ${pathname}` },
@@ -114,7 +113,6 @@ export const appRoutes = (state: ServerState, root: string | undefined) =>
         if (type === types['.html']) return page(new TextDecoder().decode(bytes))
         return HttpServerResponse.uint8Array(bytes, {
           contentType: type,
-          // Built assets have hashed names; everything else is checked each time.
           headers: {
             'x-content-type-options': 'nosniff',
             'cache-control': pathname.startsWith('/assets/')
@@ -124,7 +122,6 @@ export const appRoutes = (state: ServerState, root: string | undefined) =>
         })
       }
 
-      // A path with an extension that is not there is a missing file; any other path is a route.
       if (extname(wanted) !== '') return HttpServerResponse.text('Not found', { status: 404 })
       const index = yield* fs
         .readFileString(path.join(base.value, 'index.html'))

@@ -97,7 +97,6 @@ describe('scan', () => {
       expect(real.stdout).toContain('6 created, 0 skipped, 0 failed')
       expect(existsSync(join(dir, 'netherite/adr/ADR-00001-use-jest.md'))).toBe(true)
       expect((await cli(dir, 'lint', '--fail-on', 'warning')).code).toBe(0)
-      // What came in is no longer a candidate.
       const again = await cli(dir, 'scan', '--out', 'second.json')
       expect(again.stdout.join('\n')).toContain('already imported')
       expect(again.stdout.join('\n')).toContain('found nothing to bring in')

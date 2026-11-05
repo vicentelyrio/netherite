@@ -113,7 +113,6 @@ describe('applying changes', () => {
         )
         fake.emit('/repo/netherite/docs/DOC-00002-linker.md')
         yield* watcher.flush
-        // The link is broken until its target shows up.
         expect(w.repo.index.unresolved().map((u) => u.ref.target)).toEqual(['TASK-00009'])
         fake.emit('/repo/netherite/tasks/TASK-00009-new.md')
         yield* watcher.flush
@@ -279,7 +278,6 @@ describe('debouncing', () => {
         fake.emit(t1)
         yield* Effect.promise(() => new Promise((r) => setTimeout(r, 15)))
         expect(events).toEqual([])
-        // Another event inside the window pushes the deadline out.
         w.write(t1, (w.read(t1) as string).replace('title: First', 'title: Second'))
         fake.emit(t1)
         yield* Effect.promise(() => new Promise((r) => setTimeout(r, 30)))
@@ -330,7 +328,6 @@ describe('configuration', () => {
     expect(events).toEqual([{ _tag: 'ConfigChanged', requiresRestart: false }])
     expect(w.repo.workspace.config.states.map((s) => s.name)).toEqual(['open', 'shipped'])
     expect(Object.keys(w.repo.schemas)).toContain('task')
-    // The schemas follow: the old state names no longer validate.
     const issues = await w.fail(updateFields(w.repo, 'TASK-00001', { set: { state: 'doing' } }))
     expect(issues).toMatchObject({ _tag: 'ValidationError', issues: [{ path: ['state'] }] })
   })

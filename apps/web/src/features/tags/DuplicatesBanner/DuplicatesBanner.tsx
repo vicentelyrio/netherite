@@ -17,7 +17,6 @@ export function DuplicatesBanner({ pair }: { readonly pair: TagPair }) {
   )
   const total = (r: { field: string; name: string }) =>
     all.find((t) => keyOf(t) === keyOf(r as never))?.total ?? 0
-  // The less used spelling goes into the more used one.
   const [from, into] = total(pair.a) <= total(pair.b) ? [pair.a, pair.b] : [pair.b, pair.a]
   return (
     <Banner

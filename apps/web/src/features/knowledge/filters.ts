@@ -51,7 +51,6 @@ export const filterKnowledge = (rows: ReadonlyArray<KnowledgeRow>, f: Filters): 
           return ra - rb || a.id.localeCompare(b.id)
         }
         case 'date':
-          // Newest first; items with no date last.
           return (b.date ?? '').localeCompare(a.date ?? '') || a.id.localeCompare(b.id)
         default:
           return a.id.localeCompare(b.id)

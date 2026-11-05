@@ -24,7 +24,6 @@ test('dragging a card to another column changes its state in the file', async ({
   const diff = workspace.diff(task1)
   expect(diff).toContain('-state: backlog')
   expect(diff).toContain('+state: doing')
-  // Nothing else in the file changed.
   expect(diff.split('\n').filter((l) => /^[+-][^+-]/.test(l))).toHaveLength(2)
 })
 
@@ -34,7 +33,6 @@ test('ticking a checklist item in the task drawer writes the checkbox to the fil
 }) => {
   await page.goto(`${workspace.url}/projects/PRJ-00001?task=TASK-00001`)
   const drawer = page.getByRole('dialog')
-  // The box is controlled: it changes when the server has written the file, not on the click.
   await drawer.getByRole('checkbox', { name: 'first' }).click()
 
   await expect(drawer.getByRole('checkbox', { name: 'first' })).toBeChecked()
@@ -82,7 +80,6 @@ test('search finds an ADR by its title, and Enter opens it', async ({ page, work
 
   await expect(page).toHaveURL(/\/items\/ADR-00002$/)
   await expect(page.getByRole('article', { name: 'Promises' })).toBeVisible()
-  // Reading changes nothing on disk.
   expect(workspace.diff()).toBe('')
 })
 

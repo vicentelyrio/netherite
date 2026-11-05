@@ -144,7 +144,6 @@ export const memoryFileSystem = (
       ),
   }
 
-  // Wrap each operation so a test can make a chosen call fail.
   const guarded = Object.fromEntries(
     Object.entries(impl).map(([method, fn]) => [
       method,

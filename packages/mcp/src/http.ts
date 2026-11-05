@@ -54,12 +54,10 @@ export const createMcpHttp = (repo: Repo, options: McpOptions = {}) =>
             ? rpcError(404, -32001, 'Session not found')
             : transport.handleRequest(request)
         }
-        // No session yet: only an `initialize` POST may start one.
         if (request.method !== 'POST')
           return rpcError(400, -32000, 'Bad request: no session; send an initialize request first')
         const transport = await open()
         const response = await transport.handleRequest(request)
-        // A request that did not start a session (not `initialize`) leaves nothing behind.
         if (transport.sessionId === undefined) await transport.close()
         return response
       },

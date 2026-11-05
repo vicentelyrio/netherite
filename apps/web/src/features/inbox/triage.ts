@@ -57,9 +57,7 @@ export const readHidden = (): Hidden => {
 export const writeHidden = (hidden: Hidden) => {
   try {
     localStorage.setItem(storeKey, JSON.stringify(hidden))
-  } catch {
-    // Private windows forget it.
-  }
+  } catch {}
 }
 
 /** Archived for good, or snoozed until a time that has not come yet. */
@@ -85,7 +83,6 @@ export const tagPair = (item: Pick<Entry, 'key'>) => {
 export const weekAfter = (date: string | undefined, now: Date) => {
   const today = dayjs(now).format('YYYY-MM-DD')
   const from = date === undefined ? today : date.slice(0, 10)
-  // Days are `YYYY-MM-DD`, so the later one sorts last.
   return addDays([from, today].sort().at(-1) as string, 7)
 }
 

@@ -65,7 +65,6 @@ export const unifiedDiff = (
   ]
   if (changed.length === 0) return [...header].join('\n')
 
-  // Group changes that are close enough to share context into hunks.
   const hunks: Array<[number, number]> = []
   for (const index of changed) {
     const start = Math.max(0, index - context)

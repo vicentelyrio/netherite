@@ -336,7 +336,6 @@
   white-space: nowrap;
 }
 
-/* Nodes and bars are links into the item. */
 a.tl-piece,
 a.tl-marker,
 .tl-lane a {

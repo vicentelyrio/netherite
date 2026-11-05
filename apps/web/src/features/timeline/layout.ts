@@ -82,7 +82,6 @@ export const ticksOf = (zoom: Zoom, from: string, to: string): ReadonlyArray<Tic
     return ticks
   }
   if (unit === 'week') {
-    // From the first Monday on or after the start.
     const first = utcDay(from)
     for (
       let day = first.add((8 - first.day()) % 7, 'day').format('YYYY-MM-DD');
@@ -94,7 +93,6 @@ export const ticksOf = (zoom: Zoom, from: string, to: string): ReadonlyArray<Tic
     return ticks
   }
   const step = unit === 'month' ? 1 : 3
-  // From the month (or quarter) the window starts in.
   const start = utcDay(from).startOf('month')
   for (
     let d = start.subtract(start.month() % step, 'month');
@@ -153,7 +151,6 @@ export const rowsOf = (timeline: Timeline, options: RowOptions): ReadonlyArray<R
   for (const p of timeline.projects.filter((x) => x.goal === undefined || !goalIds.has(x.goal))) {
     project(p)
   }
-  // A decision of a project is drawn in that project's row; the rest stand on rows of their own.
   const projectIds = new Set(timeline.projects.map((p) => p.id))
   if (options.showDecisions)
     for (const item of timeline.decisions) {

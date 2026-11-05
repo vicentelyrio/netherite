@@ -729,7 +729,6 @@ describe('renumber', () => {
     )
     expect(result.rewritten).toEqual(['netherite/tasks/TASK-00005-uses-newer.md'])
     expect(w.read('netherite/tasks/TASK-00005-uses-newer.md')).toContain('See [[TASK-00060]].')
-    // The older item's links keep pointing at it.
     expect(w.read(task2)).toContain('[[TASK-00001]]')
     expect(w.repo.index.findById('TASK-00001')).toHaveLength(1)
   })

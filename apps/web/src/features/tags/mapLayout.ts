@@ -49,7 +49,6 @@ export const layoutMap = (tags: ReadonlyArray<MapTag>): MapLayout => {
     const area = members.reduce((n, t) => n + radiusOf(t.total) ** 2 * 3.4, 0)
     return Math.sqrt(area)
   })
-  // Cluster centres spiral outward from the middle, biggest first, so the picture fills the space.
   const spacing = (sizes.reduce((n, v) => n + v, 0) / sizes.length) * 1.85
   const placed: Array<{ key: string; x: number; y: number; r: number; cluster: string }> = []
   const labels: Array<{ name: string; x: number; y: number; top: number }> = []
@@ -73,7 +72,6 @@ export const layoutMap = (tags: ReadonlyArray<MapTag>): MapLayout => {
     labels.push({ name, x: cx, y: cy, top: 0 })
   })
 
-  // Push overlapping bubbles apart a few times.
   for (let pass = 0; pass < 60; pass++) {
     let moved = false
     for (let i = 0; i < placed.length; i++)
@@ -99,7 +97,6 @@ export const layoutMap = (tags: ReadonlyArray<MapTag>): MapLayout => {
 
   const minY = (name: string) =>
     Math.min(...placed.filter((p) => p.cluster === name).map((p) => p.y - p.r))
-  // A name sits just above its tags; if a bubble of another cluster is in the way, it moves up.
   const clusters = labels.map((l) => {
     const mine = placed.filter((p) => p.cluster === l.name)
     const x = mine.reduce((n, p) => n + p.x, 0) / mine.length

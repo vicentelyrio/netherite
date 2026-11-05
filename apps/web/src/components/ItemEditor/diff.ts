@@ -16,7 +16,6 @@ type Op = 'same' | 'add' | 'remove'
 const maxCells = 4_000_000
 
 const align = (a: ReadonlyArray<string>, b: ReadonlyArray<string>): Op[] => {
-  // Lines the two texts start and end with in common need no comparing.
   let start = 0
   while (start < a.length && start < b.length && a[start] === b[start]) start++
   let endA = a.length
@@ -30,10 +29,8 @@ const align = (a: ReadonlyArray<string>, b: ReadonlyArray<string>): Op[] => {
   const y = b.slice(start, endB)
 
   if (x.length * y.length > maxCells) {
-    // Too much to compare exactly: call the whole middle replaced.
     ops.push(...Array<Op>(x.length).fill('remove'), ...Array<Op>(y.length).fill('add'))
   } else {
-    // Longest common subsequence of the middle.
     const w = y.length + 1
     const table = new Uint32Array((x.length + 1) * w)
     for (let i = x.length - 1; i >= 0; i--) {
@@ -81,7 +78,7 @@ export const diffLines = (committed: string, current: string): LineChanges => {
   const modified = new Set<number>()
   const deleted = new Set<number>()
 
-  let line = 0 // the last line of the current text seen so far
+  let line = 0
   let i = 0
   while (i < ops.length) {
     if (ops[i] === 'same') {
@@ -89,7 +86,6 @@ export const diffLines = (committed: string, current: string): LineChanges => {
       i++
       continue
     }
-    // One run of changes: removals and additions between two unchanged lines.
     let removed = 0
     let adds = 0
     while (i < ops.length && ops[i] !== 'same') {

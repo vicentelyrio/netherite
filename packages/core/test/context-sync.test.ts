@@ -138,7 +138,6 @@ describe('syncContext', () => {
     await w.run(syncContext(w.repo))
     const first = w.read('CLAUDE.md') as string
     expect(first.startsWith('# Project\n\nMy rules.\n\n')).toBe(true)
-    // Change the context, add text after the block, and sync again.
     w.write('CLAUDE.md', `${first}\nFooter\n`)
     edit(w, 'netherite/context/CTX-00002-glossary.md', (t) =>
       t.replace('A term list.', 'New text.'),

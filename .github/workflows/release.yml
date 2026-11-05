@@ -1,9 +1,5 @@
 name: Release
 
-# On every push to main, Changesets either opens (or updates) a "Version Packages" pull request
-# that applies the pending changesets, or, when that pull request has been merged, publishes
-# `@vicentelyrio/netherite` to npm and tags the release. Nothing is published until a person merges that PR.
-
 on:
   push:
     branches: [main]
@@ -15,7 +11,7 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
-  id-token: write # npm provenance
+  id-token: write
 
 env:
   TURBO_TELEMETRY_DISABLED: "1"
@@ -37,7 +33,6 @@ jobs:
           registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
 
-      # Only publish what passes: the same checks as CI, and the packed package must start.
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm build

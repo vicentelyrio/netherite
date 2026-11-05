@@ -278,11 +278,7 @@ describe('coChanged', () => {
     try {
       const git = await run(openGit(repo.root))
       const { files } = await measure(git, repo.root, 'src/util.ts', { minCommits: 2 })
-      // util.ts changed in the first commit and the refactor; app.ts changed in both.
-      expect(files).toEqual([
-        // the first commit added many files, but only src/app.ts is also in the refactor
-        { path: 'src/app.ts', commits: 2, share: 1, last: '2026-01-14' },
-      ])
+      expect(files).toEqual([{ path: 'src/app.ts', commits: 2, share: 1, last: '2026-01-14' }])
     } finally {
       await repo.cleanup()
     }

@@ -40,7 +40,6 @@ const index = createRoute({
   getParentRoute: () => root,
   path: '/',
   beforeLoad: () => {
-    // The tree is typed after this route, so the target cannot be checked here.
     throw redirect({ to: '/goals' } as never)
   },
 })

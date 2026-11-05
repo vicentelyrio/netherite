@@ -23,7 +23,6 @@ describe('tag usage', () => {
       byType: { doc: 2, adr: 1 },
     })
     expect(use.find((u) => u.name === 'shell')?.ids).toEqual(['DOC-00002'])
-    // TASK-00001 carries the label "backend" in the sample workspace.
     expect(use.find((u) => u.field === 'labels' && u.name === 'backend')?.total).toBe(1)
   })
 })

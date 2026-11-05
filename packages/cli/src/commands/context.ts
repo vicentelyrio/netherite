@@ -31,7 +31,6 @@ export const contextSync = (env: Env, options: ContextSyncOptions) =>
         for (const t of report.targets) env.out.line(describe(t, options.check))
         if (report.targets.length === 0) env.out.line('No context targets are configured.')
       }
-      // Items that did not fit are a warning, not a failure: the file is still what sync writes.
       for (const t of report.targets) {
         if (t.omitted.length === 0) continue
         env.out.error(

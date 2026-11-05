@@ -72,7 +72,7 @@ export const followServer = ({ baseUrl, client, onNotice, onConnection }: LiveOp
     try {
       event = decode(JSON.parse(message.data))
     } catch {
-      return // not an event this version knows
+      return
     }
     for (const queryKey of invalidationsFor(event))
       void client.invalidateQueries({ queryKey: [...queryKey] })

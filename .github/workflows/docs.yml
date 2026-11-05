@@ -1,9 +1,5 @@
 name: Docs
 
-# The documentation site (ADR-00028) is built from apps/docs/ on every pull request, so a broken link
-# or page fails before it is merged, and published to GitHub Pages when main changes. In the
-# repository settings, Pages must use "GitHub Actions" as its source.
-
 on:
   push:
     branches: [main]
@@ -44,7 +40,6 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
 
-      # The reference pages come from the program, so the program is built and they are compared.
       - run: pnpm turbo run build --filter=@netherite/cli --filter=@netherite/core
       - name: Reference pages are up to date
         run: pnpm docs:check

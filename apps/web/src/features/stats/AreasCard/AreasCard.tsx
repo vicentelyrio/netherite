@@ -24,7 +24,6 @@ export function AreasCard() {
         <ul className="ar-list">
           {data.areas.map((a) => {
             const share = Math.round(a.share * 100)
-            // What was done before the period, then what the period added.
             const gained = Math.max(0, Math.min(a.gained, share))
             return (
               <li key={a.area} className="ar-row">

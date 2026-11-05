@@ -27,11 +27,9 @@ export function HeatMapCard() {
   const summary = heatSummary(days)
   const weeks = Math.ceil(days.length / 7)
   const wrap = useRef<HTMLDivElement>(null)
-  // When the card is narrower than 53 weeks, the latest weeks are the ones in view.
   useLayoutEffect(() => {
     if (wrap.current !== null) wrap.current.scrollLeft = wrap.current.scrollWidth
   }, [days.length])
-  // A month is written above the first week that starts in its first seven days.
   const months: Array<{ label: string; week: number }> = []
   let last = -1
   for (let week = 0; week * 7 < days.length; week++) {

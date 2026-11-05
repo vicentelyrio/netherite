@@ -84,7 +84,6 @@ export function GraphTimeProvider({ children }: { readonly children: ReactNode }
       },
       playing,
       togglePlay: () => {
-        // Playing from today starts over from the beginning.
         if (!playing && asOf === undefined && range !== undefined) setAsOf(range.from)
         setPlaying((p) => !p)
       },

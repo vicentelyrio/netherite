@@ -19,7 +19,6 @@ const read = (dir: string, path: string) => readFileSync(join(dir, path), 'utf8'
 
 const setup = async (dir: string) => {
   git(dir, 'init', '-q', '-b', 'main')
-  // Without the ruleset, so these tests start from no context at all.
   await cli(dir, 'init', '--no-skills')
   await cli(
     dir,
@@ -76,7 +75,6 @@ describe('context sync', () => {
       expect(fresh.code).toBe(0)
       expect(fresh.stdout[0]).toContain('up to date')
 
-      // A new context item makes the files stale again.
       await cli(dir, 'new', 'context', 'More', '--set', 'include_in_context=true')
       expect((await cli(dir, 'context', 'sync', '--check')).code).toBe(1)
     })

@@ -93,7 +93,6 @@ export const listen = (
       const served = HttpRouter.serve(app, {
         middleware: guard({ token: state.token, port: () => port, origins: state.origins }),
         disableListenLog: true,
-        // Quiet by default: the command prints what a person needs.
         disableLogger: true,
       }).pipe(Layer.provideMerge(http))
       const built = yield* Effect.result(Layer.build(served))

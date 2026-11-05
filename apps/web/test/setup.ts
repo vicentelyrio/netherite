@@ -5,11 +5,8 @@ import { afterEach } from 'vitest'
 
 afterEach(() => cleanup())
 
-// `findBy` and `waitFor` give up after one second by default. A shared CI runner running every
-// package's tests at once is slower than that for a menu that opens in a portal.
 configure({ asyncUtilTimeout: 5000 })
 
-// jsdom has no layout engine or event streams; the UI library and the app ask for these.
 if (typeof window !== 'undefined') {
   window.matchMedia ??= ((query: string) => ({
     matches: false,
@@ -27,7 +24,6 @@ if (typeof window !== 'undefined') {
     disconnect() {}
   } as never
   window.HTMLElement.prototype.scrollIntoView ??= () => {}
-  // CodeMirror measures text to place its tooltips.
   const rect = () => ({
     x: 0,
     y: 0,

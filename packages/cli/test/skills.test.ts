@@ -150,7 +150,6 @@ describe('init installs skills', () => {
       expect(agents).toContain('<!-- netherite:skills:start -->')
       expect(agents).toContain('<!-- netherite:context:start -->')
       expect(agents).toContain('Be brief.')
-      // And a later update leaves the context block alone.
       await cli(dir, 'init', '--update')
       expect(read(dir, 'AGENTS.md')).toBe(agents)
       expect((await cli(dir, 'context', 'sync', '--check')).code).toBe(0)
@@ -162,7 +161,6 @@ describe('init --update', () => {
   test('replaces a skill that is an older version we installed', async () => {
     await temp(async (dir) => {
       await cli(dir, 'init')
-      // Pretend an older release installed this text.
       const old = 'old text\n'
       const path = skillPath('netherite-adr')
       writeFileSync(join(dir, path), old)
@@ -218,7 +216,6 @@ describe('init --update', () => {
       const text = read(dir, 'AGENTS.md').replace('How this repo tracks work', 'Old heading')
       writeFileSync(join(dir, 'AGENTS.md'), `${text}\nMy footer\n`)
 
-      // Without --update the section stays as it is.
       await cli(dir, 'init')
       expect(read(dir, 'AGENTS.md')).toContain('Old heading')
 
@@ -238,7 +235,6 @@ describe('init --update', () => {
       const result = await cli(dir, 'init', '--update')
       expect(result.code).toBe(0)
       expect(result.stdout.join('\n')).toContain('skipped  AGENTS.md')
-      // The damaged block is left as it was; the ruleset is added after it, between its own markers.
       expect(read(dir, 'AGENTS.md').startsWith(bad)).toBe(true)
     })
   })
@@ -287,7 +283,6 @@ describe('the ruleset', () => {
         expect(text, file).toContain('## Plan first')
         expect(text, file).toContain('Do not commit, push or merge unless asked.')
       }
-      // It is the person's to edit, and a short one: it costs tokens on every run.
       expect((await cli(dir, 'context', 'sync', '--check')).code).toBe(0)
       expect((await cli(dir, 'lint', '--fail-on', 'info')).code).toBe(0)
       expect(item.length).toBeLessThan(2000)
@@ -383,7 +378,6 @@ describe('netherite-migrate', () => {
     for (const [, command] of text.matchAll(/`netherite ([a-z]+)[^`]*`/g)) {
       expect(commands.has(command as string), `netherite ${command}`).toBe(true)
     }
-    // The reference is generated from the program's own help, and a test elsewhere keeps it current.
     const reference = readFileSync(
       join(import.meta.dirname, '../../../apps/docs/reference/cli.md'),
       'utf8',

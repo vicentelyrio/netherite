@@ -106,7 +106,6 @@ export const installSkills = (root: string, options: { readonly update: boolean 
       yield* fs.writeFileString(lockFile, `${JSON.stringify({ skills: next }, null, 2)}\n`)
     }
 
-    // AGENTS.md: add the section if missing; refresh it only on update.
     const agentsFile = path.join(root, 'AGENTS.md')
     const existing = yield* fileOrUndefined(agentsFile)
     let agents: SkillsReport['agents'] = 'unchanged'

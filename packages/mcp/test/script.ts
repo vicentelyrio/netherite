@@ -116,14 +116,12 @@ export const script = async (s: Session, allowed: ReadonlyArray<string> = []) =>
       tree = next
 
       const disk = await lintDisk(s.dir)
-      // Information (such as a new item nothing links to yet) is not a problem to fix.
       const added = disk.filter((d) => d.severity !== 'info' && !baseline.has(key(d)))
       expect(added.map((d) => d.rule).sort(), `${tool} introduced problems`).toEqual(
         [...(options.introduces ?? [])].sort(),
       )
       for (const d of added) baseline.add(key(d))
 
-      // The server's index and a fresh scan agree.
       const served = (await s.call('lint')).data
       const count = (list: ReadonlyArray<Diagnostic>, severity: string) =>
         list.filter((d) => d.severity === severity).length

@@ -13,7 +13,6 @@ export function SupersessionChain({
 }) {
   const { LL } = useI18nContext()
   if (chain.length < 2) return null
-  // Newest first, as the design lists them: each one supersedes the next.
   const newest = [...chain].reverse()
   return (
     <section aria-label={LL.knowledge.doc.chain.title()} className="kf-section">

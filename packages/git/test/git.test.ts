@@ -23,7 +23,6 @@ const fail = <A, E>(
   effect: Effect.Effect<A, E, import('@effect/platform-node').NodeServices.NodeServices>,
 ) => Effect.runPromise(Effect.flip(effect).pipe(Effect.provide(services)))
 
-// Tests must not see the machine's own git identity or settings.
 beforeAll(() => {
   process.env.GIT_CONFIG_GLOBAL = emptyGitConfig
   process.env.GIT_CONFIG_SYSTEM = emptyGitConfig
@@ -410,15 +409,12 @@ describe('caching', () => {
       await run(git.status())
       expect(countOf(spy.commands, 'status')).toBe(1)
 
-      // An edit that git has not been told about does not touch HEAD or the index, so the
-      // cached status is stale until the caller says files changed.
       writeFileSync(join(repo.root, 'src', 'app.ts'), 'edited\n')
       expect((await run(git.status())).entries).toEqual([])
       git.invalidate()
       expect((await run(git.status())).entries).toHaveLength(1)
       expect(countOf(spy.commands, 'status')).toBe(2)
 
-      // Staging changes the index, which refreshes the cache by itself.
       sh(repo.root, 'add', 'src/app.ts')
       expect((await run(git.status())).entries[0]).toMatchObject({ index: 'M' })
     })
@@ -445,7 +441,7 @@ describe('caching', () => {
         ),
       )
       for (const path of ['a', 'b', 'c']) await run(git.log({ paths: [path] }))
-      await run(git.log({ paths: ['a'] })) // evicted, so it runs again
+      await run(git.log({ paths: ['a'] }))
       expect(countOf(spy.commands, 'log')).toBe(4)
     })
   })
@@ -499,7 +495,6 @@ describe('read-only', () => {
         openGit(repo.root).pipe(Effect.provide(spy.layer), Effect.provide(services)),
       )
       await everything(git, repo.root)
-      // The recorder wraps the spawner given to openGit, so commands made after opening were seen.
       const { readOnlySubcommands } = await import('../src/index')
       expect(spy.commands.length).toBeGreaterThan(5)
       for (const command of spy.commands) {
@@ -513,7 +508,6 @@ describe('read-only', () => {
 
   test('leaves the repository exactly as it was', async () => {
     await withRepo(async (repo) => {
-      // Make the index look out of date, so a careless `git status` would rewrite it.
       const file = join(repo.root, 'src', 'app.ts')
       const later = new Date(Date.now() + 5000)
       utimesSync(file, later, later)

@@ -29,7 +29,6 @@ declare module 'mdast' {
   }
 }
 
-// `[[` not preceded by a backslash; the body has no `[`, `]`, `|` or `#` except as separators.
 const pattern = /(?<!\\)\[\[([^[\]|#\n]+?)(?:#([^[\]|\n]+?))?(?:\|([^[\]\n]+?))?\]\]/g
 
 /** Finds wikilinks in raw text. Offsets are relative to `text`. */

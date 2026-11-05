@@ -113,8 +113,6 @@ export const LintTextPayload = Schema.Struct({ id: S, text: S })
 
 export const DeleteResult = Schema.Struct({ deleted: S, path: S })
 
-// ---- request bodies -------------------------------------------------------------------
-
 const Fields = Schema.Record(S, Schema.Unknown)
 
 export const CreatePayload = Schema.Struct({
@@ -163,8 +161,6 @@ export const CheckPayload = Schema.Struct({
 export const LinkPayload = Schema.Struct({ to: S, kind: RelationKind, baseHash: opt(S) })
 export const ReviewPayload = Schema.Struct({ date: opt(S), baseHash: opt(S) })
 
-// ---- queries --------------------------------------------------------------------------
-
 /** Query strings are text; numbers and booleans travel as text and are read back by the schema. */
 export const ListQuery = {
   type: opt(ItemTypeName),
@@ -190,8 +186,6 @@ export const DeleteQuery = {
   baseHash: opt(S),
 }
 export const UnlinkQuery = { to: S, kind: RelationKind, baseHash: opt(S) }
-
-// ---- graph, lint, inbox, history, stats ------------------------------------------------
 
 export const NodeStatus = Schema.Literals(['backlog', 'progress', 'hold', 'done'])
 export const GraphNode = Schema.Struct({
@@ -461,8 +455,6 @@ export const Health = Schema.Struct({
   user: opt(S),
 })
 
-// ---- live events ---------------------------------------------------------------------
-
 const Tagged = <const T extends string, F extends Schema.Struct.Fields>(type: T, fields: F) =>
   Schema.Struct({ type: Schema.Literal(type), ...fields })
 
@@ -494,8 +486,6 @@ export const ServerEvent = Schema.Union([
   Tagged('ping', {}),
 ])
 export type ServerEvent = typeof ServerEvent.Type
-
-// ---- goals -----------------------------------------------------------------------------
 
 const OptProgress = Schema.NullOr(Progress)
 
@@ -536,8 +526,6 @@ export const GoalDetail = Schema.Struct({
 })
 export type GoalDetail = typeof GoalDetail.Type
 
-// ---- projects and their board ----------------------------------------------------------
-
 export const ProjectList = Schema.Struct({ projects: Schema.Array(ProjectRow) })
 
 export const BoardCard = Schema.Struct({
@@ -563,8 +551,6 @@ export const Board = Schema.Struct({
   linked: Schema.Array(Schema.Struct({ id: S, type: S, title: S })),
 })
 export type Board = typeof Board.Type
-
-// ---- knowledge -------------------------------------------------------------------------
 
 export const KnowledgeRow = Schema.Struct({
   id: S,
@@ -653,8 +639,6 @@ export const KnowledgeView = Schema.Struct({
   ),
 })
 export type KnowledgeView = typeof KnowledgeView.Type
-
-// ---- tags and labels -------------------------------------------------------------------
 
 export const TagField = Schema.Literals(['tags', 'labels'])
 

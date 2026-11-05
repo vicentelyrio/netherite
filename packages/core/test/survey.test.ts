@@ -126,7 +126,6 @@ describe('surveyRepository', () => {
         status: 'accepted',
         date: '2023-03-01',
       })
-      // A status under a heading is read too, and a record that gives no date gets none.
       expect(entry('docs/adr/0003-use-vitest.md')).toEqual({
         source: 'docs/adr/0003-use-vitest.md',
         type: 'adr',

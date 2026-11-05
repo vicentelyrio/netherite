@@ -163,7 +163,6 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
   const inside = (iso: string | undefined, a: string, b: string) =>
     iso !== undefined && dayOf(iso) >= a && dayOf(iso) <= b
 
-  // The graph at both ends of the period tells who belongs to whom, and goal progress.
   const end = graphAsOf(repo, history, { asOf: nowIso, now: nowIso })
   const start = new Map(
     graphAsOf(repo, history, { asOf: from, now: nowIso }).nodes.map((n) => [n.id, n]),
@@ -207,7 +206,6 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
   const cycleNow = median(nowDone.map((f) => f.cycle))
   const cyclePrev = median(prevDone.map((f) => f.cycle))
 
-  // Throughput by week or month.
   const buckets = new Map<string, { created: number; done: number }>()
   for (let b = bucketOf(options.period, from); b <= to; b = nextBucket(options.period, b)) {
     buckets.set(b, { created: 0, done: 0 })
@@ -284,7 +282,6 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
     })
     .sort((a, b) => b.done - a.done || a.id.localeCompare(b.id))
 
-  // The map covers the period, from the Monday of its first week.
   const heatFrom = weekStart(from)
   const counts = new Map<string, number>()
   for (const c of history.log) {
@@ -292,7 +289,6 @@ export const periodStats = (repo: Repo, history: History, options: PeriodOptions
     if (d >= heatFrom && d <= to) counts.set(d, (counts.get(d) ?? 0) + 1)
   }
 
-  // Freshness is about knowledge: docs and runbooks, not every item.
   const freshness = { fresh: 0, drifting: 0, stale: 0, notTracked: 0 }
   for (const [path, f] of options.freshness ?? []) {
     const type = repo.index.get(path)?.type

@@ -17,7 +17,6 @@ export const pathMap = (git: Pick<GitRepository, 'root'>, workspaceRoot: string)
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
     const path = yield* Path.Path
-    // Compare real paths: a temp folder can be reached through a symlink.
     const real = yield* fs.realPath(workspaceRoot).pipe(Effect.orElseSucceed(() => workspaceRoot))
     const prefix = path.relative(git.root, real).split(path.sep).join('/')
     const map: PathMap = {

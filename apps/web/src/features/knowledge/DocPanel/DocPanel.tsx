@@ -46,7 +46,6 @@ export function DocPanel({
   const switchName = useId()
   const type = item.type as ItemTypeName
   const fresh = item.freshness
-  // A doc, runbook or context item with no status is active.
   const current = item.status ?? (type === 'adr' ? undefined : 'active')
   const front = (item.frontmatter ?? {}) as Record<string, unknown>
   const owner = [front.owner, front.created_by].find((v) => typeof v === 'string' && v !== '')

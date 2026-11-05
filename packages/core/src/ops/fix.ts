@@ -52,10 +52,8 @@ export const applyFixes = (
       seen.add(key)
       fixes.push(d.fix)
     }
-    // Aliases first: a rename moves the file, and the alias fix is addressed to its old path.
     fixes.sort((a, b) => (a.kind === b.kind ? 0 : a.kind === 'add-alias' ? -1 : 1))
 
-    // Plan on a copy: a repo over the same items, reading and writing through an overlay.
     const overlay = overlayFileSystem(base)
     const scratch = makeRepo(repo.workspace, repo.index.items())
     const applied: Fix[] = []
@@ -86,7 +84,6 @@ export const applyFixes = (
     const planned = yield* overlay.changes()
     const changes: FixChange[] = planned
       .map((c) => ({ path: rel(c.path), before: c.before, after: c.after }))
-      // The overlay saw the temporary files writes use on the way; they never survive a rename.
       .filter((c) => !/\/\.[^/]+\.tmp$/.test(c.path))
 
     if (options.dryRun !== true && changes.length > 0) {

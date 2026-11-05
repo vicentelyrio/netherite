@@ -78,7 +78,6 @@ export const graphAsOf = (repo: Repo, history: History, options: AsOfOptions): A
   })
   const ids = new Set(existing.map((i) => i.id as string))
 
-  // Who belongs to whom at that date.
   const parentOf = new Map<string, string>()
   for (const item of existing) {
     const id = item.id as string

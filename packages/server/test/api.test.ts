@@ -112,7 +112,6 @@ describe('reading items', () => {
         const result = await raw(s.url, '/api/items?limit=0')
         expect(result.status).toBe(422)
         expect(result.body).toMatchObject({ _tag: 'Invalid', issues: [{ path: ['limit'] }] })
-        // A value the API's own shape rejects is a 400; a well-formed request that is invalid is a 422.
         expect((await raw(s.url, '/api/items?type=banana')).status).toBe(400)
       }),
     )
@@ -977,7 +976,6 @@ describe('history and stats', () => {
 
           const stats = yield* s.client.stats.stats({ query: {} })
           expect(stats.completions.reduce((n, w) => n + w.count, 0)).toBe(1)
-          // ADR-00001 and 00002 were created accepted; ADR-00003 was accepted later.
           expect(stats.adrs.reduce((n, w) => n + w.accepted, 0)).toBe(3)
           const weeks = stats.progress.projects['PRJ-00001'] ?? []
           expect(weeks.at(-1)).toMatchObject({ done: 1, total: 2 })

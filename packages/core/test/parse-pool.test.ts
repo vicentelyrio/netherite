@@ -12,7 +12,6 @@ describe('parseFiles', () => {
     const single = await Effect.runPromise(parseFiles(files, { workers: 0 }))
     const pooled = await Effect.runPromise(parseFiles(files, { workers: 3, parallelThreshold: 1 }))
     expect(pooled).toEqual(single)
-    // Starting workers takes seconds when the whole suite is running at once.
   }, 30_000)
 
   test('keeps the order of the input', async () => {

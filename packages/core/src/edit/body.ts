@@ -53,7 +53,6 @@ export const toggleChecks = (
     }
     found.add(index)
   }
-  // Later items first, so an edit never moves the offset of one still to be made.
   let text = source
   for (const index of [...found].sort((a, b) => b - a)) {
     const item = list[index]
@@ -136,8 +135,6 @@ export const replaceSection = (
 
     let replacement: string
     if (core === '') {
-      // An empty section: a blank line after the heading, the text, and a blank line before
-      // whatever follows.
       const followed = end < source.length
       replacement = `${eol}${text}${eol}${followed ? eol : ''}`
     } else {
@@ -188,7 +185,6 @@ export const appendSection = (
   }
   const eol = detectEol(source)
   const hashes = '#'.repeat(options.depth ?? 2)
-  // Whatever the file ended with (no line ending, one, or several) it still ends with.
   const trailing = source === '' ? eol : (/(\r?\n)*$/.exec(source)?.[0] ?? '')
   const base = source.slice(0, source.length - trailing.length)
   const separator = base === '' ? '' : `${eol}${eol}`

@@ -5,7 +5,6 @@
   align-items: center;
 }
 
-/* The field and its buttons share one height, so a row of them lines up. */
 .title-form .text-field,
 .title-form button {
   box-sizing: border-box;

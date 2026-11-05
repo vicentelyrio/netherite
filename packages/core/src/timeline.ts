@@ -136,8 +136,6 @@ export const timelineOf = (
     }
   }
 
-  // A project is done when its tasks are, whatever its own status says, so it finished when the
-  // last of them did; a goal when its last project did.
   const latest = (days: ReadonlyArray<string | undefined>) =>
     days
       .filter((d): d is string => d !== undefined)
@@ -216,7 +214,6 @@ export const timelineOf = (
   const from = options.from ?? earliest ?? today
   const to = options.to ?? (latestDue !== undefined && latestDue > today ? latestDue : today)
 
-  // An item is in the window when the stretch from its first date to its last overlaps it.
   const within = (start: string | undefined, end: string | undefined) => {
     const first = start ?? end ?? to
     const last = end ?? to

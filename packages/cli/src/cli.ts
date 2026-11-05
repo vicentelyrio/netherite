@@ -462,7 +462,6 @@ export const runCli = (argv: ReadonlyArray<string>, env: Env, version = '0.0.0')
   const root = makeCli(env, state, version)
   return Command.runWith(root, { version })(argv).pipe(
     Effect.map(() => state.code),
-    // A usage error (unknown flag, missing argument): effect/cli has printed the reason.
     Effect.catch(() => Effect.succeed(exitCodes.usage as ExitCode)),
   )
 }

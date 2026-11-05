@@ -126,7 +126,6 @@ export const lint = (index: WorkspaceIndex, options: LintOptions): Diagnostic[] 
   for (const item of index.items()) {
     const frontmatter = item.parsed.frontmatter
 
-    // 1. The file must have readable frontmatter.
     if (frontmatter === undefined) {
       report(item, top, 'frontmatter', 'error', 'File has no frontmatter')
       continue
@@ -143,14 +142,12 @@ export const lint = (index: WorkspaceIndex, options: LintOptions): Diagnostic[] 
       continue
     }
 
-    // 2. The schema.
     for (const issue of check(data)) {
       const field = issue.path[0]
       const label = issue.path.length === 0 ? '' : `${issue.path.join('.')}: `
       report(item, fieldPosition(item, field), 'schema', 'error', `${label}${issue.message}`)
     }
 
-    // Dates that cannot be right even when each one is well formed.
     const fields = data as {
       created?: unknown
       due?: unknown
@@ -190,7 +187,6 @@ export const lint = (index: WorkspaceIndex, options: LintOptions): Diagnostic[] 
     const type = item.type as ItemType | undefined
     const validType = type !== undefined && (itemTypes as string[]).includes(type)
 
-    // 3. Identity: duplicate IDs, the ID in aliases, the file name.
     if (item.id !== undefined) {
       const same = index.findById(item.id)
       if (same.length > 1) {
@@ -227,7 +223,6 @@ export const lint = (index: WorkspaceIndex, options: LintOptions): Diagnostic[] 
       }
     }
 
-    // 4. The folder.
     if (validType && item.path.startsWith(prefix)) {
       const folder = `${prefix}${typeFolders[type]}/`
       if (!item.path.startsWith(folder)) {
@@ -241,7 +236,6 @@ export const lint = (index: WorkspaceIndex, options: LintOptions): Diagnostic[] 
       }
     }
 
-    // 5. Unknown fields are kept, and only mentioned.
     if (validType) {
       const allowed = new Set(known[type])
       for (const key of Object.keys(data)) {
@@ -258,7 +252,6 @@ export const lint = (index: WorkspaceIndex, options: LintOptions): Diagnostic[] 
     }
   }
 
-  // 6. Links.
   for (const { path, ref, resolution } of index.unresolved()) {
     const item = index.get(path)
     if (item === undefined) continue
@@ -269,7 +262,6 @@ export const lint = (index: WorkspaceIndex, options: LintOptions): Diagnostic[] 
       report(item, position, 'broken-link', 'error', `${written} does not match any item`)
     } else if (resolution.status === 'ambiguous') {
       const names = resolution.candidates.map((c) => c.path).join(', ')
-      // A title or file name shared by two items is a warning; a shared ID or alias is an error.
       const severity = resolution.via === 'id' || resolution.via === 'alias' ? 'error' : 'warning'
       report(
         item,
@@ -289,7 +281,6 @@ export const lint = (index: WorkspaceIndex, options: LintOptions): Diagnostic[] 
     }
   }
 
-  // 7. Freshness.
   if (options.freshness !== undefined) {
     for (const [path, fresh] of options.freshness) {
       if (fresh.state !== 'drifting' && fresh.state !== 'stale') continue
@@ -314,17 +305,14 @@ export const lint = (index: WorkspaceIndex, options: LintOptions): Diagnostic[] 
     }
   }
 
-  // 8. Orphans.
   for (const path of index.orphans()) {
     const item = index.get(path)
     if (item !== undefined) report(item, top, 'orphan', 'info', 'Nothing links to this item')
   }
 
-  // 9. Retired items (ADR-00025).
   for (const item of index.items()) {
     const data = item.parsed.frontmatter?.data as Record<string, unknown> | undefined
     const isKnowledge = ['doc', 'runbook', 'context'].includes(item.type ?? '')
-    // ADRs keep their own lifecycle, which does not ask for a replacement.
     if (isKnowledge && data?.status === 'superseded' && typeof data.superseded_by !== 'string') {
       report(
         item,

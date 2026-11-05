@@ -6,10 +6,6 @@ import { Effect, Layer } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { type ChangeEvent, createItem, openRepo, type Repo, watchRepo } from '../src/index'
 
-// These tests use the real file watcher (FSEvents, inotify or ReadDirectoryChangesW) on a
-// temporary copy of fixtures/basic, so they cover what the fake backend cannot: that events
-// really arrive, with the paths and timing the code expects.
-
 const layer = Layer.merge(NodeFileSystem.layer, NodePath.layer)
 const doc = (id: string, title: string, body = '') =>
   `---\nid: ${id}\naliases: [${id}]\ntype: doc\ntitle: ${title}\n---\n\n${body}\n`
@@ -33,7 +29,6 @@ const session = (use: (ctx: { dir: string; events: ChangeEvent[]; repo: Repo }) 
           const watcher = yield* watchRepo(repo, { debounceMs: 40 })
           const events: ChangeEvent[] = []
           watcher.listen((e) => events.push(e))
-          // Give the OS watcher a moment to be ready before the test touches files.
           yield* Effect.promise(() => new Promise((r) => setTimeout(r, 200)))
           yield* Effect.promise(() => use({ dir: root, events, repo }))
         }),
@@ -84,7 +79,6 @@ describe('with the real file watcher', () => {
         }),
       )
       await until(() => repo.index.size() === 17 + 60)
-      // Debouncing turned the burst into a few batches, not one event per file.
       expect(events.length).toBeLessThan(20)
     })
   })

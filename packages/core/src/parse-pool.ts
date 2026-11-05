@@ -23,8 +23,6 @@ export interface ParseOptions {
 const defaultThreshold = 400
 const filesPerWorkerAtLeast = 150
 
-// The worker is a tiny module built from a string, so no separate file has to be built or
-// located. It imports the same parser the main thread uses, by its resolved location.
 const workerSource = (markdownUrl: string) => `
 import { parentPort } from 'node:worker_threads'
 import { outlineMarkdown } from ${JSON.stringify(markdownUrl)}

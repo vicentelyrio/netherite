@@ -59,7 +59,6 @@ export const buildContext = (
       if (typeof data !== 'object' || data === null) return []
       const fields = data as Record<string, unknown>
       if (fields.include_in_context !== true) return []
-      // A retired context item is not handed to agents, whatever `include_in_context` says.
       if (fields.status === 'superseded' || fields.status === 'deprecated') return []
       const targets = Array.isArray(fields.targets) ? fields.targets : undefined
       if (targets !== undefined && !targets.includes(target)) return []
@@ -72,7 +71,6 @@ export const buildContext = (
       const priority: ContextItem['priority'] =
         fields.priority === 'high' || fields.priority === 'low' ? fields.priority : 'normal'
       const title = item.title ?? item.id ?? item.fileName
-      // The body, without its own first heading, which the bundle replaces with the title.
       const body = dataOf(item.parsed.source, item.parsed.bodyStart)
         .trim()
         .replace(/^# .*\n+/, '')

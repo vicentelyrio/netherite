@@ -32,8 +32,6 @@ export function TaskDrawer({
   const health = useHealth(api)
   const [mode, setMode] = useState<'text' | 'code'>(initial ?? 'text')
   const [changedLines, setChangedLines] = useState(0)
-  // A click outside the drawer closes it. The overlay lets clicks through to the board, so this is
-  // heard on the page instead; a task card is left alone, because it opens that task.
   const opened = id !== undefined
   useEffect(() => {
     if (!opened) return
@@ -61,8 +59,6 @@ export function TaskDrawer({
       opened={id !== undefined}
       onClose={onClose}
       position="left"
-      // The board stays usable beside the drawer: a click on another card opens that task,
-      // instead of the first click only closing the drawer.
       lockScroll={false}
       trapFocus={false}
       closeOnClickOutside={false}

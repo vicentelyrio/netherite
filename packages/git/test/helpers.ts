@@ -21,7 +21,6 @@ export const recorder = (): Recorder => {
       return ChildProcessSpawner.make((command) => {
         if (command._tag === 'StandardCommand') {
           const args = command.args.map(String)
-          // Drop the global options git is started with; keep subcommand and arguments.
           const at = args.findIndex((a) => !a.startsWith('-') && args[args.indexOf(a) - 1] !== '-c')
           commands.push(args.slice(at))
         }
@@ -48,12 +47,10 @@ export const sh = (cwd: string, ...args: string[]) =>
   execFileSync('git', args, {
     cwd,
     encoding: 'utf8',
-    // GIT_OPTIONAL_LOCKS=0 keeps the test's own `git status` from refreshing the index it inspects.
     env: {
       ...process.env,
       GIT_CONFIG_GLOBAL: emptyGitConfig,
       GIT_CONFIG_SYSTEM: emptyGitConfig,
-      // A commit needs an identity, and a CI runner has none to guess from.
       GIT_AUTHOR_NAME: 'Ada Lovelace',
       GIT_AUTHOR_EMAIL: 'ada@example.com',
       GIT_COMMITTER_NAME: 'Ada Lovelace',

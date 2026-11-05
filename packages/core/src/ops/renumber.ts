@@ -96,7 +96,6 @@ export const renumber = (
     const newName = newPath.slice(newPath.lastIndexOf('/') + 1).replace(/\.md$/i, '')
     const follow = new Set(options.rewriteReferencesIn ?? [])
 
-    // The item itself: id, aliases and file name.
     const own = yield* setField(source, 'id', newId, { order: repo.fieldOrder[type] }).pipe(
       Effect.flatMap((text) => replaceInList(text, 'aliases', oldId, newId)),
       Effect.flatMap((text) =>
@@ -107,7 +106,6 @@ export const renumber = (
       ),
     )
 
-    // Everything that links to it.
     const referrers = new Set<string>()
     for (const edge of repo.index.incoming(path)) if (edge.from !== path) referrers.add(edge.from)
     for (const u of repo.index.unresolved()) {
@@ -141,7 +139,6 @@ export const renumber = (
           : target.replace(new RegExp(escapeRegExp(oldName), 'i'), newName)
 
       let next = text
-      // Frontmatter fields hold IDs.
       for (const ref of extractRefs(scanned)) {
         if (ref.field === 'body' || ref.target !== oldId || !points(ref.target)) continue
         const pair = outlineMarkdown(next).frontmatter?.data as Record<string, unknown> | undefined
@@ -150,7 +147,6 @@ export const renumber = (
           ? replaceInList(next, ref.field, oldId, newId)
           : setField(next, ref.field, newId)
       }
-      // Wikilinks in the body, replaced from the end so earlier offsets stay valid.
       const links = outlineMarkdown(next).links.filter((l) => points(l.target, l.heading))
       for (const link of [...links].reverse()) {
         const target = newTarget(link.target)

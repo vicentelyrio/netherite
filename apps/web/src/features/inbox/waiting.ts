@@ -12,7 +12,5 @@ export const lastSeen = (): string | undefined => {
 export const markSeen = (at: string) => {
   try {
     localStorage.setItem(seenKey, at)
-  } catch {
-    // Private windows forget it.
-  }
+  } catch {}
 }

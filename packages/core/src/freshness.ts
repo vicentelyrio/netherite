@@ -125,12 +125,10 @@ export const computeFreshness = (input: FreshnessInput) =>
     const result = new Map<string, Freshness>()
     const none = { commits: 0, uncommitted: false, baseline: undefined, atLeast: false }
 
-    // 1. Which items are tracked at all.
     const candidates: Array<{ item: ScannedItem; covers: string[] }> = []
     for (const item of index.items()) {
       const fields = fieldsOf(item)
       const covers = asStrings(fields.covers)
-      // A retired ADR, doc, runbook or context item is not kept up to date (ADR-00025).
       if (fields.status === 'superseded' || fields.status === 'deprecated') {
         result.set(item.path, { ...none, state: 'not-tracked', covers, reason: fields.status })
       } else if (covers.length === 0) {
@@ -147,13 +145,11 @@ export const computeFreshness = (input: FreshnessInput) =>
       return result as ReadonlyMap<string, Freshness>
     }
 
-    // 2. Where git's paths and the workspace's paths line up.
     const map = yield* pathMap(git, input.root)
     const inWorkspace = map.fromGit
 
     const boundary = new Set(yield* git.shallowBoundary)
 
-    // 3. Each item's baseline.
     const tracked: Tracked[] = []
     for (const { item, covers } of candidates) {
       const reviewed = fieldsOf(item).reviewed_at
@@ -188,7 +184,6 @@ export const computeFreshness = (input: FreshnessInput) =>
       })
     }
 
-    // 4. One history query for everyone, from the oldest baseline.
     const dates = tracked.flatMap((t) => (t.baseline ? [t.baseline.date] : []))
     const history: ReadonlyArray<CommitInfo> = (
       dates.length === 0
@@ -200,7 +195,6 @@ export const computeFreshness = (input: FreshnessInput) =>
     ).filter((c) => upTo(c.committerDate))
     const edge = git.shallow ? history.find((c) => boundary.has(c.hash)) : undefined
 
-    // 5. Uncommitted changes, from one status.
     const status = until === undefined ? yield* git.status({ untracked: 'all' }) : { entries: [] }
     const dirty = status.entries
       .filter((e) => e.kind !== 'ignored')
@@ -210,16 +204,13 @@ export const computeFreshness = (input: FreshnessInput) =>
         return inside === undefined ? [] : [inside]
       })
 
-    // 6. Count.
     for (const t of tracked) {
       const { item, covers, baseline } = t
       if (baseline === undefined) {
-        // Never committed and never reviewed: it was written just now.
         result.set(item.path, { ...none, state: 'fresh', covers })
         continue
       }
       if (baseline.source === 'last-commit' && boundary.has(baseline.hash)) {
-        // In a shallow clone the oldest commit looks like it added every file.
         result.set(item.path, {
           ...none,
           state: 'unknown',

@@ -1,4 +1,3 @@
-/* ---- project board ---- */
 .board-summary {
   display: flex;
   align-items: center;
@@ -21,10 +20,8 @@
   min-width: 0;
   align-items: stretch;
   gap: 12px;
-  /* The board fills the page; the columns scroll sideways here and each one scrolls its cards. */
   height: 100%;
   box-sizing: border-box;
-  /* The board runs to the screen's right and bottom edges; the columns stop short of them. */
   padding-right: var(--tpl-end);
   padding-bottom: 40px;
   grid-template-rows: minmax(0, 1fr);
@@ -86,7 +83,6 @@
 .board-draggable {
   touch-action: none;
   cursor: pointer;
-  /* A click on the card opens it; it should not select the text under the pointer. */
   user-select: none;
 }
 
@@ -150,7 +146,6 @@
   margin: 5px 2px 0;
 }
 
-/* ---- board cards, as designed ---- */
 .board-column {
   background: #2e3148;
   border-radius: 14px;

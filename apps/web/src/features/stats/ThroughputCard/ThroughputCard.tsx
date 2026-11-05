@@ -11,7 +11,6 @@ export function ThroughputCard() {
   const { data, period } = useStats()
   const [at, setAt] = useState<number | undefined>(undefined)
   const top = Math.max(1, ...data.throughput.flatMap((b) => [b.created, b.done]))
-  // The axis tops out at a round number so the gridlines mean something.
   const peak = top <= 4 ? 4 : top <= 10 ? 10 : Math.ceil(top / 10) * 10
   const label = (start: string) =>
     period === 'year'

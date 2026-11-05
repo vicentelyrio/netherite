@@ -8,7 +8,6 @@
   gap: 8px;
 }
 
-/* In a column the field would grow to share the height; every field is the same height. */
 .goals-area-form .text-field {
   flex: none;
 }

@@ -6,7 +6,6 @@ import { defineLibrary } from '@netherite/config/tsdown'
  * dependencies listed in package.json. The app is copied in by scripts/bundle-app.mjs.
  */
 export default defineLibrary({
-  // `markdown` is what the parser's worker threads import (see core's parse-pool).
   entry: { bin: 'src/bin.ts', markdown: 'src/markdown.ts' },
   dts: false,
   banner: { js: '#!/usr/bin/env node' },

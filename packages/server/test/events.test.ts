@@ -157,7 +157,6 @@ describe('item changes', () => {
           yield* until(() => ofType(seen, 'items').length > 0, 'an items event')
           const event = ofType(seen, 'items')[0]
           expect(event?.upserted).toEqual([task1])
-          // TASK-00002 links to it, so it is affected too.
           expect(event?.ids).toEqual(expect.arrayContaining(['TASK-00001', 'TASK-00002']))
           const item = yield* s.client.items.get({ params: { id: 'TASK-00001' } })
           expect(item.title).toBe('Core library')
@@ -188,7 +187,6 @@ describe('lint events', () => {
         Effect.gen(function* () {
           const seen = yield* connect(s)
 
-          // Breaks a link: one error.
           yield* editOutside(
             s,
             'netherite/tasks/TASK-00002-cli.md',
@@ -197,13 +195,11 @@ describe('lint events', () => {
           yield* until(() => ofType(seen, 'lint').length === 1, 'a lint event')
           expect(ofType(seen, 'lint')[0]).toMatchObject({ error: 1, warning: 0 })
 
-          // An edit that leaves lint as it is: an items event, no lint event.
           yield* editOutside(s, task1, (t) => t.replace('Plain notes.', 'Other notes.'))
           yield* until(() => ofType(seen, 'items').length === 2, 'the second items event')
           yield* Effect.sleep(100)
           expect(ofType(seen, 'lint')).toHaveLength(1)
 
-          // Fixing the link clears it.
           yield* editOutside(s, 'netherite/tasks/TASK-00002-cli.md', (t) =>
             t.replace('\nSee [[TASK-09999]].\n', ''),
           )
@@ -332,7 +328,6 @@ describe('without a watcher', () => {
   test('API writes still reach clients, and the API still works', async () => {
     await withServer((s) =>
       Effect.gen(function* () {
-        // `live` is off, so nothing watches the disk and there is no lint worker.
         const seen = yield* connect(s)
         yield* s.client.items.setState({
           params: { id: 'TASK-00001' },

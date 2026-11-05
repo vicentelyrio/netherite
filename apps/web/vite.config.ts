@@ -47,7 +47,6 @@ const bundleReport = (): Plugin => ({
           ]
         : [],
     )
-    // Next to the app, not in `dist/`, which is what gets published.
     writeFileSync(
       fileURLToPath(new URL('./.bundle-report.json', import.meta.url)),
       JSON.stringify({ chunks }, null, 2),
@@ -65,7 +64,6 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: server,
-        // The server only answers to its own address and origin (ADR-00010).
         changeOrigin: true,
         configure: (proxy) => {
           proxy.on('proxyReq', (request) => request.removeHeader('origin'))

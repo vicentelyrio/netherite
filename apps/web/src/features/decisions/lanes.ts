@@ -75,7 +75,6 @@ export const lanesOf = (
           const first = group[0] as Transition
           const changes = [...group]
             .sort((a, b) => {
-              // The ADR that replaces another comes first, so "supersedes" reads downward.
               const rank = (t: Transition) => (t.to === 'superseded' ? 1 : 0)
               return rank(a) - rank(b) || a.id.localeCompare(b.id)
             })

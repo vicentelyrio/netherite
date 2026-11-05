@@ -116,11 +116,10 @@ const checkRef = (name: string, value: string) =>
     : Effect.fail(new InvalidGitArgument({ name, value }))
 
 const env = {
-  GIT_OPTIONAL_LOCKS: '0', // never write to the index just to refresh it
+  GIT_OPTIONAL_LOCKS: '0',
   GIT_TERMINAL_PROMPT: '0',
   GIT_PAGER: 'cat',
   LC_ALL: 'C',
-  // A hook or parent process may point git somewhere else; always use the folder we were given.
   GIT_DIR: undefined,
   GIT_WORK_TREE: undefined,
   GIT_INDEX_FILE: undefined,
@@ -160,7 +159,6 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
           return { stdout, stderr, code: Number(code) }
         }),
       ).pipe(
-        // The process could not be started at all, most likely because git is not installed.
         Effect.mapError((cause) => new GitNotInstalled({ detail: cause.message })),
         Effect.timeoutOrElse({
           duration: Duration.millis(timeoutMs),
@@ -169,7 +167,6 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
       )
     }
 
-    // 1. Is there a repository here? One call answers where it is, where .git is, and if it is shallow.
     const probe = yield* exec(dir, [
       'rev-parse',
       '--show-toplevel',
@@ -199,7 +196,6 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
           : Effect.fail(new GitCommandFailed({ args, exitCode: out.code, stderr: out.stderr })),
       )
 
-    // 2. A small memo: results are kept until the key changes, and a failure is never kept.
     const cache = new Map<string, Effect.Effect<unknown, GitError>>()
     let epoch = 0
     const memo = <A>(key: string, make: Effect.Effect<A, GitError>): Effect.Effect<A, GitError> =>
@@ -242,7 +238,6 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
           return yield* Effect.fail(new InvalidGitArgument({ name: 'path', value: filePath }))
         }
         yield* checkRef('revision', rev)
-        // Exit code 128: the revision or the path is not there.
         const out = yield* run(['show', `${rev}:${filePath}`], [0, 128])
         return out.code === 0 ? out.stdout : undefined
       })
@@ -330,7 +325,6 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
           ...hashes,
           '--',
         ]
-        // Commits never change, so no HEAD is needed in the key.
         return yield* memo(
           `commits|${JSON.stringify(args)}`,
           Effect.map(run(args), (out) => parseLog(out.stdout, files)),

@@ -87,12 +87,10 @@ export function ItemEditor({
   const [localMode, setLocalMode] = useState<EditorMode>('split')
   const mode = controlled ?? localMode
 
-  // Callbacks and lists the editor reads at the moment it needs them.
   const latest = useRef({ session, onSave, lint, targets })
   latest.current = { session, onSave, lint, targets }
   const sessionRef = latest
 
-  // 1. The file changed on disk.
   const lastSource = useRef(source)
   useEffect(() => {
     if (lastSource.current === source) return
@@ -100,7 +98,6 @@ export function ItemEditor({
     dispatch({ type: 'remote', version: { text: source.text, hash: source.hash } })
   }, [source])
 
-  // 2. Save.
   const save = useCallback(async () => {
     const { session: current, onSave: write } = latest.current
     if (!isDirty(current) || saving) return
@@ -108,8 +105,6 @@ export function ItemEditor({
     try {
       dispatch({ type: 'saved', version: await write(current.buffer, current.base.hash) })
     } catch {
-      // The caller says why (a conflict, an invalid file); the buffer stays as it is, and the
-      // same text is not tried again until it changes.
       refused.current = current.buffer
     } finally {
       setSaving(false)
@@ -118,10 +113,8 @@ export function ItemEditor({
   const saveRef = useRef(save)
   saveRef.current = save
   const refused = useRef<string | undefined>(undefined)
-  // What the server's lint last judged, so an edit is never saved before it has been checked.
   const linted = useRef<{ text: string; errors: number } | undefined>(undefined)
 
-  // 3. Linting what is typed, a moment after the typing stops.
   const lintTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const lintGeneration = useRef(0)
   const runLint = useCallback((view: EditorView) => {
@@ -129,7 +122,6 @@ export function ItemEditor({
     const generation = ++lintGeneration.current
     latest.current.lint(text).then(
       (found) => {
-        // An answer for text that has since changed is not placed.
         if (generation !== lintGeneration.current || viewRef.current !== view) return
         const placed = placeProblems(text, found)
         linted.current = { text, errors: counts(placed).errors }
@@ -140,7 +132,6 @@ export function ItemEditor({
     )
   }, [])
 
-  // 4. The editor itself.
   const extensions = useMemo(
     () => [
       ...editorExtensions({
@@ -181,15 +172,12 @@ export function ItemEditor({
       view.destroy()
       if (viewRef.current === view) viewRef.current = null
     }
-    // The view is made once per mode switch; later changes reach it through the effects below.
   }, [mode, extensions, runLint])
 
-  // The committed version can change (a commit was made) without the buffer changing.
   useEffect(() => {
     viewRef.current?.dispatch({ effects: setHead.of(source.head) })
   }, [source.head])
 
-  // When the session replaces the buffer (reload, a silent follow), the editor takes it.
   useEffect(() => {
     const view = viewRef.current
     if (view === null) return
@@ -206,8 +194,6 @@ export function ItemEditor({
   const { errors, warnings } = counts(problems)
   const dirty = isDirty(session)
 
-  // 5. Saving by itself: a pause after the last edit, once the server's lint has judged that text
-  // and found no errors, and the file has not changed under the person.
   const buffer = session.buffer
   const conflicted = session.conflict !== undefined
   useEffect(() => {

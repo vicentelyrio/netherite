@@ -32,7 +32,7 @@ export const openInBrowser = (url: string) => {
         ? ['cmd', ['/c', 'start', '""', url]]
         : ['xdg-open', [url]]
   const child = spawn(command as string, args as string[], { stdio: 'ignore', detached: true })
-  child.on('error', () => {}) // no browser here (a server over ssh): the URL is printed anyway
+  child.on('error', () => {})
   child.unref()
 }
 
@@ -40,7 +40,7 @@ const untilAborted = (signal: AbortSignal | undefined) =>
   Effect.promise(
     () =>
       new Promise<void>((resolve) => {
-        if (signal === undefined) return // runs until the process is killed
+        if (signal === undefined) return
         if (signal.aborted) return resolve()
         signal.addEventListener('abort', () => resolve(), { once: true })
       }),
@@ -60,7 +60,6 @@ export const serveCommand = (env: Env, options: ServeOptions) =>
         const createdBy = yield* gitHandle(git)
         const state = yield* makeState(repo, { git, createdBy, version: options.version })
 
-        // Agents connecting over HTTP: their writes reach open browsers like any other change.
         const context = yield* Effect.context()
         const mcp = yield* createMcpHttp(repo, {
           git,

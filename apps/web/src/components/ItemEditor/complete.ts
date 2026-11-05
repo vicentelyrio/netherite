@@ -26,7 +26,6 @@ const rank = (target: LinkTarget, query: string) => {
   if (title.startsWith(q)) return 2
   if (id.includes(q)) return 3
   if (title.includes(q)) return 4
-  // Every word of the query somewhere in the title, such as "git ADR".
   const words = q.split(/\s+/).filter(Boolean)
   return words.length > 1 && words.every((w) => id.includes(w) || title.includes(w)) ? 5 : undefined
 }

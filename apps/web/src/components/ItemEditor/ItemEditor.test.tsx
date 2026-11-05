@@ -42,7 +42,6 @@ const setup = (props: Partial<ItemEditorProps> = {}) => {
           onSave={onSave}
           lint={lint}
           targets={[]}
-          // Saving by itself would answer before a test looks; the tests that want it ask.
           autosaveDelay={60_000}
           onReady={(v) => (view = v)}
           {...p}
@@ -298,7 +297,6 @@ describe('changed on disk', () => {
     expect(await screen.findByText('Changed on disk')).toBeInTheDocument()
     expect(view().state.doc.toString().startsWith('mine ')).toBe(true)
     expect(view().state.doc.toString()).toContain('first')
-    // Nothing is saved over the new version while the person has not chosen.
     expect(screen.getByText('Unsaved')).toBeInTheDocument()
   })
 

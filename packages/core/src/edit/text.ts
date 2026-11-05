@@ -9,7 +9,6 @@ export const withEol = (text: string, eol: string) => text.replace(/\r?\n/g, eol
 
 /** Offset just after the end of the line that contains `offset` (past its line ending). */
 export const lineEndAfter = (text: string, offset: number) => {
-  // An offset that sits right after a line ending belongs to the line before it.
   let p = offset
   while (p > 0 && (text[p - 1] === '\n' || text[p - 1] === '\r')) p--
   const newline = text.indexOf('\n', p)

@@ -14,12 +14,6 @@ import {
   unsetField,
 } from '../src/index'
 
-// Each folder under test/golden is one case:
-//   input.md      the file before the edit
-//   op.json       the edit to apply
-//   expected.md   the exact file after it (not present for cases that must fail)
-// Run with GOLDEN_UPDATE=1 to (re)write expected.md, then review the diff in git.
-
 const root = join(__dirname, 'golden')
 const update = process.env.GOLDEN_UPDATE === '1'
 
@@ -49,7 +43,6 @@ const apply = (source: string, op: Op): Effect.Effect<string, EditError> => {
   }
 }
 
-// Applying these twice gives the same file as applying them once.
 const isIdempotent = (op: Op) => {
   switch (op.op) {
     case 'setField':
@@ -133,7 +126,6 @@ describe('golden files', () => {
   })
 
   test('changed region stays small', () => {
-    // A field edit may touch only that field's lines; this guards against whole-block rewrites.
     for (const name of cases.filter((n) => /^(set|unset|append-to|remove-from)/.test(n))) {
       const dir = join(root, name)
       if (!existsSync(join(dir, 'expected.md'))) continue

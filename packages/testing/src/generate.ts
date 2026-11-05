@@ -11,7 +11,6 @@ const prefixes = {
 } as const
 type ItemType = keyof typeof prefixes
 
-// Share of each type in a generated workspace. Tasks dominate, as in a real one.
 const mix: ReadonlyArray<readonly [ItemType, number]> = [
   ['goal', 0.005],
   ['project', 0.03],

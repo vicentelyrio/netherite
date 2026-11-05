@@ -371,7 +371,7 @@ describe('listening', () => {
     const external = Object.values(networkInterfaces())
       .flat()
       .find((i) => i && i.family === 'IPv4' && !i.internal)
-    if (external === undefined) return // no network interface to try
+    if (external === undefined) return
     await withServer((s) =>
       Effect.promise(
         () =>

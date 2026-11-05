@@ -320,7 +320,6 @@ describe('importBatch links, deciders and titles', () => {
         { source: 'README.md', type: 'doc' },
       ]),
     )
-    // A (first batch) now points at B and the README, and B points back at A.
     expect(second.relinked).toEqual({ items: 2, links: 3 })
     const a = w.read('netherite/docs/DOC-00002-a.md') as string
     expect(a).toContain('See [[DOC-00003|B]] and [[DOC-00004|setup]].')

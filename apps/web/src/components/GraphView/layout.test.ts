@@ -115,7 +115,6 @@ describe('dragging a node', () => {
     expect(project?.x).toBeCloseTo(900, 0)
     expect(project?.y).toBeCloseTo(900, 0)
     const now = at.get('TASK-00001') as { x: number; y: number }
-    // A task of the project is pulled toward it; a doc with no links to it hardly moves.
     const closer = (a: { x: number; y: number }) => Math.hypot(a.x - 900, a.y - 900)
     expect(closer(now)).toBeLessThan(closer(task))
     expect(closer(at.get('DOC-00001') as { x: number; y: number })).toBeGreaterThan(closer(now))

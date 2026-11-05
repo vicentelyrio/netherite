@@ -199,7 +199,6 @@ const items = (state: ServerState) =>
         Effect.gen(function* () {
           yield* locate(state, params.id)
           const source = yield* readSource(state.repo, params.id).pipe(Effect.mapError(gitFailure))
-          // What git has committed, for the editor's change gutter. Without git there is none.
           const git = state.git
           const head =
             git === undefined
@@ -378,7 +377,6 @@ const graph = (state: ServerState) =>
           )
         }
         const fresh = yield* state.freshness.get
-        // Since when each item has had its status comes from git; without it the graph still works.
         const past = state.git === undefined ? undefined : yield* state.history.pipe(Effect.option)
         const since = new Map<string, string>()
         if (past !== undefined && past._tag === 'Some' && past.value !== undefined) {
@@ -617,7 +615,6 @@ const inbox = (state: ServerState) =>
                 : [{ ...s, id: s.id, type: s.type, title: s.title ?? s.id }]
             })
 
-          // Uncommitted changes to items.
           const folder = repo.contentRoot
           const status = state.git
             ? yield* state.git.status().pipe(Effect.orElseSucceed(() => undefined))
@@ -809,7 +806,6 @@ const stats = (state: ServerState) =>
           if (period !== '30d' && period !== 'quarter' && period !== 'year')
             return yield* invalid(['period'], 'Use 30d, quarter or year')
           const fresh = yield* state.freshness.get
-          // Which code changed without a doc update comes from git; without it the list is empty.
           const length = period === '30d' ? 30 : period === 'quarter' ? 90 : 365
           const today = new Date().toISOString().slice(0, 10)
           const first = new Date(Date.parse(`${today}T00:00:00Z`) - (length - 1) * 86_400_000)
@@ -823,7 +819,6 @@ const stats = (state: ServerState) =>
                   from: first,
                   to: today,
                 }).pipe(Effect.orElseSucceed(() => []))
-          // Commits tied to tracked work, this period and the one before, for the "linked" card.
           const dayBack = (day: string, n: number) =>
             new Date(Date.parse(`${day}T00:00:00Z`) - n * 86_400_000).toISOString().slice(0, 10)
           const before = { from: dayBack(first, length), to: dayBack(first, 1) }
@@ -890,7 +885,6 @@ const stats = (state: ServerState) =>
 const events = (state: ServerState) =>
   HttpApiBuilder.group(NetheriteApi, 'events', (handlers) =>
     handlers.handle('events', () =>
-      // Subscribe before saying `ready`, so nothing published after the client sees it is lost.
       Effect.succeed(
         Stream.unwrap(
           Effect.gen(function* () {

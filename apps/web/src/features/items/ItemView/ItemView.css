@@ -10,7 +10,6 @@
   flex: 1;
 }
 
-/* While editing, the page gives the editor the whole width. */
 .app-item--editing {
   max-width: none;
 }

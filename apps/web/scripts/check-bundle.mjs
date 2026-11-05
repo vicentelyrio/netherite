@@ -1,9 +1,3 @@
-// Checks the browser build against `bundle-budget.json` (TASK-00005): the app may use `Schema`
-// and the HTTP client from `effect`, so no module of `effect` may appear that the record does not
-// already have, and neither `effect` nor the scripts as a whole may grow past a small margin.
-//
-//   node scripts/check-bundle.mjs            check the build in dist/
-//   node scripts/check-bundle.mjs --update   write what the build uses now as the new record
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'

@@ -18,8 +18,6 @@ import {
 } from 'react'
 import { Icon } from '../icon'
 
-// ---- Button ------------------------------------------------------------------------------
-
 export type ButtonVariant = 'primary' | 'secondary' | 'subtle' | 'danger'
 
 const buttonLook: Record<ButtonVariant, Pick<MantineButtonProps, 'variant' | 'color'>> = {
@@ -54,8 +52,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   )
 })
 
-// ---- ActionIcon ----------------------------------------------------------------------------
-
 export interface ActionIconProps
   extends Omit<MantineActionIconProps, 'children'>,
     Omit<ComponentPropsWithoutRef<'button'>, keyof MantineActionIconProps | 'aria-label'> {
@@ -87,8 +83,6 @@ export const ActionIcon = forwardRef<HTMLButtonElement, ActionIconProps>(functio
   )
   return tooltip ? <Tooltip label={label}>{button}</Tooltip> : button
 })
-
-// ---- Avatar ---------------------------------------------------------------------------------
 
 /** The design's own avatar is amber; others take the next colours of the palette. */
 const avatarColors = ['warning', 'lavender', 'success', 'adr', 'doc', 'context', 'runbook'] as const
@@ -138,8 +132,6 @@ export function Avatar({ name, src, size = 'sm', color }: AvatarProps) {
   )
 }
 
-// ---- Card ----------------------------------------------------------------------------------
-
 export interface CardProps extends MantineCardProps {
   /** The card is the current choice (a selected row or the open item). */
   readonly selected?: boolean
@@ -179,8 +171,6 @@ export function Card({ selected, dropTarget, interactive, onClick, children, ...
     </MantineCard>
   )
 }
-
-// ---- Progress ------------------------------------------------------------------------------
 
 /** Share done, 0 to 100. Nothing to do counts as nothing done. */
 export const percentOf = (done: number, total: number) =>
@@ -255,8 +245,6 @@ export function ProgressRing({
     </div>
   )
 }
-
-// ---- SearchSelect ------------------------------------------------------------------------
 
 export interface SearchSelectProps {
   /** The accessible name. */

@@ -33,7 +33,6 @@ export function GoalAreas({ only }: { readonly only?: string }) {
     )
   }
   const all = groupByArea(query.data.goals)
-  // A link to one area shows just that area, with a way back to all of them.
   const some = only === undefined ? all : all.filter((g) => g.area === only)
   const groups = some.length === 0 ? all : some
   if (only !== undefined && some.length > 0) {

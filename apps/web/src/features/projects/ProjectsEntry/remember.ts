@@ -4,9 +4,7 @@ const key = 'netherite:last-project'
 export const rememberProject = (id: string) => {
   try {
     localStorage.setItem(key, id)
-  } catch {
-    // Private windows and blocked storage just forget it.
-  }
+  } catch {}
 }
 
 export const lastProject = () => {

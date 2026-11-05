@@ -38,7 +38,6 @@ export const placeProblems = (text: string, found: ReadonlyArray<ServerDiagnosti
     const lineEnd = (lineStarts[d.line] ?? text.length + 1) - 1
     const from = Math.min(start + Math.max(d.column - 1, 0), Math.max(lineEnd, start))
     const rest = text.slice(from, lineEnd)
-    // A wikilink is marked whole; anything else to the end of the word.
     const word = /^\[\[[^\]\n]*\]\]/.exec(rest) ?? /^[^\s,\]}]+/.exec(rest)
     const to = Math.min(
       Math.max(from + (word?.[0].length ?? 1), from + 1),

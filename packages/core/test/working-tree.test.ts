@@ -42,7 +42,6 @@ const adr = (id: string, to: string): ItemHistory => ({
   deletedAt: undefined,
   commits: 1,
 })
-// Committed: both proposed. In the files: ADR-00001 has since been accepted.
 const history: History = {
   items: new Map([
     ['ADR-00001', adr('ADR-00001', 'proposed')],
@@ -66,7 +65,6 @@ describe('history with the working tree on top', () => {
       date: now,
       hash: 'working-tree',
     })
-    // The lifecycle then knows it was accepted, today, though git does not.
     const life = lifecycles(merged, { states: w.repo.workspace.config.states, now })
     expect(life.get('ADR-00001')?.finished).toBe(now)
     expect(life.get('ADR-00002')?.finished).toBeUndefined()

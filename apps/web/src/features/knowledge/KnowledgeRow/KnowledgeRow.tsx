@@ -24,7 +24,6 @@ export function KnowledgeRow({
   readonly selected: boolean
   readonly onSelect: () => void
 }) {
-  // A retired item of any type is struck through, as a superseded ADR is.
   const { LL } = useI18nContext()
   const superseded = row.status === 'superseded' || row.status === 'deprecated'
   return (

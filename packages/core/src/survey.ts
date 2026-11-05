@@ -107,7 +107,6 @@ const managedFolders = new Set(['openspec', '.changeset', '.changes', 'changelog
 const hiddenKept = new Set(['.ai', '.claude', '.cursor', '.github', '.agents'])
 
 const markdown = /\.(md|mdx|mdc|markdown)$/i
-// Written in capitals by convention: `docs/agents.md` is a page about agents, not their file.
 const agentFile = /^(AGENTS|CLAUDE|GEMINI)\.md$/
 const notDocs =
   /^(changelog|changes|history|license|licence|copying|notice|authors|contributors|code_of_conduct)(\.[a-z]+)?$/i
@@ -213,14 +212,12 @@ export const surveyRepository = (
       skipped.set(reason, list)
     }
 
-    // The walk: every file, with the folders that are never entered left out.
     const files: string[] = []
     let scanned = 0
     const seen = new Set<string>()
     const walk = (dir: string): Effect.Effect<void> =>
       Effect.gen(function* () {
         const real = yield* fs.realPath(path.join(root, dir)).pipe(Effect.orElseSucceed(() => dir))
-        // A symlink to a folder that was already walked is the same folder, not a second one.
         if (seen.has(real)) return
         seen.add(real)
         const names = yield* fs
@@ -245,7 +242,6 @@ export const surveyRepository = (
           }
         }
       })
-    // Files inside a folder another tool manages are counted, so the person can see the size of it.
     const countManaged = (dir: string): Effect.Effect<void> =>
       Effect.gen(function* () {
         const entries = yield* fs
@@ -272,8 +268,8 @@ export const surveyRepository = (
         file === '.github/copilot-instructions.md' ||
         /^\.ai\/context\//.test(file)
       if (!markdown.test(name) && name !== '.cursorrules') continue
-      if (!isConvention && file.startsWith('.claude/')) continue // commands, agents, skills
-      if (!isConvention && file.startsWith('.github/')) continue // workflows, issue templates
+      if (!isConvention && file.startsWith('.claude/')) continue
+      if (!isConvention && file.startsWith('.github/')) continue
       if (notDocs.test(name)) {
         skip('not-documentation', file)
         continue
@@ -294,7 +290,6 @@ export const surveyRepository = (
         skip('already-imported', file)
         continue
       }
-      // The root and each app's own file are kept; the ones deeper in the tree are left out.
       const depth = file.split('/').length
       if (agentFile.test(name) && depth > 3 && options.nestedAgentFiles !== true) {
         skip('nested-agent-file', file)
@@ -327,7 +322,6 @@ export const surveyRepository = (
       typed.push({ entry: { source: file, type }, text })
     }
 
-    // Decision records keep their numbers, and take the status and date they state.
     const notes: string[] = []
     const numbers = new Map<number, string>()
     const entries: SurveyEntry[] = []
@@ -371,7 +365,6 @@ export const surveyRepository = (
     }
 
     const order: Record<SurveyType, number> = { adr: 0, doc: 1, runbook: 2, context: 3 }
-    // By type, then the files at the top of the repository first, then the rest by path.
     const depthOf = (s: SurveyEntry) => s.source.split('/').length
     entries.sort(
       (a, b) =>

@@ -279,8 +279,6 @@ export const graphOf = (
   return { nodes, edges }
 }
 
-// ---- goals and their projects --------------------------------------------------------------------
-
 const strings = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []
 
@@ -382,8 +380,6 @@ export const goalDetail = (repo: Repo, item: ScannedItem) => ({
     .map((p) => projectRow(repo, p)),
 })
 
-// ---- a project's board ---------------------------------------------------------------------------
-
 export interface BoardCard {
   readonly id: string
   readonly title: string
@@ -468,8 +464,6 @@ export const boardOf = (repo: Repo, project: ScannedItem) => {
     linked: [...new Map(others.map((o) => [o.id, o])).values()] as BoardItem[],
   }
 }
-
-// ---- the knowledge index ----------------------------------------------------------------------
 
 const knowledgeKinds = new Set(['adr', 'doc', 'context', 'runbook'])
 

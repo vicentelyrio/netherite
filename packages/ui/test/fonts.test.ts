@@ -135,7 +135,6 @@ describe('the icon class', () => {
 
   test('turns a name into an icon with ligatures, at a fixed size, and does not wrap', () => {
     expect(rule).toMatch(/font-feature-settings: ["']liga["']/)
-    // The design pairs FILL 1 with warnings and weights 300 to 500 with sizes.
     expect(rule).toContain('FILL')
     expect(rule).toContain('wght')
     expect(rule).toContain('line-height: 1')

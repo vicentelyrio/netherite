@@ -37,7 +37,6 @@ export function NoticeProvider({ children }: { readonly children: ReactNode }) {
     return {
       notify: (notice) => {
         const id = next++
-        // The same message twice is one message.
         setNotices((list) => [
           ...list.filter((n) => !(n.title === notice.title && n.text === notice.text)),
           { ...notice, id },

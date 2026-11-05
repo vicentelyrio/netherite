@@ -211,8 +211,6 @@ export const createIndex = (options: IndexOptions) => {
     },
   })
 
-  // Building the text index is a quarter of the start-up cost and nothing needs it until the
-  // first search, so it is built then (or earlier, by `warmSearch`).
   let searchReady = false
   const ensureSearch = () => {
     if (searchReady) return

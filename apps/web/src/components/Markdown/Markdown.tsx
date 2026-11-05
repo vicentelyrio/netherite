@@ -22,7 +22,6 @@ export const wikiHref = (target: string) =>
  */
 const processor = createProcessor().use(remarkRehype, {
   handlers: {
-    // Frontmatter is shown elsewhere, as fields.
     yaml: () => undefined,
     wikiLink: (_state, node: WikiLink): Element => {
       const { target, heading, label } = node.data
@@ -57,9 +56,7 @@ export const safeUrl = (
     ) {
       return { href: parsed.href, external: parsed.protocol !== 'mailto:' }
     }
-  } catch {
-    // not an absolute URL: treat a bare relative path as unsafe too, since there is no file to open
-  }
+  } catch {}
   return undefined
 }
 
@@ -71,7 +68,6 @@ function Anchor({
 }: ComponentProps<'a'> & { node?: unknown }) {
   const wiki = 'data-wikilink' in rest
   const safe = safeUrl(href)
-  // Inside the app a link is followed by the router, so the page is not reloaded.
   const router = useRouter({ warn: false })
   if (safe === undefined) return <span className="md-dead-link">{children}</span>
   const inside = !safe.external && safe.href.startsWith('/')

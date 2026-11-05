@@ -43,7 +43,6 @@ export function TriageDetail() {
   )
   const [chosen, setChosen] = useState<string | undefined>(undefined)
   const [as, setAs] = useState<{ key: string; type: CaptureType } | undefined>(undefined)
-  // Tasks belong to a project, so a capture turned into one needs it: the first, until picked.
   const guess =
     selected?.rule === 'capture' ? suggestFor(selected.title, projects, knownTags) : undefined
   const project = chosen ?? guess?.project ?? projects[0]?.id ?? ''
@@ -119,7 +118,6 @@ export function TriageDetail() {
   }
   const main = primary[item.rule]
   const look = ruleLook[item.rule]
-  // What a capture becomes: a task until another kind is picked for this capture.
   const type: CaptureType = as?.key === item.key ? as.type : 'task'
   const goals = projects.find((p) => p.id === project)?.goals ?? []
   const skipped = dropped?.key === item.key ? dropped.tags : []

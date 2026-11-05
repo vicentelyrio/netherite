@@ -172,7 +172,6 @@ export function TimelineRow({ row, today, from, to, onToggle }: Props) {
                   ? LL.timeline.planned()
                   : undefined,
           }
-          // The bar of the item is a way into it; the thin waiting, hold and overdue bars are not.
           if (p.kind !== 'active' && p.kind !== 'planned') {
             return <span key={`${p.kind}-${p.span.left}`} {...props} />
           }

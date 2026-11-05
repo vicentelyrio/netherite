@@ -46,7 +46,6 @@ export const renameFile = (
     const oldName = stem(from)
     const newName = stem(to)
 
-    // Files that link to this one by its file name (or a folder path ending in it).
     const referrers = new Set<string>()
     for (const edge of repo.index.incoming(from)) if (edge.from !== from) referrers.add(edge.from)
 

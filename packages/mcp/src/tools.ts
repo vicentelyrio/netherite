@@ -16,7 +16,6 @@ const relationKinds = [
   'related',
 ]
 
-// Fields that the server sets itself when it creates an item.
 const reserved = new Set(['id', 'aliases', 'type', 'title', 'created'])
 
 /**

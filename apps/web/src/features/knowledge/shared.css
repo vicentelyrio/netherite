@@ -96,7 +96,6 @@
   color: #e8e9f3;
 }
 
-/* With the preview open the table gets narrow: leave out the freshness column so the title keeps room. */
 @media (max-width: 1799px) {
   .kn-cols,
   .kn-row {

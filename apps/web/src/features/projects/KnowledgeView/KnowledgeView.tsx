@@ -81,7 +81,6 @@ export function KnowledgeView({ board }: { readonly board: Board }) {
 function Row({ row, project }: { readonly row: KnowledgeRow; readonly project: string }) {
   const { LL } = useI18nContext()
   const others = row.projects.filter((p) => p !== project)
-  // What it is for: the items it explains, then any other project it is linked to.
   const explained = Object.entries(row.explains).map(
     ([type, count]) =>
       `${count} ${typeLabels[type as ItemTypeName].toLowerCase()}${count === 1 ? '' : 's'}`,

@@ -17,7 +17,6 @@ export function AppRail({ onSearch }: { readonly onSearch: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
   const health = useHealth(api)
   const inbox = useInbox(api)
-  // What waits for a person: decisions to make, docs gone stale, problems to fix, blocked work.
   const waiting = inbox.data ? waitingCount(inbox.data) : 0
   const keys = useResolvedShortcuts()
 

@@ -1,6 +1,3 @@
-// Fails when a page prints `npx netherite`, which would run someone else's package: the published
-// name is `@vicentelyrio/netherite` (ADR-00027). `npx @vicentelyrio/netherite` and a bare
-// `netherite` (after an install) are fine.
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 

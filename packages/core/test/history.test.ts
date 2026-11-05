@@ -222,12 +222,12 @@ describe('tasks and weeks', () => {
       [taskFile(1)]: task('TASK-00001', 'backlog'),
       [taskFile(2)]: task('TASK-00002', 'backlog'),
       [taskFile(3)]: task('TASK-00003', 'done'),
-    }), // Monday
+    }),
     at('2026-01-07', 'start', { [taskFile(1)]: task('TASK-00001', 'doing') }, grace),
-    at('2026-01-09', 'finish 1', { [taskFile(1)]: task('TASK-00001', 'done') }, grace), // Friday
-    at('2026-01-11', 'sunday', { [taskFile(2)]: task('TASK-00002', 'done') }), // Sunday, still week of 01-05
-    at('2026-01-12', 'reopen', { [taskFile(2)]: task('TASK-00002', 'doing') }), // Monday
-    at('2026-01-27', 'finish 2 again', { [taskFile(2)]: task('TASK-00002', 'done') }, ada), // two weeks later
+    at('2026-01-09', 'finish 1', { [taskFile(1)]: task('TASK-00001', 'done') }, grace),
+    at('2026-01-11', 'sunday', { [taskFile(2)]: task('TASK-00002', 'done') }),
+    at('2026-01-12', 'reopen', { [taskFile(2)]: task('TASK-00002', 'doing') }),
+    at('2026-01-27', 'finish 2 again', { [taskFile(2)]: task('TASK-00002', 'done') }, ada),
   ]
   const done = new Set(['done'])
 
@@ -251,10 +251,10 @@ describe('tasks and weeks', () => {
   test('counts completions per week, with empty weeks', async () => {
     await withHistory(states, async (history) => {
       expect(completionsByWeek(history, done)).toEqual([
-        { week: '2026-01-05', count: 3 }, // TASK-00003 created done, TASK-00001 on Friday, TASK-00002 on Sunday
+        { week: '2026-01-05', count: 3 },
         { week: '2026-01-12', count: 0 },
         { week: '2026-01-19', count: 0 },
-        { week: '2026-01-26', count: 1 }, // TASK-00002 finished again
+        { week: '2026-01-26', count: 1 },
       ])
     })
   })
@@ -358,13 +358,13 @@ describe('progress over time', () => {
         expect(series.projects.get('PRJ-00001')).toEqual([
           { week: '2026-01-05', done: 0, total: 2 },
           { week: '2026-01-12', done: 1, total: 2 },
-          { week: '2026-01-19', done: 1, total: 1 }, // TASK-00002 moved away
+          { week: '2026-01-19', done: 1, total: 1 },
           { week: '2026-01-26', done: 1, total: 1 },
         ])
         expect(series.projects.get('PRJ-00002')).toEqual([
           { week: '2026-01-12', done: 0, total: 1 },
           { week: '2026-01-19', done: 1, total: 2 },
-          { week: '2026-01-26', done: 1, total: 1 }, // TASK-00003 deleted
+          { week: '2026-01-26', done: 1, total: 1 },
         ])
         expect(series.goals.get('GOAL-00001')).toEqual([
           { week: '2026-01-05', done: 0, total: 2 },
@@ -444,7 +444,6 @@ describe('authors per item', () => {
       ],
       async (history) => {
         expect(authorsOf(history, 'TASK-00001')).toEqual([
-          // Two commits each; the one who changed it last comes first.
           { ...ada, commits: 2, first: '2026-01-05', last: '2026-01-12' },
           { ...grace, commits: 2, first: '2026-01-06', last: '2026-01-09' },
         ])
@@ -595,7 +594,7 @@ describe('fixtures/basic', () => {
     try {
       const git = await run(openGit(repo.root))
       const history = await run(readHistory(git, repo.root, { contentRoot: 'netherite' }))
-      expect(history.items.size).toBe(16) // 17 files, one duplicate id
+      expect(history.items.size).toBe(16)
       expect(history.items.get('ADR-00002')?.created?.author.name).toBe('Ada Lovelace')
       expect(
         decisionLog(history)
@@ -614,7 +613,6 @@ describe('fixtures/basic', () => {
 })
 
 describe('commit dates with a time zone offset', () => {
-  // 21:30 on Sunday January 11 in UTC-3 is already 00:30 on Monday January 12 in UTC.
   const lateSunday = (message: string, write: Record<string, string>): Commit => ({
     message,
     date: '2026-01-11T21:30:00-03:00',
@@ -638,7 +636,6 @@ describe('commit dates with a time zone offset', () => {
       ],
       async (history) => {
         const done = new Set(['done'])
-        // The finish happened on Monday the 12th in UTC, so it belongs to that week.
         expect(completionsByWeek(history, done)).toEqual([{ week: '2026-01-12', count: 1 }])
         expect(progressSeries(history, done).projects.get('PRJ-00001')).toEqual([
           { week: '2026-01-05', done: 0, total: 1 },

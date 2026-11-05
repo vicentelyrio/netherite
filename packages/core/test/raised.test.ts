@@ -60,7 +60,6 @@ describe('raised', () => {
     expect(keys).toContain(`closing-commit:TASK-00001:${'b'.repeat(12)}`)
     expect(keys).toContain(`new-todo:${'d'.repeat(12)}:src/a.ts:7`)
     expect(keys.some((k) => k.startsWith('similar-tag:'))).toBe(true)
-    // A done task is neither overdue nor closed again.
     expect(keys.some((k) => k.includes('TASK-00002'))).toBe(false)
     expect(raised(w.repo, { now }).map((r) => r.key)).toEqual(
       raised(w.repo, { now }).map((r) => r.key),

@@ -64,10 +64,10 @@ describe('the activity log', () => {
       await s.call('search', { query: 'core' })
       await s.call('lint')
       await s.call('context')
-      await s.call('update', { id: 'TASK-00001', set: { state: 'waiting' } }) // invalid
-      await s.call('create', { type: 'task', title: 'x', fields: { project: 'PRJ-00404' } }) // invalid
-      await s.call('delete', { id: 'TASK-00001' }) // still linked
-      await s.call('update', { id: 'TASK-00001', set: { title: 'Core' } }) // already so
+      await s.call('update', { id: 'TASK-00001', set: { state: 'waiting' } })
+      await s.call('create', { type: 'task', title: 'x', fields: { project: 'PRJ-00404' } })
+      await s.call('delete', { id: 'TASK-00001' })
+      await s.call('update', { id: 'TASK-00001', set: { title: 'Core' } })
       await s.call('get', { id: 'TASK-09999' })
       expect((await log(s.dir)).entries).toEqual([])
     })
@@ -144,7 +144,6 @@ describe('the activity log', () => {
 
   test('a log that cannot be written does not fail the write', async () => {
     await withSession(async (s) => {
-      // Put a file where the log's folder should be.
       rmSync(join(s.dir, '.netherite/local'), { recursive: true, force: true })
       mkdirSync(join(s.dir, '.netherite'), { recursive: true })
       writeFileSync(join(s.dir, '.netherite/local'), 'in the way')

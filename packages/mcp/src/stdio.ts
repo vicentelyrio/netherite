@@ -19,7 +19,6 @@ export const serveStdio = (handle: McpHandle, options: StdioOptions = {}) =>
         const input = options.input ?? process.stdin
         const transport = new StdioServerTransport(input, options.output ?? process.stdout)
         handle.server.onclose = () => resolve()
-        // The SDK does not notice the client closing its end of the pipe.
         input.once('end', () => void handle.server.close())
         input.once('close', () => void handle.server.close())
         void handle.server.connect(transport)

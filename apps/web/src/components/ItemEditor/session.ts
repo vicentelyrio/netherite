@@ -50,10 +50,8 @@ export const reduce = (s: Session, event: SessionEvent): Session => {
       if (version.hash === s.base.hash)
         return s.conflict === undefined ? s : { ...s, conflict: undefined }
       if (s.conflict?.hash === version.hash) return s
-      // The same text under a new hash is not a change to anyone.
       if (version.text === s.base.text) return { ...s, base: version }
       if (!isDirty(s)) return { base: version, buffer: version.text, conflict: undefined }
-      // The file now says what the buffer says: nothing to decide.
       if (version.text === s.buffer) return { base: version, buffer: s.buffer, conflict: undefined }
       return { ...s, conflict: version }
     }

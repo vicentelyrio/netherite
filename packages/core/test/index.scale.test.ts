@@ -4,8 +4,6 @@ import { Effect } from 'effect'
 import { describe, expect, test } from 'vitest'
 import { createIndex, parseFiles } from '../src/index'
 
-// The budgets are for a developer machine. Shared CI runners are two to four times slower (the
-// first run measured 4.4 s on Linux and 2.9 s on macOS against the 2 s budget), so they get room.
 const slack = process.env.CI === undefined ? 1 : 4
 
 describe('scale', () => {

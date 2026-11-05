@@ -29,8 +29,6 @@ async function start(project: TestProject) {
     GIT_CONFIG_GLOBAL: emptyGitConfig,
     GIT_CONFIG_SYSTEM: emptyGitConfig,
   }
-  // Vitest cannot print the stack of an error thrown from here on some runners (a source map
-  // problem in its own error printer), and then the cause is lost. So the cause is written first.
   const fail = (what: string, error: unknown): never => {
     const detail = error instanceof Error ? error.message : String(error)
     const stderr = (error as { stderr?: Buffer | string }).stderr?.toString() ?? ''
@@ -75,7 +73,6 @@ async function start(project: TestProject) {
       }
     })
     child.on('exit', (code) => {
-      // After startup this is the server being stopped at the end, which is not a failure.
       if (ready) return
       process.stderr.write(`\n[web test setup] serve exited with ${code}:\n${out}\n${err}\n`)
       reject(new Error(`serve exited ${code}: ${out}`))

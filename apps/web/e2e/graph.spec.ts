@@ -6,7 +6,6 @@ test('scrubbing the graph to a past date shows fewer nodes, and Today restores t
   page,
   workspace,
 }) => {
-  // The sample is committed in one go; make it older, and add the second task after it.
   workspace.git(['rm', '--cached', '-q', task2])
   workspace.git(['commit', '--amend', '-q', '--no-edit'], '2026-01-05T10:00:00Z')
   workspace.git(['add', task2])

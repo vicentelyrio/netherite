@@ -1,6 +1,3 @@
-// Installs the packed `netherite` into an empty folder, as a user would with npx, and runs it
-// against a fresh git repository: the version, `init`, `lint`, and `serve` answering with the app.
-// Needs the network for the package's dependencies. Run `pnpm build` first.
 import { execFileSync, spawn } from 'node:child_process'
 import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -21,7 +18,6 @@ const fail = (message) => {
 }
 
 try {
-  // 1. Pack and install it somewhere that has none of our workspace.
   const packed = run(pnpm, ['pack', '--pack-destination', work], { cwd: root })
     .trim()
     .split(/\r?\n/)
@@ -38,10 +34,8 @@ try {
   const bin = join(install, 'node_modules', '@vicentelyrio', 'netherite', 'dist', 'bin.mjs')
   const netherite = (...args) => run('node', [bin, ...args], { cwd: repo, env })
 
-  // 2. A clean repository.
   const repo = join(work, 'repo')
   mkdirSync(repo)
-  // An empty file, not `os.devNull`, which git cannot open on Windows.
   const emptyConfig = join(work, 'empty-gitconfig')
   writeFileSync(emptyConfig, '')
   const env = { ...process.env, GIT_CONFIG_GLOBAL: emptyConfig, GIT_CONFIG_SYSTEM: emptyConfig }
@@ -56,7 +50,6 @@ try {
   netherite('lint')
   console.log('init and lint ran')
 
-  // 3. The server answers, with the app.
   const child = spawn('node', [bin, 'serve', '--no-open', '--port', '0'], { cwd: repo, env })
   let out = ''
   const url = await new Promise((resolve, reject) => {

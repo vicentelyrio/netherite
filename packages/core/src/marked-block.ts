@@ -36,7 +36,6 @@ export const applyMarkedBlock = (
   const starts = existing.split(markers.start).length - 1
   const ends = existing.split(markers.end).length - 1
   if (starts === 0 && ends === 0) {
-    // Nothing generated yet, and nothing to say: leave the file alone.
     if (!has) return existing
     const gap = existing === '' ? '' : existing.endsWith(eol) ? eol : eol + eol
     return `${existing}${gap}${block}${eol}`

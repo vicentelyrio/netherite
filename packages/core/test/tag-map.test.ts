@@ -55,7 +55,6 @@ describe('tag map', () => {
     const cluster = (name: string) => map.tags.find((t) => t.name === name)?.cluster
     expect(cluster('backend')).toBe('Product')
     expect(cluster('api')).toBe('Product')
-    // Docs have no goal: guide and setup are used together, and named after the most used.
     expect(cluster('guide')).toBe(cluster('setup'))
     expect(cluster('guide')).not.toBe('Product')
     expect(map.clusters.map((c) => c.tags).reduce((a, b) => a + b, 0)).toBe(map.tags.length)

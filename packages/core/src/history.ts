@@ -143,7 +143,6 @@ export const readHistory = (
     const pathId = new Map<string, string>()
     const windowed = options.after !== undefined || options.limit !== undefined
 
-    // Oldest first, so each commit builds on what came before.
     for (const commit of [...commits].reverse()) {
       for (const patch of commit.patches) {
         const path = map.fromGit(patch.path)
@@ -193,7 +192,6 @@ export const readHistory = (
         }
         item.deletedAt = front === null ? commit.committerDate : undefined
 
-        // A commit that touches two paths of one item (a rename) counts once.
         if (item.lastCounted !== commit.hash) {
           item.lastCounted = commit.hash
           item.commits++
@@ -216,7 +214,6 @@ export const readHistory = (
           const before = item.fields.get(field)
           if (same(before, next)) continue
           item.fields.set(field, next)
-          // A value that first shows up in a commit that did not add the file is the start of the window.
           const kind = patch.added
             ? 'created'
             : before === undefined && (windowed || firstSight)
@@ -264,9 +261,6 @@ export const readHistory = (
       partial: git.shallow || windowed,
     }
   })
-
-// ---------------------------------------------------------------------------------------------
-// Queries
 
 const byTime = (a: { date: string }, b: { date: string }) => Date.parse(a.date) - Date.parse(b.date)
 

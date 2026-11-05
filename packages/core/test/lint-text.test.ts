@@ -24,7 +24,6 @@ describe('lintText', () => {
         line: expect.any(Number),
       }),
     )
-    // Nothing was written, and the repo's own index still has the saved text.
     expect(w.read(path)).toBe(text)
     expect(w.repo.index.get(path)?.parsed.source).toBe(text)
   })

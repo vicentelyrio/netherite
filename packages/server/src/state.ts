@@ -60,7 +60,6 @@ export const makeState = (repo: Repo, options: ServerOptions = {}) =>
       const git = options.git
       if (git === undefined) return undefined
       const head = yield* git.head
-      // What was committed is read once per commit; what is only in the files is laid over it each time.
       if (cached !== undefined && cached.head === head) {
         return withWorkingTree(cached.history, repo.index, new Date().toISOString())
       }

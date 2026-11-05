@@ -70,7 +70,6 @@ describe('fixtures/basic', () => {
     expect(index.orphans()).toEqual([p('docs/DOC-00002-orphan-notes.md')])
     expect(index.isOrphan(p('docs/DOC-00002-orphan-notes.md'))).toBe(true)
     expect(index.isOrphan(p('docs/DOC-00001-app-overview.md'))).toBe(false)
-    // Only knowledge can be an orphan.
     expect(index.isOrphan(p('tasks/TASK-00003-publish-the-package.md'))).toBe(false)
   })
 
@@ -222,10 +221,10 @@ describe('incremental updates', () => {
 
   test('search stays in step with updates, before and after it was first used', () => {
     const index = build([a])
-    index.upsert(b) // before the text index exists
+    index.upsert(b)
     expect(index.search('Beta')[0]?.path).toBe('n/b.md')
 
-    index.upsert(toScannedItem('n/b.md', doc('DOC-00002', 'Gamma'))) // after
+    index.upsert(toScannedItem('n/b.md', doc('DOC-00002', 'Gamma')))
     expect(index.search('Gamma')[0]?.path).toBe('n/b.md')
     expect(index.search('Beta')).toEqual([])
 

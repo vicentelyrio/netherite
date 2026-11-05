@@ -12,7 +12,6 @@
   margin: 0;
 }
 
-/* The name field stops short of the progress ring. */
 .goals-area-head .editable,
 .goals-area-head > .editable-input {
   flex: 1;

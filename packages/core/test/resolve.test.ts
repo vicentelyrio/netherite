@@ -154,7 +154,6 @@ describe('on fixtures/basic', () => {
     expect(r.resolve('CTX-00001')).toMatchObject({ status: 'resolved', via: 'id' })
     expect(r.resolve('ADR-00002')).toMatchObject({ status: 'resolved', via: 'id' })
     expect(r.resolve('TASK-00404')).toEqual({ status: 'broken' })
-    // TASK-00001 exists twice in the fixture on purpose.
     expect(r.resolve('TASK-00001')).toMatchObject({ status: 'ambiguous', via: 'id' })
   })
 

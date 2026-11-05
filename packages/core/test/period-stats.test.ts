@@ -9,7 +9,6 @@ describe('period stats', () => {
     const s = periodStats(w.repo, history, { period: '30d', now })
     expect(s.from).toBe('2026-01-17')
     expect(s.to).toBe('2026-02-15')
-    // TASK-00001 finished 2026-01-20; the three tasks were created 5-7 January.
     expect(s.kpis.done).toEqual({ value: 1, previous: 0 })
     expect(s.kpis.created).toEqual({ value: 0, previous: 3 })
     expect(s.kpis.cycleDays).toEqual({ value: 12.0 })
@@ -33,7 +32,6 @@ describe('period stats', () => {
     const w = await world(files)
     const s = periodStats(w.repo, history, { period: '30d', now })
     expect(s.areas).toHaveLength(1)
-    // One of three tasks was done before the period began? No: it finished inside it.
     expect(s.areas[0]).toMatchObject({ area: '—', goals: 1, share: 0.33, gained: 33, idle: 0 })
     expect(s.projects[0]).toMatchObject({ id: 'PRJ-00001', done: 1, cycleDays: 12 })
   })
@@ -64,7 +62,6 @@ describe('period stats', () => {
     expect(other.kpis.done.value).toBe(0)
     expect(other.projects).toEqual([])
     expect(other.areaNames).toEqual(['—'])
-    // Commits are the workspace's, not an area's.
     expect(other.kpis.commits).toEqual(all.kpis.commits)
   })
 
@@ -80,13 +77,11 @@ describe('period stats', () => {
   test('the heat map starts at the Monday of the period, and the decisions are those that moved in it', async () => {
     const w = await world(files)
     const month = periodStats(w.repo, history, { period: '30d', now })
-    // 30 days back from 15 Feb is 17 Jan, a Saturday: the map starts at the Monday before.
     expect(month.heat.from).toBe('2026-01-12')
     expect(month.heat.days.every((d) => d.date >= '2026-01-12')).toBe(true)
     const year = periodStats(w.repo, history, { period: 'year', now })
     expect(year.heat.from < month.heat.from).toBe(true)
     expect(year.heat.days.length).toBeGreaterThanOrEqual(month.heat.days.length)
-    // Decisions moved in a period only when their status changed inside it.
     expect(Object.values(month.knowledge.decided).every((n) => n >= 0)).toBe(true)
     expect(year.knowledge.decided.accepted ?? 0).toBeGreaterThanOrEqual(
       month.knowledge.decided.accepted ?? 0,

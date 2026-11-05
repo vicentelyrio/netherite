@@ -29,7 +29,6 @@ describe('what the knowledge index adds for each row', () => {
     const rows = knowledgeRows(w.repo, undefined)
     const guide = rows.find((r) => r.id === 'DOC-00002')
     expect(guide?.handle).toBe('@ada')
-    // The project it belongs to is not counted among what it explains.
     expect(guide?.explains).toEqual({ task: 2 })
     expect(guide?.aiTokens).toBeNull()
     const rules = rows.find((r) => r.id === 'CTX-00003')

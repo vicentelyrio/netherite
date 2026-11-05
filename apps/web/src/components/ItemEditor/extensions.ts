@@ -30,8 +30,6 @@ import { type LinkTarget, linkOptions, openWikiLink } from './complete'
 import type { Problem } from './diagnostics'
 import { diffLines, type LineChanges, noChanges } from './diff'
 
-// ---- state the host sets -----------------------------------------------------------------
-
 /** The text as last committed, for the change gutter. `null` when there is none. */
 export const setHead = StateEffect.define<string | null>()
 
@@ -53,7 +51,6 @@ export const changesField = StateField.define<LineChanges>({
     const headChanged = tr.effects.some((e) => e.is(setHead))
     if (!tr.docChanged && !headChanged) return value
     const head = tr.state.field(headField)
-    // Without a committed version (no git, or a file never committed) there is nothing to compare.
     return head === null ? noChanges : diffLines(head, tr.state.doc.toString())
   },
 })
@@ -71,8 +68,6 @@ export const problemsField = StateField.define<ReadonlyArray<Problem>>({
     })
   },
 })
-
-// ---- gutters -----------------------------------------------------------------------------
 
 class DiffMark extends GutterMarker {
   constructor(readonly kind: 'added' | 'modified' | 'deleted') {
@@ -155,8 +150,6 @@ const lintGutter = gutter({
   initialSpacer: () => new LintSpacer(),
 })
 
-// ---- decorations -------------------------------------------------------------------------
-
 const mark = (className: string) => Decoration.mark({ class: className })
 
 /** Marks text that matches a pattern, and keeps the marks up to date as the document changes. */
@@ -231,8 +224,6 @@ const problemDecorations = EditorView.decorations.compute([problemsField], (stat
   return builder.finish()
 })
 
-// ---- completion --------------------------------------------------------------------------
-
 /** After `[[`: items to link to. `targets` is read each time, so it can change as items do. */
 export const wikiCompletion = (targets: () => ReadonlyArray<LinkTarget>): Extension =>
   autocompletion({
@@ -253,8 +244,6 @@ export const wikiCompletion = (targets: () => ReadonlyArray<LinkTarget>): Extens
       },
     ],
   })
-
-// ---- the look ----------------------------------------------------------------------------
 
 const v = (name: string) => `var(--nt-color-${name})`
 
@@ -380,8 +369,6 @@ const theme = EditorView.theme(
   },
   { dark: true },
 )
-
-// ---- everything together -------------------------------------------------------------------
 
 export interface EditorOptions {
   /** Called with Mod-S. */

@@ -28,7 +28,6 @@ export const startLive = (state: ServerState, options: LiveOptions = {}) =>
   Effect.gen(function* () {
     const { repo } = state
 
-    // --- lint: recompute after anything that can change it, and say so only when it did -----
     const lintNow = Effect.gen(function* () {
       const freshness = yield* state.freshness.get
       return summarize(
@@ -57,7 +56,6 @@ export const startLive = (state: ServerState, options: LiveOptions = {}) =>
       Effect.forkScoped,
     )
 
-    // --- the disk ----------------------------------------------------------------------------
     if (options.watch === false) return undefined
 
     const watcher = yield* watchRepo(repo, {
@@ -76,7 +74,6 @@ const forward = (state: ServerState, event: ChangeEvent) =>
   Effect.gen(function* () {
     switch (event._tag) {
       case 'ItemsChanged': {
-        // The index is already up to date; cached freshness and history are not.
         state.invalidate()
         yield* state.publish({
           type: 'items',

@@ -153,11 +153,9 @@ describe('migrating an existing repository', () => {
         'covers: [scripts/deploy.sh]',
       )
 
-      // Originals are untouched (`init` only added its block to CLAUDE.md), and nothing was committed.
       for (const [name, content] of Object.entries(fixture)) {
         expect(read(dir, name).startsWith(content), name).toBe(true)
       }
-      // The ruleset in CLAUDE.md is Netherite's own text: it is not imported as a second copy.
       const conventions = read(dir, 'netherite/context/CTX-00002-conventions.md')
       expect(conventions).toContain('Use pnpm, never npm.')
       expect(conventions).not.toContain('Plan first')
@@ -223,7 +221,6 @@ describe('migrating an existing repository', () => {
       const sync = await cli(dir, 'context', 'sync')
       expect(sync.code).toBe(0)
       const claude = read(dir, 'CLAUDE.md')
-      // The person's text is still there, and the synced block repeats it: the skill asks first.
       expect(claude.match(/Use pnpm, never npm\./g)).toHaveLength(2)
       expect(claude).toContain('<!-- netherite:context:start -->')
       expect(claude).toContain('## How agents work in this repository')

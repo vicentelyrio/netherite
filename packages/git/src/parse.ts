@@ -56,7 +56,6 @@ export const parseStatus = (output: string): GitStatus => {
     }
     const kind = field[0]
     if (kind === '1') {
-      // 1 XY sub mH mI mW hH hI path
       const parts = field.split(' ')
       const xy = parts[1] ?? '..'
       entries.push({
@@ -66,7 +65,6 @@ export const parseStatus = (output: string): GitStatus => {
         worktree: xy[1] ?? '.',
       })
     } else if (kind === '2') {
-      // 2 XY sub mH mI mW hH hI Xscore path, then the original path as the next field
       const parts = field.split(' ')
       const xy = parts[1] ?? '..'
       const from = fields[++i]
@@ -78,7 +76,6 @@ export const parseStatus = (output: string): GitStatus => {
         worktree: xy[1] ?? '.',
       })
     } else if (kind === 'u') {
-      // u XY sub m1 m2 m3 mW h1 h2 h3 path
       const parts = field.split(' ')
       const xy = parts[1] ?? 'UU'
       entries.push({
@@ -200,7 +197,6 @@ const parseFilePatch = (section: string[]): FilePatch | undefined => {
       const mark = line[0]
       if (mark === ' ' || mark === '+') current.lines.push(line.slice(1))
       else if (mark === '-' || mark === '\\') {
-        // removed lines and "no newline" markers are not part of the new file
       } else {
         current = undefined
       }

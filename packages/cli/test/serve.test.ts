@@ -191,7 +191,6 @@ describe('MCP over HTTP at /mcp', () => {
         expect(made.isError).not.toBe(true)
         const { path } = JSON.parse(made.content[0]?.text ?? '{}')
         expect(existsSync(join(dir, path))).toBe(true)
-        // The browser side sees it too.
         const listed = (await api(s, '/api/items?type=doc')).json()
         expect(listed.items.map((i: { title: string }) => i.title)).toContain('From an agent')
         await client.close()

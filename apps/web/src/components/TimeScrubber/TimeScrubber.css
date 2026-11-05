@@ -3,7 +3,6 @@
   align-items: center;
   gap: 12px;
   width: min(560px, 100%);
-  /* Left of the graph's zoom buttons. */
   margin-left: auto;
   margin-right: 56px;
   box-sizing: border-box;

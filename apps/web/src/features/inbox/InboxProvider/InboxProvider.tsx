@@ -100,7 +100,6 @@ export function InboxProvider({ children }: { readonly children: ReactNode }) {
   }
   const inbox = query.data
   const tab: Tab = picked ?? 'all'
-  // On All the groups follow one another, so J and K walk the list as it is drawn.
   const shown = groups
     .flatMap((g) => triage.open.filter((r) => tabOf(r.rule) === g))
     .filter((r) => tab === 'all' || tabOf(r.rule) === tab)
@@ -109,7 +108,6 @@ export function InboxProvider({ children }: { readonly children: ReactNode }) {
     const next = { ...hidden, [item.key]: how }
     writeHidden(next)
     setHidden(next)
-    // The next item takes its place, or the one before when it was the last.
     const rest = shown.filter((r) => r.key !== item.key).map((r) => r.key)
     const at = shown.findIndex((r) => r.key === item.key)
     select(rest[Math.min(at, rest.length - 1)])
@@ -159,7 +157,6 @@ export function InboxProvider({ children }: { readonly children: ReactNode }) {
         ),
       ),
     archive: (item) => {
-      // A capture is a line in a file: archiving takes it out of the file.
       if (item.rule === 'capture') release.mutate(item.title)
       else hide(item, { kind: 'archive' }, LL.inbox.archived())
     },

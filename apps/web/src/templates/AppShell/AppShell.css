@@ -14,6 +14,5 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  /* Lets a page size something to the visible height (`cqh`) while the page scrolls. */
   container-type: size;
 }

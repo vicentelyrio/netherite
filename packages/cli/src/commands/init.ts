@@ -89,7 +89,6 @@ export const init = (env: Env, options: InitOptions) =>
     const existed: string[] = []
     const rel = (p: string) => path.relative(root, p).split(path.sep).join('/')
 
-    // Config.
     const config = path.join(root, configFile)
     if (yield* fs.exists(config)) existed.push(rel(config))
     else {
@@ -98,7 +97,6 @@ export const init = (env: Env, options: InitOptions) =>
       created.push(rel(config))
     }
 
-    // Content folders. Read the content folder from the existing config, if there is one.
     const contentDir = existed.length > 0 ? resolved : resolved
     for (const name of folders) {
       const dir = path.join(contentDir, name)
@@ -111,7 +109,6 @@ export const init = (env: Env, options: InitOptions) =>
       created.push(rel(dir))
     }
 
-    // .gitignore.
     const ignore = path.join(root, '.gitignore')
     const current = (yield* fs.exists(ignore)) ? yield* fs.readFileString(ignore) : undefined
     const has = current
@@ -130,7 +127,6 @@ export const init = (env: Env, options: InitOptions) =>
         ? undefined
         : yield* installSkills(root, { update: options.update === true })
 
-    // The ruleset is a context item, so it needs the folders and config above.
     const ruleset = options.noSkills === true ? undefined : yield* ensureRuleset(root)
 
     if (options.json) {

@@ -66,7 +66,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  /* The toggles and the sort stay together: they share the row when it fits, else they move down as one. */
   flex: 1 1 auto;
   min-width: max-content;
 }

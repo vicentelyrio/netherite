@@ -27,7 +27,6 @@
   display: inline-block;
 }
 
-/* ---- task drawer, as designed ---- */
 .drawer-inner {
   left: 64px;
 }
@@ -64,7 +63,6 @@
   color: #b9bcd3;
 }
 
-/* One line: the project and the file name give way with an ellipsis, the rest stays. */
 .drawer-crumbs {
   min-width: 0;
   white-space: nowrap;
@@ -110,13 +108,11 @@
   padding: 40px 56px;
 }
 
-/* The drawer is a column: header, body, and the status bar fixed at the bottom. */
 .drawer-content {
   display: flex;
   flex-direction: column;
 }
 
-/* The dim is only for looks: clicks go through to the board. */
 .drawer-overlay {
   pointer-events: none;
 }

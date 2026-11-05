@@ -9,7 +9,6 @@ export const effectModulesOf = (report) => {
   const found = {}
   for (const chunk of report.chunks) {
     for (const [id, size] of Object.entries(chunk.modules)) {
-      // A module can carry a query (`?commonjs-es-import`); it is still the same file.
       const match = effectPath.exec(id.split('?')[0])
       if (match) found[match[1]] = (found[match[1]] ?? 0) + size
     }

@@ -68,15 +68,11 @@ export function TaskCard({
 }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: card.id })
   const navigate = useNavigate()
-  // The whole card opens the task, not only its title: a click anywhere on it, except on its own
-  // links and buttons. A drag does not end in a click (the drag sensor swallows it).
   const open = (e: MouseEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).closest('a, button, input')) return
     void navigate({ to: '/projects/$id', params: { id: projectId }, search: { task: card.id } })
   }
   return (
-    // The card is a drag handle for the keyboard (Space and Enter lift it); the title inside it is
-    // the link a keyboard opens the task with. The click is for the pointer.
     // biome-ignore lint/a11y/noStaticElementInteractions: role="button" comes from the drag attributes
     // biome-ignore lint/a11y/useKeyWithClickEvents: the keyboard opens the task from the title link
     <div

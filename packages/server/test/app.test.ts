@@ -147,7 +147,6 @@ describe('the app', () => {
             expect(reply.text, path).not.toContain('outside the app')
             expect([400, 404], path).toContain(reply.status)
           }
-          // A request line with a raw ../ that the client did not normalise.
           const net = await import('node:net')
           const raw = await new Promise<string>((resolve) => {
             const socket = net.createConnection(
@@ -245,9 +244,8 @@ describe('choosing a port', () => {
       try {
         free.push(await occupy(port + 1))
       } catch {
-        return // the next port is in use by something else; the test cannot set this up
+        return
       }
-      // Other tests start servers on free ports at the same time, so port + 2 may be gone too.
       const got = await start(port, true)
       expect(got).toBeGreaterThanOrEqual(port + 2)
       expect(got).toBeLessThan(port + 50)

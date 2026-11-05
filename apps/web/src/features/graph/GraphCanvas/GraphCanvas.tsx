@@ -10,7 +10,6 @@ export function GraphCanvas({ focus }: { readonly focus?: string | undefined }) 
   const query = useGraphAt()
   const { asOf } = useGraphTime()
 
-  // Nodes that were not in the picture before this date pulse once.
   const seen = useRef<ReadonlySet<string> | undefined>(undefined)
   const glow = useMemo(() => {
     const before = seen.current

@@ -309,7 +309,6 @@ export function GraphView({
   const shown = useMemo(() => subgraph(data, scope), [data, scope])
   const graph = useMemo(() => toGraphology(shown), [shown])
   const laid = useMemo(() => layout(shown), [shown])
-  // Where nodes have been dragged to, and the ones that moved to make room.
   const [moved, setMoved] = useState<ReadonlyMap<string, { x: number; y: number }>>(new Map())
   const placed = useMemo(
     () => (moved.size === 0 ? laid : laid.map((p) => ({ ...p, ...(moved.get(p.id) ?? {}) }))),
@@ -323,7 +322,6 @@ export function GraphView({
     return map
   }, [shown])
 
-  // The legend can shrink to one line; the choice is kept for next time.
   const [legendMin, setLegendMinState] = useState(() => {
     try {
       return localStorage.getItem('netherite:graph-legend-min') === '1'
@@ -335,12 +333,9 @@ export function GraphView({
     setLegendMinState(min)
     try {
       localStorage.setItem('netherite:graph-legend-min', min ? '1' : '0')
-    } catch {
-      // Private windows forget it.
-    }
+    } catch {}
   }
   const [hiddenTypes, setHiddenTypes] = useState<ReadonlySet<string>>(new Set())
-  // The design draws five kinds of link; the others start hidden and the legend turns them on.
   const [hiddenKinds, setHiddenKinds] = useState<ReadonlySet<string>>(
     () => new Set(data.edges.map((e) => e.kind).filter((k) => !styleOf(k).inDesign)),
   )
@@ -359,7 +354,6 @@ export function GraphView({
   )
   const swallowClick = useRef(false)
 
-  // A new layout (another graph, or items added) starts again from rest.
   useEffect(() => {
     sim.current?.stop()
     sim.current = undefined
@@ -392,8 +386,6 @@ export function GraphView({
         (m.clientY - rect.top - v.y) / v.k,
       )
     }
-    // Capture phase: a pointer-up on a node is stopped before it bubbles to the window, and the
-    // drag must still end.
     const onUp = () => {
       window.removeEventListener('pointermove', onMove, true)
       window.removeEventListener('pointerup', onUp, true)
@@ -402,9 +394,7 @@ export function GraphView({
       nodeDrag.current = undefined
       if (d?.moved) {
         sim.current?.release(d.id)
-        // The click that ends a drag is not a click on the node.
         swallowClick.current = true
-        // If the pointer came up off the node there is no click to swallow.
         setTimeout(() => {
           swallowClick.current = false
         }, 0)
@@ -414,7 +404,6 @@ export function GraphView({
     window.addEventListener('pointerup', onUp, true)
     window.addEventListener('pointercancel', onUp, true)
   }
-  // Nodes and labels keep their pixel size at any zoom, as in the design: only positions scale.
   const sat = useMemo(
     () =>
       new Map(
@@ -450,7 +439,6 @@ export function GraphView({
   }
   const doFit = (points: ReadonlyArray<Placed>) =>
     fitTo(fitPoints(points), box, pad, padBottom ?? pad, embedded ? 3 : 2)
-  // Fit again when what is drawn, or the room it has, changes.
   useEffect(() => setView(doFit(laid)), [laid, box])
 
   const zoom = (factor: number, cx = box.width / 2, cy = box.height / 2) =>
@@ -537,7 +525,6 @@ export function GraphView({
         onPointerUp={() => {
           const moved = drag.current?.moved
           drag.current = undefined
-          // A click on the background, not the end of a pan, clears the focus.
           if (!moved) setFocus(undefined)
         }}
       >
@@ -745,8 +732,6 @@ export function GraphView({
         <div
           role="tooltip"
           className="gv-tooltip"
-          // Anchored by its bottom edge above the node (its top edge below, near the top), so a
-          // tooltip that wraps onto more lines still clears the node.
           data-below={(sat.get(hover.id)?.y ?? 0) - radius(hover) < 140 || undefined}
           style={{
             left: Math.min(Math.max(sat.get(hover.id)?.x ?? 0, 140), box.width - 140),
@@ -949,7 +934,6 @@ export function GraphView({
           <Icon name="mouse" /> {LL.components.graph.hint()}
         </div>
       )}
-      {/* Small embedded graphs (the project page) pan and zoom too, but have no room for buttons. */}
       {(zoomButtons ?? (!embedded || box.width > 500)) && (
         <div className="gv-controls" role="toolbar" aria-label={LL.components.graph.zoom()}>
           <button

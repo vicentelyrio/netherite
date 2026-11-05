@@ -55,7 +55,6 @@ describe('components.css', () => {
   test('uses only variables the tokens define', () => {
     const defined = new Set(Object.keys(variables()))
     const used = new Set([...css.matchAll(/var\((--nt-[a-z0-9-]+)/g)].map((m) => m[1] as string))
-    // Set by the components themselves, on the element that uses them.
     const local = new Set([
       '--nt-pill-color',
       '--nt-pill-bg',

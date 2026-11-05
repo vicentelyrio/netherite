@@ -66,8 +66,6 @@ export const coChanged = (
         : `${options.contentRoot.replace(/\/$/, '')}/`
     const excluded = options.exclude === undefined ? () => false : compileCovers(options.exclude)
 
-    // `log` with a path lists only that path's files, so find the commits first and then read
-    // each one whole.
     const touching = yield* git.log({
       paths: [map.toGit(itemPath)],
       limit: options.maxCommits ?? 200,

@@ -104,11 +104,9 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
       { capabilities: { tools: {}, resources: {} }, instructions },
     )
 
-    // Freshness covers the whole index, so it is computed on demand and kept until something changes.
     const cache = freshnessCache(repo, options.git)
     const freshness = () => run(cache.get)
 
-    // The git history is read once per commit, for the `as_of` views.
     let cachedHistory: { head: string | undefined; history: History } | undefined
     const history = () =>
       run(
@@ -161,15 +159,10 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
       return { item: found[0] as ScannedItem }
     }
 
-    // ---- tools --------------------------------------------------------------------------
-
     const withHash = (r: ArgReader) => r.string('base_hash')
 
     type Handler = (r: ArgReader) => Promise<ToolResult> | ToolResult
 
-    // A write that changed something is noted in the activity log, which the Inbox reads. The
-    // handler leaves a note of what it did; the dispatcher writes it once the call has succeeded.
-    // Calls run one at a time, so there is only ever one note.
     type Written = { id: string; path: string; hash: string | null; changed: ReadonlyArray<string> }
     let written: Written | undefined
     const noteWrite = (value: unknown) => {
@@ -436,7 +429,6 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           },
           (r) => ({
             ...opSummary(r),
-            // The whole checklist as it is now, so the caller can see what the write did.
             checklist: (repo.index.get(r.path)?.parsed.checklist ?? []).map((c, i) => ({
               index: i,
               text: c.text,
@@ -535,7 +527,6 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
       }, opSummary)
     }
 
-    // Calls run one at a time, in the order they arrive.
     let queue: Promise<unknown> = Promise.resolve()
     const serial = <A>(work: () => Promise<A>): Promise<A> => {
       const next = queue.then(work, work)
@@ -564,14 +555,11 @@ export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
           written = undefined
           return result
         } catch (error) {
-          // Never let a bug close the connection; say so, log it for the person running the server.
           console.error('[netherite mcp] unexpected error in', request.params.name, error)
           return describeError(error)
         }
       }),
     )
-
-    // ---- resources ----------------------------------------------------------------------
 
     const schemas = itemJsonSchemas(repo.schemas) as unknown as Record<string, unknown>
     server.setRequestHandler(ListResourcesRequestSchema, async () => ({

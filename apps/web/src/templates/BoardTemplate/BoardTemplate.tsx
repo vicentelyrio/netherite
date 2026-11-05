@@ -44,7 +44,6 @@ export function BoardTemplate({
       setClear(0)
       return
     }
-    // The drawer starts where the page does; the main area starts after the side column.
     const measure = () => {
       const taken = area.getBoundingClientRect().left - root.getBoundingClientRect().left
       setClear(Math.max(0, inset + 24 - taken))

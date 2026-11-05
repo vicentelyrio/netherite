@@ -500,7 +500,6 @@ describe('state, checklist, links, review, delete', () => {
   test('toggle_check ticks several items, or all of them, in one write', async () => {
     await withSession(async (s) => {
       const file = 'netherite/tasks/TASK-00001-core.md'
-      // The task starts with "first" open, "second" done, "third" open.
       const some = await s.call('toggle_check', {
         id: 'TASK-00001',
         items: [0, 'third'],
@@ -516,7 +515,6 @@ describe('state, checklist, links, review, delete', () => {
       ])
       await s.call('toggle_check', { id: 'TASK-00001', all: true, checked: false })
       expect(s.read(file)).not.toContain('[x]')
-      // `all` without `checked` ticks.
       await s.call('toggle_check', { id: 'TASK-00001', all: true })
       expect(s.read(file)).not.toContain('[ ]')
     })
@@ -756,7 +754,7 @@ describe('lint and context (more)', () => {
       const opened = await provide(openRepo(repo.root))
       const git = await provide(workspaceGit(opened.workspace))
       const createdBy = await provide(gitHandle(git))
-      expect(createdBy).toBeUndefined() // the isolated git config has no identity
+      expect(createdBy).toBeUndefined()
       await withSession(
         async (s) => {
           const doc = (await s.call('get', { id: 'DOC-00001' })).data
@@ -845,7 +843,6 @@ describe('after changes made outside the server', () => {
         async (s) => {
           expect((await s.call('get', { id: 'RUN-00001' })).data.freshness.state).toBe('fresh')
           writeFileSync(join(repo.root, 'src/util.ts'), 'export const util = () => "changed"\n')
-          // Cached until the server is told.
           expect((await s.call('get', { id: 'RUN-00001' })).data.freshness.state).toBe('fresh')
           s.invalidate()
           expect((await s.call('get', { id: 'RUN-00001' })).data.freshness).toMatchObject({

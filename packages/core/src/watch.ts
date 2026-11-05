@@ -108,7 +108,6 @@ export interface Watcher {
 
 const contentIgnore = ['**/.*/**', '**/.*', 'assets/**', 'templates/**', '**/node_modules/**']
 const configIgnore = ['local/**', '**/*.tmp']
-// Inside `.git` only HEAD, the index and the refs matter; objects and logs change on every commit.
 const gitIgnore = [
   'objects/**',
   'logs/**',
@@ -160,8 +159,6 @@ export const watchRepo = (repo: Repo, options: WatchOptions = {}) =>
       }).pipe(Effect.andThen(PubSub.publish(pubsub, event)), Effect.asVoid)
 
     const relativeOf = (absolute: string) => asPosix(path.relative(root, absolute))
-
-    // --- applying a batch ---------------------------------------------------------------
 
     const markdownUnder = (dir: string) =>
       Effect.gen(function* () {
@@ -224,7 +221,6 @@ export const watchRepo = (repo: Repo, options: WatchOptions = {}) =>
             candidates.add(relative)
             continue
           }
-          // Not a Markdown file: it may be a folder that appeared or disappeared with files in it.
           const info = yield* fs.stat(absolute).pipe(Effect.option)
           if (info._tag === 'Some' && info.value.type === 'Directory') {
             for (const file of yield* markdownUnder(absolute)) candidates.add(file)
@@ -234,7 +230,6 @@ export const watchRepo = (repo: Repo, options: WatchOptions = {}) =>
           }
         }
 
-        // Read each candidate. A file that cannot be read is treated as gone.
         const sources: Array<{ path: string; source: string }> = []
         for (const relative of [...candidates].sort()) {
           const read = yield* fs.readFileString(path.join(root, relative)).pipe(Effect.option)
@@ -242,7 +237,7 @@ export const watchRepo = (repo: Repo, options: WatchOptions = {}) =>
             if (repo.index.get(relative) !== undefined) gone.add(relative)
             continue
           }
-          if (repo.index.get(relative)?.parsed.source === read.value) continue // nothing new
+          if (repo.index.get(relative)?.parsed.source === read.value) continue
           sources.push({ path: relative, source: read.value })
         }
 
@@ -272,8 +267,6 @@ export const watchRepo = (repo: Repo, options: WatchOptions = {}) =>
         if (gitChanged) yield* publish({ _tag: 'GitChanged' })
       })
 
-    // --- collecting events ----------------------------------------------------------------
-
     const pending = new Set<string>()
     let timer: ReturnType<typeof setTimeout> | undefined
     let working: Promise<void> = Promise.resolve()
@@ -295,8 +288,6 @@ export const watchRepo = (repo: Repo, options: WatchOptions = {}) =>
       if (timer !== undefined) clearTimeout(timer)
       timer = setTimeout(() => void drain(), debounce)
     }
-
-    // --- watching ---------------------------------------------------------------------------
 
     const subscribe = (dir: string, ignore: ReadonlyArray<string>) =>
       Effect.acquireRelease(

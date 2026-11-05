@@ -78,9 +78,6 @@ type Op<A = OpResult> = Effect.Effect<A, OpError, OpEnv>
 const invalid = (path: ReadonlyArray<string | number>, message: string) =>
   new ValidationError({ issues: [{ path, message }] })
 
-// ---------------------------------------------------------------------------------------------
-// Shared steps
-
 const locate = (repo: Repo, id: string): Effect.Effect<ScannedItem, NotFound | AmbiguousId> => {
   const found = repo.index.findById(id)
   if (found.length === 0) return Effect.fail(new NotFound({ id }))
@@ -226,9 +223,6 @@ const fold = <E>(
     return text
   })
 
-// ---------------------------------------------------------------------------------------------
-// createItem
-
 export interface CreateInput {
   readonly type: ItemType
   readonly title: string
@@ -333,9 +327,6 @@ export const createItem = (repo: Repo, input: CreateInput): Op =>
     yield* applyChanges(repo, [{ path, content: text, before: null }])
     return done(repo, path, [path], false)
   })
-
-// ---------------------------------------------------------------------------------------------
-// updateFields, sections, checklist
 
 export interface FieldPatch {
   readonly set?: Readonly<Record<string, Json>>
@@ -469,9 +460,6 @@ export const markReviewed = (
     )
   })
 
-// ---------------------------------------------------------------------------------------------
-// States and supersession
-
 const knowledgeTypes = ['doc', 'runbook', 'context']
 
 /** The statuses an item type can be given: an ADR's lifecycle, or whether a doc is still current. */
@@ -534,7 +522,6 @@ const restore = (repo: Repo, oldId: string, status: string, options: OpOptions):
         baseHash: options.baseHash,
         edit: (source) =>
           fold(source, [
-            // A doc with no status is active, so that is how it is written.
             (t) =>
               status === 'active'
                 ? unsetField(t, 'status')
@@ -587,9 +574,6 @@ export const setState = (
       ? updateFields(repo, id, { unset: ['status'] }, options)
       : updateFields(repo, id, { set: { status: value } }, options)
   })
-
-// ---------------------------------------------------------------------------------------------
-// Relationships
 
 interface Relation {
   readonly field: string
@@ -685,9 +669,6 @@ export const unlink = (repo: Repo, input: LinkInput, options: OpOptions = {}): O
       },
     ])
   })
-
-// ---------------------------------------------------------------------------------------------
-// deleteItem
 
 /** Deletes an item's file. Refuses while other items link to it, unless `force` is set. */
 export const deleteItem = (
@@ -789,8 +770,6 @@ export const replaceSource = (repo: Repo, id: string, text: string, options: OpO
     },
   ])
 
-// ---- tags and labels across files --------------------------------------------------------------
-
 export const tagFields = ['tags', 'labels'] as const
 export type TagField = (typeof tagFields)[number]
 
@@ -878,7 +857,6 @@ export const renameTag = (repo: Repo, input: { field: TagField; from: string; to
 export const renameArea = (repo: Repo, input: { from: string; to: string }) =>
   Effect.gen(function* () {
     const to = input.to.trim()
-    // Removing an area leaves its goals without one; the goals without one cannot be removed.
     if (to === '' && input.from === '') return yield* invalid(['to'], 'An area needs a name')
     if (to === input.from) return { renamed: 0, changed: [] } satisfies RenameResult
     const changed = new Set<string>()

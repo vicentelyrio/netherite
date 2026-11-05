@@ -20,7 +20,6 @@ export const readOnlySubcommands = [
 
 export type ReadOnlySubcommand = (typeof readOnlySubcommands)[number]
 
-// Options that make an otherwise read-only subcommand write something.
 const writingFlags = [
   '--output',
   '--ext-diff',
@@ -46,7 +45,6 @@ const writingFlags = [
  */
 export const assertReadOnly = (args: ReadonlyArray<string>) => {
   const [subcommand, ...allRest] = args
-  // After `--` git reads only paths, so a path that looks like an option is harmless.
   const end = allRest.indexOf('--')
   const rest = end === -1 ? allRest : allRest.slice(0, end)
   if (!(readOnlySubcommands as ReadonlyArray<string>).includes(subcommand ?? '')) {

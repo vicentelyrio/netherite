@@ -214,8 +214,6 @@ describe('contrast', () => {
   })
 
   test('the quietest text (line numbers, punctuation, "not tracked") is only for the editor and the dark panels, where the sheet measures it', () => {
-    // On the canvas, columns and chips these three are 4.0 to 4.4:1, a little under AA. That is
-    // the design's own value (#8A8FAD), kept as drawn; the sheet states 4.9 on the editor.
     for (const fg of [color.text.lineNumber, color.syntax.punct, color.freshness.unknown]) {
       for (const bg of [color.bg.card, color.bg.sunken, color.bg.shell, color.bg.overlay]) {
         expect(contrast(fg, bg)).toBeGreaterThanOrEqual(4.5)

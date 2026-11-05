@@ -1,9 +1,3 @@
-/*
- * Everything the app needs to look right, in the order it has to load: the token variables, the
- * fonts, the UI library's own styles (in a layer, so ours can override them), then ours.
- *
- *   import '@netherite/ui/styles.css'
- */
 @import "@netherite/tokens/tokens.css";
 @import "./fonts.css";
 @import "@mantine/core/styles.layer.css";

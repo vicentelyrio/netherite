@@ -62,7 +62,6 @@ export const applyChanges = (repo: Repo, changes: ReadonlyArray<Change>) =>
     )
 
     const run = Effect.gen(function* () {
-      // 1. Stage every new file as a temporary file in its target folder.
       for (const change of changes) {
         const file = yield* absolute(repo, change.path)
         if (change.content === null) {
@@ -80,7 +79,6 @@ export const applyChanges = (repo: Repo, changes: ReadonlyArray<Change>) =>
           .pipe(Effect.mapError(io(change.path, 'write')))
       }
 
-      // 2. Check what is on disk is still what each change was based on.
       for (const { change } of staged) {
         const now = yield* current(repo, change.path)
         if (change.before === null) {
@@ -94,7 +92,6 @@ export const applyChanges = (repo: Repo, changes: ReadonlyArray<Change>) =>
         }
       }
 
-      // 3. Move them into place, remembering how to undo each.
       for (const { change, file, temp } of staged) {
         const previous = change.before
         const undo = { file, previous, path: change.path }
@@ -109,7 +106,6 @@ export const applyChanges = (repo: Repo, changes: ReadonlyArray<Change>) =>
 
     yield* run.pipe(
       Effect.tapError(() =>
-        // Put back what was already moved, newest first.
         Effect.forEach(
           [...applied].reverse(),
           ({ file, previous }) =>
@@ -122,7 +118,6 @@ export const applyChanges = (repo: Repo, changes: ReadonlyArray<Change>) =>
       Effect.ensuring(cleanup),
     )
 
-    // 4. Everything is on disk, so the index follows.
     for (const { content, path } of changes) {
       if (content === null) repo.index.remove(path)
       else repo.index.upsert(toScannedItem(path, content))

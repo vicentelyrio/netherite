@@ -164,7 +164,6 @@ const oneLifecycle = (
     phase = next
   }
 
-  // Due dates that moved. The first value is where it started, not a move.
   let due: string | undefined
   let rescheduled = 0
   for (const t of item.transitions) {
@@ -239,7 +238,6 @@ export const lifecycles = (
     if (item.type === 'task') for (const p of lastList(item, 'project')) add(p, own.started)
   }
   const withStart = (id: string, own: Lifecycle): Lifecycle => {
-    // Work on the children is when it began; with none yet, the item's own first active day.
     const start = earliest(startedBy.get(id) ?? []) ?? own.started
     return start === own.started
       ? own

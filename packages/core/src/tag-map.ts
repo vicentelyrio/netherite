@@ -93,7 +93,6 @@ export const tagMap = (repo: Repo): TagMap => {
   const nodes = new Map(usage.map((u) => [keyOf(u), u]))
   const items = new Map(usage.map((u) => [keyOf(u), new Set(u.ids)]))
 
-  // Pairs on the same item.
   const pairs = new Map<string, number>()
   const tagsOf = new Map<string, string[]>()
   for (const [key, ids] of items)
@@ -134,7 +133,6 @@ export const tagMap = (repo: Repo): TagMap => {
     }
   }
 
-  // The area an item sits under: a goal's own, a project's through its goal, a task's through its project.
   const areaOf = (id: string, hops = 0): string | undefined => {
     const item = repo.index.findById(id)[0]
     if (item === undefined || hops > 3) return undefined
@@ -156,7 +154,6 @@ export const tagMap = (repo: Repo): TagMap => {
     if (top !== undefined) byArea.set(key, top[0])
   }
 
-  // The rest: label propagation, each tag taking the label most of its (weighted) neighbours have.
   const rest = usage
     .map(keyOf)
     .filter((k) => !byArea.has(k))
@@ -186,7 +183,6 @@ export const tagMap = (repo: Repo): TagMap => {
     )[0] as string
     return (nodes.get(top) as TagUse).name
   }
-  // A group of one is no group: those tags go together under "Other".
   const groupSize = new Map<string, number>()
   for (const k of rest)
     groupSize.set(label.get(k) as string, (groupSize.get(label.get(k) as string) ?? 0) + 1)
@@ -211,7 +207,6 @@ export const tagMap = (repo: Repo): TagMap => {
   const counts = new Map<string, number>()
   for (const t of tags) counts.set(t.cluster, (counts.get(t.cluster) ?? 0) + 1)
 
-  // Likely duplicates: alike in spelling, and for the looser matches also used with the same tags.
   const duplicates: TagDuplicate[] = []
   const keys = usage.map(keyOf)
   for (let i = 0; i < keys.length; i++)

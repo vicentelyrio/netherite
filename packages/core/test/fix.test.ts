@@ -85,14 +85,11 @@ describe('renameFile', () => {
 describe('applyFixes', () => {
   const broken = () => {
     const files = cleanFiles()
-    // Missing alias.
     files['/repo/netherite/tasks/TASK-00001-core.md'] = (
       files['/repo/netherite/tasks/TASK-00001-core.md'] as string
     ).replace('aliases: [TASK-00001]', 'aliases: [other]')
-    // File name does not start with the ID, and something links to it by name.
     files['/repo/netherite/docs/notes.md'] = front('DOC-00005')
     files['/repo/netherite/docs/DOC-00007-links.md'] = `${front('DOC-00007')}See [[notes]].\n`
-    // Both problems at once.
     files['/repo/netherite/docs/misc.md'] = front('DOC-00006').replace(
       'aliases: [DOC-00006]',
       'aliases: []',
@@ -136,7 +133,6 @@ describe('applyFixes', () => {
     expect(w.read('netherite/tasks/TASK-00001-core.md')).toContain('aliases: [other, TASK-00001]')
     expect(w.read('netherite/docs/notes.md')).toBeUndefined()
     expect(w.read('netherite/docs/DOC-00005-notes.md')).toContain('id: DOC-00005')
-    // A file with two problems got both fixes.
     const misc = w.read('netherite/docs/DOC-00006-misc.md') ?? ''
     expect(misc).toContain('aliases: [DOC-00006]')
     expect(w.read('netherite/docs/DOC-00007-links.md')).toContain('See [[DOC-00005-notes]].')
@@ -163,7 +159,6 @@ describe('applyFixes', () => {
   test('a fix that no longer applies is skipped, not fatal', async () => {
     const w = await world(broken())
     const found = diagnostics(w)
-    // The file moved after the diagnostics were made.
     await w.run(renameFile(w.repo, 'netherite/docs/notes.md', 'netherite/docs/elsewhere.md'))
     const report = await w.run(applyFixes(w.repo, found))
     expect(report.skipped.map((s) => s.fix.kind)).toContain('rename-file')

@@ -39,7 +39,6 @@ export function TimelineProvider({ children }: { readonly children: ReactNode })
   const [showTasks, setShowTasks] = useState(true)
   const [showDecisions, setShowDecisions] = useState(true)
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set())
-  // A fixed zoom asks for its own days; `fit` asks for everything and sizes the window to it.
   const fixed = useMemo(
     () => (zoom === 'fit' ? undefined : windowFor(zoom, isoDay(nowIso()))),
     [zoom],

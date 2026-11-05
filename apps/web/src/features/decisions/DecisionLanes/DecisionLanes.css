@@ -1,14 +1,11 @@
 .dl-lanes {
   display: grid;
-  /* The last track is empty: the page's right margin, so the last lane stops short of the edge. */
   --dl-end: max(0px, calc(var(--nt-grid-margin-compact) - 32px));
   grid-template-columns: repeat(var(--lanes, 3), minmax(380px, 1fr)) var(--dl-end);
   column-gap: 32px;
   grid-template-rows: minmax(0, 1fr);
-  /* Lanes scroll sideways here, and each lane scrolls its own cards. */
   overflow-x: auto;
   overflow-y: hidden;
-  /* The height is set to the room left on screen (DecisionLanes.tsx). */
   min-height: 320px;
   padding-bottom: 0;
 }

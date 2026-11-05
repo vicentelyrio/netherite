@@ -1,7 +1,5 @@
 import { defineConfig } from 'vitepress'
 
-// The site is built from the Markdown in this folder (ADR-00028) and served from the repository's
-// GitHub Pages, so every link is under `/netherite/`.
 export default defineConfig({
   title: 'Netherite',
   description:

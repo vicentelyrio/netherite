@@ -10,8 +10,6 @@ import {
 import type { CSSProperties, ReactNode } from 'react'
 import { Icon } from '../icon'
 
-// ---- Item types ------------------------------------------------------------------------------
-
 export const typeLabels: Readonly<Record<ItemTypeName, string>> = {
   goal: 'Goal',
   project: 'Project',
@@ -76,8 +74,6 @@ export function TypeBadge({ type, glyphOnly, hollow }: TypeBadgeProps) {
   )
 }
 
-// ---- Status ----------------------------------------------------------------------------------
-
 const adrIcons: Record<AdrStatus, string> = {
   proposed: 'pending',
   accepted: 'check_circle',
@@ -108,7 +104,6 @@ export function AdrStatusPill({ status }: AdrStatusPillProps) {
 const stateIcons: Record<StateCategory, string> = {
   todo: 'radio_button_unchecked',
   active: 'play_circle',
-  // The design's "On hold" state, with its pause icon.
   blocked: 'pause',
   done: 'check_circle',
 }
@@ -146,8 +141,6 @@ export function StatusPill(props: StatusPillProps) {
     <TaskStatePill state={props.state} category={props.category} />
   )
 }
-
-// ---- Freshness -------------------------------------------------------------------------------
 
 const freshnessText: Record<FreshnessState, string> = {
   fresh: 'Fresh',
@@ -199,8 +192,6 @@ export function FreshnessLabel({ state, commits, atLeast = false, since }: Fresh
   )
 }
 
-// ---- Orphan ----------------------------------------------------------------------------------
-
 /** Knowledge that nothing links to. */
 export function OrphanTag() {
   return (
@@ -210,8 +201,6 @@ export function OrphanTag() {
     </span>
   )
 }
-
-// ---- Banner ----------------------------------------------------------------------------------
 
 export type BannerVariant = 'info' | 'success' | 'warning' | 'danger'
 
@@ -241,7 +230,6 @@ export function Banner({ variant = 'info', title, children, actions, onClose }: 
     <div
       className="nt-banner"
       data-variant={variant}
-      // A problem interrupts; anything else waits to be read.
       role={variant === 'danger' || variant === 'warning' ? 'alert' : 'status'}
     >
       <Icon
@@ -263,8 +251,6 @@ export function Banner({ variant = 'info', title, children, actions, onClose }: 
     </div>
   )
 }
-
-// ---- Empty state -----------------------------------------------------------------------------
 
 export interface EmptyStateProps {
   readonly icon?: string

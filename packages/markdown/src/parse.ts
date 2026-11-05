@@ -138,7 +138,7 @@ const readFrontmatter = (tree: Root): Frontmatter | undefined => {
   const raw = node.value
   const lineCounter = new LineCounter()
   const doc = parseDocument(raw, { lineCounter })
-  const firstLine = node.position.start.line + 1 // the line after the opening fence
+  const firstLine = node.position.start.line + 1
   const errors = doc.errors.map((error) => ({
     message: error.message.split('\n')[0] ?? error.message,
     line: (error.linePos?.[0].line ?? 1) + firstLine - 1,

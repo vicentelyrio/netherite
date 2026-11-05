@@ -306,8 +306,6 @@ describe('baselines', () => {
       async (repo) => {
         const { freshness } = await measure(repo.root)
         const fresh = freshness.get('netherite/docs/DOC-00010-nodate.md')
-        // Counts the two src commits after 2026-01-12; the commit that touched the doc, which also
-        // changed src, is the baseline and does not count.
         expect(fresh).toMatchObject({
           state: 'drifting',
           commits: 2,
@@ -399,7 +397,6 @@ describe('uncommitted changes', () => {
       async (repo) => {
         const { freshness } = await measure(repo.root)
         expect(freshness.get(docPath)).toMatchObject({ commits: 4, uncommitted: true })
-        // The runbook covers only src/util.ts, which this new file is not.
         expect(freshness.get(runPath)).toMatchObject({ commits: 0, uncommitted: false })
       },
       basicHistory,
@@ -442,7 +439,6 @@ describe('uncommitted changes', () => {
         `${text.replace('covers: ["src/**"]', 'covers: ["netherite/**"]').replace(/reviewed_at: .*/, 'reviewed_at: 2026-01-01')}\nedited\n`,
       )
       const { freshness } = await measure(repo.root)
-      // Commits touched netherite/ only in the first commit, and the doc's own edit is excluded.
       expect(freshness.get(docPath)).toMatchObject({
         state: 'fresh',
         commits: 0,
@@ -464,7 +460,6 @@ describe('covers patterns in practice', () => {
           .replace('reviewed_at: 2026-01-15', 'reviewed_at: 2026-01-10'),
       )
       const { freshness } = await measure(repo.root)
-      // Only the refactor commit touched util.ts after 2026-01-10.
       expect(freshness.get(runPath)).toMatchObject({
         commits: 1,
         covers: ['src/**', '!src/app.ts'],
@@ -487,7 +482,6 @@ describe('without usable history', () => {
     try {
       execFileSync('git', ['update-ref', '-d', 'HEAD'], { cwd: repo.root })
       const { freshness } = await measure(repo.root)
-      // No history to count, so only the files waiting to be committed matter.
       expect(freshness.get(docPath)).toMatchObject({ commits: 1, uncommitted: true })
     } finally {
       await repo.cleanup()
@@ -512,7 +506,6 @@ describe('shallow clones', () => {
       const clone = await shallowClone(repo, 2)
       try {
         const { freshness } = await measure(clone.dir)
-        // Reviewed 2026-01-10, but the clone only goes back to 2026-01-14.
         expect(freshness.get(docPath)).toMatchObject({
           state: 'unknown',
           reason: 'shallow',
@@ -542,7 +535,6 @@ describe('shallow clones', () => {
       const clone = await shallowClone(repo, 4)
       try {
         const { freshness } = await measure(clone.dir)
-        // Depth 4 reaches back to 2026-01-08, before the 2026-01-10 baseline.
         expect(freshness.get(docPath)).toMatchObject({
           state: 'drifting',
           commits: 3,

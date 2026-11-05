@@ -202,7 +202,6 @@ export const setField = (
     ) {
       return Effect.succeed(splice(parsed, old.range[0], old.range[1], scalarText(value, old)))
     }
-    // A list keeps its flow or block style.
     const flowHint = isSeq(old) ? old.flow === true : undefined
     return Effect.succeed(
       splice(
@@ -219,7 +218,6 @@ export const unsetField = (source: string, name: string): Effect.Effect<string, 
   Effect.flatMap(parseBlock(source), (parsed) => {
     const pair = parsed === undefined ? undefined : findPair(parsed.map, name)
     if (parsed === undefined || pair === undefined) return Effect.succeed(source)
-    // Comments above the field are kept; only its own lines go.
     const keyStart = lineStartOf(parsed.block, (pair.key as Scalar).range?.[0] ?? 0)
     return Effect.succeed(splice(parsed, keyStart, pairEnd(parsed.block, pair), ''))
   })
@@ -311,7 +309,6 @@ export const appendToList = (
       )
     }
 
-    // Block list: a new line after the last item, indented like it.
     if (last === undefined || !isNode(last) || !last.range) {
       return Effect.succeed(
         splice(
@@ -326,7 +323,6 @@ export const appendToList = (
     const dash = parsed.block.lastIndexOf('-', last.range[0])
     const indent = indentOf(parsed.block, dash)
     const text = `${itemText(value, indent, parsed.eol)}${parsed.eol}`
-    // A list that ends the frontmatter without a final line ending needs one first.
     const lead = at === parsed.block.length && !/\n$/.test(parsed.block) ? parsed.eol : ''
     return Effect.succeed(splice(parsed, at, at, `${lead}${text}`))
   })

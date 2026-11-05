@@ -129,7 +129,6 @@ describe('a working session on a clean workspace', () => {
         files: { [doc1]: ['-reviewed_at: 2026-01-01', '+reviewed_at: 2026-02-01'] },
       })
 
-      // Superseding changes both ADRs in one step.
       await step('set_state', {
         args: { id: 'ADR-00001', state: 'superseded', superseded_by: 'ADR-00002' },
         files: {
@@ -145,7 +144,6 @@ describe('a working session on a clean workspace', () => {
       const { step } = await script(s)
       const { data } = await s.call('get', { id: 'TASK-00001' })
 
-      // A bad field, an unknown ID, a protected field, a missing superseded_by.
       await step('create', {
         args: { type: 'task', title: 'No project' },
         refused: true,
@@ -168,7 +166,6 @@ describe('a working session on a clean workspace', () => {
         refused: true,
         files: {},
       })
-      // A stale hash: someone else got there first.
       await step('update', {
         args: { id: 'TASK-00001', set: { labels: ['x'] } },
         files: { [task1]: ['-labels: [backend]', '+labels: [x]'] },
@@ -192,11 +189,9 @@ describe('a working session on a clean workspace', () => {
         result: { error: { type: 'StillLinked' } },
         files: {},
       })
-      // TASK-00002 depends on it and its text links to it, so forcing leaves them dangling.
       await step('delete', {
         args: { id: 'TASK-00001', force: true },
         files: { [task1]: 'deleted' },
-        // The `depends_on` entry and the three [[links]] in TASK-00002's text.
         introduces: ['broken-link', 'broken-link', 'broken-link', 'broken-link'],
       })
       expect((await s.call('get', { id: 'TASK-00001' })).data.error.type).toBe('NotFound')
@@ -223,7 +218,6 @@ describe('a working session on a clean workspace', () => {
           },
         })
       }
-      // The server's view and the disk agree on what exists.
       expect((await s.call('list', { type: 'task', limit: 100 })).data.items).toHaveLength(12)
     })
   })
@@ -392,7 +386,6 @@ describe('planning from an empty workspace', () => {
           files: { 'netherite/tasks/TASK-00001-build-it.md': ['-state: backlog', '+state: done'] },
         })
 
-        // The finished plan reads back as the agent built it.
         const plan = (await s.call('list', { project: 'PRJ-00001' })).data.items.map(
           (i: { id: string }) => i.id,
         )

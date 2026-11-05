@@ -32,8 +32,6 @@ export const rewriteLinks = (
       }
       if (fenced) return line
       const inTable = line.trimStart().startsWith('|')
-      // Code spans are set aside, so a link inside one is not touched and a link whose label is a
-      // code span (`[`file.md`](file.md)`) still is.
       const spans: string[] = []
       const masked = line.replace(/`[^`\n]*`/gu, (span) => {
         spans.push(span)
@@ -49,16 +47,13 @@ export const rewriteLinks = (
           let decoded = pathPart
           try {
             decoded = decodeURI(pathPart)
-          } catch {
-            // Keep the text as written.
-          }
+          } catch {}
           const resolved = posix.normalize(posix.join(posix.dirname(from), decoded))
           if (resolved.startsWith('..')) return whole
           const id = ids.get(resolved)
           if (id === undefined) return whole
           count++
           const name = label.trim()
-          // A `|` inside a table row would end the cell, so a table gets the bare link.
           if (name === '' || name === id || inTable || /[|\]]/u.test(name)) return `[[${id}]]`
           return `[[${id}|${name}]]`
         },

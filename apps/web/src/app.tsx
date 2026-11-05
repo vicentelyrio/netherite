@@ -20,7 +20,6 @@ export interface AppProps {
 /** The whole app: theme, server client, queries, messages and routes. */
 export function App({ config, history, env }: AppProps) {
   const api = useMemo(() => createApi(config), [config])
-  // The event stream keeps queries fresh, so they can be trusted for a while.
   const client = useMemo(
     () =>
       new QueryClient({

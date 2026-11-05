@@ -230,7 +230,6 @@ export const importBatch = (
         continue
       }
 
-      // What the source says, read from the file unless the entry brings its own text.
       let text: string | undefined
       if (where.kind === 'path') {
         const file = path.join(root, where.path)
@@ -252,7 +251,6 @@ export const importBatch = (
         (where.kind === 'path' ? titleFromFile(where.path, entry.type) : source)
       const body = split.body
 
-      // Already imported?
       const existing = existingFor(source)
       if (existing !== undefined) {
         const id = existing.id as string
@@ -312,7 +310,6 @@ export const importBatch = (
         continue
       }
 
-      // A new item.
       if (options.dryRun === true) {
         if (entry.id !== undefined && repo.index.findById(entry.id).length > 0) {
           results.push(failed(number, source, `${entry.id} is already in use`))
@@ -334,7 +331,6 @@ export const importBatch = (
           fields: { ...(entry.fields ?? {}), source, imported_at: today },
           body,
           ...(options.createdBy === undefined ? {} : { createdBy: options.createdBy }),
-          // The person who ran the import did not make the decision.
           deciders: [],
         }),
       )
@@ -351,7 +347,6 @@ export const importBatch = (
         path: made.success.path,
       }
 
-      // A move removes the original only once the item is written.
       if (entry.mode === 'move' && where.kind === 'path') {
         const file = path.join(root, where.path)
         const moved = yield* Effect.result(
@@ -373,8 +368,6 @@ export const importBatch = (
       results.push(result)
     }
 
-    // Files that point at each other by relative links now point at items, in every file that
-    // came from an import, so an earlier batch can link to a later one.
     const relinked = { items: 0, links: 0 }
     if (options.dryRun !== true) {
       const ids = new Map<string, string>()

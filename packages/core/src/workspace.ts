@@ -42,7 +42,6 @@ type Locate = (path: ReadonlyArray<string | number>) => { line: number; column: 
 const makeLocate =
   (doc: Document.Parsed, lineCounter: LineCounter): Locate =>
   (path) => {
-    // Use the deepest node that exists, so a missing key points at its parent.
     for (let length = path.length; length >= 0; length--) {
       const node = length === 0 ? doc.contents : doc.getIn(path.slice(0, length), true)
       if (isNode(node) && node.range) {

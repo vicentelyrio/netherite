@@ -15,7 +15,6 @@ export function TagsMap() {
   const { LL } = useI18nContext()
   const { shown, edges, duplicates, selected, select } = useTags()
   const [zoom, setZoom] = useState(1)
-  // Where the view is centred (the middle of the map until it is dragged), and bubbles that were moved.
   const [centre, setCentre] = useState<{ x: number; y: number } | undefined>(undefined)
   const [moved, setMoved] = useState<ReadonlyMap<string, { x: number; y: number }>>(new Map())
   const svg = useRef<SVGSVGElement>(null)
@@ -24,7 +23,6 @@ export function TagsMap() {
     | { kind: 'node'; key: string; from: { x: number; y: number }; at: { x: number; y: number } }
     | undefined
   >(undefined)
-  // A press that moved is a drag, so the click that ends it must not pick or clear a tag.
   const dragged = useRef(false)
   const layout = useMemo(
     () => layoutMap(shown.map((t) => ({ key: keyOf(t), total: t.total, cluster: t.cluster }))),
@@ -48,7 +46,6 @@ export function TagsMap() {
     return p === undefined ? undefined : m === undefined ? p : { ...p, ...m }
   }
 
-  // The point of the map under a point of the screen.
   const toMap = (clientX: number, clientY: number) => {
     const el = svg.current
     const matrix = el?.getScreenCTM?.()
@@ -62,7 +59,6 @@ export function TagsMap() {
   const latest = useRef({ zoom, mid, toMap })
   latest.current = { zoom, mid, toMap }
 
-  // The wheel zooms around the pointer. React's own wheel listener cannot stop the page scrolling.
   useEffect(() => {
     const el = svg.current
     if (el === null) return
@@ -72,7 +68,6 @@ export function TagsMap() {
       const next = Math.min(ZOOM.max, Math.max(ZOOM.min, k * Math.exp(-e.deltaY * 0.0015)))
       if (next === k) return
       const p = map(e.clientX, e.clientY)
-      // Keep the point under the pointer where it is.
       setCentre({ x: p.x - ((p.x - m.x) * k) / next, y: p.y - ((p.y - m.y) * k) / next })
       setZoom(next)
     }
@@ -83,9 +78,7 @@ export function TagsMap() {
   const capture = (e: ReactPointerEvent) => {
     try {
       e.currentTarget.setPointerCapture?.(e.pointerId)
-    } catch {
-      // A pointer that is already gone cannot be captured.
-    }
+    } catch {}
   }
   const press = (e: ReactPointerEvent<SVGSVGElement>) => {
     if (e.button !== 0 || drag.current !== undefined) return
@@ -174,7 +167,6 @@ export function TagsMap() {
             />
           )
         })}
-        {/* A likely duplicate is drawn even when the two never share an item. */}
         {duplicates.map((d) => {
           const a = place(keyOf(d.a))
           const b = place(keyOf(d.b))

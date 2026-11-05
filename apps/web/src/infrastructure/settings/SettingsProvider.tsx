@@ -58,9 +58,7 @@ export function SettingsProvider({
       setSettings(next)
       try {
         storage?.setItem(storageKey, serializeSettings(next))
-      } catch {
-        // Private windows and blocked storage: the settings last for this visit only.
-      }
+      } catch {}
     },
     [storage],
   )

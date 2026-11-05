@@ -64,7 +64,6 @@ describe.skipIf(!built)('netherite mcp (the built program)', () => {
         expect(bad.isError).toBe(true)
         expect(JSON.parse(bad.content[0]?.text ?? '{}').error.issues[0].field).toBe('project')
 
-        // The write is in the activity log, and git does not see the log.
         const logged = readFileSync(join(dir, '.netherite/local/activity.jsonl'), 'utf8')
           .trim()
           .split('\n')
@@ -81,15 +80,12 @@ describe.skipIf(!built)('netherite mcp (the built program)', () => {
           }).trim(),
         ).toBe('.netherite/local/activity.jsonl')
 
-        // Only protocol messages were on stdout: the client parsed everything without complaint.
         expect(errors).toEqual([])
-        // What a person should see went to stderr.
         expect(stderr.join('')).toContain('netherite mcp: serving')
       } finally {
         await client.close()
       }
     })
-    // Starting the built program takes seconds when the whole suite is running at once.
   }, 30_000)
 
   test('sees a file changed outside the server', async () => {
@@ -98,7 +94,6 @@ describe.skipIf(!built)('netherite mcp (the built program)', () => {
       const { client } = await connect(dir)
       try {
         await cli(dir, 'new', 'doc', 'Written by the CLI')
-        // The watcher applies it within moments.
         const start = Date.now()
         let found = false
         while (!found && Date.now() - start < 8000) {

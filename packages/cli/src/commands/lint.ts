@@ -152,7 +152,6 @@ export const lintCommand = (env: Env, options: LintCommandOptions) =>
             : `${verb} ${fixed.applied.length} problem${fixed.applied.length === 1 ? '' : 's'} in ${fixed.changes.length} file${fixed.changes.length === 1 ? '' : 's'}.`,
         )
         if (options.dryRun) {
-          // The diagnostics shown are those before the fixes.
           env.out.line('')
         }
       }

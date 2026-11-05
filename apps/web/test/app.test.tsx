@@ -10,8 +10,6 @@ import { changesField } from '@/components/ItemEditor/extensions'
 import { moveFor } from '@/features/projects'
 import { other, renderApp, server } from './helpers'
 
-// `@netherite/testing` is for Node, not for this jsdom file, so the path is made here. Nothing is
-// created there: git treats a config file that is not there as empty.
 const emptyGitConfig = join(tmpdir(), 'netherite-empty-gitconfig')
 
 const nav = () => screen.getByRole('navigation', { name: 'Main' })
@@ -24,13 +22,10 @@ const menuItem = async (button: () => HTMLElement, name: string | RegExp) => {
   for (let attempt = 0; attempt < 4; attempt++) {
     const target = button()
     await waitFor(() => expect(target).toBeEnabled())
-    // Only click a closed menu: a second click would close it again.
     if (target.getAttribute('aria-expanded') !== 'true') await userEvent.click(target)
     try {
       return await screen.findByRole('menuitem', { name }, { timeout: 2000 })
-    } catch {
-      // The button may have been replaced while the page refreshed: look again.
-    }
+    } catch {}
   }
   return screen.findByRole('menuitem', { name })
 }
@@ -68,7 +63,6 @@ describe('the shell', () => {
 
   test('the Inbox item says how many things wait for a person', async () => {
     renderApp('/goals')
-    // ADR-00003 is proposed in the sample workspace.
     const rail = await screen.findByRole('navigation', { name: 'Main' })
     expect(
       await within(rail).findByRole('button', { name: /^Inbox, \d+ waiting$/ }),
@@ -77,7 +71,6 @@ describe('the shell', () => {
 })
 
 describe('keyboard shortcuts', () => {
-  // The test platform is not a Mac, so "mod" is Control.
   test.each([
     ['i', {}, 'Inbox'],
     ['g', {}, 'Goals'],
@@ -88,7 +81,6 @@ describe('keyboard shortcuts', () => {
   ])('Control-%s %j goes to %s', async (letter, extra, title) => {
     renderApp('/knowledge')
     await screen.findByRole('heading', { name: 'Knowledge' })
-    // Start somewhere else so the key has something to do.
     await userEvent.click(railButton(/^Tags/))
     await screen.findByRole('heading', { name: 'Tags' })
     key({ key: letter, ctrlKey: true, ...extra })
@@ -143,7 +135,6 @@ describe('reading an item', () => {
     await userEvent.click(screen.getByRole('radio', { name: 'Accepted' }))
     await waitFor(async () => expect(await status()).toBe('accepted'))
     await waitFor(() => expect(screen.getByRole('radio', { name: 'Accepted' })).toBeChecked())
-    // Put it back for the tests after this one.
     await userEvent.click(screen.getByRole('radio', { name: 'Proposed' }))
     await waitFor(async () => expect(await status()).toBe('proposed'))
   })
@@ -158,7 +149,6 @@ describe('reading an item', () => {
     await userEvent.click(screen.getByRole('radio', { name: 'Deprecated' }))
     await waitFor(async () => expect(await status()).toBe('deprecated'))
     await waitFor(() => expect(screen.getByRole('radio', { name: 'Deprecated' })).toBeChecked())
-    // Put it back for the tests after this one: active again means no status in the file.
     await userEvent.click(screen.getByRole('radio', { name: 'Active' }))
     await waitFor(async () => expect(await status()).toBeUndefined())
   })
@@ -275,7 +265,6 @@ describe('writing, and conflicts', () => {
   })
 
   test('if the file changed since it was opened, nothing is saved: the person is told, and Reload fixes it', async () => {
-    // No live updates in this test, so the page really does hold an old copy.
     const real = globalThis.EventSource
     globalThis.EventSource = class {
       close() {}
@@ -302,7 +291,6 @@ describe('writing, and conflicts', () => {
 
       await userEvent.click(within(alert).getByRole('button', { name: 'Reload' }))
       await waitFor(() => expect(screen.queryByRole('alert')).toBeNull())
-      // The page now holds the file's current version.
       const current = await api.call((c) => c.items.get({ params: { id: 'DOC-00001' } }))
       await waitFor(() =>
         expect(document.querySelector('article')).toHaveAttribute('data-hash', current.hash),
@@ -346,7 +334,6 @@ describe('editing the source of an item', () => {
     const view = await open('TASK-00002')
     const marker = `Edited in the editor ${Date.now()}.`
     type(view, `\n${marker}\n`)
-    // No button: the editor saves by itself a moment after the typing stops.
     expect(screen.queryByRole('button', { name: /^Save/ })).toBeNull()
     await waitFor(() => expect(taskFile()).toContain(marker), { timeout: 8000 })
     await waitFor(() => expect(screen.queryByText('Unsaved')).toBeNull())
@@ -368,7 +355,6 @@ describe('editing the source of an item', () => {
     })
     expect(document.querySelector('.cm-hint')?.textContent).toMatch(/state/i)
     expect(screen.getByTitle(/errors?/)).not.toHaveTextContent('0')
-    // Nothing was saved by linting.
     expect(taskFile()).toBe(before)
   })
 
@@ -382,7 +368,6 @@ describe('editing the source of an item', () => {
           changes: { from: at, to: at + 'state: doing'.length, insert: 'state: nonsense' },
         }),
     )
-    // Typing does not save what lint rejects; Control-S asks the server anyway, and it explains.
     fireEvent.keyDown(document.querySelector('.cm-content') as HTMLElement, {
       key: 's',
       ctrlKey: true,
@@ -394,7 +379,6 @@ describe('editing the source of an item', () => {
 
   test('the gutter shows changes since the last commit, from git', async () => {
     const view = await open('TASK-00001')
-    // The sample workspace is committed, so the file matches its committed text until edited.
     await waitFor(() =>
       expect(
         view.state.field(changesField).modified.size + view.state.field(changesField).added.size,
@@ -407,7 +391,6 @@ describe('editing the source of an item', () => {
   test('[[ suggests the workspace’s items, and choosing one completes the link', async () => {
     const view = await open('TASK-00002')
     await waitFor(() => expect(document.querySelector('.cm-editor')).not.toBeNull())
-    // Give the items query a moment, then type an unfinished link at the end.
     await new Promise((r) => setTimeout(r, 500))
     type(view, '\nSee [[ADR-00002')
     act(() => void view.dispatch({ selection: { anchor: view.state.doc.length } }))
@@ -490,7 +473,6 @@ describe('goals', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Create area' }))
     const area = await screen.findByRole('region', { name: 'Health' })
     expect(within(area).getByText('Sleep well')).toBeInTheDocument()
-    // The goal's file records the area; remove it so other tests see the same workspace.
     const api = other()
     const goals = await api.call((c) => c.goals.list())
     const made = goals.goals.find((g) => g.title === 'Sleep well')
@@ -600,7 +582,6 @@ describe('the project board', () => {
     expect(found).toBeDefined()
     const detail = await other().call((c) => c.items.get({ params: { id: found?.id ?? '' } }))
     expect(JSON.stringify(detail.frontmatter)).toContain(made.id)
-    // The workspace is shared with the tests after this one.
     for (const id of [found?.id ?? '', made.id]) {
       await other().call((c) => c.items.delete({ params: { id }, query: { force: 'true' } }))
     }
@@ -667,7 +648,6 @@ describe('the task drawer', () => {
     renderApp('/projects/PRJ-00001')
     const link = await screen.findByRole('link', { name: 'Core' })
     const card = link.closest('.board-draggable') as HTMLElement
-    // The line above the title is not a link.
     await userEvent.click(card.querySelector('.board-overline') ?? card)
     expect(await screen.findByRole('dialog')).toBeInTheDocument()
   })
@@ -849,7 +829,6 @@ describe('ADR and context views', () => {
       execFileSync('git', args, { cwd: server().dir, env, stdio: 'ignore' })
     git('add', '-A')
     git('commit', '-q', '-m', 'touch covered code')
-    // Earlier tests may have reviewed the doc today, so put the review back. The test server does not watch, so this write is also what makes it look at git again.
     const api = other()
     const doc = await api.call((c) => c.items.get({ params: { id: 'DOC-00001' } }))
     await api.call((c) =>
@@ -957,12 +936,10 @@ describe('the graph view', () => {
     const shape = () => node.querySelector('circle:not(.gv-glow), rect') as SVGElement
     const at = () => Number(shape().getAttribute('cx') ?? shape().getAttribute('x'))
     const start = at()
-    // Dragging the background pans.
     fireEvent.pointerDown(graph, { clientX: 10, clientY: 10, button: 0 })
     fireEvent.pointerMove(graph, { clientX: 80, clientY: 50 })
     fireEvent.pointerUp(graph)
     await waitFor(() => expect(at()).not.toBe(start))
-    // The wheel zooms.
     const panned = at()
     fireEvent.wheel(graph, { deltaY: -100, clientX: 0, clientY: 0 })
     await waitFor(() => expect(at()).not.toBe(panned))
@@ -977,7 +954,6 @@ describe('the graph view', () => {
     const legend = screen.getByRole('complementary', { name: 'Legend' })
     expect(within(legend).getByRole('heading', { name: 'Status' })).toBeInTheDocument()
     const filter = within(legend).getByRole('radiogroup', { name: 'Show' })
-    // "Done" fades everything that is not done; "All" brings it back.
     await userEvent.click(within(filter).getByRole('radio', { name: 'Done' }))
     expect(task.getAttribute('data-status') === 'done' ? '1' : task.getAttribute('opacity')).toBe(
       task.getAttribute('data-status') === 'done' ? '1' : '0.12',
@@ -1022,19 +998,16 @@ describe('the graph view', () => {
     fireEvent.pointerMove(window, { clientX: 220, clientY: 180 })
     fireEvent.pointerMove(window, { clientX: 260, clientY: 200 })
     await waitFor(() => expect(at()).not.toBe(before))
-    // The pointer comes up on the node itself, as it does when you drop where you are.
     fireEvent.pointerUp(node)
     fireEvent.click(node)
     expect(node).toHaveAttribute('aria-pressed', 'false')
 
-    // The drag is over: moving the pointer now does not move the node.
     await new Promise((r) => setTimeout(r, 600))
     const dropped = at()
     fireEvent.pointerMove(window, { clientX: 600, clientY: 600 })
     await new Promise((r) => setTimeout(r, 300))
     expect(Math.abs(at() - dropped)).toBeLessThan(5)
 
-    // And the next click on it is a click again.
     await userEvent.click(node)
     expect(node).toHaveAttribute('aria-pressed', 'true')
   })
@@ -1294,7 +1267,6 @@ describe('Tags', () => {
     )
     expect(await screen.findByText(/Changed in 1 file/)).toBeInTheDocument()
     expect(await bubble('server')).toBeInTheDocument()
-    // Put it back so other tests see the same workspace.
     await other().call((c) =>
       c.tags.rename({ payload: { field: 'labels', from: 'server', to: 'backend' } }),
     )

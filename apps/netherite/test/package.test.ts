@@ -62,7 +62,6 @@ describe('the published package', () => {
     for (const file of bundles()) {
       for (const specifier of importsOf(text(file))) imported.add(packageOf(specifier))
     }
-    // Loaded by the packages that use them, not named in the bundle: the optional file watcher.
     const unused = Object.keys(pkg.dependencies).filter((name) => !imported.has(name))
     expect(unused).toEqual([])
   })
