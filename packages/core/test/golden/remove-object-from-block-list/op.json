@@ -1,0 +1,8 @@
+{
+  "op": "removeFromList",
+  "name": "design",
+  "value": {
+    "label": "A",
+    "url": "u1"
+  }
+}

@@ -1,0 +1,77 @@
+.kf-path {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--nt-font-mono, monospace);
+  font-size: 13px;
+  color: #b9bcd3;
+}
+.kf-path {
+  min-width: 0;
+  white-space: nowrap;
+}
+.kf-path > * {
+  flex: none;
+}
+.kf-path strong {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #e6e7f2;
+  font-weight: 500;
+}
+.kf-lines {
+  background: rgba(240, 180, 41, 0.14);
+  color: #f0b429;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.kf-spacer {
+  flex: 1;
+}
+
+.kf-head {
+  height: 48px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px 0 24px;
+  border-bottom: 1px solid #33364f;
+  background: #23253a;
+  color: #969ab8;
+}
+
+.kf-id {
+  display: none;
+}
+
+.kf-close {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #b9bcd3;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kf-close:hover {
+  background: #33364f;
+  color: #e8e9f3;
+}
+
+.kf-path a {
+  color: #a5a7ff;
+  text-decoration: none;
+}
+.kf-path a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,8 @@
+{
+  "op": "appendSection",
+  "heading": "Notes",
+  "content": "Some notes.",
+  "options": {
+    "depth": 3
+  }
+}

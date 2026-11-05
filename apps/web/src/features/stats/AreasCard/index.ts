@@ -1,0 +1,1 @@
+export { AreasCard } from './AreasCard'

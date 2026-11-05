@@ -1,0 +1,1 @@
+export { TagsHeading } from './TagsHeading'

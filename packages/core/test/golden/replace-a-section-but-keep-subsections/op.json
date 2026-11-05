@@ -1,0 +1,8 @@
+{
+  "op": "replaceSection",
+  "which": "Decision",
+  "content": "New decision.",
+  "options": {
+    "excludeSubsections": true
+  }
+}

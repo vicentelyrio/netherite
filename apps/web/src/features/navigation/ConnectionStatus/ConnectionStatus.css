@@ -1,0 +1,37 @@
+.app-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--nt-space-4);
+  height: 32px;
+  padding: 0 var(--nt-space-4);
+  font-size: var(--nt-text-micro-size);
+  background: var(--nt-color-bg-sunken);
+  border-bottom: 1px solid var(--nt-color-border-divider);
+}
+
+.app-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--nt-color-text-secondary);
+}
+
+.app-status-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--nt-color-text-muted);
+  border-radius: var(--nt-radius-full);
+}
+
+.app-status[data-state="live"] .app-status-dot {
+  background: var(--nt-color-status-success);
+}
+
+.app-status[data-state="offline"] {
+  color: var(--nt-color-status-warning-text);
+}
+
+.app-status[data-state="offline"] .app-status-dot {
+  background: var(--nt-color-status-warning);
+}

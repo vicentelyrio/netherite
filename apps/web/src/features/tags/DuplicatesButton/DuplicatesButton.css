@@ -1,0 +1,22 @@
+.dup-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #a5a7ff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.dup-button:hover {
+  background: #34365a;
+}
+.dup-button span {
+  font-size: 12px;
+  color: #969ab8;
+}

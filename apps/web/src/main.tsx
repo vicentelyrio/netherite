@@ -1,10 +1,14 @@
+import '@netherite/ui/styles.css'
+import '@/infrastructure/styles/base.css'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { readConfig } from '@/infrastructure/config'
+import { App } from './app'
 
-import { App } from './App'
-
-createRoot(document.getElementById('root') as HTMLElement).render(
+const root = document.getElementById('root')
+if (root === null) throw new Error('No #root element')
+createRoot(root).render(
   <StrictMode>
-    <App />
+    <App config={readConfig()} />
   </StrictMode>,
 )

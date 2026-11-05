@@ -1,0 +1,6 @@
+{
+  "op": "removeFromList",
+  "name": "title",
+  "value": "x",
+  "expectError": "not-a-list"
+}

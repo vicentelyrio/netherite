@@ -1,0 +1,6 @@
+{
+  "op": "setField",
+  "name": "title",
+  "value": "y",
+  "expectError": "not-a-mapping"
+}

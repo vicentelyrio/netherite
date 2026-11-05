@@ -1,0 +1,63 @@
+.kn-lifecycle {
+  display: flex;
+  align-items: flex-start;
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 20px;
+}
+
+.kn-lifecycle li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 150px;
+  font-size: 13px;
+}
+
+.kn-lifecycle li::before {
+  content: "";
+}
+
+.kn-step-node {
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid #474b6e;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #15162a;
+}
+
+.kn-lifecycle li[data-state="past"] .kn-step-node,
+.kn-lifecycle li[data-state="current"] .kn-step-node {
+  background: #a5a7ff;
+  border-color: #a5a7ff;
+}
+
+.kn-lifecycle li[data-status="accepted"] .kn-step-node {
+  background: #2cc27e;
+  border-color: #2cc27e;
+}
+
+.kn-lifecycle li[data-status="deprecated"] .kn-step-node {
+  background: #f0717e;
+  border-color: #f0717e;
+}
+
+.kn-lifecycle li[data-status="superseded"] .kn-step-node {
+  background: #b9bcd3;
+  border-color: #b9bcd3;
+}
+
+.kn-lifecycle li[data-state="next"] {
+  opacity: 0.55;
+}
+
+.kn-lifecycle li[data-ghost] .kn-step-node {
+  border-style: dashed;
+  border-color: #6e7292;
+  background: transparent;
+}

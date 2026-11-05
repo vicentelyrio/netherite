@@ -1,0 +1,141 @@
+.ar-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.ar-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.ar-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+.ar-goals {
+  font-size: 13px;
+  color: #969ab8;
+}
+.ar-fill {
+  flex: 1;
+}
+.ar-gain {
+  font-size: 13px;
+  font-weight: 600;
+  color: #969ab8;
+  font-variant-numeric: tabular-nums;
+}
+.ar-gain[data-up] {
+  color: #2cc27e;
+}
+.ar-share {
+  min-width: 44px;
+  text-align: right;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.ar-bar {
+  display: flex;
+  height: 6px;
+  border-radius: 3px;
+  background: #34374f;
+  overflow: hidden;
+}
+.ar-base {
+  background: rgba(44, 194, 126, 0.42);
+}
+.ar-add {
+  background: #2cc27e;
+}
+.ar-note {
+  font-size: 12px;
+  color: #8a8fad;
+}
+
+.ar-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: auto 0 0;
+  padding: 14px 0 0;
+  border-top: 1px solid #2f3250;
+  list-style: none;
+}
+.ar-foot li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 28px;
+  font-size: 14px;
+  color: #969ab8;
+}
+.ar-foot .nt-icon {
+  flex: none;
+}
+.ar-foot-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #e8e9f3;
+}
+.ar-foot-note {
+  font-size: 13px;
+  color: #969ab8;
+}
+
+.ar-goal-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ar-goal-rows li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 160px 44px 36px;
+  align-items: center;
+  column-gap: 12px;
+  height: 28px;
+  font-size: 13px;
+  color: #b9bcd3;
+}
+.ar-goal-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ar-goal-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: #34374f;
+  overflow: hidden;
+}
+.ar-goal-bar span {
+  display: block;
+  height: 100%;
+  background: #2cc27e;
+}
+.ar-goal-pct {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.ar-goal-gain {
+  text-align: right;
+  font-size: 12px;
+  color: #969ab8;
+}
+.ar-goal-gain[data-up] {
+  color: #2cc27e;
+}

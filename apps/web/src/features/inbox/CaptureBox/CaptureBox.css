@@ -1,0 +1,29 @@
+.cb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  margin-bottom: 12px;
+  padding: 0 8px 0 12px;
+  box-sizing: border-box;
+  border: 1px solid #33364f;
+  border-radius: 8px;
+  background: #18192a;
+  color: #a5a7ff;
+}
+.cb:focus-within {
+  border-color: #7f82ea;
+}
+.cb-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: #e8e9f3;
+  font: inherit;
+  font-size: 14px;
+  outline: 0;
+}
+.cb-input::placeholder {
+  color: #969ab8;
+}

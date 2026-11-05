@@ -1,0 +1,68 @@
+.goals-area-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  margin-bottom: 8px;
+}
+.goals-area-title {
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* The name field stops short of the progress ring. */
+.goals-area-head .editable,
+.goals-area-head > .editable-input {
+  flex: 1;
+  margin-right: 16px;
+  width: auto;
+}
+.goals-area-head > .editable-input {
+  height: 36px;
+}
+
+.goals-area-del {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--nt-color-text-muted, #969ab8);
+  cursor: pointer;
+  opacity: 0;
+}
+.goals-area-head:hover .goals-area-del,
+.goals-area-del:focus-visible {
+  opacity: 1;
+}
+.goals-area-del:hover {
+  background: var(--nt-color-surface-hover, #2e3148);
+  color: var(--nt-color-text, #e8e9f3);
+}
+
+.goals-area-name {
+  flex: 1;
+  min-width: 0;
+  margin-right: 16px;
+}
+.goals-area-name .editable,
+.goals-area-name > .editable-input {
+  margin-right: 0;
+}
+.goals-area-sub {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: #969ab8;
+}
+.goals-area-name > .editable-input {
+  height: 36px;
+}

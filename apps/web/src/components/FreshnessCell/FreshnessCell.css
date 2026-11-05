@@ -1,0 +1,36 @@
+.kn-fresh {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #b9bcd3;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.kn-fresh--stale {
+  color: #e2ae4c;
+  font-weight: 600;
+}
+
+.kn-fresh--drift {
+  color: #ddb168;
+}
+
+.kn-fresh--na {
+  color: #8a8fad;
+}
+
+.kn-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2cc27e;
+  margin: 0 3px;
+}
+
+.kn-dot--ring {
+  background: transparent;
+  border: 1.5px solid #e2ae4c;
+  box-sizing: border-box;
+}

@@ -145,3 +145,17 @@ generated
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+.netherite/local/
+
+# Playwright
+test-results
+playwright-report
+
+# Copied from the root README at build
+apps/netherite/README.md
+apps/netherite/LICENSE
+apps/web/.bundle-report.json
+
+# The documentation site
+apps/docs/.vitepress/dist
+apps/docs/.vitepress/cache

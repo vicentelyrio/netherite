@@ -1,0 +1,23 @@
+.kn-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #a5a7ff;
+  text-decoration: none;
+}
+
+.kn-link-button:hover {
+  background: #34365a;
+}
+
+.kn-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 40px;
+}

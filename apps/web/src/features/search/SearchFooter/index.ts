@@ -1,0 +1,1 @@
+export { SearchFooter } from './SearchFooter'

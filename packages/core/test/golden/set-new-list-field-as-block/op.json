@@ -1,0 +1,8 @@
+{
+  "op": "setField",
+  "name": "covers",
+  "value": ["src/**", "docs/**"],
+  "options": {
+    "style": "block"
+  }
+}

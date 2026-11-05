@@ -1,0 +1,6 @@
+{
+  "op": "replaceSection",
+  "which": "Nope",
+  "content": "x",
+  "expectError": "no-such-section"
+}

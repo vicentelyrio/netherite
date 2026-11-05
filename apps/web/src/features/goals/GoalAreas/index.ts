@@ -1,0 +1,1 @@
+export { GoalAreas } from './GoalAreas'

@@ -1,0 +1,33 @@
+.dl-legend {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  color: #b9bcd3;
+}
+
+.dl-legend > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dl-legend-dot {
+  width: 10px;
+  height: 10px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid;
+}
+
+.dl-rule {
+  width: 1px;
+  height: 20px;
+  background: #3a3d58;
+  margin: 0 4px;
+}
+.dl-spacer {
+  flex: 1;
+}

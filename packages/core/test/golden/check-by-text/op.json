@@ -1,0 +1,6 @@
+{
+  "op": "toggleCheck",
+  "which": {
+    "text": "open"
+  }
+}

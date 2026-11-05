@@ -1,0 +1,41 @@
+.goal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.goal-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: -4px;
+}
+.goal-card-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
+}
+.goal-achieved {
+  color: #6fcf97;
+  font-weight: 600;
+  font-size: 12px;
+}
+.goal-overline {
+  font-size: 12px;
+  font-weight: 500;
+  color: #a5a7ff;
+}
+
+.goal-horizon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #969ab8;
+  white-space: nowrap;
+}

@@ -1,0 +1,20 @@
+.app-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--nt-space-3);
+  max-width: 320px;
+  margin-bottom: var(--nt-space-4);
+}
+
+.app-progress > :first-child {
+  flex: 1;
+}
+
+/* While editing, the page gives the editor the whole width. */
+.app-item--editing {
+  max-width: none;
+}
+
+.app-item--editing .ed {
+  margin-inline: calc(-1 * var(--nt-layout-page-inset));
+}

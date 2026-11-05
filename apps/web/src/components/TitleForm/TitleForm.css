@@ -1,0 +1,19 @@
+.title-form {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+}
+
+/* The field and its buttons share one height, so a row of them lines up. */
+.title-form .text-field,
+.title-form button {
+  box-sizing: border-box;
+  height: 36px;
+  min-height: 36px;
+  margin: 0;
+}
+.title-form .text-field {
+  flex: 1;
+  min-width: 0;
+}

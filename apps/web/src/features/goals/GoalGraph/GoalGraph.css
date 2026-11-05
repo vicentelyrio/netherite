@@ -1,0 +1,7 @@
+.goal-graph {
+  height: 100%;
+}
+.goal-graph .gv {
+  height: 100%;
+  min-height: 0;
+}

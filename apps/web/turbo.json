@@ -1,0 +1,12 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "test": {
+      "dependsOn": ["^build", "@netherite/cli#build"]
+    },
+    "build": {
+      "outputs": ["$TURBO_EXTENDS$", ".bundle-report.json"]
+    }
+  }
+}

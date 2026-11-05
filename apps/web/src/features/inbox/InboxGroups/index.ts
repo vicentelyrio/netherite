@@ -1,0 +1,1 @@
+export { InboxGroups } from './InboxGroups'

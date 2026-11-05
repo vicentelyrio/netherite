@@ -1,0 +1,995 @@
+import {
+  designColor,
+  type EdgeKind,
+  edgeStyle,
+  graphMetrics,
+  Icon,
+  type ItemTypeName,
+  itemTypeNames,
+  nodeSpec,
+  StatusGlyph,
+  statusGlyph,
+  typeLabels,
+} from '@netherite/ui'
+import { Link, useNavigate } from '@tanstack/react-router'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { formatDay } from '@/infrastructure/datetime'
+import { useI18nContext } from '@/infrastructure/i18n'
+import {
+  fitTo,
+  type GraphData,
+  type GraphNodeData,
+  type Live,
+  layout,
+  live,
+  neighbourhood,
+  type Placed,
+  subgraph,
+  toGraphology,
+} from './layout'
+import { graphTarget } from './target'
+import './GraphView.css'
+
+const NODE_SCALE = 1.25
+
+const styleOf = (kind: string) => edgeStyle[kind as EdgeKind] ?? edgeStyle.reference
+const canvas = '#282A3F'
+
+/** A node's shape at a diameter, as the design draws it (Graph.dc.html). */
+function Shape({
+  type,
+  x,
+  y,
+  scale,
+  hollow,
+}: {
+  readonly type: ItemTypeName
+  readonly x: number
+  readonly y: number
+  readonly scale: number
+  readonly hollow?: boolean
+}) {
+  const spec = nodeSpec[type]
+  const r = spec.radius * scale
+  const d = r * 2
+  const fill = designColor.type[type]
+  switch (spec.shape) {
+    case 'diamond': {
+      const side = d * 0.78
+      return (
+        <rect
+          x={x - side / 2}
+          y={y - side / 2}
+          width={side}
+          height={side}
+          rx={2}
+          fill={hollow ? 'transparent' : fill}
+          stroke={hollow ? fill : 'none'}
+          strokeWidth={1.5}
+          transform={`rotate(45 ${x} ${y})`}
+        />
+      )
+    }
+    case 'square': {
+      const side = d * 0.86
+      return (
+        <rect x={x - side / 2} y={y - side / 2} width={side} height={side} rx={3} fill={fill} />
+      )
+    }
+    case 'ring':
+      return <circle cx={x} cy={y} r={r - 1} fill={`${fill}33`} stroke={fill} strokeWidth={2} />
+    case 'bar':
+      return (
+        <rect
+          x={x - d * 0.65}
+          y={y - d * 0.35}
+          width={d * 1.3}
+          height={d * 0.7}
+          rx={3}
+          fill={fill}
+        />
+      )
+    default:
+      return <circle cx={x} cy={y} r={r} fill={fill} />
+  }
+}
+
+type NodeStatus = NonNullable<GraphNodeData['status']>
+
+/** The pie's filled part: a wedge from the top, clockwise, for `share` of the circle. */
+const wedge = (x: number, y: number, r: number, share: number) => {
+  if (share >= 1) return `M${x - r},${y} a${r},${r} 0 1 0 ${2 * r},0 a${r},${r} 0 1 0 ${-2 * r},0`
+  const angle = share * Math.PI * 2
+  const ex = x + r * Math.sin(angle)
+  const ey = y - r * Math.cos(angle)
+  return `M${x},${y} L${x},${y - r} A${r},${r} 0 ${share > 0.5 ? 1 : 0} 1 ${ex},${ey} Z`
+}
+
+/**
+ * A goal, project or task with its status (ADR-00021), as the status glyph is drawn in HTML: a pie
+ * filled to the share done on a ring (dashed and grey on hold), a halo while in progress, solid
+ * with a check when done. Hue stays the type's.
+ */
+function StatusShape({
+  type,
+  status,
+  progress,
+  x,
+  y,
+  scale,
+}: {
+  readonly type: ItemTypeName
+  readonly status: NodeStatus
+  readonly progress: number
+  readonly x: number
+  readonly y: number
+  readonly scale: number
+}) {
+  const r = nodeSpec[type].radius * scale
+  const color = designColor.type[type]
+  const ring = r * 2 >= statusGlyph.thickFrom ? statusGlyph.ring.thick : statusGlyph.ring.thin
+  const inner = r - ring / 2
+  const fill = status === 'hold' ? statusGlyph.holdFill : color
+  if (status === 'done') {
+    const c = r * 0.72
+    return (
+      <g opacity={statusGlyph.doneOpacity}>
+        <circle cx={x} cy={y} r={r} fill={color} />
+        <path
+          d={`M${x - c * 0.5},${y + c * 0.05} L${x - c * 0.1},${y + c * 0.45} L${x + c * 0.55},${y - c * 0.4}`}
+          fill="none"
+          stroke={designColor.bg.shell}
+          strokeWidth={Math.max(1.2, r * 0.22)}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+    )
+  }
+  return (
+    <g>
+      {status === 'progress' && (
+        <circle
+          cx={x}
+          cy={y}
+          r={r + statusGlyph.halo.gap + statusGlyph.halo.width / 2}
+          fill="none"
+          stroke={color}
+          strokeWidth={statusGlyph.halo.width}
+        />
+      )}
+      <circle cx={x} cy={y} r={inner} fill={color} fillOpacity={statusGlyph.trackShare / 100} />
+      {progress > 0 && <path d={wedge(x, y, inner, progress)} fill={fill} />}
+      <circle
+        cx={x}
+        cy={y}
+        r={inner}
+        fill="none"
+        stroke={color}
+        strokeWidth={ring}
+        strokeDasharray={status === 'hold' ? `${ring * 2} ${ring * 1.4}` : undefined}
+      />
+    </g>
+  )
+}
+
+/** The amber dot on a doc whose code has moved on since it was reviewed. */
+function StaleDot({ x, y, r }: { readonly x: number; readonly y: number; readonly r: number }) {
+  return (
+    <circle
+      cx={x + r * 0.55 + 3}
+      cy={y - r * 0.55 - 3}
+      r={3.5}
+      fill={designColor.status.warning}
+      stroke={canvas}
+      strokeWidth={2}
+    />
+  )
+}
+
+/** A node's name on a dark pill, beside or under the node. */
+function Label({
+  node,
+  x,
+  y,
+  anchor,
+  size,
+  weight,
+  color,
+}: {
+  readonly node: Placed
+  readonly x: number
+  readonly y: number
+  readonly anchor: 'start' | 'middle' | 'end'
+  readonly size: number
+  readonly weight: number
+  readonly color: string
+}) {
+  const text = node.title.length > 30 ? `${node.title.slice(0, 29)}…` : node.title
+  const width = text.length * size * 0.54 + 12
+  const left = anchor === 'middle' ? x - width / 2 : anchor === 'start' ? x : x - width
+  return (
+    <g className="gv-label" pointerEvents="none">
+      <rect
+        x={left}
+        y={y}
+        width={width}
+        height={size + 4}
+        rx={4}
+        fill={designColor.graph.labelBg}
+      />
+      <text
+        x={left + width / 2}
+        y={y + size}
+        textAnchor="middle"
+        fontSize={size}
+        fontWeight={weight}
+        fill={color}
+      >
+        {text}
+      </text>
+    </g>
+  )
+}
+
+export interface GraphViewProps {
+  readonly data: GraphData
+  /** Draw only these nodes and the edges between them. */
+  readonly scope?: ReadonlySet<string> | undefined
+  /** What a screen reader hears for the picture. */
+  readonly label: string
+  /** `embedded` sits inside a page: it pans and zooms, but has no hint, and small ones no buttons. */
+  readonly variant?: 'full' | 'embedded'
+  /** The node to start focused on. */
+  readonly focus?: string | undefined
+  /** `panel` has counts for every type and link kind; `row` is one line of types; `none` has no legend. */
+  readonly legend?: 'panel' | 'row' | 'none'
+  /** Whose names are written: the focus only, it and its neighbours, or everyone. */
+  readonly labels?: 'focus' | 'neighbors' | 'all'
+  /** How big the nodes are against the design's sizes. */
+  readonly nodeScale?: number
+  /** Space around the fitted picture. */
+  readonly pad?: number
+  readonly padBottom?: number
+  /** Show the zoom buttons. By default the full view and wide embedded ones have them. */
+  readonly zoomButtons?: boolean
+  /** Nodes that just appeared (while scrubbing time): they pulse once. */
+  readonly glow?: ReadonlySet<string> | undefined
+}
+
+/**
+ * The graph (ADR-00014, Graph.dc.html): SVG over a force layout. Hovering or focusing a node dims
+ * everything that is not next to it; the legend hides types and kinds of link; the full view zooms,
+ * pans and fits.
+ */
+export function GraphView({
+  data,
+  scope,
+  label,
+  variant = 'full',
+  focus: initialFocus,
+  legend = 'panel',
+  labels = 'neighbors',
+  nodeScale = NODE_SCALE,
+  pad = 60,
+  padBottom,
+  zoomButtons,
+  glow,
+}: GraphViewProps) {
+  const { LL } = useI18nContext()
+  const edgeLabel = (kind: string) =>
+    (LL.components.graph.edges as Record<string, (() => string) | undefined>)[kind]?.() ?? kind
+  const embedded = variant === 'embedded'
+  const navigate = useNavigate()
+  /** Opens a node's page: double-click or Enter. */
+  const open = (id: string) => {
+    const node = data.nodes.find((n) => n.id === id)
+    if (node) void navigate(graphTarget(node, data) as never)
+  }
+  const wrap = useRef<HTMLDivElement>(null)
+  const svg = useRef<SVGSVGElement>(null)
+  const [box, setBox] = useState({ width: 1000, height: 700 })
+  useEffect(() => {
+    const el = wrap.current
+    if (el === null || typeof ResizeObserver === 'undefined') return
+    const measure = () => {
+      const { width, height } = el.getBoundingClientRect()
+      if (width > 0 && height > 0) {
+        setBox((b) =>
+          Math.abs(b.width - width) < 1 && Math.abs(b.height - height) < 1 ? b : { width, height },
+        )
+      }
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  const shown = useMemo(() => subgraph(data, scope), [data, scope])
+  const graph = useMemo(() => toGraphology(shown), [shown])
+  const laid = useMemo(() => layout(shown), [shown])
+  // Where nodes have been dragged to, and the ones that moved to make room.
+  const [moved, setMoved] = useState<ReadonlyMap<string, { x: number; y: number }>>(new Map())
+  const placed = useMemo(
+    () => (moved.size === 0 ? laid : laid.map((p) => ({ ...p, ...(moved.get(p.id) ?? {}) }))),
+    [laid, moved],
+  )
+  const at = useMemo(() => new Map(placed.map((p) => [p.id, p])), [placed])
+  const parents = useMemo(() => {
+    const map = new Map<string, string>()
+    for (const e of shown.edges)
+      if (e.kind === 'belongs_to' && !map.has(e.from)) map.set(e.from, e.to)
+    return map
+  }, [shown])
+
+  // The legend can shrink to one line; the choice is kept for next time.
+  const [legendMin, setLegendMinState] = useState(() => {
+    try {
+      return localStorage.getItem('netherite:graph-legend-min') === '1'
+    } catch {
+      return false
+    }
+  })
+  const setLegendMin = (min: boolean) => {
+    setLegendMinState(min)
+    try {
+      localStorage.setItem('netherite:graph-legend-min', min ? '1' : '0')
+    } catch {
+      // Private windows forget it.
+    }
+  }
+  const [hiddenTypes, setHiddenTypes] = useState<ReadonlySet<string>>(new Set())
+  // The design draws five kinds of link; the others start hidden and the legend turns them on.
+  const [hiddenKinds, setHiddenKinds] = useState<ReadonlySet<string>>(
+    () => new Set(data.edges.map((e) => e.kind).filter((k) => !styleOf(k).inDesign)),
+  )
+  const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'done'>('all')
+  const [focus, setFocus] = useState<string | undefined>(initialFocus)
+  const [hover, setHover] = useState<Placed | undefined>()
+  const [view, setView] = useState({ x: 0, y: 0, k: 1 })
+  const drag = useRef<{ x: number; y: number; moved: boolean } | undefined>(undefined)
+  const viewRef = useRef(view)
+  viewRef.current = view
+  const placedRef = useRef(placed)
+  placedRef.current = placed
+  const sim = useRef<Live | undefined>(undefined)
+  const nodeDrag = useRef<{ id: string; x: number; y: number; moved: boolean } | undefined>(
+    undefined,
+  )
+  const swallowClick = useRef(false)
+
+  // A new layout (another graph, or items added) starts again from rest.
+  useEffect(() => {
+    sim.current?.stop()
+    sim.current = undefined
+    setMoved(new Map())
+  }, [laid])
+  useEffect(() => () => sim.current?.stop(), [])
+
+  /** Picks a node up: it follows the pointer, and the nodes linked to it follow it. */
+  const startNodeDrag = (id: string, e: React.PointerEvent) => {
+    e.stopPropagation()
+    if (e.button !== 0) return
+    nodeDrag.current = { id, x: e.clientX, y: e.clientY, moved: false }
+    const onMove = (m: PointerEvent) => {
+      const d = nodeDrag.current
+      const el = svg.current
+      if (d === undefined || el === null) return
+      if (!d.moved && Math.abs(m.clientX - d.x) + Math.abs(m.clientY - d.y) < 4) return
+      if (!d.moved) {
+        d.moved = true
+        if (sim.current === undefined) {
+          sim.current = live(shown, placedRef.current)
+          sim.current.onTick((at) => setMoved(at))
+        }
+      }
+      const rect = el.getBoundingClientRect()
+      const v = viewRef.current
+      sim.current?.hold(
+        d.id,
+        (m.clientX - rect.left - v.x) / v.k,
+        (m.clientY - rect.top - v.y) / v.k,
+      )
+    }
+    // Capture phase: a pointer-up on a node is stopped before it bubbles to the window, and the
+    // drag must still end.
+    const onUp = () => {
+      window.removeEventListener('pointermove', onMove, true)
+      window.removeEventListener('pointerup', onUp, true)
+      window.removeEventListener('pointercancel', onUp, true)
+      const d = nodeDrag.current
+      nodeDrag.current = undefined
+      if (d?.moved) {
+        sim.current?.release(d.id)
+        // The click that ends a drag is not a click on the node.
+        swallowClick.current = true
+        // If the pointer came up off the node there is no click to swallow.
+        setTimeout(() => {
+          swallowClick.current = false
+        }, 0)
+      }
+    }
+    window.addEventListener('pointermove', onMove, true)
+    window.addEventListener('pointerup', onUp, true)
+    window.addEventListener('pointercancel', onUp, true)
+  }
+  // Nodes and labels keep their pixel size at any zoom, as in the design: only positions scale.
+  const sat = useMemo(
+    () =>
+      new Map(
+        placed.map((p) => [p.id, { ...p, x: p.x * view.k + view.x, y: p.y * view.k + view.y }]),
+      ),
+    [placed, view],
+  )
+
+  const visible = placed.filter((p) => !hiddenTypes.has(p.type))
+  const onScreen = visible.map((p) => sat.get(p.id) as Placed)
+  const visibleIds = new Set(visible.map((p) => p.id))
+  const edges = shown.edges.filter(
+    (e) =>
+      !hiddenKinds.has(e.kind) && visibleIds.has(e.from) && visibleIds.has(e.to) && e.from !== e.to,
+  )
+  const active = hover?.id ?? focus
+  const near = active === undefined ? undefined : neighbourhood(graph, active)
+  const focusNear = focus === undefined ? undefined : neighbourhood(graph, focus)
+  const statusesPresent = (['backlog', 'progress', 'hold', 'done'] as const).filter((st) =>
+    placed.some((p) => p.status === st),
+  )
+  const kindsPresent = [...new Set(shown.edges.map((e) => e.kind))].sort()
+  const typesPresent = itemTypeNames.filter((t) => placed.some((p) => p.type === t))
+
+  const fitPoints = (points: ReadonlyArray<Placed>) => {
+    if (!embedded || initialFocus === undefined || !graph.hasNode(initialFocus)) return points
+    const keep = new Set<string>()
+    for (const id of neighbourhood(graph, initialFocus)) {
+      for (const next of neighbourhood(graph, id)) keep.add(next)
+    }
+    const around = points.filter((p) => keep.has(p.id))
+    return around.length > 1 ? around : points
+  }
+  const doFit = (points: ReadonlyArray<Placed>) =>
+    fitTo(fitPoints(points), box, pad, padBottom ?? pad, embedded ? 3 : 2)
+  // Fit again when what is drawn, or the room it has, changes.
+  useEffect(() => setView(doFit(laid)), [laid, box])
+
+  const zoom = (factor: number, cx = box.width / 2, cy = box.height / 2) =>
+    setView((v) => {
+      const k = Math.min(4, Math.max(0.2, v.k * factor))
+      const ratio = k / v.k
+      return { k, x: cx - (cx - v.x) * ratio, y: cy - (cy - v.y) * ratio }
+    })
+  useEffect(() => {
+    const el = svg.current
+    if (el === null) return
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault()
+      const rect = el.getBoundingClientRect()
+      zoom(e.deltaY < 0 ? 1.15 : 1 / 1.15, e.clientX - rect.left, e.clientY - rect.top)
+    }
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => el.removeEventListener('wheel', onWheel)
+  }, [embedded, box])
+
+  const toggle = (set: ReadonlySet<string>, value: string) => {
+    const next = new Set(set)
+    if (next.has(value)) next.delete(value)
+    else next.add(value)
+    return next
+  }
+
+  /** Does the node pass the All / Open / Done filter? Items with no status always do. */
+  const passes = (p: Placed) =>
+    p.status === undefined ||
+    statusFilter === 'all' ||
+    (statusFilter === 'done' ? p.status === 'done' : p.status !== 'done')
+  const radius = (p: Placed) => nodeSpec[p.type as ItemTypeName].radius * nodeScale
+  const dim = (id: string) =>
+    near !== undefined && !near.has(id) && !(focusNear?.has(id) && id === focus)
+  const named = (p: Placed) =>
+    labels === 'all' ||
+    p.id === focus ||
+    p.id === hover?.id ||
+    (labels === 'neighbors' && (focusNear?.has(p.id) ?? false))
+  const labelPlacement = (p: Placed) => {
+    const r = radius(p)
+    const parent = parents.get(p.id)
+    const par = parent === undefined ? undefined : sat.get(parent)
+    if (par !== undefined && p.type === 'task') {
+      const angle = Math.atan2(p.y - par.y, p.x - par.x)
+      const ux = Math.cos(angle)
+      const uy = Math.sin(angle)
+      if (ux > 0.38) return { x: p.x + r + 6, y: p.y - 10, anchor: 'start' as const }
+      if (ux < -0.38) return { x: p.x - r - 6, y: p.y - 10, anchor: 'end' as const }
+      if (uy < 0) return { x: p.x, y: p.y - r - 24, anchor: 'middle' as const }
+    }
+    return { x: p.x, y: p.y + r + 5, anchor: 'middle' as const }
+  }
+
+  const statusCount = (st: NodeStatus) => shown.nodes.filter((n) => n.status === st).length
+  const typeCount = (t: string) => shown.nodes.filter((n) => n.type === t).length
+  const kindCount = (k: string) => shown.edges.filter((e) => e.kind === k).length
+  const showTypeLegend = legend !== 'none'
+  const focused = focus === undefined ? undefined : at.get(focus)
+
+  return (
+    <div ref={wrap} className={embedded ? 'gv gv--embedded' : 'gv'}>
+      <svg
+        ref={svg}
+        className="gv-svg"
+        viewBox={`0 0 ${box.width} ${box.height}`}
+        role="img"
+        aria-label={label}
+        onPointerDown={(e) => {
+          drag.current = { x: e.clientX, y: e.clientY, moved: false }
+        }}
+        onPointerMove={(e) => {
+          const d = drag.current
+          if (d === undefined) return
+          const dx = e.clientX - d.x
+          const dy = e.clientY - d.y
+          if (Math.abs(dx) + Math.abs(dy) > 3) d.moved = true
+          if (d.moved) {
+            drag.current = { x: e.clientX, y: e.clientY, moved: true }
+            setView((v) => ({ ...v, x: v.x + dx, y: v.y + dy }))
+          }
+        }}
+        onPointerUp={() => {
+          const moved = drag.current?.moved
+          drag.current = undefined
+          // A click on the background, not the end of a pan, clears the focus.
+          if (!moved) setFocus(undefined)
+        }}
+      >
+        <defs>
+          {[
+            ['gv-arrow', '#7A7EA6'],
+            ['gv-arrow-hot', '#B7B9FF'],
+          ].map(([id, fill]) => (
+            <marker
+              key={id}
+              id={id}
+              viewBox="0 0 10 10"
+              refX="9"
+              refY="5"
+              markerWidth="7"
+              markerHeight="7"
+              markerUnits="userSpaceOnUse"
+              orient="auto"
+            >
+              <path d="M0,1 L10,5 L0,9 z" fill={fill} />
+            </marker>
+          ))}
+        </defs>
+        <g>
+          {edges.map((e) => {
+            const a = sat.get(e.from)
+            const b = sat.get(e.to)
+            if (a === undefined || b === undefined) return null
+            const s = styleOf(e.kind)
+            const hot = active !== undefined && (e.from === active || e.to === active)
+            const warm = !hot && focus !== undefined && (e.from === focus || e.to === focus)
+            const typed = e.kind !== 'belongs_to' && e.kind !== 'reference'
+            let x2 = b.x
+            let y2 = b.y
+            if (s.arrow) {
+              const len = Math.hypot(b.x - a.x, b.y - a.y) || 1
+              const gap = radius(b) + graphMetrics.arrowGap
+              x2 = b.x - ((b.x - a.x) / len) * gap
+              y2 = b.y - ((b.y - a.y) / len) * gap
+            }
+            return (
+              <line
+                key={`${e.kind}:${e.from}>${e.to}`}
+                data-kind={e.kind}
+                x1={a.x}
+                y1={a.y}
+                x2={x2}
+                y2={y2}
+                stroke={
+                  hot
+                    ? designColor.accent.edgeActive
+                    : warm
+                      ? designColor.graph.edgeWarm
+                      : typed
+                        ? designColor.graph.edgeTyped
+                        : designColor.graph.edge
+                }
+                strokeWidth={s.width + (hot ? graphMetrics.hotWidthBoost : 0)}
+                strokeOpacity={
+                  !passes(a) || !passes(b)
+                    ? statusGlyph.filteredOpacity
+                    : hot
+                      ? graphMetrics.hotOpacity
+                      : warm
+                        ? graphMetrics.warmOpacity
+                        : typed
+                          ? 0.7
+                          : 0.45
+                }
+                strokeDasharray={s.dash.length > 0 ? s.dash.join(' ') : undefined}
+                strokeLinecap="round"
+                markerEnd={s.arrow ? `url(#${hot ? 'gv-arrow-hot' : 'gv-arrow'})` : undefined}
+              />
+            )
+          })}
+          {onScreen.map((p) => {
+            const type = p.type as ItemTypeName
+            const color = designColor.type[type]
+            const r = radius(p)
+            return (
+              // biome-ignore lint/a11y/useSemanticElements: an SVG group cannot be a <button>
+              <g
+                key={p.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`${p.id} ${p.title}`}
+                aria-pressed={focus === p.id}
+                data-node={p.id}
+                data-status={p.status}
+                className="gv-node"
+                opacity={
+                  !passes(p)
+                    ? statusGlyph.filteredOpacity
+                    : dim(p.id)
+                      ? graphMetrics.dimmedOpacity
+                      : 1
+                }
+                onPointerDown={(e) => startNodeDrag(p.id, e)}
+                onPointerUp={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (swallowClick.current) {
+                    swallowClick.current = false
+                    return
+                  }
+                  setFocus(focus === p.id ? undefined : p.id)
+                }}
+                onDoubleClick={(e) => {
+                  e.stopPropagation()
+                  open(p.id)
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    open(p.id)
+                  } else if (e.key === ' ') {
+                    e.preventDefault()
+                    setFocus(focus === p.id ? undefined : p.id)
+                  }
+                }}
+                onPointerEnter={() => setHover(p)}
+                onPointerLeave={() => setHover(undefined)}
+                onFocus={() => setHover(p)}
+                onBlur={() => setHover(undefined)}
+              >
+                {glow?.has(p.id) === true && (
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r={r + 4}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth={2}
+                    className="gv-new"
+                  />
+                )}
+                {p.id === focus ? (
+                  <>
+                    <circle
+                      cx={p.x}
+                      cy={p.y}
+                      r={r + 5}
+                      fill="none"
+                      stroke={color}
+                      strokeWidth={2}
+                      className="gv-glow"
+                      style={{ filter: `drop-shadow(0 0 8px ${color}99)` }}
+                    />
+                    <circle
+                      cx={p.x}
+                      cy={p.y}
+                      r={r + 3.2}
+                      fill="none"
+                      stroke={canvas}
+                      strokeWidth={2.4}
+                    />
+                  </>
+                ) : (
+                  p.id === hover?.id && (
+                    <circle
+                      cx={p.x}
+                      cy={p.y}
+                      r={r + 3}
+                      fill="none"
+                      stroke="#E8E9F3"
+                      strokeWidth={1.5}
+                    />
+                  )
+                )}
+                {p.status !== undefined ? (
+                  <StatusShape
+                    type={type}
+                    status={p.status}
+                    progress={p.progress ?? 0}
+                    x={p.x}
+                    y={p.y}
+                    scale={nodeScale}
+                  />
+                ) : (
+                  <Shape type={type} x={p.x} y={p.y} scale={nodeScale} />
+                )}
+                {p.stale && <StaleDot x={p.x} y={p.y} r={r} />}
+              </g>
+            )
+          })}
+          {onScreen.filter(named).map((p) => {
+            const place = labelPlacement(p)
+            const isFocus = p.id === focus
+            const hot = isFocus || p.id === hover?.id
+            return (
+              <Label
+                key={`l-${p.id}`}
+                node={p}
+                {...place}
+                size={isFocus ? graphMetrics.labelSizeFocus : graphMetrics.labelSize}
+                weight={isFocus ? 600 : 500}
+                color={hot ? '#E8E9F3' : near?.has(p.id) ? '#B9BCD3' : '#8A8FAD'}
+              />
+            )
+          })}
+        </g>
+      </svg>
+
+      {hover !== undefined && sat.get(hover.id) !== undefined && (
+        <div
+          role="tooltip"
+          className="gv-tooltip"
+          // Anchored by its bottom edge above the node (its top edge below, near the top), so a
+          // tooltip that wraps onto more lines still clears the node.
+          data-below={(sat.get(hover.id)?.y ?? 0) - radius(hover) < 140 || undefined}
+          style={{
+            left: Math.min(Math.max(sat.get(hover.id)?.x ?? 0, 140), box.width - 140),
+            top:
+              (sat.get(hover.id)?.y ?? 0) -
+              radius(hover) -
+              8 +
+              ((sat.get(hover.id)?.y ?? 0) - radius(hover) < 140 ? 2 * radius(hover) + 24 : 0),
+          }}
+        >
+          <div className="gv-tooltip-kind">
+            <span style={{ background: designColor.type[hover.type as ItemTypeName] }} />
+            {typeLabels[hover.type as ItemTypeName]}
+            {parents.has(hover.id) && at.get(parents.get(hover.id) as string)
+              ? LL.components.graph.tooltipIn({
+                  parent: at.get(parents.get(hover.id) as string)?.title ?? '',
+                })
+              : ''}
+          </div>
+          <div className="gv-tooltip-title">
+            {hover.id} {hover.title}
+          </div>
+          <div className="gv-tooltip-meta">
+            {hover.status !== undefined &&
+              `${LL.components.graph.tooltipStatus({
+                status: LL.components.graph.status[hover.status](),
+                percent: Math.round((hover.progress ?? 0) * 100),
+              })}${
+                hover.since === undefined
+                  ? ''
+                  : ` ${LL.components.graph.tooltipSince({ day: formatDay(hover.since) })}`
+              } · `}
+            {LL.components.graph.links({
+              count: graph.hasNode(hover.id) ? graph.degree(hover.id) : 0,
+            })}
+          </div>
+        </div>
+      )}
+
+      {showTypeLegend && legend === 'panel' && legendMin && (
+        <aside className="gv-legend gv-legend--mini" aria-label={LL.components.graph.legend()}>
+          {typesPresent.map((t) => (
+            <label key={t} data-off={hiddenTypes.has(t) || undefined}>
+              <input
+                type="checkbox"
+                className="nt-visually-hidden"
+                checked={!hiddenTypes.has(t)}
+                onChange={() => setHiddenTypes(toggle(hiddenTypes, t))}
+              />
+              <span className="gv-glyph gv-glyph--small">
+                <svg width="10" height="10" aria-hidden="true">
+                  <Shape type={t} x={5} y={5} scale={0.5} />
+                </svg>
+              </span>
+              {typeLabels[t]} <span className="gv-count">{typeCount(t)}</span>
+            </label>
+          ))}
+          <button
+            type="button"
+            className="gv-legend-toggle"
+            aria-expanded={false}
+            aria-label={LL.components.graph.legendExpand()}
+            title={LL.components.graph.legendExpand()}
+            onClick={() => setLegendMin(false)}
+          >
+            <Icon name="unfold_more" size="inline" />
+          </button>
+        </aside>
+      )}
+      {showTypeLegend && legend === 'panel' && !legendMin && (
+        <aside className="gv-legend" aria-label={LL.components.graph.legend()}>
+          <button
+            type="button"
+            className="gv-legend-toggle gv-legend-toggle--corner"
+            aria-expanded
+            aria-label={LL.components.graph.legendMinify()}
+            title={LL.components.graph.legendMinify()}
+            onClick={() => setLegendMin(true)}
+          >
+            <Icon name="unfold_less" size="inline" />
+          </button>
+          <div>
+            <h2 className="gv-legend-h">{LL.components.graph.nodes()}</h2>
+            {typesPresent.map((t) => (
+              <label key={t} className="gv-legend-row" data-off={hiddenTypes.has(t) || undefined}>
+                <input
+                  type="checkbox"
+                  className="nt-visually-hidden"
+                  checked={!hiddenTypes.has(t)}
+                  onChange={() => setHiddenTypes(toggle(hiddenTypes, t))}
+                />
+                <span className="gv-glyph">
+                  <svg width="14" height="14" aria-hidden="true">
+                    <Shape type={t} x={7} y={7} scale={0.7} />
+                  </svg>
+                </span>
+                <span className="gv-legend-name">{LL.components.graph.types[t]()}</span>
+                <span className="gv-count">{typeCount(t)}</span>
+              </label>
+            ))}
+          </div>
+          <div>
+            <h2 className="gv-legend-h">{LL.components.graph.edgesTitle()}</h2>
+            {kindsPresent.map((k) => {
+              const style = styleOf(k)
+              return (
+                <label key={k} className="gv-legend-row" data-off={hiddenKinds.has(k) || undefined}>
+                  <input
+                    type="checkbox"
+                    className="nt-visually-hidden"
+                    checked={!hiddenKinds.has(k)}
+                    onChange={() => setHiddenKinds(toggle(hiddenKinds, k))}
+                  />
+                  <svg width="24" height="8" aria-hidden="true">
+                    <line
+                      x1="1"
+                      y1="4"
+                      x2={style.arrow ? 17 : 23}
+                      y2="4"
+                      stroke={designColor.graph.sample}
+                      strokeWidth={1.5}
+                      strokeDasharray={style.dash.join(' ') || undefined}
+                      strokeLinecap="round"
+                    />
+                    {style.arrow && (
+                      <path d="M17,1 L23,4 L17,7 z" fill={designColor.graph.sample} />
+                    )}
+                  </svg>
+                  <span className="gv-legend-name">{edgeLabel(k)}</span>
+                  <span className="gv-count">{kindCount(k)}</span>
+                </label>
+              )
+            })}
+            <div className="gv-legend-row gv-legend-stale">
+              <span className="gv-stale-dot" />
+              <span className="gv-legend-name">{LL.components.graph.staleDoc()}</span>
+            </div>
+          </div>
+          <div>
+            <h2 className="gv-legend-h">{LL.components.graph.statusTitle()}</h2>
+            {statusesPresent.map((st) => (
+              <div key={st} className="gv-legend-row">
+                <span className="gv-glyph">
+                  <StatusGlyph
+                    type="task"
+                    status={st}
+                    progress={st === 'progress' ? 0.6 : st === 'hold' ? 0.4 : 0}
+                    size={12}
+                    color={designColor.graph.sample}
+                  />
+                </span>
+                <span className="gv-legend-name">{LL.components.graph.status[st]()}</span>
+                <span className="gv-count">{statusCount(st)}</span>
+              </div>
+            ))}
+            <div
+              className="gv-filter"
+              role="radiogroup"
+              aria-label={LL.components.graph.statusFilter()}
+            >
+              {(['all', 'open', 'done'] as const).map((f) => (
+                <label key={f} data-on={statusFilter === f || undefined}>
+                  <input
+                    type="radio"
+                    name="gv-status"
+                    className="nt-visually-hidden"
+                    checked={statusFilter === f}
+                    onChange={() => setStatusFilter(f)}
+                  />
+                  {LL.components.graph.filters[f]()}
+                </label>
+              ))}
+            </div>
+          </div>
+        </aside>
+      )}
+      {showTypeLegend && legend === 'row' && (
+        <aside className="gv-legend gv-legend--row" aria-label={LL.components.graph.legend()}>
+          {typesPresent.map((t) => (
+            <label key={t} data-off={hiddenTypes.has(t) || undefined}>
+              <input
+                type="checkbox"
+                className="nt-visually-hidden"
+                checked={!hiddenTypes.has(t)}
+                onChange={() => setHiddenTypes(toggle(hiddenTypes, t))}
+              />
+              <span className="gv-glyph gv-glyph--small">
+                <svg width="10" height="10" aria-hidden="true">
+                  <Shape type={t} x={5} y={5} scale={0.5} />
+                </svg>
+              </span>
+              {typeLabels[t]}
+            </label>
+          ))}
+        </aside>
+      )}
+
+      {!embedded && (
+        <div className="gv-hint">
+          <Icon name="mouse" /> {LL.components.graph.hint()}
+        </div>
+      )}
+      {/* Small embedded graphs (the project page) pan and zoom too, but have no room for buttons. */}
+      {(zoomButtons ?? (!embedded || box.width > 500)) && (
+        <div className="gv-controls" role="toolbar" aria-label={LL.components.graph.zoom()}>
+          <button
+            type="button"
+            aria-label={LL.components.graph.zoomIn()}
+            title={LL.components.graph.zoomIn()}
+            onClick={() => zoom(1.3)}
+          >
+            <Icon name="add" />
+          </button>
+          <button
+            type="button"
+            aria-label={LL.components.graph.zoomOut()}
+            title={LL.components.graph.zoomOut()}
+            onClick={() => zoom(1 / 1.3)}
+          >
+            <Icon name="remove" />
+          </button>
+          <span className="gv-controls-rule" />
+          <button
+            type="button"
+            aria-label={LL.components.graph.fit()}
+            title={LL.components.graph.fitTitle()}
+            onClick={() => setView(doFit(visible))}
+          >
+            <Icon name="fit_screen" />
+          </button>
+        </div>
+      )}
+      {!embedded && focused !== undefined && (
+        <div className="gv-focus" role="status">
+          <strong>{focused.id}</strong> {focused.title}{' '}
+          <Link to="/items/$id" params={{ id: focused.id }}>
+            {LL.components.graph.open()}
+          </Link>{' '}
+          <button type="button" onClick={() => setFocus(undefined)}>
+            {LL.components.graph.clearFocus()}
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}

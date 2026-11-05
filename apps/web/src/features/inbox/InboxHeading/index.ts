@@ -1,0 +1,1 @@
+export { InboxHeading } from './InboxHeading'

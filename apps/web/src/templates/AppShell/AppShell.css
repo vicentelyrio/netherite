@@ -1,0 +1,19 @@
+.tpl-app {
+  display: flex;
+  height: 100%;
+  background: var(--nt-color-bg-canvas);
+  color: var(--nt-color-text-primary);
+}
+.tpl-app-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.tpl-app-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  /* Lets a page size something to the visible height (`cqh`) while the page scrolls. */
+  container-type: size;
+}

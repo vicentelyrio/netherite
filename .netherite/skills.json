@@ -1,0 +1,11 @@
+{
+  "skills": {
+    "netherite-adr": "7c25b608be7ad47db525c6325eb060d3ea6836d9b9c6e7706ecb004f954202f2",
+    "netherite-plan": "e9f260d8b814d6296178894b634d6a1ac6fc25e9786a1793edf58e49adc32192",
+    "netherite-task": "57f6ff8bc0780940e086fd9c1d1ab480cde93745562a2a0aee943b0c5c96e697",
+    "netherite-refresh": "aacd27a47487bc514f1c47cfd69ce3e5e2b2daff448531ae32e6cba6e10c93ce",
+    "netherite-context": "3a1537f26ea04a34540e40b2e05908418f1febc5ee7e5398a82c90015cf1ebd4",
+    "netherite-migrate": "da99ac3b25ad774802300eb453f814233a01ddb6651ae3a18e0d6ff5c4823874",
+    "netherite-discover": "f9e1b476767800e1626c598359c929bb74da81f0b8ec977b39e911442c242a2a"
+  }
+}

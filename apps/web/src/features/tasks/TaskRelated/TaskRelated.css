@@ -1,0 +1,7 @@
+.drawer-empty {
+  list-style: none;
+  border: 1px dashed #2f3250;
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: #8a8fad;
+}

@@ -1,0 +1,83 @@
+.tm {
+  position: relative;
+  height: clamp(520px, calc(100vh - 300px), 900px);
+  background: #212336;
+  border: 1px solid #2f3250;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.tm-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.tm-svg[data-dragging] {
+  cursor: grabbing;
+}
+.tm-edge {
+  stroke: #4d5180;
+  stroke-opacity: 0.55;
+  stroke-linecap: round;
+}
+.tm-edge[data-dupe] {
+  stroke: #e2ae4c;
+  stroke-opacity: 0.9;
+}
+.tm-edge[data-dim] {
+  stroke-opacity: 0.08;
+}
+.tm-cluster {
+  fill: #8a8fad;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tm-bubble {
+  cursor: pointer;
+  touch-action: none;
+  outline: none;
+}
+.tm-bubble[data-dim] {
+  opacity: 0.25;
+}
+.tm-bubble:focus-visible circle {
+  stroke: #e8e9f3;
+  stroke-width: 3;
+}
+.tm-name {
+  fill: #e8e9f3;
+  font-size: 13px;
+  font-weight: 500;
+  pointer-events: none;
+}
+.tm-count {
+  fill: #969ab8;
+  font-size: 11px;
+  pointer-events: none;
+}
+.tm-zoom {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #33364f;
+  border-radius: 8px;
+  background: rgba(24, 25, 42, 0.94);
+  overflow: hidden;
+}
+.tm-zoom button {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  color: #e8e9f3;
+  cursor: pointer;
+}
+.tm-zoom button + button {
+  border-top: 1px solid #33364f;
+}

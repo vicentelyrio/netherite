@@ -1,0 +1,71 @@
+.kn-empty {
+  border: 1px dashed #3a3d58;
+  border-radius: 14px;
+  min-height: 520px;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.kn-empty-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #2e3148;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a5a7ff;
+}
+
+.kn-empty-text {
+  max-width: 560px;
+  text-align: center;
+}
+
+.kn-empty-text h2 {
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.kn-empty-text p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22px;
+  color: #b9bcd3;
+}
+
+.kn-empty-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.kn-starters {
+  display: grid;
+  grid-template-columns: repeat(4, 240px);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.kn-starter {
+  background: #212336;
+  border: 1px solid #2f3250;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.kn-starter:hover {
+  border-color: #474b6e;
+  background: #25273c;
+}

@@ -1,0 +1,69 @@
+{
+  "orphans": ["DOC-00002"],
+  "supersession": [["ADR-00001", "ADR-00002"]],
+  "lint": [
+    {
+      "path": "netherite/docs/DOC-00001-app-overview.md",
+      "line": 17,
+      "column": 38,
+      "rule": "ambiguous-link",
+      "severity": "error"
+    },
+    {
+      "path": "netherite/docs/DOC-00002-orphan-notes.md",
+      "line": 1,
+      "column": 1,
+      "rule": "orphan",
+      "severity": "info"
+    },
+    {
+      "path": "netherite/tasks/DOC-00003-wrong-folder.md",
+      "line": 4,
+      "column": 1,
+      "rule": "outside-type-folder",
+      "severity": "warning"
+    },
+    {
+      "path": "netherite/tasks/TASK-00001-build-the-core.md",
+      "line": 2,
+      "column": 1,
+      "rule": "duplicate-id",
+      "severity": "error"
+    },
+    {
+      "path": "netherite/tasks/TASK-00001-duplicate-id.md",
+      "line": 2,
+      "column": 1,
+      "rule": "duplicate-id",
+      "severity": "error"
+    },
+    {
+      "path": "netherite/tasks/TASK-00002-add-the-cli.md",
+      "line": 10,
+      "column": 1,
+      "rule": "ambiguous-link",
+      "severity": "error"
+    },
+    {
+      "path": "netherite/tasks/TASK-00090-broken-link.md",
+      "line": 14,
+      "column": 5,
+      "rule": "broken-link",
+      "severity": "error"
+    },
+    {
+      "path": "netherite/tasks/TASK-00091-bad-state.md",
+      "line": 7,
+      "column": 1,
+      "rule": "schema",
+      "severity": "error"
+    },
+    {
+      "path": "netherite/tasks/TASK-00092-missing-alias.md",
+      "line": 3,
+      "column": 1,
+      "rule": "missing-alias",
+      "severity": "error"
+    }
+  ]
+}

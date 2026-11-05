@@ -1,0 +1,122 @@
+.tri-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.tri-card {
+  overflow: hidden;
+  border: 1px solid #2f3250;
+  border-radius: 10px;
+  background: #212336;
+}
+.tri-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 16px;
+  background: #1f2134;
+}
+.tri-card-head h2 {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+}
+.tri-count {
+  font-size: 12px;
+  color: #969ab8;
+}
+.tri-src {
+  margin-left: auto;
+  font-family: var(--nt-font-mono, "Source Code Pro", monospace);
+  font-size: 12px;
+  color: #969ab8;
+}
+.tri-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.tri-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto 48px;
+  align-items: center;
+  column-gap: 14px;
+  width: 100%;
+  height: 54px;
+  padding: 0 16px;
+  border: 0;
+  border-top: 1px solid #2a2c42;
+  background: transparent;
+  color: #e8e9f3;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.tri-row:hover {
+  background: #25273c;
+}
+.tri-row[aria-current] {
+  background: #2a2d48;
+}
+.tri-row[aria-current]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: #a5a7ff;
+}
+.tri-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #2e3149;
+  color: var(--tri-tone);
+}
+.tri-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.tri-title {
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.tri-detail {
+  overflow: hidden;
+  font-family: var(--nt-font-mono, "Source Code Pro", monospace);
+  font-size: 12px;
+  line-height: 16px;
+  color: #969ab8;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.tri-chip {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tri-tone) 14%, transparent);
+  color: var(--tri-tone);
+  font-size: 12px;
+  font-weight: 600;
+}
+.tri-age {
+  text-align: right;
+  font-size: 13px;
+  color: #969ab8;
+  font-variant-numeric: tabular-nums;
+}

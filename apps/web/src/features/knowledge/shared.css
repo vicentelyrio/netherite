@@ -1,0 +1,109 @@
+.kn-cols,
+.kn-row {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 140px 150px 100px 160px;
+  column-gap: 16px;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.kn-none {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px dashed #3a3d58;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #969ab8;
+}
+
+.kn-file-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 26px;
+}
+
+.kn-bar-mini {
+  width: 60px;
+  height: 4px;
+  border-radius: 2px;
+  background: #34374f;
+  overflow: hidden;
+}
+
+.kn-bar-mini span {
+  display: block;
+  height: 100%;
+  background: #e2ae4c;
+}
+
+.kf-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kf-h {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: #969ab8;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kf-warning,
+.kf-superseded {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  margin-bottom: 28px;
+}
+
+.kf-warning-text,
+.kf-superseded > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kf-warning-text strong,
+.kf-superseded strong {
+  font-size: 14px;
+  line-height: 20px;
+  color: #e8e9f3;
+}
+
+.kf-warning-text span,
+.kf-superseded span {
+  font-size: 13px;
+  line-height: 18px;
+  color: #b9bcd3;
+}
+
+.kn-file-row .kn-mono {
+  flex: 1;
+  color: #e8e9f3;
+}
+
+/* With the preview open the table gets narrow: leave out the freshness column so the title keeps room. */
+@media (max-width: 1799px) {
+  .kn-cols,
+  .kn-row {
+    grid-template-columns: 88px minmax(160px, 1fr) 124px 120px 72px;
+  }
+  .kn-cols > :last-child,
+  .kn-row > :last-child {
+    display: none;
+  }
+}

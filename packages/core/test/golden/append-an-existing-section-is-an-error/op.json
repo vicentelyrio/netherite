@@ -1,0 +1,6 @@
+{
+  "op": "appendSection",
+  "heading": "Context",
+  "content": "x",
+  "expectError": "section-exists"
+}

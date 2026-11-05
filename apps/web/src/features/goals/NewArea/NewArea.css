@@ -1,0 +1,28 @@
+.goals-new-area {
+  align-self: start;
+  margin-top: 4px;
+}
+.goals-area-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* In a column the field would grow to share the height; every field is the same height. */
+.goals-area-form .text-field {
+  flex: none;
+}
+.goals-area-actions {
+  display: flex;
+  gap: 8px;
+}
+.goals-area-actions > :first-child {
+  flex: 1;
+}
+
+.goals-area-form .text-field,
+.goals-area-actions button {
+  box-sizing: border-box;
+  height: 36px;
+  min-height: 36px;
+}

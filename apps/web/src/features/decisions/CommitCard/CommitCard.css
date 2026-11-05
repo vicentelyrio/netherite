@@ -1,0 +1,123 @@
+.dl-commit {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 32px minmax(0, 1fr);
+  align-items: start;
+}
+
+.dl-date {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 10px 4px 0 0;
+}
+
+.dl-date strong {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.dl-date span {
+  font-size: 12px;
+  color: #969ab8;
+}
+
+.dl-node-col {
+  display: flex;
+  justify-content: center;
+  padding-top: 14px;
+}
+
+.dl-node {
+  position: relative;
+  z-index: 1;
+  width: 12px;
+  height: 12px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid;
+  box-shadow: 0 0 0 4px #282a3f;
+}
+
+.dl-card {
+  background: #212336;
+  border: 1px solid #2f3250;
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dl-card[data-chain] {
+  border-color: #3a3d58;
+}
+
+.dl-card:hover {
+  border-color: #474b6e;
+}
+
+.dl-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #b9bcd3;
+}
+
+.dl-card-head code {
+  font-family: var(--nt-font-mono, monospace);
+  color: #969ab8;
+}
+
+.dl-change {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dl-change-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dl-change-title strong {
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dl-change-title[data-old] strong {
+  color: #b9bcd3;
+  text-decoration: line-through;
+}
+
+.dl-change-chips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #969ab8;
+}
+
+.dl-supersedes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 18px;
+  padding-left: 6px;
+  font-size: 12px;
+  color: #b9bcd3;
+}
+
+.dl-supersedes span {
+  width: 0;
+  height: 18px;
+  border-left: 1.5px dashed #6a6e96;
+}

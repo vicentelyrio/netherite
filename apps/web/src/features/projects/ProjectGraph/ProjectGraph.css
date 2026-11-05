@@ -1,0 +1,42 @@
+.project-graph {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  /* To the rail on the left and the bottom edge of the screen. */
+  margin: 12px 0 -40px calc(-1 * var(--tpl-start));
+  width: calc(100% + var(--tpl-start));
+  /* All the height the side column has left under the views. */
+  flex: 1;
+  min-height: 404px;
+}
+
+.project-graph-open {
+  position: absolute;
+  right: var(--nt-space-4);
+  /* The graph runs 40px past the columns; the legend's bottom lines up with theirs. */
+  bottom: 40px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  color: #969ab8;
+}
+
+.project-graph .gv-legend--row {
+  /* On the line of the open icon, clear of the rail. */
+  left: var(--nt-space-4);
+  right: calc(var(--nt-space-4) + 32px);
+  bottom: 40px;
+  min-height: 20px;
+}
+
+.project-graph-open:hover {
+  color: #e6e7f2;
+}
+
+.project-graph .gv {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+}

@@ -1,0 +1,77 @@
+.nt-scrubber {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(560px, 100%);
+  /* Left of the graph's zoom buttons. */
+  margin-left: auto;
+  margin-right: 56px;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  background: rgba(24, 25, 42, 0.94);
+  border: 1px solid #33364f;
+  border-radius: 10px;
+}
+.nt-scrubber-play,
+.nt-scrubber-today {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  border: 1px solid #33364f;
+  border-radius: 6px;
+  background: transparent;
+  color: #e8e9f3;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.nt-scrubber-play {
+  width: 28px;
+  border-radius: 50%;
+}
+.nt-scrubber-today {
+  padding-inline: 10px;
+}
+.nt-scrubber-today:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.nt-scrubber-track {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+}
+.nt-scrubber-bars {
+  position: absolute;
+  inset: 0 0 12px;
+}
+.nt-scrubber-bar {
+  position: absolute;
+  bottom: 0;
+  max-width: 14px;
+  background: #33364f;
+  border-radius: 1px;
+}
+.nt-scrubber-bar[data-past] {
+  background: #7a7fb0;
+}
+.nt-scrubber-range {
+  position: absolute;
+  inset: auto 0 0;
+  width: 100%;
+  height: 12px;
+  margin: 0;
+  accent-color: #e8e9f3;
+  cursor: pointer;
+}
+.nt-scrubber-date {
+  flex: none;
+  min-width: 92px;
+  text-align: right;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: #e8e9f3;
+}

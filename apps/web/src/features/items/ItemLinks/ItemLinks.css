@@ -1,0 +1,8 @@
+.app-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--nt-space-6);
+  margin-top: var(--nt-space-8);
+  padding-top: var(--nt-space-4);
+  border-top: 1px solid var(--nt-color-border-divider);
+}

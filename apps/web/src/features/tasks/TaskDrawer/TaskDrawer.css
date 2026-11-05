@@ -1,0 +1,130 @@
+.drawer-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.drawer-fields {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 6px 12px;
+  margin: 12px 0 0;
+}
+
+.drawer-fields dt {
+  color: var(--mantine-color-dimmed);
+}
+
+.drawer-fields dd {
+  margin: 0;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.drawer-full {
+  margin-top: 24px;
+  display: inline-block;
+}
+
+/* ---- task drawer, as designed ---- */
+.drawer-inner {
+  left: 64px;
+}
+
+.drawer-overlay {
+  left: 64px;
+  background: rgba(14, 15, 26, 0.62);
+}
+
+.drawer-content {
+  background: #282a3f;
+  box-shadow: 24px 0 64px rgba(0, 0, 0, 0.4);
+}
+
+.drawer-head.drawer-head {
+  height: 48px;
+  min-height: 48px;
+  padding: 0 12px 0 24px;
+  background: #23253a;
+  border-bottom: 1px solid #33364f;
+}
+
+.drawer-title-slot {
+  flex: 1;
+  min-width: 0;
+}
+
+.drawer-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--nt-font-mono, monospace);
+  font-size: 13px;
+  color: #b9bcd3;
+}
+
+/* One line: the project and the file name give way with an ellipsis, the rest stays. */
+.drawer-crumbs {
+  min-width: 0;
+  white-space: nowrap;
+}
+.drawer-crumbs > * {
+  flex: none;
+}
+.drawer-crumbs > a:nth-of-type(2) {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 28%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.drawer-crumbs strong {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #e6e7f2;
+  font-weight: 500;
+}
+
+.drawer-lines {
+  background: rgba(240, 180, 41, 0.14);
+  color: #f0b429;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.drawer-frame.drawer-frame {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  padding: 0;
+}
+
+.drawer-preview {
+  padding: 40px 56px;
+}
+
+/* The drawer is a column: header, body, and the status bar fixed at the bottom. */
+.drawer-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* The dim is only for looks: clicks go through to the board. */
+.drawer-overlay {
+  pointer-events: none;
+}
+
+.drawer-crumbs a {
+  color: #a5a7ff;
+  text-decoration: none;
+}
+.drawer-crumbs a:hover {
+  text-decoration: underline;
+}

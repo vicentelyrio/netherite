@@ -1,0 +1,124 @@
+/* Rendered Markdown. */
+.md {
+  font-size: var(--nt-text-body-size);
+  line-height: var(--nt-text-body-line-height);
+  color: var(--nt-color-text-primary);
+}
+
+.md h1 {
+  margin: 0 0 var(--nt-space-4);
+  font-size: var(--nt-text-display-size);
+  line-height: var(--nt-text-display-line-height);
+  font-weight: var(--nt-text-display-weight);
+  letter-spacing: var(--nt-text-display-letter-spacing);
+}
+
+.md h2 {
+  margin: var(--nt-space-6) 0 var(--nt-space-2);
+  font-size: var(--nt-text-title-size);
+  line-height: var(--nt-text-title-line-height);
+  font-weight: var(--nt-text-title-weight);
+}
+
+.md h3,
+.md h4 {
+  margin: var(--nt-space-5) 0 var(--nt-space-2);
+  font-size: var(--nt-text-heading-size);
+  line-height: var(--nt-text-heading-line-height);
+  font-weight: var(--nt-text-heading-weight);
+}
+
+.md p,
+.md ul,
+.md ol,
+.md table,
+.md pre,
+.md blockquote {
+  margin: 0 0 var(--nt-space-3);
+}
+
+.md ul,
+.md ol {
+  padding-inline-start: var(--nt-space-6);
+}
+
+.md li.task-list-item {
+  list-style: none;
+  margin-inline-start: calc(-1 * var(--nt-space-5));
+}
+
+.md input[type="checkbox"] {
+  margin-inline-end: var(--nt-space-2);
+  accent-color: var(--nt-color-status-success);
+}
+
+.md a {
+  color: var(--nt-color-accent-fg);
+  text-decoration: none;
+}
+
+.md a:hover {
+  color: var(--nt-color-accent-fg-hover);
+  text-decoration: underline;
+}
+
+.md a.md-wikilink {
+  border-bottom: 1px dotted var(--nt-color-accent-fg);
+}
+
+.md .md-dead-link {
+  color: var(--nt-color-text-muted);
+}
+
+.md code {
+  padding: 1px 5px;
+  font-family: var(--nt-font-mono);
+  font-size: var(--nt-text-mono-size);
+  color: var(--nt-color-syntax-key);
+  background: var(--nt-color-bg-card);
+  border-radius: var(--nt-radius-xs);
+}
+
+.md pre {
+  padding: var(--nt-space-3) var(--nt-space-4);
+  overflow-x: auto;
+  background: var(--nt-color-bg-card);
+  border: 1px solid var(--nt-color-border-subtle);
+  border-radius: var(--nt-radius-md);
+}
+
+.md pre code {
+  padding: 0;
+  color: var(--nt-color-syntax-text);
+  background: none;
+}
+
+.md blockquote {
+  padding-inline-start: var(--nt-space-4);
+  color: var(--nt-color-text-secondary);
+  border-inline-start: 3px solid var(--nt-color-border-strong);
+}
+
+.md table {
+  border-collapse: collapse;
+}
+
+.md th,
+.md td {
+  padding: var(--nt-space-1) var(--nt-space-3);
+  border: 1px solid var(--nt-color-border-subtle);
+}
+
+.md th {
+  text-align: left;
+  background: var(--nt-color-bg-card);
+}
+
+.md img {
+  max-width: 100%;
+}
+
+.md hr {
+  border: 0;
+  border-top: 1px solid var(--nt-color-border-divider);
+}

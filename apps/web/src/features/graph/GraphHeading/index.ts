@@ -1,0 +1,1 @@
+export { GraphHeading } from './GraphHeading'

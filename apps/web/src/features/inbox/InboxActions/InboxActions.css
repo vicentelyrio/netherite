@@ -1,0 +1,29 @@
+.ia {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.ia-keys {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: #969ab8;
+}
+.ia-keys li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ia-keys kbd {
+  padding: 0 5px;
+  border: 1px solid #33364f;
+  border-radius: 4px;
+  background: #26283d;
+  color: #b9bcd3;
+  font-family: var(--nt-font-mono, "Source Code Pro", monospace);
+  font-size: 12px;
+}

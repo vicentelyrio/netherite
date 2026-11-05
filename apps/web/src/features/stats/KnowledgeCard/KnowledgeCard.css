@@ -1,0 +1,127 @@
+.st-kbar {
+  display: flex;
+  gap: 2px;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #33364f;
+}
+.st-kbar > span,
+.kn-swatch {
+  background: #4d5180;
+}
+.st-kbar > [data-kind="fresh"],
+.kn-swatch[data-kind="fresh"] {
+  background: #2cc27e;
+}
+.st-kbar > [data-kind="drifting"],
+.kn-swatch[data-kind="drifting"] {
+  background: #e2ae4c;
+}
+.st-kbar > [data-kind="stale"] {
+  background: #e2ae4c;
+}
+.st-kbar > [data-kind="drifting"] {
+  background: transparent;
+  border: 1.5px solid #e2ae4c;
+  box-sizing: border-box;
+}
+.kn-swatch[data-kind="drifting"] {
+  background: transparent;
+  border: 1.5px solid #e2ae4c;
+  box-sizing: border-box;
+}
+.kn-legend .nt-icon {
+  color: #e2ae4c;
+}
+.kn-swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.kn-legend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 12px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: #b9bcd3;
+}
+.kn-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.kn-legend strong {
+  color: #e8e9f3;
+}
+.kn-h {
+  margin: 20px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #969ab8;
+}
+
+.kn-code {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+.kn-code li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.kn-code code {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #c9cbe0;
+}
+.kn-code span {
+  flex: none;
+  color: #969ab8;
+}
+
+.kn-open {
+  font-size: 13px;
+  font-weight: 500;
+}
+.kn-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.kn-pill {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: rgba(150, 154, 184, 0.16);
+  color: #b9bcd3;
+  font-size: 12px;
+  font-weight: 600;
+}
+.kn-pill[data-status="proposed"] {
+  background: rgba(165, 167, 255, 0.14);
+  color: #a5a7ff;
+}
+.kn-pill[data-status="accepted"] {
+  background: rgba(44, 194, 126, 0.14);
+  color: #2cc27e;
+}
+.kn-pill[data-status="deprecated"] {
+  background: rgba(240, 113, 126, 0.14);
+  color: #f0717e;
+}

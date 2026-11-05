@@ -1,19 +1,8 @@
 {
-  "display": "Web",
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "extends": "@netherite/tsconfig/tsconfig.json",
-  "references": [{ "path": "./tsconfig.node.json" }],
+  "extends": "@netherite/config/tsconfig.browser.json",
+  "include": ["src", "test", "e2e", "vite.config.ts", "vitest.config.ts", "playwright.config.ts"],
   "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "./dist",
-    "paths": {
-      "*": ["./src/*"]
-    },
-    "preserveSymlinks": true,
-    "types": ["vite/client"],
-    "typeRoots": ["./src/@types", "./node_modules/@types"]
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "src/@types", "vite.config.ts"]
+    "types": ["vite/client", "node"],
+    "paths": { "@/*": ["./src/*"] }
+  }
 }
-

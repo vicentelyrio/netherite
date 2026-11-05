@@ -1,0 +1,5 @@
+{
+  "op": "replaceSection",
+  "which": "A",
+  "content": "new"
+}

@@ -1,0 +1,37 @@
+.drawer-state {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+}
+
+.drawer-meta {
+  display: grid;
+  grid-template-columns: 120px 200px 170px 1fr;
+  column-gap: 24px;
+}
+
+.drawer-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.drawer-people,
+.drawer-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.drawer-person {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
