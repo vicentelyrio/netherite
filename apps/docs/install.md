@@ -1,7 +1,7 @@
 # Install
 
 Netherite is one npm package, `@vicentelyrio/netherite`. It holds the command line, the local app,
-the MCP server for agents and the agent skills. It needs **Node 24 or newer** and a git repository.
+the MCP server for agents and the agent skills. It needs **Node 24 or newer** and a git repository. It is tested on Node 24 and on Node 26, both long-term support lines.
 Check your Node with `node --version`.
 
 ## Pick how to run it
