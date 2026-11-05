@@ -1,18 +1,18 @@
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
-import { devNull, tmpdir } from 'node:os'
+import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { NodeServices } from '@effect/platform-node'
 import { makeClient } from '@netherite/api'
 import { gitHandle, openRepo, type WatchBackend, workspaceGit } from '@netherite/core'
-import { cleanWorkspaceFiles } from '@netherite/testing'
+import { cleanWorkspaceFiles, emptyGitConfig } from '@netherite/testing'
 import { Effect, type Scope } from 'effect'
 import { FetchHttpClient } from 'effect/http'
 import { listen, makeState, type ServerState, startLive } from '../src/index'
 
 export const isolateGit = () => {
-  process.env.GIT_CONFIG_GLOBAL = devNull
-  process.env.GIT_CONFIG_SYSTEM = devNull
+  process.env.GIT_CONFIG_GLOBAL = emptyGitConfig
+  process.env.GIT_CONFIG_SYSTEM = emptyGitConfig
 }
 
 export interface Running {

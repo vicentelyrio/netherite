@@ -1,15 +1,14 @@
-import { devNull } from 'node:os'
 import { NodeServices } from '@effect/platform-node'
 import { openGit } from '@netherite/git'
 import { defaultConfig } from '@netherite/schema'
-import { type Commit, createGitRepo } from '@netherite/testing'
+import { type Commit, createGitRepo, emptyGitConfig } from '@netherite/testing'
 import { Effect } from 'effect'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { lifecycles, readHistory } from '../src/index'
 
 beforeAll(() => {
-  process.env.GIT_CONFIG_GLOBAL = devNull
-  process.env.GIT_CONFIG_SYSTEM = devNull
+  process.env.GIT_CONFIG_GLOBAL = emptyGitConfig
+  process.env.GIT_CONFIG_SYSTEM = emptyGitConfig
 })
 
 const run = <A, E>(effect: Effect.Effect<A, E, NodeServices.NodeServices>) =>

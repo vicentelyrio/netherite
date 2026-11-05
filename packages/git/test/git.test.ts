@@ -7,9 +7,9 @@ import {
   utimesSync,
   writeFileSync,
 } from 'node:fs'
-import { devNull, tmpdir } from 'node:os'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { createGitRepo } from '@netherite/testing'
+import { createGitRepo, emptyGitConfig } from '@netherite/testing'
 import { Effect } from 'effect'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { changedPaths, detectGit, type GitRepository, openGit } from '../src/index'
@@ -25,8 +25,8 @@ const fail = <A, E>(
 
 // Tests must not see the machine's own git identity or settings.
 beforeAll(() => {
-  process.env.GIT_CONFIG_GLOBAL = devNull
-  process.env.GIT_CONFIG_SYSTEM = devNull
+  process.env.GIT_CONFIG_GLOBAL = emptyGitConfig
+  process.env.GIT_CONFIG_SYSTEM = emptyGitConfig
 })
 
 describe('opening', () => {

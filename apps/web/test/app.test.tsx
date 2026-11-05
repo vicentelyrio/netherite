@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { EditorView } from '@codemirror/view'
 import { act, cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react'
@@ -8,6 +9,10 @@ import { describe, expect, test } from 'vitest'
 import { changesField } from '@/components/ItemEditor/extensions'
 import { moveFor } from '@/features/projects'
 import { other, renderApp, server } from './helpers'
+
+// `@netherite/testing` is for Node, not for this jsdom file, so the empty config is made here.
+const emptyGitConfig = join(tmpdir(), 'netherite-empty-gitconfig')
+writeFileSync(emptyGitConfig, '', { flag: 'a' })
 
 const nav = () => screen.getByRole('navigation', { name: 'Main' })
 const railButton = (name: RegExp | string) => within(nav()).getByRole('button', { name })
@@ -563,7 +568,7 @@ describe('the project board', () => {
     }
     const backlog = screen.getByRole('region', { name: 'backlog' })
     expect(within(backlog).getByText('Core')).toBeInTheDocument()
-    expect(screen.getByRole('img', { name: /: tasks$/ })).toBeInTheDocument()
+    expect(await screen.findByRole('img', { name: /: tasks$/ })).toBeInTheDocument()
   })
 
   test('Knowledge is the view of what links to the project, with docs and decisions together', async () => {
@@ -835,7 +840,11 @@ describe('ADR and context views', () => {
   test('a doc whose covered files changed shows the stale banner, the commits, and Mark reviewed', async () => {
     mkdirSync(join(server().dir, 'src'), { recursive: true })
     writeFileSync(join(server().dir, 'src/a.ts'), 'export {}\n')
-    const env = { ...process.env, GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_SYSTEM: '/dev/null' }
+    const env = {
+      ...process.env,
+      GIT_CONFIG_GLOBAL: emptyGitConfig,
+      GIT_CONFIG_SYSTEM: emptyGitConfig,
+    }
     const git = (...args: string[]) =>
       execFileSync('git', args, { cwd: server().dir, env, stdio: 'ignore' })
     git('add', '-A')

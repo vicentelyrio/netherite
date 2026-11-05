@@ -1,9 +1,9 @@
 import { execFileSync, spawn } from 'node:child_process'
 import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
-import { devNull, tmpdir } from 'node:os'
+import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { cleanWorkspaceFiles } from '@netherite/testing'
+import { cleanWorkspaceFiles, emptyGitConfig } from '@netherite/testing'
 import { test as base } from '@playwright/test'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -39,7 +39,11 @@ export const test = base.extend<{ workspace: Workspace }>({
       mkdirSync(dirname(path), { recursive: true })
       writeFileSync(path, text)
     }
-    const env = { ...process.env, GIT_CONFIG_GLOBAL: devNull, GIT_CONFIG_SYSTEM: devNull }
+    const env = {
+      ...process.env,
+      GIT_CONFIG_GLOBAL: emptyGitConfig,
+      GIT_CONFIG_SYSTEM: emptyGitConfig,
+    }
     const git = (...args: string[]) =>
       execFileSync('git', args, { cwd: dir, env, encoding: 'utf8' })
     git('init', '-q', '-b', 'main')

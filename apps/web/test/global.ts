@@ -1,9 +1,9 @@
 import { execFileSync, spawn } from 'node:child_process'
 import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
-import { devNull, tmpdir } from 'node:os'
+import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { cleanWorkspaceFiles } from '@netherite/testing'
+import { cleanWorkspaceFiles, emptyGitConfig } from '@netherite/testing'
 import type { TestProject } from 'vitest/node'
 
 const bin = join(dirname(fileURLToPath(import.meta.url)), '../../../packages/cli/dist/bin.mjs')
@@ -24,7 +24,11 @@ export default async function setup(project: TestProject) {
     mkdirSync(dirname(path), { recursive: true })
     writeFileSync(path, text)
   }
-  const env = { ...process.env, GIT_CONFIG_GLOBAL: devNull, GIT_CONFIG_SYSTEM: devNull }
+  const env = {
+    ...process.env,
+    GIT_CONFIG_GLOBAL: emptyGitConfig,
+    GIT_CONFIG_SYSTEM: emptyGitConfig,
+  }
   const git = (...args: string[]) => execFileSync('git', args, { cwd: dir, env, stdio: 'ignore' })
   git('init', '-q', '-b', 'main')
   git('config', 'user.name', 'Ada Lovelace')

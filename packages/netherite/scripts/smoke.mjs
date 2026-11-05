@@ -3,7 +3,7 @@
 // Needs the network for the package's dependencies. Run `pnpm build` first.
 import { execFileSync, spawn } from 'node:child_process'
 import { mkdirSync, mkdtempSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
-import { devNull, tmpdir } from 'node:os'
+import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -41,7 +41,10 @@ try {
   // 2. A clean repository.
   const repo = join(work, 'repo')
   mkdirSync(repo)
-  const env = { ...process.env, GIT_CONFIG_GLOBAL: devNull, GIT_CONFIG_SYSTEM: devNull }
+  // An empty file, not `os.devNull`, which git cannot open on Windows.
+  const emptyConfig = join(work, 'empty-gitconfig')
+  writeFileSync(emptyConfig, '')
+  const env = { ...process.env, GIT_CONFIG_GLOBAL: emptyConfig, GIT_CONFIG_SYSTEM: emptyConfig }
   const git = (...args) => run('git', args, { cwd: repo, env })
   git('init', '-q', '-b', 'main')
   git('config', 'user.name', 'Smoke')

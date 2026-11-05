@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process'
-import { devNull } from 'node:os'
 import { NodeServices } from '@effect/platform-node'
+import { emptyGitConfig } from '@netherite/testing'
 import { Effect } from 'effect'
 import { runCli } from '../src/index'
 
@@ -26,8 +26,8 @@ export const cli = async (cwd: string, ...argv: string[]): Promise<Result> => {
 }
 
 export const isolateGit = () => {
-  process.env.GIT_CONFIG_GLOBAL = devNull
-  process.env.GIT_CONFIG_SYSTEM = devNull
+  process.env.GIT_CONFIG_GLOBAL = emptyGitConfig
+  process.env.GIT_CONFIG_SYSTEM = emptyGitConfig
 }
 
 export const git = (cwd: string, ...args: string[]) =>

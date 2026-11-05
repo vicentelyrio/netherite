@@ -1,17 +1,17 @@
 import { mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
-import { devNull, tmpdir } from 'node:os'
+import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { NodeServices } from '@effect/platform-node'
 import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js'
 import { openRepo, type Repo } from '@netherite/core'
-import { cleanWorkspaceFiles } from '@netherite/testing'
+import { cleanWorkspaceFiles, emptyGitConfig } from '@netherite/testing'
 import { Effect } from 'effect'
 import { createMcpServer, type McpOptions } from '../src/index'
 
 export const isolateGit = () => {
-  process.env.GIT_CONFIG_GLOBAL = devNull
-  process.env.GIT_CONFIG_SYSTEM = devNull
+  process.env.GIT_CONFIG_GLOBAL = emptyGitConfig
+  process.env.GIT_CONFIG_SYSTEM = emptyGitConfig
 }
 
 export interface Session {

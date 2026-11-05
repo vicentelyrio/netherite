@@ -1,17 +1,23 @@
 import { execFileSync } from 'node:child_process'
 import { mkdtempSync, rmSync } from 'node:fs'
-import { devNull, tmpdir } from 'node:os'
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { NodeServices } from '@effect/platform-node'
 import { type GitRepository, openGit } from '@netherite/git'
-import { basicHistory, type Commit, createGitRepo, type GitRepo } from '@netherite/testing'
+import {
+  basicHistory,
+  type Commit,
+  createGitRepo,
+  emptyGitConfig,
+  type GitRepo,
+} from '@netherite/testing'
 import { Effect } from 'effect'
 import { beforeAll, describe, expect, test } from 'vitest'
 import { type CoChange, type CoChangeOptions, coChanged, suggestCovers } from '../src/index'
 
 beforeAll(() => {
-  process.env.GIT_CONFIG_GLOBAL = devNull
-  process.env.GIT_CONFIG_SYSTEM = devNull
+  process.env.GIT_CONFIG_GLOBAL = emptyGitConfig
+  process.env.GIT_CONFIG_SYSTEM = emptyGitConfig
 })
 
 const run = <A, E>(effect: Effect.Effect<A, E, NodeServices.NodeServices>) =>

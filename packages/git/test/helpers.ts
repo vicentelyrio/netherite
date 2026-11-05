@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process'
 import { NodeServices } from '@effect/platform-node'
-import { basicHistory, createGitRepo, type GitRepo } from '@netherite/testing'
+import { basicHistory, createGitRepo, emptyGitConfig, type GitRepo } from '@netherite/testing'
 import { Effect, Layer } from 'effect'
 import { ChildProcessSpawner } from 'effect/process'
 
@@ -51,8 +51,13 @@ export const sh = (cwd: string, ...args: string[]) =>
     // GIT_OPTIONAL_LOCKS=0 keeps the test's own `git status` from refreshing the index it inspects.
     env: {
       ...process.env,
-      GIT_CONFIG_GLOBAL: '/dev/null',
-      GIT_CONFIG_SYSTEM: '/dev/null',
+      GIT_CONFIG_GLOBAL: emptyGitConfig,
+      GIT_CONFIG_SYSTEM: emptyGitConfig,
+      // A commit needs an identity, and a CI runner has none to guess from.
+      GIT_AUTHOR_NAME: 'Ada Lovelace',
+      GIT_AUTHOR_EMAIL: 'ada@example.com',
+      GIT_COMMITTER_NAME: 'Ada Lovelace',
+      GIT_COMMITTER_EMAIL: 'ada@example.com',
       GIT_OPTIONAL_LOCKS: '0',
     },
   }).trim()
