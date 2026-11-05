@@ -163,7 +163,9 @@ This skill needs two things beyond the \`netherite\` MCP tools: to read files in
 
 ## 1. Survey (read only)
 
-Look for what is already written down. Skip \`node_modules\`, build output, vendored code, \`CHANGELOG\`, \`LICENSE\`, generated files and the Netherite content folder itself.
+Start with \`netherite scan --json\`. It walks the repository, writes nothing, and returns a draft batch (\`batch\`), the files it left out with the reason (\`skipped\`), and things to check (\`notes\`). It already skips \`node_modules\`, build output, vendored code, changelogs and licences, templates, test fixtures, files that look like they hold a secret, per-folder agent files, stubs, folders another tool manages, and what is already imported; it gives decision records their numbers, statuses and dates. Read what it returns instead of walking the tree yourself, then check it by hand against the list below: it classifies by path and file name, so it can be wrong about a type, and it does not read the text for meaning.
+
+What to look for, and what the scan may have missed:
 
 - **Docs:** \`README*\`, \`docs/\`, \`doc/\`, \`wiki/\`, guides, architecture notes, \`CONTRIBUTING.md\`.
 - **Runbooks:** \`runbooks/\`, \`playbooks/\`, \`ops/\`, on-call and deploy notes, step-by-step operations.
@@ -178,7 +180,7 @@ Some finds are not for import, and you say so in the table, with a count:
 - **Folders managed by another tool** (\`openspec/\`, changesets, generated reference docs, an indexed wiki): ask, and recommend skip. The tool owns them and keeps rewriting them.
 - **Blocks written by another tool** inside a file (\`<!-- BEGIN:... -->\`): the tool re-adds them, so leave them out of the text you import.
 
-Show the person the list as a table with counts per type, and what you left out.
+Show the person the scan's list as a table with counts per type, and what it left out.
 
 ## 2. Ask, one question at a time
 
@@ -196,7 +198,7 @@ Use the \`netherite-plan\` skill: one project, one task per batch, and in each t
 
 ## 4. Each batch
 
-1. Set the task \`doing\`. Write the batch as JSON to \`.netherite/local/migration-<n>.json\` (it is not committed). See https://vicentelyrio.github.io/netherite/reference/import for the format; \`netherite import --help\` lists the flags. When many files share one format (dozens of decision records, say), write a small script that builds the batch from them instead of typing entries, show the person the table and three entries in full, and run it again for the next batch.
+1. Set the task \`doing\`. Write the batch as JSON to \`.netherite/local/migration-<n>.json\` (it is not committed), starting from the scan's \`batch\` (\`netherite scan --out .netherite/local/migration-<n>.json\` writes one) and taking the entries of this batch from it. See https://vicentelyrio.github.io/netherite/reference/import for the format; \`netherite import --help\` lists the flags. When many files share one format (dozens of decision records, say), write a small script that builds the batch from them instead of typing entries, show the person the table and three entries in full, and run it again for the next batch.
 2. **Entries.**
    - ADRs: \`id\` from the number in the file name, written with the workspace's padding (\`ADR-00004\`). Read the status line the way the record means it, and map it to \`fields.status\` (\`accepted\`, \`proposed\`, \`deprecated\`, \`superseded\`): a record that is wholly "superseded by" another is \`superseded\`, \`retired\` is \`deprecated\`, and a record that is only amended or partly superseded stays \`accepted\`. Do not lose the nuance: keep the original status line in \`body\` as \`**Status as written:** ...\`, put a word such as \`provisional\` in \`fields.tags\`, and keep a "Revisit when" line. Put the record's date in \`fields.date\`; if it has none, use the date the file was first committed (\`git log --diff-filter=A --format=%as -1 -- <path>\`). A record with no stated status is \`proposed\`: never invent \`accepted\`. Leave out \`deciders\` unless the record names them: the person running the import did not decide it. When a record's status and date are lines at the top rather than headings, take them out of \`body\` once they are fields.
    - Docs and runbooks: \`covers\` is what the doc **describes**, not everything it mentions, and it decides when the doc shows as stale. Propose globs (\`src/auth/**\`) only for paths that exist and that the doc is about, and leave \`covers\` out when unsure: a wrong one means false alarms. Never cover absolute paths, \`.env*\` files, or the code the doc says it is moving away from. In one real monorepo, 59 of 90 docs mentioned an existing path and few were about it.

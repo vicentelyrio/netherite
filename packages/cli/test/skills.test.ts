@@ -379,7 +379,7 @@ describe('netherite-migrate', () => {
   })
 
   test('only names commands and flags that exist', async () => {
-    const commands = new Set(['init', 'import'])
+    const commands = new Set(['init', 'import', 'scan'])
     for (const [, command] of text.matchAll(/`netherite ([a-z]+)[^`]*`/g)) {
       expect(commands.has(command as string), `netherite ${command}`).toBe(true)
     }
@@ -392,6 +392,14 @@ describe('netherite-migrate', () => {
     for (const flag of ['--dry-run', '--stub', '--update']) {
       expect(importHelp, flag).toContain(flag)
     }
+    const scanHelp = reference.slice(
+      reference.indexOf('## `netherite scan`'),
+      reference.indexOf('## `netherite import`'),
+    )
+    for (const flag of ['--out', '--json', '--nested-agent-files']) {
+      expect(scanHelp, flag).toContain(flag)
+    }
+    expect(text).toContain('netherite scan --json')
     expect(text).toContain('https://vicentelyrio.github.io/netherite/reference/import')
   })
 })

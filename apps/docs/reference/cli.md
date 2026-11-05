@@ -97,6 +97,23 @@ FLAGS
   --json              Print machine-readable JSON instead of text.
 ```
 
+## `netherite scan`
+
+```text
+DESCRIPTION
+  Look through the repository for docs, runbooks, decision records and agent files, and write a draft batch for `netherite import`. It only reads, and writes nothing but the draft.
+
+USAGE
+  netherite scan [flags]
+
+FLAGS
+  --dir, -C string        Folder to work in (default: the current one). The workspace is found by walking up from it.
+  --out string            Where to write the draft batch, from the workspace root. Default: .netherite/local/scan.json.
+  --nested-agent-files    Include the AGENTS.md and CLAUDE.md files deep in the tree. They are left out by default: agents read them in place, and they would fill the context budget.
+  --force                 Replace a draft that is already there.
+  --json                  Print machine-readable JSON instead of text.
+```
+
 ## `netherite import`
 
 ```text
@@ -107,7 +124,7 @@ USAGE
   netherite import [flags] <batch>
 
 ARGUMENTS
-  batch string    A JSON file: a list of entries, or { "mode": "copy", "entries": [...] }. Each entry has source, type (doc, runbook, context or adr) and optionally title, id, fields, body and mode.
+  batch string    A JSON file: a list of entries, or { "mode": "copy", "entries": [...] }. Each entry has source, type (doc, runbook, context or adr) and optionally title, id, fields, body and mode. `netherite scan` writes a draft of one.
 
 FLAGS
   --dir, -C string       Folder to work in (default: the current one). The workspace is found by walking up from it.

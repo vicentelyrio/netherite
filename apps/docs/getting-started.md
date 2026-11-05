@@ -21,6 +21,54 @@ Use `--content docs/tracker` to keep the items somewhere other than `netherite/`
 to leave the skills and `AGENTS.md` alone. `netherite init --update` refreshes the skills after an
 upgrade. Commit the result when you are happy with it; Netherite never commits for you.
 
+### Already have docs or decision records?
+
+Bring them in instead of writing them again. `scan` looks through the repository and drafts the
+list, and `import` writes it:
+
+```sh
+npx @vicentelyrio/netherite scan                                          # look through the repo, write a draft
+npx @vicentelyrio/netherite import .netherite/local/scan.json --dry-run   # say what would happen
+npx @vicentelyrio/netherite import .netherite/local/scan.json             # write it
+```
+
+`scan` only reads. It finds READMEs, `docs/`, runbooks, decision records in any format (it keeps
+their numbers, statuses and dates) and agent files such as `CLAUDE.md`, and it says what it left
+out and why: `node_modules`, changelogs, test fixtures, folders another tool manages, per-folder
+`AGENTS.md` files, anything that looks like a secret, and what you already imported. The draft goes
+to `.netherite/local/scan.json`, which git ignores. Open it, delete what you do not want, and add a
+`title` or `fields` where you know better, before you import. Nothing is written to your documents,
+and nothing is committed.
+
+**With an agent.** In Claude Code, or another agent that can read files and run commands, say:
+
+> Migrate this repository's docs and decision records into Netherite.
+
+The `netherite-migrate` skill, which `init` installed, runs `scan` for you, reads what it found,
+asks you at each choice (copy or move the originals, keep the old ADR numbers, how big a batch
+is), and imports in batches you review, then links the records to each other. See
+[Migrate an existing repository](migrate.md).
+
+**By hand.** `import` takes a JSON file, and the draft from `scan` is one. The smallest file is a
+source path and a type for each file:
+
+```json
+{
+  "entries": [
+    { "source": "docs/setup.md", "type": "doc" },
+    { "source": "docs/adr/0004-use-stow.md", "type": "adr", "id": "ADR-00004" }
+  ]
+}
+```
+
+`type` is `doc`, `runbook`, `context` or `adr`. Every other field is optional, and the
+[import reference](reference/import.md) lists them all.
+
+A skill is not a command: `netherite-migrate` and `netherite-discover` are instructions that an
+agent follows, so you will not find them in `netherite --help`. `netherite-migrate` brings in what is
+already written down. `netherite-discover` is the optional second step: it proposes decision
+records for choices nobody wrote down, from your git history, and does not look for documentation.
+
 ## 2. Open the app
 
 ```sh

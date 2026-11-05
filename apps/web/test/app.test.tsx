@@ -10,9 +10,9 @@ import { changesField } from '@/components/ItemEditor/extensions'
 import { moveFor } from '@/features/projects'
 import { other, renderApp, server } from './helpers'
 
-// `@netherite/testing` is for Node, not for this jsdom file, so the empty config is made here.
+// `@netherite/testing` is for Node, not for this jsdom file, so the path is made here. Nothing is
+// created there: git treats a config file that is not there as empty.
 const emptyGitConfig = join(tmpdir(), 'netherite-empty-gitconfig')
-writeFileSync(emptyGitConfig, '', { flag: 'a' })
 
 const nav = () => screen.getByRole('navigation', { name: 'Main' })
 const railButton = (name: RegExp | string) => within(nav()).getByRole('button', { name })

@@ -30,6 +30,10 @@ npx @vicentelyrio/netherite             # the app, at http://127.0.0.1:4747
 
 To type less, install it once with `npm install --global @vicentelyrio/netherite`; the command is then just `netherite`.
 
+Already have docs or decision records? `npx @vicentelyrio/netherite scan` drafts a list of them and
+`import` writes it. Or ask your agent to migrate them (the `netherite-migrate` skill, installed by
+`init`). See [Migrate](apps/docs/migrate.md).
+
 `init` is safe to run again. `npx @vicentelyrio/netherite serve --no-open` starts the same thing without opening
 a browser. The server listens on `127.0.0.1` only.
 

@@ -163,6 +163,15 @@ export {
 } from './resolve'
 export { scanItems } from './scan'
 export { type ScannedItem, scannedItemFrom, toScannedItem } from './scanned-item'
+export {
+  type SkippedGroup,
+  type SkipReason,
+  type Survey,
+  type SurveyEntry,
+  type SurveyOptions,
+  type SurveyType,
+  surveyRepository,
+} from './survey'
 export { type TagDuplicate, type TagEdge, type TagMap, type TagNode, tagMap } from './tag-map'
 export {
   fillTemplate,

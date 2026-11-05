@@ -8,6 +8,18 @@ skill brings it in, and `netherite-discover` can then look for the decisions nob
 An agent does the reading and the classifying. You make every choice, and nothing is committed:
 you review the result in `git diff`.
 
+## Which part does what
+
+| Part | What it is | What it does |
+| --- | --- | --- |
+| `netherite scan` | a command | looks through the repository by path and file name and drafts the batch; it only reads |
+| `netherite import` | a command | writes the items from a batch file, such as the draft; it never commits |
+| `netherite-migrate` | a skill, for an agent | runs `scan`, reads what it found, asks you at each choice, and imports in batches |
+| `netherite-discover` | a skill, for an agent | optional, after the migration: proposes decision records for choices nobody wrote down, from git history |
+
+`scan` classifies by where a file is and what it is called, so it can be wrong about a type, and it
+does not read for meaning. The agent checks its work, you decide, and `import` does the writing.
+
 ## Start it
 
 You need an agent that can read files and run commands, such as Claude Code, and the skills
@@ -21,10 +33,11 @@ the last step by hand: write a batch file and run [`netherite import`](reference
 
 ## The flow
 
-1. **Survey, read only.** The agent looks for docs, runbooks, decision records (MADR, Nygard, plain
-   RFCs) and agent conventions (`CLAUDE.md`, `AGENTS.md`, `.cursorrules`). It skips vendored and
-   generated files and anything that looks like it holds a secret, and shows you a table of what it
-   found, with a type for each and what it left out.
+1. **Survey, read only.** The agent runs `netherite scan`, which looks for docs, runbooks, decision
+   records (MADR, Nygard, plain RFCs) and agent conventions (`CLAUDE.md`, `AGENTS.md`,
+   `.cursorrules`). It skips vendored and generated files and anything that looks like it holds a
+   secret. The agent reads it, corrects it, and shows you a table of what it found, with a type for
+   each and what it left out.
 2. **Questions**, one at a time, each with a recommendation:
 
    | Question | Recommended | Why |
