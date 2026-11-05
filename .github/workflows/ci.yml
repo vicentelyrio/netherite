@@ -85,7 +85,12 @@ jobs:
           restore-keys: turbo-${{ runner.os }}-
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
-      - run: pnpm test:scale
+      # A time budget only says something on one kind of runner. The macOS runners have been
+      # measured at 8.5 s against a 2 s budget on code that takes under 2 s on a laptop, and they
+      # vary from run to run, so the scale tests run on Ubuntu.
+      - name: Scale budgets
+        if: matrix.os == 'ubuntu-latest'
+        run: pnpm test:scale
 
   e2e:
     name: End-to-end (ubuntu-latest)
