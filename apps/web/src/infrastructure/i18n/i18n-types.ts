@@ -2170,10 +2170,6 @@ type RootTranslation = {
 		 */
 		createArea: string
 		/**
-		 * A​l​l​ ​a​r​e​a​s
-		 */
-		allAreas: string
-		/**
 		 * {​g​o​a​l​s​}​ ​{​{​g​o​a​l​|​g​o​a​l​s​}​}​ ​·​ ​{​p​r​o​j​e​c​t​s​}​ ​{​{​p​r​o​j​e​c​t​|​p​r​o​j​e​c​t​s​}​}​ ​·​ ​{​d​o​n​e​}​/​{​t​o​t​a​l​}​ ​d​o​n​e
 		 * @param {number} done
 		 * @param {number} goals
@@ -4979,10 +4975,6 @@ export type TranslationFunctions = {
 		 * Create area
 		 */
 		createArea: () => LocalizedString
-		/**
-		 * All areas
-		 */
-		allAreas: () => LocalizedString
 		/**
 		 * {goals} {{goal|goals}} · {projects} {{project|projects}} · {done}/{total} done
 		 */

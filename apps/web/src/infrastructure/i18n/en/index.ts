@@ -583,7 +583,6 @@ const en = {
     firstGoal: 'First goal',
     areaExists: 'That area exists: the goal will join it.',
     createArea: 'Create area',
-    allAreas: 'All areas',
     areaSummary:
       '{goals:number} {{goal|goals}} · {projects:number} {{project|projects}} · {done:number}/{total:number} done',
     removeArea: 'Remove area {name}',
