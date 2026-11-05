@@ -5,7 +5,7 @@ import { type KnowledgeType, useKnowledgeIndex } from '../KnowledgeProvider'
 import './KnowledgeStarters.css'
 
 const starters: ReadonlyArray<{ type: ItemTypeName; path: string }> = [
-  { type: 'adr', path: 'adr/0001-….md' },
+  { type: 'adr', path: 'adr/ADR-00001-….md' },
   { type: 'doc', path: 'docs/….md' },
   { type: 'context', path: 'context/….md' },
   { type: 'runbook', path: 'runbooks/….md' },
@@ -31,7 +31,7 @@ export function KnowledgeStarters() {
       </div>
       <div className="kn-empty-text">
         <h2>{LL.knowledge.starters.title()}</h2>
-        <p>{LL.knowledge.starters.text({ folder: 'knowledge/' })}</p>
+        <p>{LL.knowledge.starters.text()}</p>
       </div>
       <div className="kn-empty-actions">
         <Button variant="primary" icon="add" onClick={() => startCreating('adr')}>

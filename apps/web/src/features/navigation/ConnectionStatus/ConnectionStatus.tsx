@@ -30,6 +30,7 @@ export function ConnectionStatus() {
             variant: 'info',
             title: LL.navigation.restart(),
             text: LL.navigation.restartText(),
+            persistent: true,
           })
         }
       },

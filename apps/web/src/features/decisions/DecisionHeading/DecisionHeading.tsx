@@ -13,7 +13,7 @@ export function DecisionHeading() {
         <strong>{LL.decisions.heading.title()}</strong>
       </Breadcrumbs>
       <h1 className="app-title dl-title">{LL.decisions.heading.title()}</h1>
-      <p className="kn-sub">{LL.decisions.heading.text({ command: 'git log -- knowledge/adr' })}</p>
+      <p className="kn-sub">{LL.decisions.heading.text()}</p>
     </div>
   )
 }

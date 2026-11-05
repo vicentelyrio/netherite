@@ -1,6 +1,5 @@
 import { Banner, EmptyState, Grid } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
-import { Link } from '@tanstack/react-router'
 import { CardColumn } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
@@ -46,9 +45,6 @@ export function GoalAreas({ only }: { readonly only?: string }) {
             {...sum(goals)}
           />
         ))}
-        <CardColumn>
-          <Link to="/goals">{LL.goals.allAreas()}</Link>
-        </CardColumn>
       </>
     )
   }
@@ -59,8 +55,8 @@ export function GoalAreas({ only }: { readonly only?: string }) {
           icon="track_changes"
           title={LL.goals.empty.title()}
           description={LL.goals.empty.text()}
+          actions={<NewGoal area={undefined} compact />}
         />
-        <NewGoal area={undefined} />
       </Grid.Col>
     )
   }

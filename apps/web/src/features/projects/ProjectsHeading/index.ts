@@ -1,0 +1,1 @@
+export { ProjectsHeading } from './ProjectsHeading'

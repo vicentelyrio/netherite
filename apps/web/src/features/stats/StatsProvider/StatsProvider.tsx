@@ -4,13 +4,14 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { createContext, type ReactNode, useContext, useState } from 'react'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
-import { periodStatsQuery } from '@/infrastructure/query'
+import { goalsQuery, knowledgeQuery, periodStatsQuery } from '@/infrastructure/query'
 
 export type Period = '30d' | 'quarter' | 'year'
 export const periods: ReadonlyArray<Period> = ['30d', 'quarter', 'year']
 
 export interface StatsState {
   readonly data: typeof PeriodStats.Type
+  readonly empty: boolean
   readonly period: Period
   readonly setPeriod: (period: Period) => void
   readonly area: string
@@ -34,8 +35,11 @@ export function StatsProvider({ children }: { readonly children: ReactNode }) {
     ...periodStatsQuery(api, period, area === '' ? undefined : area),
     placeholderData: keepPreviousData,
   })
+  const goals = useQuery(goalsQuery(api))
+  const knowledge = useQuery(knowledgeQuery(api))
 
-  if (stats.isPending) return <div className="app-page app-muted">{LL.common.loading()}</div>
+  if (stats.isPending || goals.isPending || knowledge.isPending)
+    return <div className="app-page app-muted">{LL.common.loading()}</div>
   if (stats.isError) {
     const noGit = stats.error instanceof Unavailable
     return (
@@ -54,8 +58,18 @@ export function StatsProvider({ children }: { readonly children: ReactNode }) {
       </div>
     )
   }
+  const onlyContext = knowledge.data?.items.every((item) => item.type === 'context') === true
   return (
-    <Context.Provider value={{ data: stats.data, period, setPeriod, area, setArea }}>
+    <Context.Provider
+      value={{
+        data: stats.data,
+        empty: goals.data?.goals.length === 0 && onlyContext,
+        period,
+        setPeriod,
+        area,
+        setArea,
+      }}
+    >
       {children}
     </Context.Provider>
   )

@@ -102,8 +102,8 @@ const en = {
     },
     heading: {
       title: 'Knowledge',
-      empty: 'Docs, decisions and agent context · nothing in knowledge/ yet',
-      summary: 'Docs, decisions and agent context · {count:number} files in knowledge/',
+      empty: 'Docs, decisions and agent context · nothing here yet',
+      summary: 'Docs, decisions and agent context · {count:number} files',
     },
     actions: {
       decisionLog: 'Decision log',
@@ -166,7 +166,7 @@ const en = {
     },
     starters: {
       title: 'No knowledge in this repo yet',
-      text: 'Docs, decisions and agent context are Markdown files with typed frontmatter in {folder}. They link to your goals, projects and tasks like everything else.',
+      text: 'Docs, decisions and agent context are Markdown files with typed frontmatter. They link to your goals, projects and tasks like everything else.',
       recordFirst: 'Record first decision',
       importDocs: 'Import from docs/',
       copied: 'Prompt copied',
@@ -274,7 +274,7 @@ const en = {
     heading: {
       title: 'Decision log',
       knowledge: 'Knowledge',
-      text: 'Status changes from {command} · newest first',
+      text: 'Status changes from git history · newest first',
     },
     empty: {
       title: 'No decisions yet',
@@ -385,6 +385,11 @@ const en = {
       'Progress over time is read from the commits of this repository. Put the workspace in a git repository and the numbers fill in.',
     partial: 'History is cut short',
     partialText: 'This is a shallow clone, so the earliest weeks are missing.',
+    empty: {
+      title: 'Nothing to measure yet',
+      text: 'Numbers fill in once you have goals or docs.',
+      action: 'Go to goals',
+    },
     area: 'Area',
     allAreas: 'All areas',
     period: { label: 'Period', days: '30 days', quarter: 'Quarter', year: 'Year' },
@@ -578,7 +583,6 @@ const en = {
     firstGoal: 'First goal',
     areaExists: 'That area exists: the goal will join it.',
     createArea: 'Create area',
-    allAreas: 'All areas',
     areaSummary:
       '{goals:number} {{goal|goals}} · {projects:number} {{project|projects}} · {done:number}/{total:number} done',
     removeArea: 'Remove area {name}',
@@ -600,6 +604,7 @@ const en = {
     },
   },
   projects: {
+    title: 'Projects',
     views: { label: 'Views', tasks: 'Tasks', knowledge: 'Knowledge' },
     none: 'No project {id}',
     loadError: 'Could not load this project',
@@ -633,6 +638,7 @@ const en = {
     entry: {
       title: 'No projects yet',
       text: 'Create one from a goal, and its tasks show up here as a board.',
+      action: 'Go to goals',
     },
   },
   tasks: {

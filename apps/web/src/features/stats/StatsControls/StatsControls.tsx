@@ -5,7 +5,8 @@ import './StatsControls.css'
 
 export function StatsControls() {
   const { LL } = useI18nContext()
-  const { data, period, setPeriod, area, setArea } = useStats()
+  const { data, empty, period, setPeriod, area, setArea } = useStats()
+  if (empty) return null
   const names = {
     '30d': LL.stats.period.days(),
     quarter: LL.stats.period.quarter(),
