@@ -11,5 +11,6 @@
 
 .app-notices .nt-banner {
   background-color: var(--nt-color-bg-canvas);
+  border: 0;
   box-shadow: var(--nt-shadow-popover);
 }
