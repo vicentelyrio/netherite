@@ -4,10 +4,8 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { useStats } from '../StatsProvider'
 import './AreasCard.css'
 
-/** The core's name for goals that have no `area`. */
 const noArea = '—'
 
-/** Goal areas: how much of each is done, the points gained in the period, achieved and idle goals. */
 export function AreasCard() {
   const { LL } = useI18nContext()
   const { data } = useStats()

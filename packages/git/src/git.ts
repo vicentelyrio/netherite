@@ -21,81 +21,48 @@ import {
 import { assertReadOnly } from './readonly'
 
 export interface GitOptions {
-  /** Longest a single git command may run. Default 30 s. */
   readonly timeoutMs?: number
-  /** Most results kept in the cache. Default 200. */
   readonly cacheSize?: number
-  /** The git program to run. Default `git`, found on the `PATH`. */
   readonly executable?: string
 }
 
 export interface LogOptions {
-  /** Only commits that touched these paths (git pathspecs, relative to the repository root). */
   readonly paths?: ReadonlyArray<string>
-  /** Only commits after this commit: `<since>..HEAD`. */
   readonly since?: string
-  /** Only commits made after this date (ISO 8601). */
   readonly after?: string
   readonly limit?: number
-  /** Which files to list per commit. Default: none. */
   readonly files?: 'none' | 'names' | 'numstat'
 }
 
 export interface PatchLogOptions {
-  /** Only changes to these paths (git pathspecs). */
   readonly paths: ReadonlyArray<string>
-  /** Only commits made after this date (ISO 8601). */
   readonly after?: string
   readonly limit?: number
-  /** Lines of context around each change. Enough context shows a file's frontmatter whole. Default 60. */
   readonly context?: number
 }
 
 export interface StatusOptions {
-  /** `all` lists every untracked file; `normal` lists untracked folders. Default `all`. */
   readonly untracked?: 'all' | 'normal' | 'no'
 }
 
 export interface GitRepository {
-  /** Top of the work tree. */
   readonly root: string
-  /** The `.git` folder. */
   readonly gitDir: string
-  /** A shallow clone has no history before its boundary, so counts from it are lower bounds. */
   readonly shallow: boolean
-  /** The current commit, or `undefined` before the first commit. */
   readonly head: Effect.Effect<string | undefined, GitError>
-  /** Uncommitted changes. Cached until HEAD or the index changes, or `invalidate` is called. */
   readonly status: (options?: StatusOptions) => Effect.Effect<GitStatus, GitError>
-  /** Commits, newest first. Cached per HEAD. */
   readonly log: (options?: LogOptions) => Effect.Effect<ReadonlyArray<CommitInfo>, GitError>
-  /**
-   * Commits that changed some paths, newest first, each with the new side of its diff. With enough
-   * context this shows what a file's frontmatter looked like after the commit.
-   */
   readonly patchLog: (
     options: PatchLogOptions,
   ) => Effect.Effect<ReadonlyArray<CommitPatch>, GitError>
-  /**
-   * Specific commits, in the order given, with every file each one changed. (`log` with `paths`
-   * lists only the files matching those paths, so this is how to see a commit whole.)
-   */
   readonly readCommits: (
     hashes: ReadonlyArray<string>,
     options?: { readonly files?: 'none' | 'names' | 'numstat' },
   ) => Effect.Effect<ReadonlyArray<CommitInfo>, GitError>
-  /** The commit that added a path, or `undefined` if it was never committed. */
   readonly firstCommit: (path: string) => Effect.Effect<CommitInfo | undefined, GitError>
-  /**
-   * A file's text as committed in `rev` (default `HEAD`), or `undefined` if it is not there: never
-   * committed, or no commits yet. `path` is relative to the top of the repository.
-   */
   readonly fileAt: (path: string, rev?: string) => Effect.Effect<string | undefined, GitError>
-  /** `user.name`, `user.email` and `github.user` from git config. Missing values are `undefined`. */
   readonly identity: Effect.Effect<GitIdentity, GitError>
-  /** Commits where a shallow clone's history stops. Empty for a full clone. */
   readonly shallowBoundary: Effect.Effect<ReadonlyArray<string>>
-  /** Drops cached work-tree results. Call it when files change on disk. */
   readonly invalidate: () => void
 }
 
@@ -131,7 +98,6 @@ interface Output {
   readonly code: number
 }
 
-/** Opens a repository for reading. Fails with a tagged error if git is missing or `dir` is not in a repo. */
 export const openGit = (dir: string, options: GitOptions = {}) =>
   Effect.gen(function* () {
     const spawner = yield* ChildProcessSpawner.ChildProcessSpawner
@@ -139,7 +105,6 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
     const timeoutMs = options.timeoutMs ?? 30_000
     const cacheSize = options.cacheSize ?? 200
 
-    /** Runs one read-only git command in `cwd` and returns what it printed. */
     const exec = (cwd: string, args: ReadonlyArray<string>): Effect.Effect<Output, GitError> => {
       const forbidden = assertReadOnly(args)
       if (forbidden !== undefined) return Effect.fail(forbidden)
@@ -390,10 +355,6 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
     return repository
   })
 
-/**
- * Like `openGit`, but never fails for the expected reasons: with no git installed or outside a
- * repository it says so, and the caller shows "not available" for git-derived features.
- */
 export const detectGit = (dir: string, options: GitOptions = {}) =>
   openGit(dir, options).pipe(
     Effect.map((git): GitAvailability => ({ available: true, git })),

@@ -26,7 +26,6 @@ const words =
     ' ',
   )
 
-/** A small deterministic random number generator, so generated workspaces are reproducible. */
 const mulberry32 = (seed: number) => () => {
   seed = (seed + 0x6d2b79f5) | 0
   let t = Math.imul(seed ^ (seed >>> 15), 1 | seed)
@@ -35,18 +34,11 @@ const mulberry32 = (seed: number) => () => {
 }
 
 export interface GenerateOptions {
-  /** Total number of item files. */
   readonly count: number
   readonly seed?: number
-  /** Wikilinks per body, on average. Default 4. */
   readonly linksPerItem?: number
 }
 
-/**
- * Generates a valid workspace as `{ path: file text }`, with every item type, relationships in
- * frontmatter, checklists and wikilinks to other items. Paths are relative to the repository
- * root, under `netherite/`. For benchmarks and scale tests.
- */
 export const generateWorkspaceFiles = ({ count, seed = 1, linksPerItem = 4 }: GenerateOptions) => {
   const random = mulberry32(seed)
   const pick = <T>(list: ReadonlyArray<T>) => list[Math.floor(random() * list.length)] as T

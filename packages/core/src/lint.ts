@@ -43,20 +43,13 @@ export type RuleId =
   | 'milestone-without-due'
   | 'invalid-horizon'
 
-/**
- * A change that would clear a diagnostic. Lint only describes it; core operations apply it
- * (`netherite lint --fix`), always without committing.
- */
 export type Fix =
   | { readonly kind: 'add-alias'; readonly path: string; readonly alias: string }
   | { readonly kind: 'rename-file'; readonly path: string; readonly to: string }
 
 export interface Diagnostic {
-  /** Path relative to the workspace root. */
   readonly path: string
-  /** 1-based. */
   readonly line: number
-  /** 1-based. */
   readonly column: number
   readonly rule: RuleId
   readonly severity: Severity
@@ -66,13 +59,9 @@ export interface Diagnostic {
 
 export interface LintOptions {
   readonly config: Pick<Config, 'states'>
-  /** Content root relative to the workspace root, such as `netherite`. */
   readonly contentRoot: string
-  /** Report only diagnostics for these paths. Rules still look at the whole workspace. */
   readonly only?: ReadonlyArray<string>
-  /** Freshness of each item (from `computeFreshness`). Without it, freshness is not checked. */
   readonly freshness?: ReadonlyMap<string, Freshness>
-  /** How serious drifting and stale items are. Both default to `warning`; CI can use `error`. */
   readonly freshnessSeverity?: { readonly drifting?: Severity; readonly stale?: Severity }
 }
 
@@ -84,18 +73,12 @@ const fieldPosition = (item: ScannedItem, field: string | number | undefined): P
 
 const severityOrder: Record<Severity, number> = { error: 0, warning: 1, info: 2 }
 
-/** The file name an item should have: its ID, then the slug it already has (or one from its title). */
 const expectedFileName = (item: ScannedItem, id: string) => {
   const withoutId = item.fileName.replace(/^[A-Za-z]+-\d+-?/, '')
   const slug = withoutId === '' ? fileSlug(item.title ?? '') : withoutId
   return `${id}-${slug}.md`
 }
 
-/**
- * Checks the whole index against the rules in ADR-00003, ADR-00004 and ADR-00006 and returns
- * every problem as data: path, position, rule, severity and message. Results are sorted by path,
- * then position. Freshness rules are added with the freshness model.
- */
 export const lint = (index: WorkspaceIndex, options: LintOptions): Diagnostic[] => {
   const schemas = makeItemSchemas(options.config)
   const check = checkItem(schemas)
@@ -362,11 +345,6 @@ export const summarize = (diagnostics: ReadonlyArray<Diagnostic>): LintSummary =
   info: diagnostics.filter((d) => d.severity === 'info').length,
 })
 
-/**
- * The workspace's own templates (`templates/<type>.md` under the content root) that name a
- * frontmatter field the type does not have. A field the schema renamed or dropped would otherwise
- * be copied into every new item without anyone noticing.
- */
 const lintTemplates = (workspace: Workspace) =>
   Effect.gen(function* () {
     const known = knownFields(makeItemSchemas(workspace.config))
@@ -394,10 +372,6 @@ const lintTemplates = (workspace: Workspace) =>
     return diagnostics
   })
 
-/**
- * An imported item whose `source` is a path in the repository that is no longer there: the
- * original may have been moved or deleted, so the link back to it is stale (ADR-00026).
- */
 const lintSources = (workspace: Workspace, items: ReadonlyArray<ScannedItem>) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
@@ -430,13 +404,11 @@ const lintSources = (workspace: Workspace, items: ReadonlyArray<ScannedItem>) =>
     return diagnostics
   })
 
-/** Scans the workspace from disk, indexes it and lints it. */
 export const lintWorkspace = (
   workspace: Workspace,
   options: {
     readonly only?: ReadonlyArray<string>
     readonly parse?: ParseOptions
-    /** Pass the repository to check freshness; `undefined` skips it (no git). */
     readonly git?: GitRepository | undefined
     readonly freshnessSeverity?: LintOptions['freshnessSeverity']
   } = {},

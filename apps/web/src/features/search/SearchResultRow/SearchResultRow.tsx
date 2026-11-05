@@ -4,7 +4,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import type { SearchHit } from '../results'
 import './SearchResultRow.css'
 
-/** One result: its glyph, title with the match marked, a snippet, a status and where it is from. */
 export function SearchResultRow({
   hit,
   q,

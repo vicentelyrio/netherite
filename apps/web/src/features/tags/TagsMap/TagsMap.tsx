@@ -10,7 +10,6 @@ const palette = ['#8f91f2', '#3ba474', '#d9a646', '#d2a8f0', '#8fc3f2', '#f0b397
 
 const ZOOM = { min: 0.5, max: 3, step: 1.25 }
 
-/** Tags as bubbles, grouped by cluster: size is how many items, a line is how often two go together. */
 export function TagsMap() {
   const { LL } = useI18nContext()
   const { shown, edges, duplicates, selected, select } = useTags()

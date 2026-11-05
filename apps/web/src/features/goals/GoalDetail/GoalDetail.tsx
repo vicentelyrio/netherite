@@ -11,7 +11,6 @@ import { GoalProjects } from '../GoalProjects'
 import { horizonElapsed, horizonLabel } from '../horizon'
 import './GoalDetail.css'
 
-/** One goal: where it sits, how far along it is, and its projects. */
 export function GoalDetail({ id }: { readonly id: string }) {
   const { LL } = useI18nContext()
   const api = useApi()

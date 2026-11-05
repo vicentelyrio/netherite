@@ -12,18 +12,13 @@ import { type Env, type ExitCode, exitCodes, json } from '../output'
 
 export interface RenumberCommandOptions {
   readonly dir: string
-  /** An item's path, or its ID. */
   readonly target: string
-  /** The ID to use instead of the next free one. */
   readonly to: string | undefined
-  /** Files whose links to the old ID should follow the new one. */
   readonly rewriteIn: ReadonlyArray<string>
-  /** Renumber exactly the item given, even if another item with the same ID is newer. */
   readonly exact: boolean
   readonly json: boolean
 }
 
-/** The path an input names: an ID, a path from here, or a path from the workspace root. */
 const locate = (repo: Repo, path: Path.Path, cwd: string, input: string) => {
   const byId = repo.index.findById(input)
   if (byId.length === 1) return byId[0]?.path
@@ -34,7 +29,6 @@ const locate = (repo: Repo, path: Path.Path, cwd: string, input: string) => {
   return candidates.find((candidate) => repo.index.get(candidate) !== undefined)
 }
 
-/** Of items that share an ID, the one first committed last, then the last by path. */
 const newest = (
   git: GitRepository,
   map: { toGit: (p: string) => string },
@@ -53,12 +47,6 @@ const newest = (
       .at(-1)?.path
   })
 
-/**
- * Gives an item a new ID and rewrites links to it. When the ID is shared by several items (a
- * collision after merging branches) the newest one, by first commit, is the one renumbered,
- * as ADR-00004 says; `--exact` renumbers the one named. Links written by ID alone cannot say
- * which duplicate they meant, so they follow only when you list files with `--rewrite-in`.
- */
 export const renumberCommand = (env: Env, options: RenumberCommandOptions) =>
   Effect.gen(function* () {
     const path = yield* Path.Path

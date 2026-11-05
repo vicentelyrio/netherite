@@ -6,7 +6,6 @@ import type { MouseEvent } from 'react'
 import { ProgressBar, TagList } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 
-/** What a task card shows: where it is from, its title, labels, who has it and how far it is. */
 export function TaskCardBody({
   card,
   projectId,
@@ -16,7 +15,6 @@ export function TaskCardBody({
   readonly card: BoardCard
   readonly projectId: string
   readonly overline?: string | undefined
-  /** The state category of its column, which decides the glyph. */
   readonly category?: string | undefined
 }) {
   const { LL } = useI18nContext()
@@ -52,7 +50,6 @@ export function TaskCardBody({
   )
 }
 
-/** A task card that can be picked up and dropped on another column. */
 export function TaskCard({
   card,
   projectId,

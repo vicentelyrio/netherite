@@ -9,17 +9,11 @@ import './Markdown.css'
 
 const itemId = /^[A-Z]{2,8}-\d{3,}$/
 
-/** Where a `[[wikilink]]` goes: an item by ID, otherwise a search for what it says. */
 export const wikiHref = (target: string) =>
   itemId.test(target)
     ? `/items/${encodeURIComponent(target)}`
     : `/knowledge?q=${encodeURIComponent(target)}`
 
-/**
- * The same processor the index uses (ADR-00011, ADR-00018), plus the step that makes HTML. Raw
- * HTML in a Markdown file is dropped, not rendered: files can come from anywhere (a pulled branch,
- * an agent), and the app runs with the person's session token.
- */
 const processor = createProcessor().use(remarkRehype, {
   handlers: {
     yaml: () => undefined,
@@ -38,7 +32,6 @@ const processor = createProcessor().use(remarkRehype, {
   },
 })
 
-/** Links we will follow: the web, mail, and places inside this app. Everything else is inert. */
 export const safeUrl = (
   url: string | undefined,
 ): { href: string; external: boolean } | undefined => {
@@ -91,7 +84,6 @@ function Anchor({
   )
 }
 
-/** Images from the web or a data URL only: a relative path would point at the app, not the repo. */
 function Image({ src, alt, node: _node }: ComponentProps<'img'> & { node?: unknown }) {
   const safe = typeof src === 'string' ? safeUrl(src) : undefined
   if (safe === undefined || !/^https?:/.test(safe.href))
@@ -101,7 +93,6 @@ function Image({ src, alt, node: _node }: ComponentProps<'img'> & { node?: unkno
 
 const components = { a: Anchor, img: Image }
 
-/** Markdown text to React elements. The title heading is part of the text, as in the file. */
 export const renderMarkdown = (source: string): ReactElement => {
   const tree = processor.runSync(processor.parse(source), source) as Nodes as Root
   return toJsxRuntime(tree, {
@@ -112,7 +103,6 @@ export const renderMarkdown = (source: string): ReactElement => {
   }) as ReactElement
 }
 
-/** Rendered Markdown, styled as a document. */
 export function Markdown({ source }: { readonly source: string }) {
   return <div className="md">{renderMarkdown(source)}</div>
 }

@@ -7,19 +7,14 @@ import { renameFile } from './rename'
 import { makeRepo, type Repo } from './repo'
 
 export interface FixChange {
-  /** Path relative to the workspace root. */
   readonly path: string
   readonly before: string | null
-  /** `null`: the file is deleted (the old path of a rename). */
   readonly after: string | null
 }
 
 export interface FixReport {
-  /** Fixes that were (or, in a dry run, would be) applied. */
   readonly applied: ReadonlyArray<Fix>
-  /** Fixes that could not be applied, with why. */
   readonly skipped: ReadonlyArray<{ readonly fix: Fix; readonly reason: string }>
-  /** Every file the fixes change. */
   readonly changes: ReadonlyArray<FixChange>
 }
 
@@ -28,12 +23,6 @@ const describe = (fix: Fix) =>
     ? `add alias ${fix.alias} to ${fix.path}`
     : `rename ${fix.path} to ${fix.to}`
 
-/**
- * Applies the fixes that lint diagnostics carry: adding a missing ID to `aliases`, and renaming a
- * file to start with its ID. Fixes are planned on a copy held in memory, so the plan can be
- * shown (`dryRun`) or applied as one atomic write. Nothing is ever committed. Fixes for the same
- * file are applied in a safe order, alias first.
- */
 export const applyFixes = (
   repo: Repo,
   diagnostics: ReadonlyArray<Diagnostic>,

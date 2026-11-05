@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import './ChartCard.css'
 
-/** A card for one chart: its title (and a line under it), something at the end of the title row, then the chart. */
 export function ChartCard({
   title,
   subtitle,

@@ -9,16 +9,10 @@ import {
 } from '@netherite/core'
 import { Effect } from 'effect'
 
-/** The tag that marks the ruleset, so `init` can tell whether the workspace already has one. */
 export const rulesetTag = 'netherite-ruleset'
 
 export const rulesetTitle = 'How agents work in this repository'
 
-/**
- * The standing instruction for every agent (ADR-00026). It is a context item, so the person can
- * edit it, `context sync` writes it to `CLAUDE.md` and `AGENTS.md`, and it counts against the
- * token budget: keep it short.
- */
 export const rulesetBody = `
 This repository tracks its work with Netherite. Use the \`netherite\` MCP server, and keep the workspace true as you work.
 
@@ -46,18 +40,11 @@ This repository tracks its work with Netherite. Use the \`netherite\` MCP server
 `
 
 export interface RulesetReport {
-  /** `created` when this run made it, `exists` when the workspace already had one. */
   readonly status: 'created' | 'exists'
-  /** The item's ID. */
   readonly id: string
-  /** Files `context sync` wrote or updated. */
   readonly synced: ReadonlyArray<string>
 }
 
-/**
- * Makes sure the workspace has the ruleset. A new one is written to `CLAUDE.md` and `AGENTS.md`
- * with `context sync`. An existing one is left as it is, so an edited one stays edited.
- */
 export const ensureRuleset = (root: string) =>
   Effect.gen(function* () {
     const repo = yield* openRepo(root)

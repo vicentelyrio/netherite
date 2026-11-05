@@ -16,8 +16,6 @@ export {
   validateItem,
 } from './validate'
 
-/** The configuration with every default applied, for workspaces without a `config.yml`. */
 export const defaultConfig: Config = Schema.decodeUnknownSync(Config)({ version: 1 })
 
-/** Item schemas for the default configuration. */
 export const itemSchemas = makeItemSchemas(defaultConfig)

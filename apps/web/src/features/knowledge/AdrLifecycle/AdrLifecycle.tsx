@@ -3,7 +3,6 @@ import { formatDate } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import './AdrLifecycle.css'
 
-/** The steps an ADR goes through: where it has been and where it is. */
 export function AdrLifecycle({
   status,
   steps,

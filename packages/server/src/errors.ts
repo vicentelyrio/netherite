@@ -10,11 +10,6 @@ interface Tagged {
 const isTagged = (e: unknown): e is Tagged =>
   typeof e === 'object' && e !== null && '_tag' in e && 'message' in e
 
-/**
- * Maps a failure from a core operation to the API's tagged errors, and so to a status (ADR-00010):
- * invalid input 422, a file that changed 409, no such item 404, a state that forbids it 409.
- * Anything else, such as a file that cannot be written, is a 500.
- */
 export const toApiError = (error: unknown): ApiFailure => {
   if (!isTagged(error)) return new Failure({ message: String(error) })
   const e = error as Tagged & Record<string, unknown>

@@ -2,10 +2,6 @@ import { type FieldIssue, ValidationError } from '@netherite/core'
 
 type Args = Record<string, unknown>
 
-/**
- * Reads tool arguments. The MCP SDK passes whatever the agent sent, so each value is checked
- * here and every problem is collected, to be reported together as field-level errors.
- */
 export class ArgReader {
   readonly issues: FieldIssue[] = []
   constructor(private readonly args: Args) {}
@@ -103,7 +99,6 @@ export class ArgReader {
     return this.args[name]
   }
 
-  /** Fails with every problem found so far, if there are any. */
   check(): ValidationError | undefined {
     return this.issues.length === 0 ? undefined : new ValidationError({ issues: this.issues })
   }

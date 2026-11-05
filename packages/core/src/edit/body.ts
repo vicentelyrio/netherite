@@ -3,21 +3,13 @@ import { Effect } from 'effect'
 import { EditError } from '../errors'
 import { detectEol, lineEndAfter, withEol } from './text'
 
-/** Selects a checklist item by its position among the file's task items, or by its text. */
 export type CheckSelector = number | { readonly text: string }
 
-/** What to tick: one item, several items, or every item of the checklist. */
 export type CheckTarget = CheckSelector | ReadonlyArray<CheckSelector> | { readonly all: true }
 
 const isAll = (target: CheckTarget): target is { readonly all: true } =>
   typeof target === 'object' && !Array.isArray(target) && 'all' in target
 
-/**
- * Checks, unchecks or (without `checked`) toggles checklist items: one, several, or all of them.
- * Every item is found first, so one that does not exist fails the whole edit and nothing is
- * changed. Only the characters inside the brackets change. Each item is changed once, even if it
- * is named twice.
- */
 export const toggleChecks = (
   source: string,
   target: CheckTarget,
@@ -64,14 +56,12 @@ export const toggleChecks = (
   return Effect.succeed(text)
 }
 
-/** `toggleChecks` for one item. */
 export const toggleCheck = (
   source: string,
   which: CheckSelector,
   checked?: boolean,
 ): Effect.Effect<string, EditError> => toggleChecks(source, which, checked)
 
-/** A heading to find: its text (case-insensitive), and its level to tell apart repeats. */
 export type SectionSelector = string | { readonly text: string; readonly depth?: number }
 
 const findSection = (source: string, which: SectionSelector) => {
@@ -97,10 +87,6 @@ const findSection = (source: string, which: SectionSelector) => {
 }
 
 export interface SectionEditOptions {
-  /**
-   * `true` stops at the next heading of any level, leaving subsections alone. By default a
-   * section runs to the next heading of the same or a higher level and includes its subsections.
-   */
   readonly excludeSubsections?: boolean
 }
 
@@ -116,10 +102,6 @@ const sectionBounds = (source: string, heading: HeadingInfo, options: SectionEdi
   return { bodyStart: Math.min(bodyStart, end), end }
 }
 
-/**
- * Replaces the body of a section, keeping its heading and the blank lines around the old text.
- * Everything outside the section is untouched.
- */
 export const replaceSection = (
   source: string,
   which: SectionSelector,
@@ -144,10 +126,6 @@ export const replaceSection = (
     return source.slice(0, bodyStart) + replacement + source.slice(end)
   })
 
-/**
- * Adds text at the end of a section's own text (before its subsections, if it has any),
- * as a new paragraph.
- */
 export const appendToSection = (
   source: string,
   which: SectionSelector,
@@ -167,7 +145,6 @@ export const appendToSection = (
     return `${source.slice(0, bodyStart + at)}${eol}${eol}${text}${source.slice(bodyStart + at)}`
   })
 
-/** Adds a new section at the end of the file. Fails if a section with that heading exists. */
 export const appendSection = (
   source: string,
   heading: string,

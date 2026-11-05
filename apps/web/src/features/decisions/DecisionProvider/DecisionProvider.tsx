@@ -8,15 +8,11 @@ import { decisionsQuery, knowledgeQuery, projectsQuery } from '@/infrastructure/
 import { type Lane, lanesOf } from '../lanes'
 
 export interface DecisionState {
-  /** Every lane, whatever project is picked: they are the choices of the project filter. */
   readonly all: ReadonlyArray<Lane>
-  /** The lanes for the project picked, or all of them. */
   readonly lanes: ReadonlyArray<Lane>
   readonly project: string
   readonly setProject: (project: string) => void
-  /** There is no git history to read status changes from. */
   readonly noGit: boolean
-  /** The history is cut short (a shallow clone). */
   readonly partial: boolean
 }
 
@@ -28,7 +24,6 @@ export const useDecisions = (): DecisionState => {
   return value
 }
 
-/** Loads the ADRs and their status changes and holds the project filter. */
 export function DecisionProvider({ children }: { readonly children: ReactNode }) {
   const { LL } = useI18nContext()
   const api = useApi()

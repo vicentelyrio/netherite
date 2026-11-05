@@ -40,7 +40,6 @@ const docPath = 'netherite/docs/DOC-00001-app-overview.md'
 const ctxPath = 'netherite/context/CTX-00001-conventions.md'
 const runPath = 'netherite/runbooks/RUN-00001-release.md'
 
-/** Freshness of every item in the workspace at `dir` (the git root unless `workspaceDir` is given). */
 const measure = async (
   dir: string,
   options: { thresholds?: Thresholds; git?: boolean; workspaceDir?: string; asOf?: string } = {},

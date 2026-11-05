@@ -7,13 +7,10 @@ export interface SplitTemplateProps {
   readonly header: ReactNode
   readonly actions?: ReactNode
   readonly toolbar?: ReactNode
-  /** The list or canvas: eight columns. */
   readonly main: ReactNode
-  /** The preview or detail panel: four columns, beside the main area. */
   readonly aside: ReactNode
 }
 
-/** A list with a detail panel beside it (Knowledge, Tags, Inbox). Stacks on narrow screens. */
 export function SplitTemplate({ header, actions, toolbar, main, aside }: SplitTemplateProps) {
   return (
     <PageFrame>

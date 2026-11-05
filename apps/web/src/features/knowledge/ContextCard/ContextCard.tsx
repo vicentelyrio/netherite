@@ -18,7 +18,6 @@ export interface ContextInfo {
   }>
 }
 
-/** Whether a context item goes to agents, how many tokens it costs, and where it is synced. */
 export function ContextCard({
   item,
   context,

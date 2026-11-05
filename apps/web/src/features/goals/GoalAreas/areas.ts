@@ -2,7 +2,6 @@ import type { GoalRow } from '@netherite/api'
 
 export const noArea = 'No area'
 
-/** Goals grouped by area, in the order the server sends them (areas by name, no area last). */
 export const groupByArea = (goals: ReadonlyArray<GoalRow>) => {
   const groups = new Map<string, GoalRow[]>()
   for (const goal of goals) {
@@ -12,7 +11,6 @@ export const groupByArea = (goals: ReadonlyArray<GoalRow>) => {
   return [...groups].map(([area, rows]) => ({ area, goals: rows }))
 }
 
-/** Tasks done and in total across some goals. */
 export const sum = (goals: ReadonlyArray<GoalRow>) =>
   goals.reduce(
     (acc, g) => ({

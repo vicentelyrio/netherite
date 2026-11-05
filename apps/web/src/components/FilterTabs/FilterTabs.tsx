@@ -4,24 +4,19 @@ import './FilterTabs.css'
 export interface FilterOption<T extends string> {
   readonly value: T
   readonly label: ReactNode
-  /** How many items the option would show. */
   readonly count?: number
-  /** A glyph before the label. */
   readonly icon?: ReactNode
 }
 
 export interface FilterTabsProps<T extends string> {
-  /** The accessible name of the group. */
   readonly label: string
   readonly options: ReadonlyArray<FilterOption<T>>
   readonly value: T
   readonly onChange: (value: T) => void
-  /** `segmented` is one joined control; `chips` are separate pills. */
   readonly variant?: 'segmented' | 'chips'
   readonly className?: string
 }
 
-/** Pick one of a few filters. A radio group underneath, so the keyboard and screen readers work. */
 export function FilterTabs<T extends string>({
   label,
   options,

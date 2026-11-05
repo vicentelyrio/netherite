@@ -3,7 +3,6 @@ import { applyMarkedBlock, type Markers } from '@netherite/core'
 import { Effect, FileSystem, Path } from 'effect'
 import { agentsSection, type Skill, skills } from '../skills'
 
-/** Where the hash of each installed skill is kept, so an edit by a person can be told apart. */
 export const skillsLock = '.netherite/skills.json'
 export const skillsFolder = '.claude/skills'
 
@@ -14,17 +13,7 @@ export const agentsMarkers: Markers = {
     '<!-- Installed by `netherite init`; `netherite init --update` refreshes it. Edit outside these markers. -->',
 }
 
-export type SkillStatus =
-  /** Written for the first time. */
-  | 'created'
-  /** Replaced with a newer version; the person had not changed it. */
-  | 'updated'
-  /** Already the current version. */
-  | 'unchanged'
-  /** An older version the person has not changed; `--update` would replace it. */
-  | 'outdated'
-  /** Changed by a person, so it is left alone. */
-  | 'edited'
+export type SkillStatus = 'created' | 'updated' | 'unchanged' | 'outdated' | 'edited'
 
 export interface InstalledSkill {
   readonly name: string
@@ -34,7 +23,6 @@ export interface InstalledSkill {
 
 export interface SkillsReport {
   readonly skills: ReadonlyArray<InstalledSkill>
-  /** What happened to the `AGENTS.md` section. `damaged` means its markers are broken. */
   readonly agents: 'created' | 'updated' | 'unchanged' | 'damaged'
 }
 
@@ -58,12 +46,6 @@ const fileOrUndefined = (file: string) =>
     return (yield* fs.exists(file)) ? yield* fs.readFileString(file) : undefined
   })
 
-/**
- * Installs the skills into `.claude/skills/` and the "How this repo tracks work" section into
- * `AGENTS.md`. Without `update` it only adds what is missing. With it, a skill that is an older
- * version of ours is replaced, but one that has been edited is never overwritten: a skill counts
- * as edited when it differs from the hash recorded when it was installed (or has no record).
- */
 export const installSkills = (root: string, options: { readonly update: boolean }) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem

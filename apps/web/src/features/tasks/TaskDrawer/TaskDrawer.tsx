@@ -9,7 +9,6 @@ import { SourceEditor } from '@/features/editor'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { TaskContent } from '../TaskContent'
 
-/** A task in a drawer: its fields and checklist, and with `code` the file beside them. */
 export function TaskDrawer({
   id,
   projectId,
@@ -17,9 +16,7 @@ export function TaskDrawer({
   onClose,
 }: {
   readonly id: string | undefined
-  /** The project whose board the task is on: its states are the task's choices. */
   readonly projectId: string
-  /** `code` opens with the file beside the task. */
   readonly initial?: 'code'
   readonly onClose: () => void
 }) {

@@ -6,7 +6,6 @@ import { ProjectsCard } from '../ProjectsCard'
 import { ThroughputCard } from '../ThroughputCard'
 import './StatsBoard.css'
 
-/** The cards of the Stats screen laid out: numbers, throughput beside the goal areas, then activity, projects and knowledge. */
 export function StatsBoard() {
   return (
     <div className="sb">

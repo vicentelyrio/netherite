@@ -10,7 +10,6 @@ const css = readFileSync(join(root, 'components.css'), 'utf8')
 const entry = readFileSync(join(root, 'styles.css'), 'utf8')
 const preview = readFileSync(join(root, 'src/preview.tsx'), 'utf8')
 
-/** Every class name the code uses, from the theme, the components and the rail. */
 const usedClasses = () => {
   const names = new Set<string>()
   const fromTheme = (value: unknown) => {

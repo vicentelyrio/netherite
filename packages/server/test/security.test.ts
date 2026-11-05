@@ -17,7 +17,6 @@ interface Reply {
   readonly text: string
 }
 
-/** A request with exactly the headers given, including `Host` and `Origin`, which `fetch` may rewrite. */
 const send = (
   s: Running,
   method: string,

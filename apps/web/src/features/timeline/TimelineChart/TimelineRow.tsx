@@ -14,7 +14,6 @@ interface Props {
 
 const hue = (type: string) => `var(--nt-color-type-${type})`
 
-/** One row: who it is on the left, its life on the track on the right. */
 export function TimelineRow({ row, today, from, to, onToggle }: Props) {
   const { LL } = useI18nContext()
 
@@ -245,7 +244,6 @@ export function TimelineRow({ row, today, from, to, onToggle }: Props) {
   )
 }
 
-/** A decision of a project: proposed as a ring, accepted as a filled diamond, joined by a line. */
 function DecisionLane({
   decision: d,
   lane,

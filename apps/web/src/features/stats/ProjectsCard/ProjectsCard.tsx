@@ -4,7 +4,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { useStats } from '../StatsProvider'
 import './ProjectsCard.css'
 
-/** Tasks done per project in the period, with the median time they took. */
 export function ProjectsCard() {
   const { LL } = useI18nContext()
   const { data } = useStats()

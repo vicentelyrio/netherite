@@ -12,40 +12,29 @@ import { Effect, PubSub, Semaphore } from 'effect'
 import { newToken } from './security'
 
 export interface ServerOptions {
-  /** The repository's git, for freshness, history and stats. Leave out when there is none. */
   readonly git?: GitRepository | undefined
-  /** A `@handle` recorded as `created_by` on items created through the API. */
   readonly createdBy?: string | undefined
   readonly version?: string
-  /** The session token writes must carry. Default: a fresh random one. */
   readonly token?: string
-  /** Extra origins allowed to call the API, such as `http://localhost:5173` while developing the app. */
   readonly origins?: ReadonlyArray<string>
 }
 
-/** Everything the handlers share. One per repository. */
 export interface ServerState {
   readonly repo: Repo
   readonly git: GitRepository | undefined
   readonly createdBy: string | undefined
   readonly version: string
-  /** The secret for this session: writes without it get 401. */
   readonly token: string
   readonly origins: ReadonlyArray<string>
   readonly freshness: FreshnessCache
-  /** Writes run one at a time, so two requests cannot interleave their read-check-rename steps. */
   readonly writes: Semaphore.Semaphore
-  /** The git history of the content folder, read once per commit. */
   readonly history: Effect.Effect<
     History | undefined,
     import('@netherite/core').GitError,
     import('effect').FileSystem.FileSystem | import('effect').Path.Path
   >
-  /** Events for connected clients (`GET /api/events`). Subscribers see events published after they join. */
   readonly events: PubSub.PubSub<ServerEvent>
-  /** Sends an event to every connected client. */
   readonly publish: (event: ServerEvent) => Effect.Effect<void>
-  /** Call when files changed outside the server, so cached data is recomputed. */
   readonly invalidate: () => void
 }
 

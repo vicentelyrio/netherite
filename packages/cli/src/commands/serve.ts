@@ -10,20 +10,15 @@ import { type Env, type ExitCode, exitCodes } from '../output'
 
 export interface ServeOptions {
   readonly dir: string
-  /** The port asked for. Without it, 4747 or the next free one. */
   readonly port: number | undefined
   readonly noOpen: boolean
-  /** A built app to serve instead of the one bundled with the package. */
   readonly app: string | undefined
-  /** Do not watch for changes made outside the server. */
   readonly noWatch: boolean
   readonly version: string
 }
 
-/** The app bundled next to the program (see the release packaging), if there is one. */
 const bundledApp = () => fileURLToPath(new URL('./app', import.meta.url))
 
-/** Opens a page with the operating system's default browser. */
 export const openInBrowser = (url: string) => {
   const [command, args] =
     process.platform === 'darwin'
@@ -46,10 +41,6 @@ const untilAborted = (signal: AbortSignal | undefined) =>
       }),
   )
 
-/**
- * `netherite serve`: the app, the API, live updates and MCP over HTTP at `/mcp`, on loopback
- * (ADR-00010). Prints where it is and how to connect an agent; stops on Ctrl-C.
- */
 export const serveCommand = (env: Env, options: ServeOptions) =>
   Effect.gen(function* () {
     const path = yield* Path.Path

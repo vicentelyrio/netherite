@@ -1,6 +1,5 @@
 import { type ItemType, parseId } from '@netherite/schema'
 
-/** The folder each type lives in, under the content root (ADR-00002). */
 export const typeFolders = {
   goal: 'goals',
   project: 'projects',
@@ -13,10 +12,6 @@ export const typeFolders = {
 
 const maxSlugLength = 60
 
-/**
- * A file-name slug: lower case, accents removed, anything that is not a letter or digit becomes
- * a hyphen. Letters of any script are kept. Long titles are cut at a word boundary.
- */
 export const fileSlug = (title: string) => {
   const words = title
     .normalize('NFKD')
@@ -37,10 +32,8 @@ export const fileSlug = (title: string) => {
   return slug === '' ? 'untitled' : slug
 }
 
-/** `ADR-00007-use-gnu-stow.md` for an ID and a title. The slug is fixed at creation. */
 export const itemFileName = (id: string, title: string) => `${id}-${fileSlug(title)}.md`
 
-/** Path of a new item relative to the content root, such as `adr/ADR-00007-use-gnu-stow.md`. */
 export const itemRelativePath = (id: string, title: string) => {
   const type = parseId(id)?.type
   if (type === undefined) throw new Error(`Not an item ID: ${id}`)

@@ -8,10 +8,6 @@ import type { Workspace } from './workspace'
 const skipped = (relative: string) =>
   relative.split('/').some((part) => part.startsWith('.')) || inReservedFolder(relative)
 
-/**
- * Reads every Markdown file under the content root, except hidden folders, `assets/` and `templates/`.
- * Files with broken frontmatter are still returned, so lint can report them.
- */
 export const scanItems = (
   workspace: Pick<Workspace, 'root' | 'contentRoot'>,
   options?: ParseOptions,

@@ -3,7 +3,6 @@ import '../shared.css'
 import { useI18nContext } from '@/infrastructure/i18n'
 import './SupersessionChain.css'
 
-/** The ADRs that replaced one another, newest first, with this one marked. */
 export function SupersessionChain({
   id,
   chain,

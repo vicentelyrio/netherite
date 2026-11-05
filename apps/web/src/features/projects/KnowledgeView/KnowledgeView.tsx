@@ -19,7 +19,6 @@ import './KnowledgeView.css'
 
 const groups = ['adr', 'context', 'doc', 'runbook'] as const
 
-/** Everything in knowledge linked to the project, by type, with status, links, age and freshness. */
 export function KnowledgeView({ board }: { readonly board: Board }) {
   const { LL } = useI18nContext()
   const api = useApi()

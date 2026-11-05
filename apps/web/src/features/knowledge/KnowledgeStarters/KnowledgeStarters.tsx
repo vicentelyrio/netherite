@@ -11,7 +11,6 @@ const starters: ReadonlyArray<{ type: ItemTypeName; path: string }> = [
   { type: 'runbook', path: 'runbooks/….md' },
 ]
 
-/** What a repo with no knowledge sees: how to start, and a prompt that imports docs/. */
 export function KnowledgeStarters() {
   const { LL } = useI18nContext()
   const { startCreating } = useKnowledgeIndex()

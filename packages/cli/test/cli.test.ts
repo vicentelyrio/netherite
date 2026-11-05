@@ -27,7 +27,6 @@ const temp = async <A>(use: (dir: string) => Promise<A>) => {
 
 const read = (dir: string, path: string) => readFileSync(join(dir, path), 'utf8')
 
-/** A repository with goal, project and a task, set up through the CLI itself. */
 const workspace = async (dir: string) => {
   git(dir, 'init', '-q', '-b', 'main')
   await cli(dir, 'init')
@@ -809,7 +808,6 @@ describe('renumber', () => {
   })
 
   describe('after a merge produced a duplicate id', () => {
-    /** Two branches each created TASK-00001; the second was committed later. */
     const collision = async (dir: string) => {
       git(dir, 'init', '-q', '-b', 'main')
       await cli(dir, 'init')

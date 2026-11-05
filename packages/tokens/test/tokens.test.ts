@@ -39,7 +39,6 @@ const leaves = (value: unknown, path: string[] = []): Array<[string, unknown]> =
     ? Object.entries(value).flatMap(([k, v]) => leaves(v, [...path, k]))
     : [[path.join('.'), value]]
 
-/** The colour as written, apart from the two translucent ones. */
 const solid = leaves(color).filter(([, v]) => typeof v === 'string' && hex.test(v)) as Array<
   [string, string]
 >

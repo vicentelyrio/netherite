@@ -4,7 +4,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import './TaskChecklist.css'
 import '../shared.css'
 
-/** The task's `- [ ]` items with how many are done; ticking one writes it to the file. */
 export function TaskChecklist({
   task,
   onToggle,

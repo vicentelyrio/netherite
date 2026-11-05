@@ -2,13 +2,10 @@ import { parseShortcut } from '@netherite/ui'
 import { type ActionId, actionIds, actions } from './actions'
 
 export interface ResolvedShortcut {
-  /** The main keys, shown in tooltips and menus. */
   readonly keys: string
-  /** More keys that do the same. */
   readonly aliases: ReadonlyArray<string>
 }
 
-/** Is this text a shortcut the app can listen for (`mod+shift+g`)? */
 export const isValidShortcut = (value: string): boolean => {
   try {
     parseShortcut(value)
@@ -18,7 +15,6 @@ export const isValidShortcut = (value: string): boolean => {
   }
 }
 
-/** The keys an action uses: the person's own if valid, otherwise the default. */
 export const resolveShortcut = (
   id: ActionId,
   overrides: Readonly<Partial<Record<ActionId, string>>> = {},
@@ -42,7 +38,6 @@ const normalise = (shortcut: string) => {
   return `${c.mod ? 'mod+' : ''}${c.alt ? 'alt+' : ''}${c.shift ? 'shift+' : ''}${c.key}`
 }
 
-/** Pairs of actions that would answer to the same keys. */
 export const conflicts = (
   overrides: Readonly<Partial<Record<ActionId, string>>> = {},
 ): ReadonlyArray<readonly [ActionId, ActionId]> => {

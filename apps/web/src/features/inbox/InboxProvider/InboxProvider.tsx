@@ -24,28 +24,20 @@ import { lastSeen, markSeen } from '../waiting'
 
 export interface InboxState {
   readonly inbox: typeof Inbox.Type
-  /** What waits for a person. */
   readonly waiting: number
-  /** Agent changes and uncommitted changes since the last "seen". */
   readonly changed: number
-  /** When the Inbox was last marked as seen. */
   readonly since: string | undefined
-  /** Show every change, not the first few. */
   readonly all: boolean
   readonly showAll: () => void
-  /** Marks everything up to now as seen. */
   readonly seen: () => void
   readonly tab: Tab
   readonly setTab: (tab: Tab) => void
-  /** What the repo raises and nobody has archived or snoozed. */
   readonly open: ReadonlyArray<Entry>
-  /** The open items on the current tab. */
   readonly shown: ReadonlyArray<Entry>
   readonly countOf: (tab: Tab) => number
   readonly snoozed: number
   readonly selected: Entry | undefined
   readonly select: (key: string | undefined) => void
-  /** J and K: move the selection down (1) or up (-1). */
   readonly move: (delta: number) => void
   readonly archive: (item: Entry) => void
   readonly snooze: (item: Entry) => void
@@ -59,7 +51,6 @@ export const useInboxState = (): InboxState => {
   return value
 }
 
-/** Loads the Inbox since the last time it was seen; shows loading and error instead of children. */
 export function InboxProvider({ children }: { readonly children: ReactNode }) {
   const { LL } = useI18nContext()
   const api = useApi()

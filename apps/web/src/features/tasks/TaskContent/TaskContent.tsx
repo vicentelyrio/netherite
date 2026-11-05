@@ -11,7 +11,6 @@ import { TaskFields } from '../TaskFields'
 import { TaskRelated } from '../TaskRelated'
 import './TaskContent.css'
 
-/** A task as the drawer shows it: its facts, decisions, summary, checklist and related items. */
 export function TaskContent({
   id,
   columns,

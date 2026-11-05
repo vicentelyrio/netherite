@@ -13,7 +13,6 @@ export interface AsOfNode {
   readonly status?: NodeStatus
   readonly progress?: number
   readonly parent?: string
-  /** A doc whose covered code had changed in many commits since its review, at that date. */
   readonly stale?: boolean
 }
 
@@ -24,18 +23,13 @@ export interface AsOfGraph {
     readonly to: string
     readonly kind: EdgeKind
   }>
-  /** The date this is the state of, ISO 8601. */
   readonly asOf: string
-  /** `true` when old history is missing, so some items may show later than they began. */
   readonly approximate: boolean
 }
 
 export interface AsOfOptions {
-  /** The moment to rebuild (ISO 8601 or `YYYY-MM-DD`, meaning the end of that day). */
   readonly asOf: string
-  /** The current time; items not in history yet (uncommitted) appear from here on. */
   readonly now?: string
-  /** Freshness as of that date (`computeFreshness` with `asOf`), by path, for the stale flag. */
   readonly freshness?: ReadonlyMap<string, Freshness> | undefined
 }
 
@@ -43,7 +37,6 @@ const endOfDay = (date: string) => (date.length <= 10 ? `${date}T23:59:59.999Z` 
 
 const text = (value: FieldValue) => (typeof value === 'string' ? value : undefined)
 
-/** What a field held at a moment: the last change on or before it. `undefined` before any. */
 const valueAt = (item: ItemHistory | undefined, field: string, at: number): FieldValue => {
   let value: FieldValue
   for (const t of item?.transitions ?? []) {
@@ -56,13 +49,6 @@ const valueAt = (item: ItemHistory | undefined, field: string, at: number): Fiel
 const first = (value: FieldValue) =>
   Array.isArray(value) ? (value[0] as string | undefined) : text(value)
 
-/**
- * Rebuilds the graph as it stood at a date (ADR-00023) by replaying history: which items existed,
- * what state each was in, who they belonged to, and how much of each project and goal was done.
- * Links come from today's files, shown when both ends existed; a supersession shows from the day
- * the new decision was accepted. A doc is stale when the given freshness says so. Checklist progress inside
- * an open task is not in history, so such a task counts as zero until it is done.
- */
 export const graphAsOf = (repo: Repo, history: History, options: AsOfOptions): AsOfGraph => {
   const at = Date.parse(endOfDay(options.asOf))
   const now = Date.parse(options.now ?? new Date().toISOString())

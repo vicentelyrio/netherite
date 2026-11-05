@@ -3,9 +3,7 @@ import type { Repo } from './ops/repo'
 import { fieldsOf } from './views'
 
 export interface TagNode extends TagUse {
-  /** The cluster it belongs to (an area, or a group of tags used together). */
   readonly cluster: string
-  /** Tags most often on the same items, most first. */
   readonly often: ReadonlyArray<{
     readonly field: TagField
     readonly name: string
@@ -16,16 +14,13 @@ export interface TagNode extends TagUse {
 export interface TagEdge {
   readonly a: { readonly field: TagField; readonly name: string }
   readonly b: { readonly field: TagField; readonly name: string }
-  /** Items that carry both. */
   readonly count: number
 }
 
 export interface TagDuplicate {
   readonly a: { readonly field: TagField; readonly name: string }
   readonly b: { readonly field: TagField; readonly name: string }
-  /** `name`: spelled almost the same. `neighbours`: spelled alike and used with the same tags. */
   readonly reason: 'name' | 'neighbours'
-  /** 0 to 1, higher is more likely. */
   readonly score: number
 }
 
@@ -56,14 +51,12 @@ const editDistance = (a: string, b: string) => {
   return row[b.length] as number
 }
 
-/** `Back-End`, `back_end` and `backends` all become `backend`. */
 const squash = (name: string) =>
   name
     .toLowerCase()
     .replace(/[-_.\s]/g, '')
     .replace(/s$/, '')
 
-/** Spelled the same once case, separators and a plural s are ignored, or one letter apart. */
 const nameScore = (a: string, b: string): number => {
   const x = squash(a)
   const y = squash(b)
@@ -73,7 +66,6 @@ const nameScore = (a: string, b: string): number => {
   return d <= 1 ? 0.85 : d <= 2 && Math.min(x.length, y.length) >= 6 ? 0.6 : 0
 }
 
-/** Tags that are used by the same items, 0 to 1. */
 const overlap = (a: ReadonlySet<string>, b: ReadonlySet<string>) => {
   let both = 0
   for (const id of a) if (b.has(id)) both++
@@ -81,13 +73,6 @@ const overlap = (a: ReadonlySet<string>, b: ReadonlySet<string>) => {
   return union === 0 ? 0 : both / union
 }
 
-/**
- * Which tags go together (ADR-00022's tag map): how often each pair sits on the same item, a
- * cluster for each tag, and pairs that are probably one tag spelled two ways. A tag's cluster is
- * the goal area it is used under most; tags used under no area are grouped by label propagation
- * over the pairs, and the group is named after its most used tag. It reads the files as they are
- * and changes nothing; merging is renaming one into the other (`renameTag`).
- */
 export const tagMap = (repo: Repo): TagMap => {
   const usage = tagUsage(repo)
   const nodes = new Map(usage.map((u) => [keyOf(u), u]))

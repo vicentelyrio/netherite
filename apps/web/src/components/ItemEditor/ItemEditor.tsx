@@ -22,41 +22,24 @@ import './ItemEditor.css'
 export type EditorMode = 'split' | 'text'
 
 export interface ItemEditorProps {
-  /** The file as the server has it now. When it changes while the buffer is being edited, the person is asked. */
   readonly source: Version & { readonly head: string | null }
-  /** Saves the whole text over the version it was based on. Resolves when it is on disk; rejects if it was refused. */
   readonly onSave: (text: string, baseHash: string) => Promise<Version>
-  /** Asks the server about text that is not saved. */
   readonly lint: (text: string) => Promise<ReadonlyArray<ServerDiagnostic>>
-  /** Items a `[[` can link to. */
   readonly targets: ReadonlyArray<LinkTarget>
   readonly mode?: EditorMode
   readonly onModeChange?: (mode: EditorMode) => void
-  /** Called with the view once it exists, for tests and tools. */
   readonly onReady?: (view: EditorView) => void
-  /** `drawer` fills its frame with no margins or borders of its own. */
   readonly variant?: 'page' | 'drawer'
-  /** What to show beside the code instead of the rendered text. */
   readonly preview?: ReactNode
-  /** Told how many lines differ from the last commit, as the buffer changes. */
   readonly onStats?: (stats: { readonly changedLines: number }) => void
-  /** The checked-out branch, shown in the status bar. */
   readonly branch?: string | undefined
-  /** How long after the last keystroke an edit is saved by itself, in milliseconds. Default 1000. */
   readonly autosaveDelay?: number
 }
 
-/** The text after the frontmatter, which is what the rendered view shows. */
 export const bodyOf = (text: string) => text.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, '')
 
 const lintDelay = 400
 
-/**
- * The source editor for one item (TASK-00036): CodeMirror with YAML frontmatter and Markdown,
- * problems from the server's lint, wikilink completion, a gutter of changes since the last commit,
- * and the rendered text beside it. If the file changes on disk while there are unsaved edits, it
- * says so and lets the person choose; it never overwrites either side by itself.
- */
 export function ItemEditor({
   source,
   onSave,

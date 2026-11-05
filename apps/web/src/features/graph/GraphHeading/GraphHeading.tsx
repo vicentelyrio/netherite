@@ -6,7 +6,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { itemQuery } from '@/infrastructure/query'
 import './GraphHeading.css'
 
-/** "Graph", or, when one item is in focus, the path to it and its title. */
 export function GraphHeading({ focus }: { readonly focus?: string | undefined }) {
   const { LL } = useI18nContext()
   const api = useApi()

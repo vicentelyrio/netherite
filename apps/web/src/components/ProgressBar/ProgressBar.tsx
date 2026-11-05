@@ -7,7 +7,6 @@ export interface ProgressBarProps {
   readonly label?: string
 }
 
-/** The progress bar with its count, `18/24`, at the end; green when everything is done. */
 export function ProgressBar({ done, total, label }: ProgressBarProps) {
   return (
     <div className="progress-bar">

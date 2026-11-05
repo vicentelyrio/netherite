@@ -14,31 +14,25 @@ const lengths: Record<Period, number> = { '30d': 30, quarter: 90, year: 365 }
 
 export interface Delta {
   readonly value: number
-  /** The same measure over the period before; missing when it cannot be known. */
   readonly previous?: number
 }
 
 export interface PeriodStats {
   readonly period: Period
-  /** `YYYY-MM-DD`, both ends included. */
   readonly from: string
   readonly to: string
   readonly kpis: {
     readonly created: Delta
     readonly done: Delta
-    /** Days from first start to done, median over the tasks finished in the period. */
     readonly cycleDays: Delta | null
-    /** Commits to the content folder. */
     readonly commits: Delta
     readonly staleDocs: Delta
-    /** Commits tied to tracked work, as a share of all commits; missing when git was not asked. */
     readonly linked?: {
       readonly percent: number
       readonly total: number
       readonly previous?: number
     }
   }
-  /** Tasks created and finished per week (30 days, quarter) or per month (year). */
   readonly throughput: ReadonlyArray<{
     readonly start: string
     readonly created: number
@@ -47,21 +41,16 @@ export interface PeriodStats {
   readonly areas: ReadonlyArray<{
     readonly area: string
     readonly goals: number
-    /** Mean progress of its goals now, 0 to 1. */
     readonly share: number
-    /** Points gained over the period (share now minus share at the start, in percent points). */
     readonly gained: number
     readonly achieved: number
-    /** The titles of the goals reached in the period, and of those that saw no task done. */
     readonly achievedGoals: ReadonlyArray<string>
     readonly idleGoals: ReadonlyArray<string>
-    /** Each goal of the area: how much is done, and how many points the period added. */
     readonly goalRows: ReadonlyArray<{
       readonly title: string
       readonly share: number
       readonly gained: number
     }>
-    /** Goals still in progress that gained nothing. */
     readonly idle: number
   }>
   readonly projects: ReadonlyArray<{
@@ -70,7 +59,6 @@ export interface PeriodStats {
     readonly done: number
     readonly cycleDays: number | null
   }>
-  /** Commits per day over the period, from the Monday of its first week; days without commits are left out. */
   readonly heat: {
     readonly from: string
     readonly to: string
@@ -84,16 +72,13 @@ export interface PeriodStats {
       readonly notTracked: number
     }
     readonly decisions: Readonly<Record<string, number>>
-    /** Decisions that moved in the period: how many were proposed, accepted, deprecated or superseded. */
     readonly decided: Readonly<Record<string, number>>
-    /** Code changed most often in the period with no knowledge changing alongside it. */
     readonly undocumented: ReadonlyArray<{
       readonly path: string
       readonly commits: number
       readonly last: string
     }>
   }
-  /** Every area there is, for the filter, whatever area is chosen. */
   readonly areaNames: ReadonlyArray<string>
   readonly approximate: boolean
 }
@@ -102,18 +87,15 @@ export interface PeriodOptions {
   readonly period: Period
   readonly now?: string
   readonly freshness?: ReadonlyMap<string, Freshness>
-  /** Commits tied to tracked work, this period and the one before (`linkedCommits`). */
   readonly linkage?: {
     readonly current: { readonly total: number; readonly linked: number }
     readonly previous: { readonly total: number; readonly linked: number }
   }
-  /** Code changed without a doc update in this period (`undocumentedChurn`). */
   readonly undocumented?: ReadonlyArray<{
     readonly path: string
     readonly commits: number
     readonly last: string
   }>
-  /** Only the work under goals in this area. Commits and knowledge are not filtered. */
   readonly area?: string
 }
 
@@ -136,7 +118,6 @@ const median = (values: ReadonlyArray<number>) => {
 }
 const daysBetween = (from: string, to: string) => (Date.parse(to) - Date.parse(from)) / 86_400_000
 
-/** The first day of the bucket a day falls in: its Monday, or for a year its month. */
 const bucketOf = (period: Period, date: string) =>
   period === 'year' ? `${date.slice(0, 7)}-01` : weekStart(date)
 const nextBucket = (period: Period, start: string) => {
@@ -146,11 +127,6 @@ const nextBucket = (period: Period, start: string) => {
   return d.toISOString().slice(0, 10)
 }
 
-/**
- * The numbers the Stats screen shows for a period, all read from the progression model
- * (ADR-00020): what was created and finished, how long work took, how goals moved, and the
- * health of knowledge. Every measure with a past is compared against the period before it.
- */
 export const periodStats = (repo: Repo, history: History, options: PeriodOptions): PeriodStats => {
   const nowIso = options.now ?? new Date().toISOString()
   const to = dayOf(nowIso)

@@ -2,24 +2,15 @@ import { Clock, Effect, FileSystem, Path } from 'effect'
 import { IoError } from './errors'
 import type { Workspace } from './workspace'
 
-/** Where agent activity is recorded, relative to the workspace root. Per-user, so git ignores it. */
 export const activityFile = '.netherite/local/activity.jsonl'
 
-/** One write made through an agent interface (MCP). */
 export interface ActivityEntry {
-  /** When it happened, ISO 8601 with milliseconds. */
   readonly time: string
-  /** The tool that did it, such as `create` or `set_state`. */
   readonly tool: string
-  /** The item it was about. */
   readonly id: string
-  /** The item's path afterwards (or where it was, if it was deleted). */
   readonly path: string
-  /** Hash of the item's file afterwards, or `null` if it was deleted. */
   readonly hash: string | null
-  /** Every file the write touched. */
   readonly changed: ReadonlyArray<string>
-  /** Who: `mcp` for an agent, or the server's `@handle`. */
   readonly actor?: string
 }
 
@@ -40,10 +31,6 @@ const isEntry = (value: unknown): value is ActivityEntry => {
   )
 }
 
-/**
- * Adds one line to the activity log. The line is written in a single append, so entries from
- * separate processes do not mix. The log is created, with its folder, on first use.
- */
 export const appendActivity = (workspace: Pick<Workspace, 'root'>, entry: NewActivity) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
@@ -59,27 +46,17 @@ export const appendActivity = (workspace: Pick<Workspace, 'root'>, entry: NewAct
   })
 
 export interface ReadActivityOptions {
-  /** Only entries after this time (ISO 8601). */
   readonly since?: string
-  /** Only entries about these item IDs. */
   readonly ids?: ReadonlyArray<string>
-  /** Only entries made with these tools. */
   readonly tools?: ReadonlyArray<string>
-  /** At most this many, newest first. */
   readonly limit?: number
 }
 
 export interface ActivityLog {
-  /** Newest first. */
   readonly entries: ReadonlyArray<ActivityEntry>
-  /** Lines that were not valid entries, for example a line cut short by a crash. */
   readonly skipped: number
 }
 
-/**
- * Reads the activity log, newest first. A missing log is an empty one, and lines that cannot be
- * read are skipped and counted rather than failing the whole read.
- */
 export const readActivity = (
   workspace: Pick<Workspace, 'root'>,
   options: ReadActivityOptions = {},
@@ -127,20 +104,16 @@ export const readActivity = (
     } satisfies ActivityLog
   })
 
-/** What happened to one item, summed up from its entries. */
 export interface ItemActivity {
   readonly id: string
-  /** The latest path. */
   readonly path: string
   readonly count: number
   readonly tools: ReadonlyArray<string>
   readonly first: string
   readonly last: string
-  /** `true` if the item's last recorded event was deleting it. */
   readonly deleted: boolean
 }
 
-/** Groups entries by item, most recently active first. Used for "changed by agents". */
 export const groupActivity = (
   entries: ReadonlyArray<ActivityEntry>,
 ): ReadonlyArray<ItemActivity> => {

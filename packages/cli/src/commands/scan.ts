@@ -11,11 +11,8 @@ import { type Env, type ExitCode, exitCodes, json } from '../output'
 
 export interface ScanOptions {
   readonly dir: string
-  /** Where to write the draft batch, relative to the workspace. Default `.netherite/local/scan.json`. */
   readonly out: string | undefined
-  /** Include the per-folder `AGENTS.md` and `CLAUDE.md` files. */
   readonly nestedAgentFiles: boolean
-  /** Overwrite a draft that is already there. */
   readonly force: boolean
   readonly json: boolean
 }
@@ -74,11 +71,6 @@ const skipHint: Partial<Record<SkipReason, string>> = {
   'nested-agent-file': 'Add --nested-agent-files to include them.',
 }
 
-/**
- * Looks through the repository for what is already written down (docs, runbooks, decision
- * records, the files agents read) and writes a draft batch for `netherite import`. It only reads:
- * the one file it writes is the draft.
- */
 export const scanCommand = (env: Env, options: ScanOptions) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem

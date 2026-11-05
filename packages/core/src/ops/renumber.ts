@@ -13,13 +13,7 @@ import type { OpEnv, OpError, OpOptions } from './operations'
 import type { Repo } from './repo'
 
 export interface RenumberOptions extends OpOptions {
-  /** The ID to use. Defaults to the next free ID for the item's type. */
   readonly newId?: string
-  /**
-   * Paths of items whose links to the old ID should follow it. Needed when the old ID is used by
-   * more than one item, because a bare `[[ID]]` then does not say which it meant: pass the files
-   * that were created together with this one (for example, the same branch).
-   */
   readonly rewriteReferencesIn?: ReadonlyArray<string>
 }
 
@@ -29,14 +23,12 @@ export interface RenumberResult {
   readonly oldPath: string
   readonly path: string
   readonly item: ScannedItem
-  /** Other files whose links were rewritten. */
   readonly rewritten: ReadonlyArray<string>
   readonly hash: string
 }
 
 const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-/** New file name for an item whose ID changes: the ID prefix is replaced and the slug is kept. */
 const renamed = (path: string, oldId: string, newId: string, title: string | undefined) => {
   const dir = path.slice(0, path.lastIndexOf('/') + 1)
   const name = path.slice(dir.length).replace(/\.md$/i, '')
@@ -49,15 +41,6 @@ const renamed = (path: string, oldId: string, newId: string, title: string | und
   return `${dir}${file}`
 }
 
-/**
- * Gives an item a new ID (the next free one by default), renames its file, and rewrites the
- * links that point at it, in frontmatter fields and in `[[wikilinks]]`. All files change
- * together or not at all.
- *
- * Links written by ID alone are rewritten when they resolve to this item. When the old ID is
- * shared with another item they cannot be told apart, so only links in `rewriteReferencesIn`
- * are rewritten. Links by file name follow the rename.
- */
 export const renumber = (
   repo: Repo,
   path: string,

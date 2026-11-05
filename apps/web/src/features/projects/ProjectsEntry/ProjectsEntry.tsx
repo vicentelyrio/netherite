@@ -6,10 +6,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { projectsQuery } from '@/infrastructure/query'
 import { lastProject } from './remember'
 
-/**
- * Projects in the rail is not a list: a project is reached from its goal. It opens the board you
- * were on, or else the project with the most open tasks, or says there is none.
- */
 export function ProjectsEntry() {
   const { LL } = useI18nContext()
   const api = useApi()

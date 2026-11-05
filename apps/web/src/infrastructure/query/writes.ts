@@ -4,7 +4,6 @@ import type { Api } from '../api'
 import { type TranslationFunctions, useI18nContext } from '../i18n'
 import { type Notice, type Notices, useNotices } from '../notices'
 
-/** The message for a failed call, as a notice. Conflicts offer to reload. */
 export const noticeFor = (
   LL: TranslationFunctions,
   error: unknown,
@@ -41,7 +40,6 @@ export const noticeFor = (
   }
 }
 
-/** Refreshes everything about items after a write (the event stream does too; this is just sooner). */
 export const refresh = (client: QueryClient) =>
   Promise.all(
     [['items'], ['goals'], ['projects'], ['knowledge'], ['tags'], ['graph']].map((queryKey) =>
@@ -49,10 +47,6 @@ export const refresh = (client: QueryClient) =>
     ),
   )
 
-/**
- * A write to the server. On success the item queries refresh. On failure the person is told why in
- * a notice, and a conflict (the file changed since it was read) offers to reload the item.
- */
 export const useWrite = <A, Vars>(
   api: Api,
   run: (api: Api, vars: Vars) => Promise<A>,

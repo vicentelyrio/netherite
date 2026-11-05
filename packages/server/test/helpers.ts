@@ -18,26 +18,20 @@ export const isolateGit = () => {
 export interface Running {
   readonly dir: string
   readonly url: string
-  /** The session token writes must carry. */
   readonly token: string
   readonly state: ServerState
   readonly client: Effect.Success<ReturnType<typeof makeClient>>
-  /** Reports file changes to the watcher, as the operating system would. Absolute paths. */
   readonly emit: (...paths: string[]) => void
 }
 
 export interface StartOptions {
   readonly files?: (dir: string) => Record<string, string>
   readonly git?: boolean
-  /** Start the live updates (watcher and lint events). `false` leaves only the API. */
   readonly live?: boolean
-  /** Extra origins the server accepts. */
   readonly origins?: ReadonlyArray<string>
-  /** A folder with a built app to serve. */
   readonly appRoot?: (dir: string) => string
 }
 
-/** A watch backend the test drives by hand, routed by folder like the real one. */
 const fakeBackend = () => {
   const subs: Array<{ dir: string; onEvents: (events: Array<{ path: string }>) => void }> = []
   const backend: WatchBackend = {
@@ -60,10 +54,6 @@ const fakeBackend = () => {
   return { backend, emit }
 }
 
-/**
- * A temporary workspace with the API served on a free port, and a typed client for it. Everything
- * is torn down when the scope closes.
- */
 export const start = (options: StartOptions = {}): Effect.Effect<Running, unknown, Scope.Scope> =>
   Effect.gen(function* () {
     const dir = realpathSync(mkdtempSync(join(tmpdir(), 'netherite-server-')))
@@ -101,7 +91,6 @@ export const start = (options: StartOptions = {}): Effect.Effect<Running, unknow
     return { dir, url, token: running.token, state, client, emit: fake.emit }
   }).pipe(Effect.provide(NodeServices.layer))
 
-/** Runs a test body against a running server, then shuts it down. */
 export const withServer = <A>(
   use: (running: Running) => Effect.Effect<A, unknown, Scope.Scope>,
   options: StartOptions = {},
@@ -113,7 +102,6 @@ export const withServer = <A>(
 export const git = (cwd: string, ...args: string[]) =>
   execFileSync('git', args, { cwd, encoding: 'utf8' }).trim()
 
-/** Makes the folder a git repository with everything in it committed. */
 export const initGit = (dir: string) => {
   git(dir, 'init', '-q', '-b', 'main')
   git(dir, 'config', 'user.name', 'Ada Lovelace')
@@ -127,14 +115,12 @@ export const commitAll = (dir: string, message: string) => {
   git(dir, 'commit', '-q', '-m', message)
 }
 
-/** A plain `fetch` against the server, for checking status codes and raw bodies. */
 export const raw = async (url: string, path: string, init?: RequestInit) => {
   const response = await fetch(`${url}${path}`, init)
   const text = await response.text()
   return { status: response.status, body: text === '' ? undefined : (JSON.parse(text) as any) }
 }
 
-/** A server state over a temporary workspace, without listening. */
 export const makeTempState = async () => {
   const dir = realpathSync(mkdtempSync(join(tmpdir(), 'netherite-server-')))
   for (const [path, text] of Object.entries(cleanWorkspaceFiles(dir))) {

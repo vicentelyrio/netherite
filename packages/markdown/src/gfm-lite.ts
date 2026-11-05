@@ -10,12 +10,6 @@ import { gfmTaskListItem } from 'micromark-extension-gfm-task-list-item'
 import type {} from 'remark-parse'
 import type { Plugin } from 'unified'
 
-/**
- * GitHub Flavored Markdown without autolink literals: tables, task lists, strikethrough and
- * footnotes. Finding bare URLs and e-mail addresses in text is the slowest part of GFM and
- * the index does not use it, so parsing files for the index is about a third faster. Rendering
- * uses the full `remark-gfm`.
- */
 export const remarkGfmLite: Plugin<[], Root> = function () {
   const data = this.data()
   data.micromarkExtensions ??= []

@@ -4,7 +4,6 @@ import { ProjectMain, ProjectSide, type ProjectViewId } from '@/features/project
 import { TaskDrawer } from '@/features/tasks'
 import { BoardTemplate } from '@/templates'
 
-/** One project: its views on the board, the task open beside it in a drawer. */
 export function ProjectPage({
   id,
   task,

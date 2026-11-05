@@ -16,7 +16,6 @@ import {
 } from './scale'
 import { statusGlyph } from './status'
 
-/** Every CSS variable starts with this, so they cannot clash with a library's. */
 export const prefix = '--nt-'
 
 const kebab = (text: string) =>
@@ -27,7 +26,6 @@ const kebab = (text: string) =>
 
 const px = (n: number) => (n === 0 ? '0' : `${n}px`)
 
-/** Flattens nested objects to `[name, leaf]` pairs, joining keys with `-`. */
 const flatten = (value: unknown, path: string[] = []): Array<[string, string | number]> => {
   if (typeof value === 'string' || typeof value === 'number') return [[path.join('-'), value]]
   return Object.entries(value as Record<string, unknown>).flatMap(([key, child]) =>
@@ -45,7 +43,6 @@ const named = (group: string, value: unknown, format: (leaf: string | number) =>
 
 const lengths = (leaf: string | number) => (typeof leaf === 'number' ? px(leaf) : leaf)
 
-/** All the variables: colours, type, space, radii, layout, icons, motion, shadows and the graph. */
 export const variables = (): Record<string, string> => {
   const edges = Object.fromEntries(
     edgeKinds.flatMap((kind) => {
@@ -103,10 +100,6 @@ export const variables = (): Record<string, string> => {
   }
 }
 
-/**
- * Variables that point the UI library's own variables at ours, so its components look like the
- * design without a rule per component.
- */
 export const libraryVariables = (): Record<string, string> => ({
   '--mantine-color-body': `var(${prefix}color-bg-canvas)`,
   '--mantine-color-text': `var(${prefix}color-text-primary)`,
@@ -127,10 +120,6 @@ export const libraryVariables = (): Record<string, string> => ({
   '--mantine-focus-ring-color': `var(${prefix}color-accent-fg)`,
 })
 
-/**
- * The whole stylesheet, on `:root`. The design is dark only, so there is one set of colours and
- * the page is told so with `color-scheme`.
- */
 export const stylesheet = () => {
   const lines = [
     'color-scheme: dark;',

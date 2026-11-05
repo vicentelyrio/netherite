@@ -10,7 +10,6 @@ export interface Filters {
   readonly stale: boolean
   readonly orphans: boolean
   readonly sort: SortKey
-  /** Text to find in the title, ID or path. */
   readonly q: string
 }
 
@@ -27,7 +26,6 @@ export const noFilters: Filters = {
 
 const freshnessRank = { stale: 0, drifting: 1, unknown: 2, fresh: 3 } as const
 
-/** What the index shows: the filters apply together, and the type tab is not part of the counts. */
 export const filterKnowledge = (rows: ReadonlyArray<KnowledgeRow>, f: Filters): KnowledgeRow[] =>
   rows
     .filter(
@@ -57,7 +55,6 @@ export const filterKnowledge = (rows: ReadonlyArray<KnowledgeRow>, f: Filters): 
       }
     })
 
-/** Counts per type tab, over everything the other filters let through. */
 export const typeCounts = (rows: ReadonlyArray<KnowledgeRow>, f: Filters) => {
   const base = filterKnowledge(rows, { ...f, type: 'all' })
   const counts: Record<string, number> = { all: base.length }

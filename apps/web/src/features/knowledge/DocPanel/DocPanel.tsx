@@ -15,7 +15,6 @@ import '../shared.css'
 import { useI18nContext } from '@/infrastructure/i18n'
 import './DocPanel.css'
 
-/** What an item can be switched between from here; superseding needs a replacement, so it is not here. */
 const statusesFor = (type: string) =>
   type === 'adr'
     ? (['proposed', 'accepted', 'deprecated'] as const)
@@ -27,7 +26,6 @@ const statusIcon = {
   deprecated: 'block',
 } as const
 
-/** What the item is connected to: its type and status, freshness, links both ways, co-changes. */
 export function DocPanel({
   item,
   data,
@@ -39,7 +37,6 @@ export function DocPanel({
   readonly data: KnowledgeView | undefined
   readonly preview: KnowledgePreview | undefined
   readonly stale: boolean
-  /** Changes an ADR's status; superseding is done by the new decision, not from here. */
   readonly status?: { readonly pending: boolean; readonly set: (status: string) => void }
 }) {
   const { LL } = useI18nContext()

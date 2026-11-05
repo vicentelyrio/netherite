@@ -6,14 +6,8 @@ import { normalizeSource } from './source'
 import type { Workspace } from './workspace'
 import type { WorkspaceIndex } from './workspace-index'
 
-/**
- * A survey of a repository for what is already written down (ADR-00026): docs, runbooks, decision
- * records and the files agents read. It only reads. The result is a draft batch for
- * `netherite import`, and an account of what was left out and why, so the person can review both.
- */
 export type SurveyType = 'doc' | 'runbook' | 'context' | 'adr'
 
-/** One entry of the draft batch, in the shape `netherite import` reads. */
 export interface SurveyEntry {
   readonly source: string
   readonly type: SurveyType
@@ -21,7 +15,6 @@ export interface SurveyEntry {
   readonly fields?: Readonly<Record<string, string>>
 }
 
-/** Why files were left out of the batch. */
 export type SkipReason =
   | 'already-imported'
   | 'nested-agent-file'
@@ -36,26 +29,20 @@ export type SkipReason =
 
 export interface SkippedGroup {
   readonly reason: SkipReason
-  /** What the group is, in a few words. */
   readonly label: string
   readonly count: number
-  /** A few of the paths, so the person can see what they are. */
   readonly examples: ReadonlyArray<string>
 }
 
 export interface Survey {
-  /** Files looked at: every file the walk reached, whatever its kind. */
   readonly scanned: number
   readonly entries: ReadonlyArray<SurveyEntry>
   readonly skipped: ReadonlyArray<SkippedGroup>
-  /** Things to look at before importing, such as two records with the same number. */
   readonly notes: ReadonlyArray<string>
 }
 
 export interface SurveyOptions {
-  /** The repository's git history, to date a decision record that does not date itself. */
   readonly git?: GitRepository | undefined
-  /** Include the per-folder `AGENTS.md` and `CLAUDE.md` files, which are left out by default. */
   readonly nestedAgentFiles?: boolean | undefined
 }
 
@@ -73,7 +60,6 @@ const labels: Record<SkipReason, string> = {
   'too-large': 'files over 1 MB',
 }
 
-/** Folders that are never walked into. */
 const pruned = new Set([
   'node_modules',
   '.git',
@@ -100,10 +86,8 @@ const pruned = new Set([
   '.terraform',
 ])
 
-/** Folders that another tool owns and keeps rewriting. */
 const managedFolders = new Set(['openspec', '.changeset', '.changes', 'changelog.d', '.vitepress'])
 
-/** Hidden folders that still hold things worth importing. */
 const hiddenKept = new Set(['.ai', '.claude', '.cursor', '.github', '.agents'])
 
 const markdown = /\.(md|mdx|mdc|markdown)$/i
@@ -122,13 +106,11 @@ const examplesPerGroup = 4
 
 const pad = (n: number, width: number) => String(n).padStart(width, '0')
 
-/** An ADR's number from its file name: `0062-x.md`, `adr-7-x.md`, `12_x.md`. */
 const adrNumber = (name: string): number | undefined => {
   const m = name.match(/^(?:adr[-_ ]*)?(\d{1,5})(?:[-_. ]|$)/i)
   return m === null ? undefined : Number(m[1])
 }
 
-/** The status a decision record states: `Status: x`, `- **Status:** x`, or a `## Status` section. */
 const adrStatus = (text: string): string | undefined => {
   const line = text.match(/^\s*[-*]?\s*\**status\**:\**\s*(.+)$/im)?.[1]
   const section = text.match(/^#{1,4}\s*status\s*\r?\n+\s*([^\r\n#].*)$/im)?.[1]
@@ -148,12 +130,10 @@ const adrStatus = (text: string): string | undefined => {
   return undefined
 }
 
-/** The date a decision record states, `YYYY-MM-DD`. */
 const adrDate = (text: string): string | undefined =>
   text.match(/^\s*[-*]?\s*\**date\**:\**\s*(\d{4}-\d{2}-\d{2})/im)?.[1] ??
   text.match(/^date:\s*["']?(\d{4}-\d{2}-\d{2})/im)?.[1]
 
-/** Matchers for the root `.gitignore`: plain names and globs, not negations. */
 const gitignored = (text: string | undefined) => {
   const patterns = (text ?? '')
     .split(/\r?\n/)
@@ -174,10 +154,6 @@ const isStub = (text: string) => {
   return body.length < 80 && /^@\S+\.md$/.test(body)
 }
 
-/**
- * Walks the repository from the workspace root and sorts every Markdown file and agent file into a
- * draft batch or a group of files left out.
- */
 export const surveyRepository = (
   workspace: Pick<Workspace, 'root' | 'contentRoot'>,
   index: Pick<WorkspaceIndex, 'items'>,

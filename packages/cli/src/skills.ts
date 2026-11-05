@@ -1,13 +1,5 @@
-/**
- * The agent skills `netherite init` installs into `.claude/skills/` (ADR-00013), and the short
- * section for `AGENTS.md`. They are text bundled with the package, so a skill always matches the
- * version of the tools it calls. Skills name items by ID only.
- */
-
 export interface Skill {
-  /** Folder name under `.claude/skills/`. */
   readonly name: string
-  /** The whole `SKILL.md`. */
   readonly text: string
 }
 
@@ -326,7 +318,6 @@ Tell the person how many ADRs you proposed, at which confidence, which questions
   ),
 ]
 
-/** The text between the markers in `AGENTS.md`. */
 export const agentsSection = `
 ## How this repo tracks work
 

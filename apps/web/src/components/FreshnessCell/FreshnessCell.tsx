@@ -3,13 +3,10 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import './FreshnessCell.css'
 
 export interface FreshnessCellProps {
-  /** `null` for an item that is not tracked (an ADR that is not in force). */
   readonly freshness: 'fresh' | 'drifting' | 'stale' | 'unknown' | null
-  /** How many commits touched what it covers since it was reviewed. */
   readonly commits: number
 }
 
-/** How current a doc is: fresh, a dot and the commits it is behind, or stale with a warning. */
 export function FreshnessCell({ freshness, commits }: FreshnessCellProps) {
   const { LL } = useI18nContext()
   if (freshness === 'stale') {

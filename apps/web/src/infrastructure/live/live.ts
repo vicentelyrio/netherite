@@ -4,7 +4,6 @@ import { Schema } from 'effect'
 import { useEffect, useState } from 'react'
 import { keys } from '../query'
 
-/** Which queries a server event makes stale. */
 export const invalidationsFor = (event: ServerEvent): ReadonlyArray<ReadonlyArray<unknown>> => {
   switch (event.type) {
     case 'items':
@@ -39,18 +38,12 @@ export type Connection = 'connecting' | 'live' | 'offline'
 export interface LiveOptions {
   readonly baseUrl: string
   readonly client: QueryClient
-  /** Called for events that are about the workspace itself, not for data. */
   readonly onNotice?: (event: Extract<ServerEvent, { type: 'config' | 'config-invalid' }>) => void
   readonly onConnection?: (state: Connection) => void
 }
 
 const decode = Schema.decodeUnknownSync(ServerEvent)
 
-/**
- * Follows the server's event stream and refreshes what it says changed (ADR-00010). When the
- * connection comes back after a break, everything is refreshed, because events were missed.
- * Returns a function that stops listening.
- */
 export const followServer = ({ baseUrl, client, onNotice, onConnection }: LiveOptions) => {
   const source = new EventSource(`${baseUrl}/api/events`)
   let dropped = false
@@ -81,7 +74,6 @@ export const followServer = ({ baseUrl, client, onNotice, onConnection }: LiveOp
   return () => source.close()
 }
 
-/** The connection's state, and the subscription that keeps the queries fresh. */
 export const useLiveUpdates = (options: Omit<LiveOptions, 'onConnection'>) => {
   const [state, setState] = useState<Connection>('connecting')
   const { baseUrl, client, onNotice } = options

@@ -12,7 +12,6 @@ import { type Env, type ExitCode, exitCodes, json } from '../output'
 
 export interface ImportCommandOptions {
   readonly dir: string
-  /** The batch file: JSON, a list of entries or `{ "mode": "copy", "entries": [...] }`. */
   readonly file: string
   readonly update: boolean
   readonly dryRun: boolean
@@ -55,11 +54,6 @@ const summary = (report: ImportReport) => {
   return parts.join(', ')
 }
 
-/**
- * Applies an accepted batch of candidates: `netherite import batch.json`. The agent decided what
- * each file is; this writes the items through the same validated operations as every other write,
- * records where each came from, and never commits. Exit code 1 when an entry failed.
- */
 export const importCommand = (env: Env, options: ImportCommandOptions) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem

@@ -49,14 +49,10 @@ import { describeError, failure, ok, type ToolResult } from './errors'
 import { toolDefinitions } from './tools'
 
 export interface McpOptions {
-  /** The repository's git, for freshness. Leave out when there is none. */
   readonly git?: GitRepository | undefined
-  /** A `@handle` recorded as `created_by` on items created through this server. */
   readonly createdBy?: string | undefined
   readonly version?: string
-  /** Record each write in `.netherite/local/activity.jsonl`. Default `true`. */
   readonly activity?: boolean
-  /** Called after every write that changed something, for example to tell browsers about it. */
   readonly onWrite?: (write: {
     readonly tool: string
     readonly id: string
@@ -68,7 +64,6 @@ export interface McpOptions {
 
 export interface McpHandle {
   readonly server: Server
-  /** Tells the server files changed outside it, so cached freshness is recomputed. */
   readonly invalidate: () => void
 }
 
@@ -88,12 +83,6 @@ const opSummary = (r: OpResult) => ({
   unchanged: r.unchanged,
 })
 
-/**
- * Builds the MCP server (ADR-00012): tools and resources over a repo. It uses the SDK's
- * low-level `Server` so tool inputs are plain JSON Schema generated from the item schemas.
- * Every write goes through core operations, so it is validated, format-preserving and atomic.
- * Calls run one at a time, so concurrent writes cannot interleave.
- */
 export const createMcpServer = (repo: Repo, options: McpOptions = {}) =>
   Effect.gen(function* () {
     const context = yield* Effect.context<OpEnv>()

@@ -6,10 +6,6 @@ import { useHealth, useInbox, waitingCount } from '@/infrastructure/query'
 import { useResolvedShortcuts } from '@/infrastructure/shortcuts'
 import { actionOf, activeFor, railItems } from '../rail'
 
-/**
- * The navigation rail: the app's sections with their keys (from the settings), a badge on the
- * Inbox for what waits for you, and who you are at the bottom. Search opens the palette.
- */
 export function AppRail({ onSearch }: { readonly onSearch: () => void }) {
   const { LL } = useI18nContext()
   const api = useApi()

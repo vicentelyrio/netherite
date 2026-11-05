@@ -1,9 +1,5 @@
 type Op = { kind: ' ' | '-' | '+'; text: string }
 
-/**
- * Lines of a diff, from the longest common subsequence of the two texts' lines. Files here are
- * small (an item's Markdown), so the plain table is fast enough.
- */
 const operations = (a: ReadonlyArray<string>, b: ReadonlyArray<string>): Op[] => {
   const width = b.length + 1
   const table = new Array<number>((a.length + 1) * width).fill(0)
@@ -44,10 +40,6 @@ const splitLines = (text: string) => {
   return lines.map((line) => line.replace(/\r$/, ''))
 }
 
-/**
- * A unified diff of one file, with 3 lines of context. `null` stands for "no file", so a new
- * file diffs from `/dev/null` and a deleted one to it.
- */
 export const unifiedDiff = (
   path: string,
   before: string | null,

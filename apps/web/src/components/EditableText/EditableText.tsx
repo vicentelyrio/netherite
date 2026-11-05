@@ -5,16 +5,12 @@ import './EditableText.css'
 
 export interface EditableTextProps {
   readonly value: string
-  /** Saves the new text; only called when it is not empty and differs from `value`. */
   readonly onSave: (value: string) => void
-  /** The heading level the text is shown as. */
   readonly as: 'h1' | 'h2'
   readonly className?: string
-  /** What the field starts with, when that is not the shown text (a placeholder like "No area"). */
   readonly draft?: string | undefined
 }
 
-/** A heading that turns into a field when its pencil is pressed; Enter or leaving saves, Escape cancels. */
 export function EditableText({
   value,
   onSave,

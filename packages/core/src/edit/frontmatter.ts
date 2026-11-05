@@ -15,17 +15,11 @@ import { EditError } from '../errors'
 import { detectEol, findFrontmatter, lineEndAfter, lineStartOf, withEol } from './text'
 
 export interface FieldEditOptions {
-  /**
-   * Field names in schema order. A new field is inserted before the first existing field that
-   * comes later in this list, and at the end if there is none.
-   */
   readonly order?: ReadonlyArray<string>
 }
 
 export interface ListEditOptions extends FieldEditOptions {
-  /** Skip a value the list already has. Default `true`. */
   readonly unique?: boolean
-  /** Style for a list created by this edit. Default `flow`: `[a, b]`. */
   readonly style?: 'flow' | 'block'
 }
 
@@ -39,7 +33,6 @@ export type Json =
 
 const stringifyOptions = { lineWidth: 0, indent: 2, flowCollectionPadding: false } as const
 
-/** Pair text for `key: value`, in the file's line ending, without a trailing line ending. */
 const pairText = (
   key: string,
   value: Json,
@@ -60,7 +53,6 @@ const pairText = (
   return withEol(doc.toString(stringifyOptions).replace(/\r?\n$/, ''), eol)
 }
 
-/** Scalar text for a value that replaces a scalar, keeping the old quoting style when it still fits. */
 const scalarText = (value: string | number | boolean | null, old: Scalar) => {
   const node = new Scalar(value)
   if (typeof value === 'string' && typeof old.value === 'string' && old.type) node.type = old.type
@@ -71,7 +63,6 @@ interface Parsed {
   readonly block: string
   readonly map: YAMLMap | undefined
   readonly eol: string
-  /** Offsets of the frontmatter text within the whole file. */
   readonly start: number
   readonly end: number
   readonly source: string
@@ -115,7 +106,6 @@ const splice = (parsed: Parsed, from: number, to: number, text: string) => {
   return parsed.source.slice(0, parsed.start) + block + parsed.source.slice(parsed.end)
 }
 
-/** Start of the pair's line, moved up over comment lines directly above it. */
 const pairStart = (block: string, pair: Pair) => {
   const keyStart = (pair.key as Scalar).range?.[0] ?? 0
   let start = lineStartOf(block, keyStart)
@@ -127,14 +117,12 @@ const pairStart = (block: string, pair: Pair) => {
   return start
 }
 
-/** Offset just past the pair's last line. */
 const pairEnd = (block: string, pair: Pair) => {
   const value = pair.value
   const end = isNode(value) && value.range ? value.range[1] : ((pair.key as Scalar).range?.[1] ?? 0)
   return lineEndAfter(block, Math.max(end, (pair.key as Scalar).range?.[1] ?? 0))
 }
 
-/** Where a new field goes: before the first existing field that follows it in `order`, else the end. */
 const insertionPoint = (parsed: Parsed, name: string, order: ReadonlyArray<string> | undefined) => {
   const wanted = order?.indexOf(name) ?? -1
   if (wanted >= 0 && parsed.map) {
@@ -154,7 +142,6 @@ const insertPair = (parsed: Parsed, name: string, text: string, order?: Readonly
   return splice(parsed, at, at, `${needsBreak ? parsed.eol : ''}${text}${parsed.eol}`)
 }
 
-/** A file with no frontmatter gets a new block at the top. */
 const withNewFrontmatter = (source: string, name: string, value: Json, style: 'flow' | 'block') => {
   const eol = detectEol(source)
   const head = `---${eol}${pairText(name, value, style, eol)}${eol}---${eol}`
@@ -169,11 +156,6 @@ const isEmptyValue = (pair: Pair) =>
 const equal = (node: unknown, value: Json) =>
   JSON.stringify(isNode(node) ? node.toJSON() : node) === JSON.stringify(value)
 
-/**
- * Sets a top-level frontmatter field. Only that field's lines change: the rest of the file,
- * including comments, key order, quoting and the line ending, stays byte for byte the same. A
- * new field is placed according to `order`.
- */
 export const setField = (
   source: string,
   name: string,
@@ -213,7 +195,6 @@ export const setField = (
     )
   })
 
-/** Removes a top-level frontmatter field. Nothing changes if it is not there. */
 export const unsetField = (source: string, name: string): Effect.Effect<string, EditError> =>
   Effect.flatMap(parseBlock(source), (parsed) => {
     const pair = parsed === undefined ? undefined : findPair(parsed.map, name)
@@ -247,11 +228,6 @@ const flowItemText = (value: Json) => {
   return doc.toString(stringifyOptions).replace(/\r?\n$/, '')
 }
 
-/**
- * Adds a value to the end of a list field, in the list's own style: a new line for a block
- * list, `, value` for a flow list. Creates the field as a list if it is missing or empty. Does
- * nothing if the value is already there (unless `unique` is false).
- */
 export const appendToList = (
   source: string,
   name: string,
@@ -327,7 +303,6 @@ export const appendToList = (
     return Effect.succeed(splice(parsed, at, at, `${lead}${text}`))
   })
 
-/** Removes a value from a list field. Nothing changes if it is not there. */
 export const removeFromList = (
   source: string,
   name: string,
@@ -376,10 +351,6 @@ export const removeFromList = (
     )
   })
 
-/**
- * Replaces a value in a list field with another, in place. If the list already has the new
- * value, the old one is simply removed. Nothing changes if the old value is not there.
- */
 export const replaceInList = (
   source: string,
   name: string,
@@ -400,7 +371,6 @@ export const replaceInList = (
     return Effect.succeed(splice(parsed, item.range[0], item.range[1], scalarText(to, item)))
   })
 
-/** Frontmatter text, fences included, for fields in the given order. */
 export const renderFrontmatter = (fields: ReadonlyArray<readonly [string, Json]>, eol = '\n') => {
   const lines = fields.map(([key, value]) => pairText(key, value, 'flow', eol))
   return `---${eol}${lines.map((line) => `${line}${eol}`).join('')}---${eol}`

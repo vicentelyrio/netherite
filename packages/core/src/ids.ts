@@ -1,13 +1,8 @@
 import { defaultIdPadding, formatId, type ItemType, parseId, prefixes } from '@netherite/schema'
 import type { ScannedItem } from './scanned-item'
 
-/** The number in a file name that starts with an ID, such as `TASK-00042-do-it`. */
 const fileNameId = (fileName: string) => /^([A-Z]+-\d+)(?:-|$)/.exec(fileName)?.[1]
 
-/**
- * The next free ID for a type: one more than the highest number in use, looking at both
- * frontmatter IDs and file names so a file without frontmatter still reserves its number.
- */
 export const nextId = (
   items: Iterable<Pick<ScannedItem, 'id' | 'fileName'>>,
   type: ItemType,
@@ -24,7 +19,6 @@ export const nextId = (
   return formatId(prefix, highest + 1, padding)
 }
 
-/** The next `count` free IDs for a type, in order. */
 export const nextIds = (
   items: Iterable<Pick<ScannedItem, 'id' | 'fileName'>>,
   type: ItemType,

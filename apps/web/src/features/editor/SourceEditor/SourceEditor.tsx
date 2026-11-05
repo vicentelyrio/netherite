@@ -7,7 +7,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
 import { itemsQuery, keys, noticeFor, sourceQuery } from '@/infrastructure/query'
 
-/** The source editor for an item, wired to the server: saving, linting and the items to link to. */
 export function SourceEditor({
   id,
   fallback,

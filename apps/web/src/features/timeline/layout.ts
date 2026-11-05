@@ -7,17 +7,14 @@ export type TimelineProject = Timeline['projects'][number]
 export type TimelineTask = Timeline['tasks'][number]
 export type TimelineDecision = Timeline['decisions'][number]
 
-/** `fit` sizes the window to the dates there are; the others are a fixed length. */
 export type Zoom = 'fit' | 'quarter' | 'year' | 'two-years'
 
 export const zooms: ReadonlyArray<Zoom> = ['fit', 'quarter', 'year', 'two-years']
 
 const zoomDays = { quarter: 90, year: 365, 'two-years': 730 } as const
 
-/** Whole calendar days from one `YYYY-MM-DD` to another. */
 export const daysBetween = dayDiff
 
-/** The days shown for a zoom: mostly the past, with some room ahead for due dates. */
 export const windowFor = (zoom: Exclude<Zoom, 'fit'>, today: string) => {
   const length = zoomDays[zoom]
   return {
@@ -26,7 +23,6 @@ export const windowFor = (zoom: Exclude<Zoom, 'fit'>, today: string) => {
   }
 }
 
-/** From a day before the first date to a little past today or the last due date. */
 export const fitWindow = (range: { from: string; to: string; today: string }) => {
   const end = [range.to, range.today].sort().at(-1) as string
   const span = Math.max(1, daysBetween(range.from, end))
@@ -35,7 +31,6 @@ export const fitWindow = (range: { from: string; to: string; today: string }) =>
 
 export type TickUnit = 'day' | 'week' | 'month' | 'quarter'
 
-/** How far apart gridlines are: by the zoom, or for `fit` by how many days are shown. */
 export const unitOf = (zoom: Zoom, from: string, to: string): TickUnit => {
   if (zoom === 'quarter') return 'week'
   if (zoom === 'year') return 'month'
@@ -45,13 +40,10 @@ export const unitOf = (zoom: Zoom, from: string, to: string): TickUnit => {
 }
 
 export interface Span {
-  /** Percent from the left of the track. */
   readonly left: number
-  /** Percent of the track's width. */
   readonly width: number
 }
 
-/** Where a stretch of days falls on a track that shows `from` to `to`, clipped to the track. */
 export const spanOf = (start: string, end: string, from: string, to: string): Span | undefined => {
   const total = Math.max(1, daysBetween(from, to))
   const a = Math.max(0, daysBetween(from, start))
@@ -60,7 +52,6 @@ export const spanOf = (start: string, end: string, from: string, to: string): Sp
   return { left: (a / total) * 100, width: Math.max(0, ((b - a) / total) * 100) }
 }
 
-/** Where one day falls, in percent, or `undefined` outside the window. */
 export const pointOf = (day: string, from: string, to: string): number | undefined => {
   const total = Math.max(1, daysBetween(from, to))
   const at = daysBetween(from, day)
@@ -69,11 +60,9 @@ export const pointOf = (day: string, from: string, to: string): number | undefin
 
 export interface Tick {
   readonly day: string
-  /** The first of a year, to be written larger. */
   readonly major: boolean
 }
 
-/** Gridlines: a week apart for a quarter, a month for a year, a quarter-year for two years. */
 export const ticksOf = (zoom: Zoom, from: string, to: string): ReadonlyArray<Tick> => {
   const ticks: Tick[] = []
   const unit = unitOf(zoom, from, to)
@@ -124,10 +113,6 @@ export interface RowOptions {
   readonly showDecisions: boolean
 }
 
-/**
- * The rows top to bottom: each goal with its projects, a project's tasks when it is open, then
- * projects that belong to no goal, then decisions.
- */
 export const rowsOf = (timeline: Timeline, options: RowOptions): ReadonlyArray<Row> => {
   const rows: Row[] = []
   const project = (item: TimelineProject) => {
@@ -161,7 +146,6 @@ export const rowsOf = (timeline: Timeline, options: RowOptions): ReadonlyArray<R
   return rows
 }
 
-/** The decisions of a project, drawn above its bar. */
 export const decisionsOf = (timeline: Timeline, projectId: string) =>
   timeline.decisions.filter((d) => d.project === projectId && d.proposed !== undefined)
 
@@ -170,11 +154,6 @@ export interface Piece {
   readonly span: Span
 }
 
-/**
- * The bars of a goal, project or task on its own track: waiting from creation to the start, the
- * active stretch, holds over it, a planned outline when it has not started, and the part past
- * its due date.
- */
 export const piecesOf = (
   item: {
     readonly created?: string | undefined

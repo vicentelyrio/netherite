@@ -3,29 +3,19 @@ import { Effect } from 'effect'
 import { compileCovers } from './freshness'
 import { pathMap } from './gitpaths'
 
-/** A code file that kept changing while no knowledge changed with it. */
 export interface Undocumented {
-  /** Path relative to the workspace root. */
   readonly path: string
-  /** Commits in the period that changed it and no file of the content folder. */
   readonly commits: number
-  /** Date of the latest such commit, `YYYY-MM-DD`. */
   readonly last: string
 }
 
 export interface UndocumentedOptions {
-  /** Content folder relative to the workspace, such as `netherite`: its files are the knowledge. */
   readonly contentRoot: string
-  /** First and last day of the period, `YYYY-MM-DD`. */
   readonly from: string
   readonly to: string
-  /** Fewest commits for a file to be listed. Default 2. */
   readonly minCommits?: number
-  /** Most files listed. Default 5. */
   readonly limit?: number
-  /** Skip commits that changed more files than this (mass renames, imports). Default 40. */
   readonly maxFilesPerCommit?: number
-  /** Globs of files never to list. Default: lock files. */
   readonly exclude?: ReadonlyArray<string>
 }
 
@@ -35,11 +25,6 @@ const dayBefore = (date: string) => {
   return `${d.toISOString().slice(0, 10)}T23:59:59Z`
 }
 
-/**
- * The code that changed most often in a period without a knowledge file changing in the same
- * commit: where the docs are most likely to have fallen behind. Commits that touched the content
- * folder count as a doc update, so the files in them are left out of the tally.
- */
 export const undocumentedChurn = (
   git: GitRepository,
   workspaceRoot: string,
@@ -86,18 +71,12 @@ export const undocumentedChurn = (
   })
 
 export interface Linkage {
-  /** Commits in the period. */
   readonly total: number
-  /** Those that changed a file of the content folder or name an item (`TASK-00012`). */
   readonly linked: number
 }
 
 const itemId = /\b(?:GOAL|PRJ|TASK|ADR|DOC|CTX|RUN)-\d{5}\b/
 
-/**
- * How many commits in a period are tied to work the workspace tracks: they change a file in the
- * content folder, or their message names an item. The rest changed code with nothing recorded.
- */
 export const linkedCommits = (
   git: GitRepository,
   workspaceRoot: string,

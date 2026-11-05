@@ -62,7 +62,6 @@ const isIdempotent = (op: Op) => {
 const read = (dir: string, file: string) => readFileSync(join(dir, file), 'utf8')
 const cases = readdirSync(root).sort()
 
-/** Lines that differ between two texts, ignoring the common start and end. */
 const changedRegion = (before: string, after: string) => {
   const a = before.split('\n')
   const b = after.split('\n')

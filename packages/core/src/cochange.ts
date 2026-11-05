@@ -3,49 +3,29 @@ import { Effect } from 'effect'
 import { compileCovers } from './freshness'
 import { pathMap } from './gitpaths'
 
-/** A file that changes together with an item. */
 export interface CoChanged {
-  /** Path relative to the workspace root. */
   readonly path: string
-  /** Commits that changed both the item and this file. */
   readonly commits: number
-  /** `commits` as a share of the item's commits, from 0 to 1. */
   readonly share: number
-  /** Date of the latest such commit, `YYYY-MM-DD`. */
   readonly last: string
 }
 
 export interface CoChange {
-  /** The item's workspace path. */
   readonly item: string
-  /** Commits that touched the item. */
   readonly itemCommits: number
-  /** Files that changed with it, most often first. */
   readonly files: ReadonlyArray<CoChanged>
-  /** `true` in a shallow clone, where older commits are missing. */
   readonly partial: boolean
 }
 
 export interface CoChangeOptions {
-  /** Content root relative to the workspace, such as `netherite`. Its files are left out: they are the knowledge, not the code. */
   readonly contentRoot?: string
-  /** Fewest shared commits for a file to be listed. Default 2. */
   readonly minCommits?: number
-  /** Most files listed. Default 10. */
   readonly limit?: number
-  /** Ignore commits that changed more files than this (mass renames, imports). Default 40. */
   readonly maxFilesPerCommit?: number
-  /** Look only at this many of the item's latest commits. Default 200. */
   readonly maxCommits?: number
-  /** Globs of files never to list, such as lock files. */
   readonly exclude?: ReadonlyArray<string>
 }
 
-/**
- * The files most often changed in the same commits as an item's file (ADR-00009). Commits that
- * changed very many files say little about what belongs together, so they are skipped. The item
- * itself, the workspace's own knowledge files and `.netherite/` are never listed.
- */
 export const coChanged = (
   git: GitRepository,
   workspaceRoot: string,
@@ -118,20 +98,14 @@ export const coChanged = (
   })
 
 export interface CoverSuggestion {
-  /** A path or glob to add to `covers`. */
   readonly glob: string
-  /** The co-changed files it stands for. */
   readonly files: ReadonlyArray<string>
-  /** Commits of the file that changed most with the item. */
   readonly commits: number
 }
 
 export interface SuggestOptions {
-  /** The item's current `covers`; files they already cover are not suggested. */
   readonly existing?: ReadonlyArray<string>
-  /** Only files that changed with at least this share of the item's commits. Default 0.25. */
   readonly minShare?: number
-  /** Most suggestions. Default 5. */
   readonly max?: number
 }
 
@@ -140,10 +114,6 @@ const directoryOf = (path: string) => {
   return slash === -1 ? '' : path.slice(0, slash)
 }
 
-/**
- * Turns co-changed files into `covers:` entries. Files that share a folder become `folder/**`;
- * a file on its own stays a plain path. Files already covered are left out.
- */
 export const suggestCovers = (
   change: Pick<CoChange, 'files'>,
   options: SuggestOptions = {},

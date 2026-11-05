@@ -1,4 +1,3 @@
-/** A tool result the agent can read and act on. */
 export interface ToolResult {
   [key: string]: unknown
   content: Array<{ type: 'text'; text: string }>
@@ -22,11 +21,6 @@ interface Tagged {
 const isTagged = (value: unknown): value is Tagged =>
   typeof value === 'object' && value !== null && '_tag' in value && 'message' in value
 
-/**
- * Turns a failure from core into a structured error: a `type`, a `message`, and the details an
- * agent needs to correct itself. Validation errors list each field, so a bad value can be fixed
- * without guessing. Anything unexpected is reported plainly, without internals.
- */
 export const describeError = (error: unknown): ToolResult => {
   if (!isTagged(error))
     return failure({ type: 'InternalError', message: 'Something went wrong. It has been logged.' })

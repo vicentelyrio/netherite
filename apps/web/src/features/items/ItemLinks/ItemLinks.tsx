@@ -38,7 +38,6 @@ function LinkList({
   )
 }
 
-/** What an item links to and what links to it. */
 export function ItemLinks({
   links,
   backlinks,

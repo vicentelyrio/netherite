@@ -2,11 +2,6 @@ import { type ItemType, itemTypes } from '@netherite/schema'
 import { Effect, FileSystem, Path } from 'effect'
 import type { Workspace } from './workspace'
 
-/**
- * Starter text for each item type (ADR-00029): the frontmatter with every optional field in a
- * comment, then the sections the app and lint expect. `{{name}}` marks a value, filled by
- * `fillTemplate`. The templates hold no backticks and no `${`, so they stay plain strings.
- */
 const goal = `---
 id: {{id}}
 aliases: [{{id}}]
@@ -243,7 +238,6 @@ How to tell the result is right.
 What to do, and who to ask.
 `
 
-/** The template text for each item type, with its {{name}} placeholders. */
 export const templates: Readonly<Record<ItemType, string>> = {
   goal,
   project,
@@ -254,19 +248,13 @@ export const templates: Readonly<Record<ItemType, string>> = {
   runbook,
 }
 
-/** The values a template can take. A line that uses one that is missing is dropped if optional. */
 export interface TemplateValues {
   readonly id: string
   readonly title: string
-  /** ISO 8601 date and time. */
   readonly created: string
-  /** A day, `YYYY-MM-DD`. */
   readonly date: string
-  /** A git identity such as `@ada`; lines that use it are left out when it is not given. */
   readonly createdBy?: string | undefined
-  /** The project a task belongs to. */
   readonly project?: string | undefined
-  /** The goal a project serves. */
   readonly goal?: string | undefined
 }
 
@@ -293,20 +281,17 @@ const valueFor = (values: TemplateValues, name: string): string | undefined => {
   }
 }
 
-/** The optional values; a line that needs one that is not given is left out. */
 const optional = new Set(['created_by'])
 
 const plain = /^[A-Za-z0-9](?:[A-Za-z0-9 _./()+-]|:(?=\S))*$/
 const reservedWord = /^(?:true|false|null|yes|no|on|off|y|n|~)$/i
 const looksNumeric = /^[\d.+-]+$/
 
-/** A value as a YAML scalar: as it is when that is safe, in quotes when it is not. */
 const yamlScalar = (value: string) =>
   plain.test(value) && !reservedWord.test(value) && !looksNumeric.test(value) && !/ $/.test(value)
     ? value
     : JSON.stringify(value)
 
-/** A value a template needs but was not given. */
 export class MissingTemplateValue extends Error {
   readonly _tag = 'MissingTemplateValue'
   constructor(readonly missing: string) {
@@ -319,11 +304,6 @@ const frontmatterEnd = (text: string) => {
   return close === -1 ? text.length : close + 5
 }
 
-/**
- * Fills a template into the text of an item. Values in the frontmatter are written as YAML
- * (quoted when needed); in the body they go in as they are. A line that uses `{{created_by}}`
- * is left out when there is no such value; any other missing value throws.
- */
 export const fillTemplate = (type: ItemType, values: TemplateValues): string => {
   const text = templates[type]
   const split = frontmatterEnd(text)
@@ -348,29 +328,23 @@ export const fillTemplate = (type: ItemType, values: TemplateValues): string => 
   return fill(text.slice(0, split), true) + fill(text.slice(split), false)
 }
 
-/** The text after the title heading of a template, with the title filled in: a body for `new`. */
 export const templateBody = (text: string, title: string): string => {
   const rest = text.slice(frontmatterEnd(text)).replaceAll('{{title}}', title)
   const heading = rest.match(/^\s*# .*\n/)
   return (heading === null ? rest : rest.slice(heading[0].length)).trim()
 }
 
-/** The types that have a template: every item type. */
 export const templateTypes: ReadonlyArray<ItemType> = itemTypes
 
-/** The folder of the workspace's own templates, under the content root: `templates/<type>.md`. */
 export const templatesFolder = 'templates'
 
 export interface TemplateSource {
   readonly type: ItemType
-  /** `workspace` when the workspace has its own file for the type, else the one that ships. */
   readonly source: 'workspace' | 'built-in'
-  /** Path of the workspace's file, relative to the workspace root; absent for a built-in one. */
   readonly path?: string
   readonly text: string
 }
 
-/** The template to use for each type: the workspace's own file when there is one. */
 export const readTemplates = (workspace: Pick<Workspace, 'root' | 'contentRoot'>) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem

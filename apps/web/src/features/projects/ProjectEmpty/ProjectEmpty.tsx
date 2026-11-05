@@ -9,13 +9,8 @@ import { useWrite } from '@/infrastructure/query'
 
 type Type = 'doc' | 'runbook' | 'adr' | 'context'
 
-/** What a project can start knowing from nothing: the first one is the primary action. */
 const startsWith: ReadonlyArray<Type> = ['adr', 'doc', 'context', 'runbook']
 
-/**
- * A project with nothing in its Knowledge: what belongs there, how an item ends up in it, and a
- * way to start one that already belongs to this project.
- */
 export function ProjectEmpty({ board }: { readonly board: Board }) {
   const { LL } = useI18nContext()
   const api = useApi()

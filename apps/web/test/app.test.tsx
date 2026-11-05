@@ -14,10 +14,6 @@ const emptyGitConfig = join(tmpdir(), 'netherite-empty-gitconfig')
 
 const nav = () => screen.getByRole('navigation', { name: 'Main' })
 const railButton = (name: RegExp | string) => within(nav()).getByRole('button', { name })
-/**
- * Opens a menu and returns one of its items. The page refreshes itself while tests write, which
- * can remount the button and close the menu, so it clicks again until the item shows.
- */
 const menuItem = async (button: () => HTMLElement, name: string | RegExp) => {
   for (let attempt = 0; attempt < 4; attempt++) {
     const target = button()

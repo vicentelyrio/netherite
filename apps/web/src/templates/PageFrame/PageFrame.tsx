@@ -1,7 +1,6 @@
 import { Box } from '@netherite/ui'
 import type { ReactNode } from 'react'
 
-/** The page's margins from the grid tokens: wide at the start on large screens, compact below. */
 export function PageFrame({ children }: { readonly children: ReactNode }) {
   return (
     <Box

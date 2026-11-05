@@ -13,13 +13,11 @@ export interface Placed {
 
 export interface MapLayout {
   readonly tags: ReadonlyArray<Placed>
-  /** Where each cluster's name is written: above its tags. */
   readonly clusters: ReadonlyArray<{
     readonly name: string
     readonly x: number
     readonly y: number
   }>
-  /** The box around everything, with room for the labels. */
   readonly bounds: {
     readonly x: number
     readonly y: number
@@ -28,16 +26,10 @@ export interface MapLayout {
   }
 }
 
-/** A bubble's radius: the area follows how many items carry the tag. */
 export const radiusOf = (total: number) => Math.min(54, 14 + 7 * Math.sqrt(Math.max(1, total)))
 
 const GOLDEN = 2.399963229728653
 
-/**
- * Bubbles grouped by cluster: clusters sit on a ring (one alone in the middle), and a cluster's
- * tags spiral outward from its centre, biggest first. The same tags always land in the same
- * places, so the map does not jump around when a tag is added.
- */
 export const layoutMap = (tags: ReadonlyArray<MapTag>): MapLayout => {
   if (tags.length === 0)
     return { tags: [], clusters: [], bounds: { x: 0, y: 0, width: 400, height: 300 } }

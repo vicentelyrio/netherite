@@ -3,11 +3,9 @@ import { Effect, FileSystem, Path } from 'effect'
 import { IoError } from './errors'
 import type { Repo } from './ops/repo'
 
-/** The captures file, at the workspace root (ADR-00022). */
 export const capturesFile = 'inbox.md'
 
 export interface Capture {
-  /** The line, without a list marker. */
   readonly text: string
 }
 
@@ -15,7 +13,6 @@ const longest = 500
 
 const invalid = (message: string) => new ValidationError({ issues: [{ path: ['text'], message }] })
 
-/** A line as written in the file: one line, no list marker, no surrounding space. */
 const clean = (text: string) =>
   text
     .replace(/\s*[\r\n]+\s*/g, ' ')
@@ -59,11 +56,9 @@ const lines = (text: string) =>
     .map(clean)
     .filter((l) => l !== '')
 
-/** The captures, oldest first, one per non-empty line. A missing file has none. */
 export const readCaptures = (repo: Repo) =>
   Effect.map(read(repo), (text): ReadonlyArray<Capture> => lines(text).map((t) => ({ text: t })))
 
-/** Appends a line at the bottom. */
 export const addCapture = (repo: Repo, input: string) =>
   Effect.gen(function* () {
     const text = clean(input)
@@ -75,10 +70,6 @@ export const addCapture = (repo: Repo, input: string) =>
     return { text } satisfies Capture
   })
 
-/**
- * Removes the first line that reads `input` (after the same cleaning). Returns whether one was
- * there: a capture archived in another window is already gone, which is not an error.
- */
 export const removeCapture = (repo: Repo, input: string) =>
   Effect.gen(function* () {
     const text = clean(input)

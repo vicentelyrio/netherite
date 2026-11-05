@@ -8,10 +8,6 @@ export interface StdioOptions {
   readonly output?: Writable
 }
 
-/**
- * Connects the server to a client over standard input and output, and waits until the client
- * goes away. Nothing but protocol messages may be written to the output.
- */
 export const serveStdio = (handle: McpHandle, options: StdioOptions = {}) =>
   Effect.promise(
     () =>

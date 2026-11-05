@@ -8,7 +8,6 @@ import { useWrite } from '@/infrastructure/query'
 import { ProjectCard } from '../ProjectCard'
 import './GoalProjects.css'
 
-/** The projects of a goal, with a count and a way to add one. */
 export function GoalProjects({
   goalId,
   projects,

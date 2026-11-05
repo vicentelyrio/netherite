@@ -20,7 +20,6 @@ export const typeLabels: Readonly<Record<ItemTypeName, string>> = {
   runbook: 'Runbook',
 }
 
-/** A glyph box as inline style: the shape is drawn by a rotated, rounded, filled or ringed box. */
 export const glyphStyle = (box: GlyphBox): CSSProperties => ({
   width: box.width,
   height: box.height,
@@ -32,13 +31,10 @@ export const glyphStyle = (box: GlyphBox): CSSProperties => ({
 
 export interface TypeGlyphProps {
   readonly type: ItemTypeName
-  /** A box to draw in instead of the badge's: for example the graph's node glyph. */
   readonly box?: GlyphBox
-  /** A superseded ADR is a hollow diamond. */
   readonly hollow?: boolean
 }
 
-/** The shape of an item type, in its colour, as the badges and the graph draw it. */
 export function TypeGlyph({ type, box, hollow }: TypeGlyphProps) {
   const base = box ?? badgeGlyph[type]
   const look: GlyphBox =
@@ -52,15 +48,10 @@ export function TypeGlyph({ type, box, hollow }: TypeGlyphProps) {
 
 export interface TypeBadgeProps {
   readonly type: ItemTypeName
-  /** Show only the shape. The name stays available to screen readers. */
   readonly glyphOnly?: boolean
   readonly hollow?: boolean
 }
 
-/**
- * Says what kind of item something is. The badge keeps a neutral ground and the type shows in the
- * glyph and the label colour, not a filled block (sheet T2).
- */
 export function TypeBadge({ type, glyphOnly, hollow }: TypeBadgeProps) {
   return (
     <span
@@ -87,7 +78,6 @@ export interface AdrStatusPillProps {
   readonly status: AdrStatus
 }
 
-/** An ADR's status: proposed, accepted, deprecated or superseded, as a coloured pill with an icon. */
 export function AdrStatusPill({ status }: AdrStatusPillProps) {
   return (
     <span
@@ -110,11 +100,9 @@ const stateIcons: Record<StateCategory, string> = {
 
 export interface TaskStatePillProps {
   readonly state: string
-  /** The state's category in the config; decides the colour and the icon. */
   readonly category: StateCategory
 }
 
-/** A task's state as a pill, like the ADR status: its colour at 14% behind an icon and the name. */
 export function TaskStatePill({ state, category }: TaskStatePillProps) {
   return (
     <span
@@ -133,7 +121,6 @@ export type StatusPillProps =
   | ({ readonly kind: 'adr' } & AdrStatusPillProps)
   | ({ readonly kind: 'state' } & TaskStatePillProps)
 
-/** An ADR status or a task state, whichever is given. */
 export function StatusPill(props: StatusPillProps) {
   return props.kind === 'adr' ? (
     <AdrStatusPill status={props.status} />
@@ -154,18 +141,11 @@ const plural = (n: number, atLeast: boolean) =>
 
 export interface FreshnessLabelProps {
   readonly state: FreshnessState
-  /** Commits to covered files since the last review. */
   readonly commits?: number
-  /** The count is a minimum: history is cut short (a shallow clone). */
   readonly atLeast?: boolean
-  /** When it was last reviewed or changed, for the tooltip. */
   readonly since?: string | null
 }
 
-/**
- * Whether a doc still matches the code it covers (sheet T2): a green dot when fresh, an amber ring
- * when drifting (1 to 9 commits), a filled warning icon and heavier text when stale (10 or more).
- */
 export function FreshnessLabel({ state, commits, atLeast = false, since }: FreshnessLabelProps) {
   const count =
     (state === 'drifting' || state === 'stale') && commits !== undefined
@@ -192,7 +172,6 @@ export function FreshnessLabel({ state, commits, atLeast = false, since }: Fresh
   )
 }
 
-/** Knowledge that nothing links to. */
 export function OrphanTag() {
   return (
     <span className="nt-orphan">
@@ -215,16 +194,10 @@ export interface BannerProps {
   readonly variant?: BannerVariant
   readonly title?: string
   readonly children?: ReactNode
-  /** Buttons for what to do about it. */
   readonly actions?: ReactNode
-  /** Shows a close button that calls this. */
   readonly onClose?: () => void
 }
 
-/**
- * A message across the top of a view: a stale doc, a superseded ADR, a file that changed on disk.
- * The warning is sheet T2's `warning-bg`: a 10% amber ground, a 35% amber edge, radius 10.
- */
 export function Banner({ variant = 'info', title, children, actions, onClose }: BannerProps) {
   return (
     <div
@@ -256,11 +229,9 @@ export interface EmptyStateProps {
   readonly icon?: string
   readonly title: string
   readonly description?: ReactNode
-  /** Starting points: buttons or links. */
   readonly actions?: ReactNode
 }
 
-/** What a view shows when there is nothing in it yet, and what to do about that. */
 export function EmptyState({ icon = 'inbox', title, description, actions }: EmptyStateProps) {
   return (
     <div className="nt-empty">

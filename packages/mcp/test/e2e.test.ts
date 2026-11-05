@@ -397,7 +397,6 @@ describe('planning from an empty workspace', () => {
   })
 })
 
-/** The files of the shared `basic` fixture, which has deliberate problems, as `path -> text`. */
 const fixtureFiles = (dir: string, sub = ''): Record<string, string> => {
   const root = fixturePath('basic')
   const out: Record<string, string> = {}

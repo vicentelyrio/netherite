@@ -16,10 +16,8 @@ export interface KnowledgeIndexState {
   readonly set: (patch: Partial<Filters>) => void
   readonly clear: () => void
   readonly counts: Readonly<Record<string, number>>
-  /** The row whose preview is open: the one picked, or the first shown. */
   readonly current: KnowledgeRow | undefined
   readonly select: (id: string) => void
-  /** The type being created, while its title is asked for. */
   readonly creating: KnowledgeType | undefined
   readonly startCreating: (type: KnowledgeType | undefined) => void
   readonly create: (type: KnowledgeType, title: string) => void
@@ -33,16 +31,11 @@ export const useKnowledgeIndex = (): KnowledgeIndexState => {
   return value
 }
 
-/**
- * Loads all knowledge and holds what the index screen shares: the filters, the row picked, and the
- * title being asked for. Shows the loading and error states instead of its children.
- */
 export function KnowledgeProvider({
   children,
   initialQuery,
 }: {
   readonly children: ReactNode
-  /** Text to filter by when the screen opens, such as from a link. */
   readonly initialQuery?: string
 }) {
   const { LL } = useI18nContext()

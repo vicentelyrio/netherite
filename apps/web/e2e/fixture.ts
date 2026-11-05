@@ -10,7 +10,6 @@ const here = dirname(fileURLToPath(import.meta.url))
 const bin = join(here, '../../../packages/cli/dist/bin.mjs')
 const app = join(here, '../dist')
 
-/** A context item the clean sample workspace does not have, so the include switch can be tried. */
 const context = (root: string) => ({
   [`${root}/netherite/context/CTX-00001-rules.md`]:
     '---\nid: CTX-00001\naliases: [CTX-00001]\ntype: context\ntitle: House rules\ninclude_in_context: false\n---\n\n# House rules\n\nKeep it short.\n',
@@ -19,19 +18,11 @@ const context = (root: string) => ({
 export interface Workspace {
   readonly url: string
   readonly dir: string
-  /** A file's text, from the workspace folder. */
   readonly read: (path: string) => string
-  /** `git diff` of the working tree: what the app changed since the fixture was committed. */
   readonly diff: (path?: string) => string
-  /** Runs `git` in the workspace; `date` sets both the author and committer date of a commit. */
   readonly git: (args: string[], date?: string) => string
 }
 
-/**
- * Every test gets its own workspace and server: the clean sample workspace in a git repository,
- * committed, with `netherite serve` over it serving the built app. Tests then drive the browser
- * and look at what changed on disk.
- */
 export const test = base.extend<{ workspace: Workspace }>({
   workspace: async ({ page: _page }, use) => {
     const dir = realpathSync(mkdtempSync(join(tmpdir(), 'netherite-e2e-')))

@@ -1,6 +1,5 @@
 import type { ScannedItem } from './scanned-item'
 
-/** Which step of the lookup order matched (ADR-00004): id, alias, file name, then title. */
 export type ResolvedVia = 'id' | 'alias' | 'file' | 'title'
 
 export type Resolution =
@@ -8,7 +7,6 @@ export type Resolution =
       readonly status: 'resolved'
       readonly via: ResolvedVia
       readonly item: ScannedItem
-      /** Set when the link had a `#heading` part: whether the target has that heading. */
       readonly headingFound?: boolean
     }
   | {
@@ -19,11 +17,9 @@ export type Resolution =
   | { readonly status: 'broken' }
 
 export interface Resolver {
-  /** Resolves the target of a `[[wikilink]]`, or an ID written in frontmatter. */
   readonly resolve: (target: string, heading?: string) => Resolution
 }
 
-/** A resolver that can be kept up to date as items come and go. */
 export interface MutableResolver extends Resolver {
   readonly add: (item: ScannedItem) => void
   readonly remove: (item: ScannedItem) => void
@@ -31,11 +27,6 @@ export interface MutableResolver extends Resolver {
 
 const withoutExtension = (path: string) => path.replace(/\.md$/i, '')
 
-/**
- * Every lowercase string that could be written to reach an item: its id, aliases, file name,
- * title, and each trailing part of its path (`docs/Note` and `Note`). Used to find the links
- * whose resolution may change when an item appears, changes or goes away.
- */
 export const lookupKeys = (item: ScannedItem): ReadonlySet<string> => {
   const keys = new Set<string>()
   if (item.id) keys.add(item.id.toLowerCase())
@@ -47,7 +38,6 @@ export const lookupKeys = (item: ScannedItem): ReadonlySet<string> => {
   return keys
 }
 
-/** The lowercase key a link target is looked up under; matches the keys from `lookupKeys`. */
 export const targetKey = (target: string) => withoutExtension(target.trim()).toLowerCase()
 
 const addTo = (map: Map<string, ScannedItem[]>, key: string | undefined, item: ScannedItem) => {
@@ -70,18 +60,11 @@ const removeFrom = (
   else map.set(key, rest)
 }
 
-/**
- * Creates an empty resolver. A target is looked up by ID, then alias, then file name, then
- * title, and the first step that matches anything decides: one match is a resolution, several
- * are ambiguous, none is broken. IDs and aliases match exactly; file names and titles ignore
- * case, as in Obsidian. A target with `/` matches the end of an item's path.
- */
 export const createResolver = (): MutableResolver => {
   const byId = new Map<string, ScannedItem[]>()
   const byAlias = new Map<string, ScannedItem[]>()
   const byFile = new Map<string, ScannedItem[]>()
   const byTitle = new Map<string, ScannedItem[]>()
-  /** Items by every trailing part of their path, for targets that contain `/`. */
   const byPath = new Map<string, ScannedItem[]>()
 
   const apply = (update: typeof addTo, item: ScannedItem) => {
@@ -127,7 +110,6 @@ export const createResolver = (): MutableResolver => {
   }
 }
 
-/** Builds a resolver over scanned items. */
 export const makeResolver = (items: Iterable<ScannedItem>): Resolver => {
   const resolver = createResolver()
   for (const item of items) resolver.add(item)

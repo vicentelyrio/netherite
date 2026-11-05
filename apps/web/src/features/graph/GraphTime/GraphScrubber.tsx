@@ -1,7 +1,6 @@
 import { TimeScrubber } from '@/components'
 import { useGraphTime } from './GraphTime'
 
-/** The time slider over the graph; absent when there is no history to go back through. */
 export function GraphScrubber() {
   const { asOf, setAsOf, playing, togglePlay, range } = useGraphTime()
   if (range === undefined) return null

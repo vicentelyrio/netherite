@@ -7,7 +7,6 @@ import './KnowledgeTable.css'
 
 const groupNames = ['adr', 'doc', 'context', 'runbook'] as const
 
-/** The files that pass the filters, grouped by type under a row of column names. */
 export function KnowledgeTable() {
   const { LL } = useI18nContext()
   const { shown, current, select, clear } = useKnowledgeIndex()

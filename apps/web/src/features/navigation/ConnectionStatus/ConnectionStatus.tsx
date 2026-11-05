@@ -7,11 +7,6 @@ import { useNotices } from '@/infrastructure/notices'
 import { useHealth } from '@/infrastructure/query'
 import './ConnectionStatus.css'
 
-/**
- * The thin bar above every screen: whether the live connection to the server is up, and how many
- * items there are. It also keeps queries fresh from the server's events, and says when the config
- * is wrong or needs a restart.
- */
 export function ConnectionStatus() {
   const api = useApi()
   const client = useQueryClient()

@@ -5,11 +5,8 @@ import { Effect } from 'effect'
 import { createMcpServer, type McpOptions } from './server'
 
 export interface McpHttp {
-  /** Answers one request to the MCP endpoint (POST, GET or DELETE) as the protocol requires. */
   readonly handle: (request: Request) => Promise<Response>
-  /** Ends every session. */
   readonly close: () => Promise<void>
-  /** Number of open sessions. */
   readonly sessions: () => number
 }
 
@@ -19,11 +16,6 @@ const rpcError = (status: number, code: number, message: string) =>
     headers: { 'content-type': 'application/json' },
   })
 
-/**
- * The MCP server over streamable HTTP (ADR-00012): one MCP session per client, each with its own
- * server over the shared repo. The caller mounts `handle` at `/mcp` and does the access control
- * (Host, Origin and token), since this speaks to anything that can reach it.
- */
 export const createMcpHttp = (repo: Repo, options: McpOptions = {}) =>
   Effect.gen(function* () {
     const sessions = new Map<string, WebStandardStreamableHTTPServerTransport>()

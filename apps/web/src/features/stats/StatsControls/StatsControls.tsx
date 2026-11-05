@@ -3,7 +3,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { periods, useStats } from '../StatsProvider'
 import './StatsControls.css'
 
-/** Which area and which period the numbers are for. */
 export function StatsControls() {
   const { LL } = useI18nContext()
   const { data, period, setPeriod, area, setArea } = useStats()

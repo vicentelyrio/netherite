@@ -18,7 +18,6 @@ export interface Session {
   readonly dir: string
   readonly repo: Repo
   readonly client: Client
-  /** Calls a tool and parses its JSON result. */
   readonly call: (
     name: string,
     args?: Record<string, unknown>,
@@ -31,11 +30,8 @@ export interface Session {
 export const provide = <A, E>(effect: Effect.Effect<A, E, NodeServices.NodeServices>) =>
   Effect.runPromise(effect.pipe(Effect.provide(NodeServices.layer)))
 
-/** A temporary workspace, an MCP server over it, and a client connected to the server. */
 export interface SessionOptions extends McpOptions {
-  /** Build the workspace's files for a temporary folder. Default: the clean sample workspace. */
   readonly files?: (dir: string) => Record<string, string>
-  /** Use this existing folder instead of a temporary one. Nothing is written or deleted there. */
   readonly existing?: string
 }
 

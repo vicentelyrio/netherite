@@ -1,7 +1,6 @@
 import type { RailItem } from '@netherite/ui'
 import type { ActionId } from '@/infrastructure/shortcuts'
 
-/** The rail's items and where each goes (Rail.dc.html). Command-K opens search instead of a page. */
 export const railItems: ReadonlyArray<
   Omit<RailItem, 'label' | 'shortcut' | 'aliases'> & { readonly to?: string }
 > = [
@@ -51,11 +50,9 @@ export const railItems: ReadonlyArray<
   },
 ]
 
-/** The keyboard action behind a rail item: search opens the palette, the rest go to a page. */
 export const actionOf = (id: string): ActionId =>
   id === 'search' ? 'search.open' : (`go.${id}` as ActionId)
 
-/** Which rail item a path belongs to. An item page belongs to Knowledge. */
 export const activeFor = (pathname: string) => {
   const first = pathname.split('/')[1] ?? ''
   if (first === 'items') return 'knowledge'

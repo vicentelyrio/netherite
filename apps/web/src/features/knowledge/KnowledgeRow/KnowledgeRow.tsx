@@ -14,7 +14,6 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import '../shared.css'
 import './KnowledgeRow.css'
 
-/** One file in the index: type, title and path, status, project, age and freshness. */
 export function KnowledgeRow({
   row,
   selected,

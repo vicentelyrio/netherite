@@ -10,29 +10,19 @@ export type FreshnessState = 'fresh' | 'drifting' | 'stale' | 'not-tracked' | 'u
 
 export interface Freshness {
   readonly state: FreshnessState
-  /**
-   * Commits since the baseline that touched covered paths, plus one if covered paths have
-   * uncommitted changes. In a shallow clone this can be a lower bound (see `atLeast`).
-   */
   readonly commits: number
-  /** Whether covered paths have changes that are not committed (they count as one commit). */
   readonly uncommitted: boolean
-  /** Where counting started. `undefined` for an item never committed and never reviewed. */
   readonly baseline:
     | { readonly source: 'reviewed_at'; readonly date: string }
     | { readonly source: 'last-commit'; readonly date: string; readonly hash: string }
     | undefined
-  /** `true` when history is cut short (shallow clone), so `commits` is a minimum. */
   readonly atLeast: boolean
-  /** The globs the item covers. */
   readonly covers: ReadonlyArray<string>
-  /** Why the state is `not-tracked` or `unknown`. */
   readonly reason?: 'no-covers' | 'superseded' | 'deprecated' | 'no-git' | 'shallow'
 }
 
 export type Thresholds = Pick<Config['freshness'], 'drifting' | 'stale'>
 
-/** Fresh below the first threshold, drifting from it, stale from the second (ADR-00009). */
 export const stateFor = (
   commits: number,
   thresholds: Thresholds,
@@ -44,11 +34,6 @@ const globChars = /[*?[\]{}()!]/
 const normalizeGlob = (pattern: string) =>
   pattern.trim().replace(/^\.\//, '').replace(/^\/+/, '').replace(/\/+$/, '')
 
-/**
- * Compiles a `covers` list into a path test. Paths are relative to the repository root with `/`
- * separators. A plain name such as `src` or `docs/api.md` matches that file or everything under
- * that folder; `*`, `**`, `?`, `[a-z]` and `{a,b}` work as in a shell; a leading `!` excludes.
- */
 export const compileCovers = (patterns: ReadonlyArray<string>): ((path: string) => boolean) => {
   const include: string[] = []
   const exclude: string[] = []
@@ -93,24 +78,12 @@ interface Tracked {
 
 export interface FreshnessInput {
   readonly index: WorkspaceIndex
-  /** `undefined` when git is not available. */
   readonly git: GitRepository | undefined
   readonly thresholds: Thresholds
-  /** Absolute path of the workspace root. */
   readonly root: string
-  /**
-   * Work it out as of this moment (ISO 8601 or `YYYY-MM-DD`, the end of that day) instead of now:
-   * later commits and uncommitted changes do not count, and a review after it is ignored.
-   */
   readonly asOf?: string
 }
 
-/**
- * Works out how fresh every item with `covers:` is (ADR-00009): it counts the commits since the
- * item was reviewed (`reviewed_at`, else its own last commit) that touched anything it covers,
- * and one more if covered files have uncommitted changes. All items share one history query.
- * Items without `covers`, and retired (superseded or deprecated) items, are not tracked.
- */
 export const computeFreshness = (input: FreshnessInput) =>
   Effect.gen(function* () {
     const { index, git, thresholds } = input

@@ -9,7 +9,6 @@ import { GoalCard } from '../GoalCard'
 import { NewGoal } from '../NewGoal'
 import './AreaColumn.css'
 
-/** One area: its name and overall progress, its goals, and a way to add another goal. */
 export function AreaColumn({
   area,
   goals,
@@ -21,7 +20,6 @@ export function AreaColumn({
   readonly goals: ReadonlyArray<GoalRow>
   readonly done: number
   readonly total: number
-  /** The "No area" group: new goals made here get no area. */
   readonly isUnassigned: boolean
 }) {
   const { LL } = useI18nContext()

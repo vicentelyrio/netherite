@@ -3,7 +3,6 @@ import { Breadcrumbs } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useTimeline } from '../TimelineProvider'
 
-/** Breadcrumb and title, with a warning when the history is cut short. */
 export function TimelineHeading() {
   const { LL } = useI18nContext()
   const { data } = useTimeline()

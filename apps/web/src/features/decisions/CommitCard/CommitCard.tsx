@@ -5,7 +5,6 @@ import { type CommitCardData, statusStyle } from '../lanes'
 import { StatusChip } from '../StatusChip'
 import './CommitCard.css'
 
-/** One commit that changed ADR statuses: its date, author and each change it made. */
 export function CommitCard({ commit }: { readonly commit: CommitCardData }) {
   const top = commit.changes.find((c) => c.to !== 'superseded') ?? commit.changes[0]
   const color = statusStyle[top?.to ?? '']?.color ?? '#b9bcd3'

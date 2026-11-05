@@ -41,9 +41,7 @@ export interface InitOptions {
   readonly dir: string
   readonly content: string
   readonly json: boolean
-  /** Refresh the installed skills and the AGENTS.md section to this version. */
   readonly update?: boolean
-  /** Do not install the agent skills, the AGENTS.md section or the agent ruleset. */
   readonly noSkills?: boolean
 }
 
@@ -51,17 +49,10 @@ export interface InitReport {
   readonly root: string
   readonly created: ReadonlyArray<string>
   readonly existed: ReadonlyArray<string>
-  /** What happened to the agent skills and AGENTS.md section. Absent with `--no-skills`. */
   readonly skills?: SkillsReport
-  /** The ruleset every agent reads. Absent with `--no-skills`. */
   readonly ruleset?: RulesetReport
 }
 
-/**
- * Sets a repository up for Netherite: the config file, the content folders (with a `.gitkeep` so
- * git keeps them), and a `.gitignore` line for per-user state. Safe to run again: it only adds
- * what is missing and never overwrites.
- */
 export const init = (env: Env, options: InitOptions) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem

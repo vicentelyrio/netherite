@@ -9,7 +9,6 @@ const kinds = ['all', 'tags', 'labels'] as const
 const views = ['map', 'list'] as const
 const viewIcon = { map: 'bubble_chart', list: 'list' } as const
 
-/** A text filter (focused with `/`), tabs for tags, labels or both, and the map or list view. */
 export function TagsToolbar() {
   const { LL } = useI18nContext()
   const { all, q, setQ, field, setField, count, view, setView } = useTags()

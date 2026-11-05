@@ -45,10 +45,6 @@ const fields = {
   ),
 }
 
-/**
- * The `.netherite/config.yml` schema. Every field except `version` has a default, and
- * unknown keys are kept.
- */
 export const Config = Schema.StructWithRest(Schema.Struct(fields), [
   Schema.Record(Schema.String, Schema.Unknown),
 ])

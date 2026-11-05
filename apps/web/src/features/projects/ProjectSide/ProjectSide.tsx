@@ -12,7 +12,6 @@ import { rememberProject } from '../ProjectsEntry/remember'
 import { type ProjectViewId, projectViews } from '../views'
 import './ProjectSide.css'
 
-/** The project's name and where it sits, a switch between its views, and its small graph. */
 export function ProjectSide({
   id,
   view,

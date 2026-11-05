@@ -13,7 +13,6 @@ export interface StatsState {
   readonly data: typeof PeriodStats.Type
   readonly period: Period
   readonly setPeriod: (period: Period) => void
-  /** The area the numbers are limited to; empty for all. */
   readonly area: string
   readonly setArea: (area: string) => void
 }
@@ -26,7 +25,6 @@ export const useStats = (): StatsState => {
   return value
 }
 
-/** Loads the stats for a period and area from git history; says so when there is none. */
 export function StatsProvider({ children }: { readonly children: ReactNode }) {
   const { LL } = useI18nContext()
   const api = useApi()

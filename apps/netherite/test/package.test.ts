@@ -12,7 +12,6 @@ const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as {
   files: string[]
 }
 
-/** Bare module names a bundle imports: static `import ... from "x"` lines and `import("x")` calls. */
 const importsOf = (code: string) => [
   ...[...code.matchAll(/^(?:import|export)\b[^\n]*?\bfrom\s*["']([^"'.][^"']*)["']/gm)].map(
     (m) => m[1] as string,
@@ -23,7 +22,6 @@ const importsOf = (code: string) => [
 const bundles = () => readdirSync(dist).filter((f) => f.endsWith('.mjs'))
 const text = (file: string) => readFileSync(join(dist, file), 'utf8')
 
-/** The package a bare import comes from: `@scope/name/sub` is `@scope/name`, `a/b` is `a`. */
 const packageOf = (specifier: string) =>
   specifier.startsWith('@')
     ? specifier.split('/').slice(0, 2).join('/')

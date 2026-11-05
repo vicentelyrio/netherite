@@ -2,20 +2,12 @@ import type { Literal, Root, Text } from 'mdast'
 import type { Plugin } from 'unified'
 import { SKIP, visit } from 'unist-util-visit'
 
-/**
- * A `[[target]]`, `[[target|label]]` or `[[target#heading]]` link (ADR-00004).
- * Links inside code spans and code blocks are not links, and neither are escaped ones (`\[[x]]`).
- */
 export interface WikiLink extends Literal {
   type: 'wikiLink'
-  /** Raw text of the link, such as `[[ADR-00007|the git ADR]]`. */
   value: string
   data: {
-    /** The part before any `#` or `|`, trimmed: an id, alias, file name or title. */
     target: string
-    /** The part after `#`, if any. */
     heading?: string
-    /** The part after `|`, if any. */
     label?: string
   }
 }
@@ -31,7 +23,6 @@ declare module 'mdast' {
 
 const pattern = /(?<!\\)\[\[([^[\]|#\n]+?)(?:#([^[\]|\n]+?))?(?:\|([^[\]\n]+?))?\]\]/g
 
-/** Finds wikilinks in raw text. Offsets are relative to `text`. */
 export const findWikiLinks = (text: string) => {
   const found: Array<{ start: number; end: number; data: WikiLink['data']; raw: string }> = []
   for (const match of text.matchAll(pattern)) {
@@ -52,10 +43,6 @@ export const findWikiLinks = (text: string) => {
   return found
 }
 
-/**
- * remark plugin that turns wikilinks in text into `wikiLink` nodes. It reads the raw source of
- * each text node, so positions stay exact and escaped brackets are left alone.
- */
 export const remarkWikiLinks: Plugin<[], Root> = () => (tree, file) => {
   const source = String(file.value)
   visit(tree, 'text', (node: Text, index, parent) => {

@@ -27,7 +27,6 @@ const jsonFlag = Flag.Boolean('json').pipe(
 
 const failOnChoices: ReadonlyArray<FailOn> = ['error', 'warning', 'info', 'never']
 
-/** The command tree. Each handler stores its exit code in `state`, which `runCli` returns. */
 export const makeCli = (env: Env, state: { code: ExitCode }, version = '0.0.0') => {
   const finish = (code: ExitCode) =>
     Effect.sync(() => {
@@ -453,10 +452,6 @@ export const makeCli = (env: Env, state: { code: ExitCode }, version = '0.0.0') 
   )
 }
 
-/**
- * Runs the CLI with the given arguments and resolves to the exit code. Output goes to `env.out`,
- * except help and usage errors, which `effect/cli` prints itself.
- */
 export const runCli = (argv: ReadonlyArray<string>, env: Env, version = '0.0.0') => {
   const state = { code: exitCodes.ok as ExitCode }
   const root = makeCli(env, state, version)

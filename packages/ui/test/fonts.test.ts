@@ -14,12 +14,10 @@ const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as {
   dependencies: Record<string, string>
 }
 
-/** Where a font package is installed. */
 const packageDir = (name: string) => dirname(require.resolve(`${name}/package.json`))
 
 const imports = [...fontsCss.matchAll(/@import\s+["']([^"']+)["'];/g)].map((m) => m[1] as string)
 
-/** The CSS file an `@import` names, and its text. */
 const load = (specifier: string) => {
   const [scope, name, ...rest] = specifier.split('/')
   const dir = packageDir(`${scope}/${name}`)

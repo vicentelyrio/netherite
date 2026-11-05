@@ -10,7 +10,6 @@ import {
 } from '../src/index'
 import { cleanFiles, type World, world } from './ops-helpers'
 
-/** A backend that reports whatever the test tells it to, routed by folder like the real one. */
 const fakeBackend = () => {
   const subs: Array<{
     dir: string

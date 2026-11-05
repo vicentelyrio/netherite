@@ -19,7 +19,6 @@ const usedKinds = [
   { key: 'docs', color: '#8fc3f2' },
 ] as const
 
-/** The tag picked on the map or in the list: where it is used, what it goes with, and what to do with it. */
 export function TagDetail() {
   const { LL } = useI18nContext()
   const api = useApi()

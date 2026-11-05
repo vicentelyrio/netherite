@@ -6,7 +6,6 @@ import { provide, type Session } from './helpers'
 
 export type Tree = Record<string, string>
 
-/** Every file in the workspace as `path -> text`, leaving out git and per-user state. */
 export const snapshot = (dir: string, sub = ''): Tree => {
   const out: Tree = {}
   for (const name of readdirSync(join(dir, sub))) {
@@ -18,7 +17,6 @@ export const snapshot = (dir: string, sub = ''): Tree => {
   return out
 }
 
-/** Lines only in `a` as `-line` and only in `b` as `+line`, in order (longest common subsequence). */
 export const lineDiff = (a: string, b: string): string[] => {
   const x = a.split('\n')
   const y = b.split('\n')
@@ -46,11 +44,9 @@ export const lineDiff = (a: string, b: string): string[] => {
   return out
 }
 
-/** What a step did to the files: `created` with the whole text, `deleted`, or a line diff. */
 export type TreeChange = { created: string } | 'deleted' | string[]
 export type TreeChanges = Record<string, TreeChange>
 
-/** New items carry the time they were made; tests see it as `<now>`. */
 const stamp = (text: string) =>
   text.replace(/^created: \d{4}-\d\d-\d\dT[\d:.]+Z$/m, 'created: <now>')
 
@@ -69,13 +65,11 @@ export const diffTrees = (before: Tree, after: Tree): TreeChanges => {
 
 export const today = () => new Date().toISOString().slice(0, 10)
 
-/** Expectations may say `{{today}}`; the server stamps new items with the current date. */
 const fill = (value: TreeChanges): TreeChanges =>
   JSON.parse(JSON.stringify(value).replaceAll('{{today}}', today()))
 
 const key = (d: Diagnostic) => `${d.rule}|${d.path}|${d.message}`
 
-/** Lints the files on disk, from scratch: a new repo, a new scan, no shared state with the server. */
 export const lintDisk = async (dir: string) => {
   const repo = await provide(openRepo(dir))
   return provide(lintWorkspace(repo.workspace))
@@ -83,28 +77,18 @@ export const lintDisk = async (dir: string) => {
 
 export interface StepOptions {
   readonly args?: Record<string, unknown>
-  /** The exact change to the files. Anything not listed must be unchanged. */
   readonly files: TreeChanges
-  /** Part of the tool's result to check. */
   readonly result?: unknown
-  /** Rules of problems this step is expected to add to the workspace (counted once each). */
   readonly introduces?: ReadonlyArray<string>
-  /** The step is expected to be refused. Default: it succeeds. */
   readonly refused?: boolean
 }
 
-/**
- * A scripted client: each step calls a tool, then checks (1) the result, (2) the exact change to
- * every file, (3) that the workspace on disk has no problems beyond those it started with, and
- * (4) that the server's own lint agrees with a fresh lint of the disk.
- */
 export const script = async (s: Session, allowed: ReadonlyArray<string> = []) => {
   const baseline = new Set((await lintDisk(s.dir)).filter((d) => d.severity !== 'info').map(key))
   for (const k of allowed) baseline.add(k)
   let tree = snapshot(s.dir)
 
   return {
-    /** Problems the workspace started with. */
     baseline,
     step: async (tool: string, options: StepOptions) => {
       const { isError, data } = await s.call(tool, options.args ?? {})

@@ -16,9 +16,7 @@ export interface Change {
   readonly title: string
   readonly from: string | undefined
   readonly to: string
-  /** The ADR that replaced this one, when this change is its supersession. */
   readonly note: string | undefined
-  /** This change follows another in the same commit that is the one replacing it. */
   readonly link: boolean
 }
 
@@ -31,20 +29,14 @@ export interface CommitCardData {
 
 export interface Lane {
   readonly project: string
-  /** The project's name, for the lane's heading; its id when the name is not known. */
   readonly title: string
   readonly adrs: number
   readonly chains: number
-  /** Newest first. */
   readonly commits: ReadonlyArray<CommitCardData>
 }
 
 export const noProject = 'No project'
 
-/**
- * One lane per project: every status change of its ADRs, grouped by the commit that made it,
- * newest first. An ADR in two projects shows in both lanes; one in none is in "No project", last.
- */
 export const lanesOf = (
   rows: ReadonlyArray<KnowledgeRow>,
   transitions: ReadonlyArray<Transition>,
@@ -104,7 +96,6 @@ export const lanesOf = (
     })
 }
 
-/** The words for an ADR status, from the catalog; an unknown status shows as it is. */
 export const statusLabel = (
   LL: { decisions: { status: Record<string, () => string> } },
   status: string,

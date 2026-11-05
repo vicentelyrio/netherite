@@ -1,19 +1,13 @@
 import { Effect, type FileSystem } from 'effect'
 
-/**
- * A file system that reads through to a real one but keeps every write in memory, so a plan
- * can be run and inspected without touching the disk. `changes()` lists what would change.
- */
 export interface Overlay {
   readonly fs: FileSystem.FileSystem
-  /** Files that differ from the base: new text, or `null` for a deleted file. */
   readonly changes: () => Effect.Effect<
     ReadonlyArray<{ path: string; before: string | null; after: string | null }>
   >
 }
 
 export const overlayFileSystem = (base: FileSystem.FileSystem): Overlay => {
-  /** `null` marks a file removed in the overlay. */
   const written = new Map<string, string | null>()
 
   const readBase = (path: string) =>

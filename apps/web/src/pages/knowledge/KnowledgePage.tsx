@@ -37,7 +37,6 @@ function Content() {
   )
 }
 
-/** Knowledge: docs, decisions, context and runbooks, with a preview of the one picked. */
 export function KnowledgePage({ q }: { readonly q?: string }) {
   return (
     <KnowledgeProvider {...(q === undefined ? {} : { initialQuery: q })}>

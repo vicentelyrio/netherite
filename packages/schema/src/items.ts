@@ -16,7 +16,6 @@ import {
 
 const ids = <S extends Schema.Constraint>(schema: S) => Schema.Array(schema)
 
-/** Unknown frontmatter fields are allowed and kept (ADR-00003). */
 const open = <S extends Schema.Struct<Schema.Struct.Fields>>(struct: S) =>
   Schema.StructWithRest(struct, [Schema.Record(Schema.String, Schema.Unknown)])
 
@@ -32,10 +31,6 @@ const common = <const T extends ItemType, I extends Schema.Constraint>(type: T, 
 
 const optional = Schema.optionalKey
 
-/**
- * Where an imported item came from (ADR-00026): a path inside the repository, or a URL, and the
- * day it was brought in. Importing the same source again finds the item by it.
- */
 const provenance = {
   source: optional(Text),
   imported_at: optional(IsoDate),
@@ -89,7 +84,6 @@ const knowledge = <const T extends 'doc' | 'runbook' | 'context', I extends Sche
   explains: optional(ids(ItemId)),
   covers: optional(Schema.Array(Glob)),
   reviewed_at: optional(IsoDate),
-  /** Missing means `active`; a retired item is left out of freshness and agent context. */
   status: optional(Schema.Literals(['active', 'deprecated', 'superseded'])),
   supersedes: optional(ids(ItemId)),
   superseded_by: optional(ItemId),
@@ -107,7 +101,6 @@ const Context = open(
   }),
 )
 
-/** The task schema depends on the workspace's configured states. */
 const makeTask = (states: Config['states']) =>
   open(
     Schema.Struct({
@@ -123,7 +116,6 @@ const makeTask = (states: Config['states']) =>
     }),
   )
 
-/** The item schemas for one workspace configuration. */
 export const makeItemSchemas = (config: Pick<Config, 'states'>) => ({
   goal: Goal,
   project: Project,

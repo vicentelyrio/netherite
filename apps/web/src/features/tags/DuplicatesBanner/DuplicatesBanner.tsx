@@ -6,7 +6,6 @@ import { useWrite } from '@/infrastructure/query'
 import { keyOf, type TagPair } from '../rules'
 import { useTags } from '../TagsProvider'
 
-/** A likely duplicate pair, with a way to merge the less used into the more used, or leave both. */
 export function DuplicatesBanner({ pair }: { readonly pair: TagPair }) {
   const { LL } = useI18nContext()
   const api = useApi()

@@ -28,7 +28,6 @@ type CaptureType = (typeof captureTypes)[number]
 
 type Act = (client: Client) => Effect.Effect<unknown, unknown>
 
-/** The picked item: why it is here, the one thing to do about it, and archive or snooze. */
 export function TriageDetail() {
   const { LL } = useI18nContext()
   const api = useApi()

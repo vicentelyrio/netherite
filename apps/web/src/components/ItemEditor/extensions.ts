@@ -30,10 +30,8 @@ import { type LinkTarget, linkOptions, openWikiLink } from './complete'
 import type { Problem } from './diagnostics'
 import { diffLines, type LineChanges, noChanges } from './diff'
 
-/** The text as last committed, for the change gutter. `null` when there is none. */
 export const setHead = StateEffect.define<string | null>()
 
-/** The problems the server found, placed in the text. */
 export const setProblems = StateEffect.define<ReadonlyArray<Problem>>()
 
 const headField = StateField.define<string | null>({
@@ -44,7 +42,6 @@ const headField = StateField.define<string | null>({
   },
 })
 
-/** Changes against the committed text, recomputed as the text or the committed version changes. */
 export const changesField = StateField.define<LineChanges>({
   create: () => noChanges,
   update: (value, tr) => {
@@ -55,7 +52,6 @@ export const changesField = StateField.define<LineChanges>({
   },
 })
 
-/** The problems, kept in place as the text changes until the next report arrives. */
 export const problemsField = StateField.define<ReadonlyArray<Problem>>({
   create: () => [],
   update: (value, tr) => {
@@ -91,7 +87,6 @@ const marks = {
   deleted: new DiffMark('deleted'),
 }
 
-/** A 3px bar for added and changed lines, a small triangle where lines were removed. */
 const diffGutter = gutter({
   class: 'cm-diff-gutter',
   lineMarker: (view, line) => {
@@ -127,7 +122,6 @@ class WarningMark extends GutterMarker {
   }
 }
 
-/** Holds the lint column's width when no line has a mark. It draws nothing. */
 class LintSpacer extends GutterMarker {
   override toDOM() {
     const el = document.createElement('span')
@@ -152,7 +146,6 @@ const lintGutter = gutter({
 
 const mark = (className: string) => Decoration.mark({ class: className })
 
-/** Marks text that matches a pattern, and keeps the marks up to date as the document changes. */
 const matcher = (regexp: RegExp, className: string) => {
   const decorator = new MatchDecorator({ regexp, decoration: () => mark(className) })
   return ViewPlugin.fromClass(
@@ -169,16 +162,12 @@ const matcher = (regexp: RegExp, className: string) => {
   )
 }
 
-/** `[[ADR-00007]]`, `[[id|label]]`, `[[id#heading]]`. */
 export const wikiLinks = matcher(/\[\[[^\]\n]+\]\]/g, 'cm-wikilink')
-/** Dates and times in frontmatter, such as `2023-01-14T03:06:05+00:00`. */
 export const dates = matcher(
   /\b\d{4}-\d{2}-\d{2}(?:T[\d:.]+(?:Z|[+-]\d{2}:?\d{2})?)?\b/g,
   'cm-date',
 )
-/** `@handles`. */
 export const mentions = matcher(/(?<![\w@])@[\w-]+/g, 'cm-mention')
-/** Checklist boxes: `[x]` done, `[ ]` to do. */
 export const checks = matcher(/(?<=^\s*[-*+] )\[[ xX]\]/gm, 'cm-check')
 
 class Hint extends WidgetType {
@@ -199,7 +188,6 @@ class Hint extends WidgetType {
   }
 }
 
-/** Wavy underline on each problem, and its message in italics at the end of its line. */
 const problemDecorations = EditorView.decorations.compute([problemsField], (state) => {
   const builder = new RangeSetBuilder<Decoration>()
   const items: Array<{ from: number; to: number; deco: Decoration }> = []
@@ -224,7 +212,6 @@ const problemDecorations = EditorView.decorations.compute([problemsField], (stat
   return builder.finish()
 })
 
-/** After `[[`: items to link to. `targets` is read each time, so it can change as items do. */
 export const wikiCompletion = (targets: () => ReadonlyArray<LinkTarget>): Extension =>
   autocompletion({
     icons: false,
@@ -371,13 +358,10 @@ const theme = EditorView.theme(
 )
 
 export interface EditorOptions {
-  /** Called with Mod-S. */
   readonly onSave: () => void
-  /** Items a wikilink can point at, read each time the list opens. */
   readonly targets: () => ReadonlyArray<LinkTarget>
 }
 
-/** Markdown with YAML frontmatter, the gutters, decorations, completion and the Netherite look. */
 export const editorExtensions = ({ onSave, targets }: EditorOptions): Extension[] => [
   headField,
   changesField,

@@ -4,7 +4,6 @@ import '../shared.css'
 import { useI18nContext } from '@/infrastructure/i18n'
 import './SupersededBanner.css'
 
-/** Said on an ADR that a newer one replaced: who replaced it, and a link to it. */
 export function SupersededBanner({
   newer,
 }: {

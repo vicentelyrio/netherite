@@ -50,10 +50,6 @@ function Section({ title, children }: { readonly title: string; readonly childre
   )
 }
 
-/**
- * Every component in every state, on one page. The app shows it at `/dev/ui`; it is how the
- * design is checked by eye, and how a change to a token or a style is seen everywhere at once.
- */
 export function UiPreview() {
   const [active, setActive] = useState('goals')
   const [selected, setSelected] = useState('b')

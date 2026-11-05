@@ -27,7 +27,6 @@ const fixtureSources = async () =>
 
 const lines = (text: string) => text.split('\n')
 
-/** Number of lines that differ once the shared first and last lines are removed. */
 const changedLines = (before: string, after: string) => {
   const a = lines(before)
   const b = lines(after)

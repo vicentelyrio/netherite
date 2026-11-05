@@ -6,7 +6,6 @@ import { useTimeline } from '../TimelineProvider'
 import { TimelineRow } from './TimelineRow'
 import './TimelineChart.css'
 
-/** Goals, projects, tasks and decisions on one time axis, with today marked and the activity below. */
 export function TimelineChart() {
   const { LL } = useI18nContext()
   const { data, window, zoom, showTasks, showDecisions, expanded, toggle } = useTimeline()
