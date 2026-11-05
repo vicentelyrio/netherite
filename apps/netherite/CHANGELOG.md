@@ -13,4 +13,9 @@
   - **Freshness.** Docs that list the code they `cover` drift and go stale as that code changes in git.
   - **Local and safe.** Loopback only, a per-session token for writes, and no database, account or network service.
   
+  - **Templates.** A starter for each item type, with every optional field in a comment: `netherite new --template` and `netherite templates`. A file in `templates/` in the content folder replaces the built-in one for its type, and `lint` warns if it names a field the type does not have.
+  - **A ruleset for agents.** `netherite init` creates a short context item that `context sync` writes to `CLAUDE.md` and `AGENTS.md`: plan first, track work as you go, record decisions as `proposed` ADRs, keep docs honest, and ask when a choice is the person's.
+  - **Migration.** `netherite import` brings docs, runbooks, context files and ADRs in from a reviewed batch file. It records where each came from (`source`, `imported_at`), skips what is already imported, keeps ADR numbers, and turns links between imported files into links between items. The `netherite-migrate` skill drives it, asking at each choice, and `netherite-discover` proposes ADRs for decisions that were never written down, each marked as reconstructed with its evidence.
+  - **Documentation.** A searchable site at https://vicentelyrio.github.io/netherite/: install, agents, templates, migrating a repository, and a reference for the CLI, the MCP server, the schemas and the lint rules.
+
   This replaces the v1 stack (services, `packages/*` v1, desktop app and web client), which is removed.
