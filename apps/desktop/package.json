@@ -73,6 +73,6 @@
     "electron-vite": "^1.0.21",
     "eslint-config-netherite": "*",
     "typescript": "^4.9.4",
-    "vite": "^4.2.1"
+    "vite": "^6.4.5"
   }
 }
