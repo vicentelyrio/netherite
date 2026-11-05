@@ -30,6 +30,7 @@ export default defineConfig({
         items: [
           { text: 'Agents', link: '/agents' },
           { text: 'Templates', link: '/templates' },
+          { text: 'Migrate a repository', link: '/migrate' },
           { text: 'Obsidian', link: '/obsidian' },
         ],
       },

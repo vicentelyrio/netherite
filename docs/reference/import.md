@@ -48,8 +48,9 @@ JSON: a list of entries, or an object with an `entries` list and a default `mode
 | `body` | optional: the text, when the source is a URL or the agent rewrote it. A file's text is read from the file otherwise |
 | `mode` | optional: `copy` (default) leaves the original; `move` removes it once the item is written |
 
-The item's text is the source's text without its frontmatter and its first `#` heading, which
-becomes the title. Each item records `source` and `imported_at` (today), which is how a second run
+The item's text is the source's text without its frontmatter, its first `#` heading (which
+becomes the title) and any block between `<!-- netherite:... -->` markers, which Netherite itself
+wrote, such as the context block in `CLAUDE.md`. Each item records `source` and `imported_at` (today), which is how a second run
 finds it again.
 
 ## What it does

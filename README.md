@@ -58,6 +58,7 @@ The same pages are published as a searchable site: <https://vicentelyrio.github.
 | [Getting started](docs/getting-started.md) | `init`, the app, the first items, agents and skills |
 | [Install](docs/install.md) | `npx` or global, upgrading, what `init` adds, troubleshooting |
 | [Agents](docs/agents.md) | the skills, connecting Claude Code, Cursor and Codex, context |
+| [Migrate](docs/migrate.md) | bring an existing repository's docs, ADRs and conventions in |
 | [Templates](docs/templates.md) | a starter for each item type, `new --template`, and your own |
 | [Concepts](docs/concepts.md) | items, IDs, links, states, freshness and context |
 | [CLI reference](docs/reference/cli.md) | every command and flag |

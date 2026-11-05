@@ -10,6 +10,7 @@ export {
   importBatch,
   importTypes,
   splitSource,
+  withoutManagedBlocks,
 } from './import'
 export { applyChanges, type Change } from './io'
 export {

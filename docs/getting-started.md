@@ -125,6 +125,7 @@ collision and `netherite renumber <item>` gives one of them a new ID and rewrite
 
 - [Install](install.md): `npx`, a global install, upgrading, and what `init` adds.
 - [Agents](agents.md): skills, MCP setup for Claude Code, Cursor and Codex, and troubleshooting.
+- [Migrate](migrate.md): bring a repository that already has docs and decision records in.
 - [Templates](templates.md): a starter for each item type, and how to make your own.
 - [Concepts](concepts.md): how items, IDs, links and freshness work.
 - [Obsidian](obsidian.md): the same files open in Obsidian.

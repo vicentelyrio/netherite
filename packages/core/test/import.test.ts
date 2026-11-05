@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { importBatch, splitSource } from '../src/index'
+import { importBatch, splitSource, withoutManagedBlocks } from '../src/index'
 import { world } from './ops-helpers'
 
 const setup = `---
@@ -36,6 +36,17 @@ describe('splitSource', () => {
       body: 'Install the tools.\n\n## Steps\n\n1. Run the script.',
     })
     expect(splitSource('No heading here.\n')).toEqual({ body: 'No heading here.' })
+  })
+})
+
+describe('withoutManagedBlocks', () => {
+  test('removes what Netherite wrote into a file, and nothing else', () => {
+    const text =
+      '# Shop\n\nOurs.\n\n<!-- netherite:skills:start -->\nmanaged\n<!-- netherite:skills:end -->\n\n<!-- netherite:context:start -->\nmore\n<!-- netherite:context:end -->\nTail.\n'
+    expect(withoutManagedBlocks(text)).toBe('# Shop\n\nOurs.\n\n\nTail.\n')
+    expect(withoutManagedBlocks('<!-- not netherite -->\nkept\n')).toBe(
+      '<!-- not netherite -->\nkept\n',
+    )
   })
 })
 

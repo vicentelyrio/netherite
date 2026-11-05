@@ -106,6 +106,17 @@ const parseEntry = (raw: unknown, defaultMode: 'copy' | 'move'): Parsed => {
   }
 }
 
+/**
+ * Text that Netherite wrote into a file itself, between `<!-- netherite:...:start -->` and
+ * `<!-- netherite:...:end -->`, such as the context block in `CLAUDE.md`. It is not the file's own
+ * writing, and `context sync` puts it back, so an import leaves it out.
+ */
+export const withoutManagedBlocks = (text: string): string =>
+  text.replace(
+    /<!-- netherite:[a-z-]+:start -->[\s\S]*?<!-- netherite:[a-z-]+:end -->[ \t]*\r?\n?/gu,
+    '',
+  )
+
 /** The text of a source without its frontmatter and its first `# ` heading, and that heading. */
 export const splitSource = (text: string): { readonly title?: string; readonly body: string } => {
   const end = text.match(/^---\r?\n[\s\S]*?\r?\n---[ \t]*(?:\r?\n|$)/)?.[0].length ?? 0
@@ -220,7 +231,7 @@ export const importBatch = (
         }
         text = read.success
       }
-      const split = splitSource(entry.body ?? text ?? '')
+      const split = splitSource(withoutManagedBlocks(entry.body ?? text ?? ''))
       const title =
         entry.title ?? split.title ?? (where.kind === 'path' ? titleFromFile(where.path) : source)
       const body = split.body
