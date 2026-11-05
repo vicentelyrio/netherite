@@ -33,7 +33,7 @@ To type less, install it once with `npm install --global @vicentelyrio/netherite
 `init` is safe to run again. `npx @vicentelyrio/netherite serve --no-open` starts the same thing without opening
 a browser. The server listens on `127.0.0.1` only.
 
-Next: [getting started](docs/getting-started.md) walks through creating your first goal, project
+Next: [getting started](apps/docs/getting-started.md) walks through creating your first goal, project
 and task, connecting an agent, and keeping the context file in sync.
 
 ## What you get
@@ -55,19 +55,19 @@ The same pages are published as a searchable site: <https://vicentelyrio.github.
 
 | | |
 | --- | --- |
-| [Getting started](docs/getting-started.md) | `init`, the app, the first items, agents and skills |
-| [Install](docs/install.md) | `npx` or global, upgrading, what `init` adds, troubleshooting |
-| [Agents](docs/agents.md) | the skills, connecting Claude Code, Cursor and Codex, context |
-| [Migrate](docs/migrate.md) | bring an existing repository's docs, ADRs and conventions in |
-| [Templates](docs/templates.md) | a starter for each item type, `new --template`, and your own |
-| [Concepts](docs/concepts.md) | items, IDs, links, states, freshness and context |
-| [CLI reference](docs/reference/cli.md) | every command and flag |
-| [MCP reference](docs/reference/mcp.md) | the tools and resources an agent sees |
-| [Item schemas](docs/reference/schemas.md) | the fields of each item type |
-| [Import](docs/reference/import.md) | bring existing docs, runbooks and ADRs in from a reviewed batch file |
-| [Lint rules](docs/reference/lint.md) | what `netherite lint` reports and which problems it fixes |
-| [Configuration](docs/reference/config.md) | `.netherite/config.yml` |
-| [Obsidian](docs/obsidian.md) | opening the same files in Obsidian |
+| [Getting started](apps/docs/getting-started.md) | `init`, the app, the first items, agents and skills |
+| [Install](apps/docs/install.md) | `npx` or global, upgrading, what `init` adds, troubleshooting |
+| [Agents](apps/docs/agents.md) | the skills, connecting Claude Code, Cursor and Codex, context |
+| [Migrate](apps/docs/migrate.md) | bring an existing repository's docs, ADRs and conventions in |
+| [Templates](apps/docs/templates.md) | a starter for each item type, `new --template`, and your own |
+| [Concepts](apps/docs/concepts.md) | items, IDs, links, states, freshness and context |
+| [CLI reference](apps/docs/reference/cli.md) | every command and flag |
+| [MCP reference](apps/docs/reference/mcp.md) | the tools and resources an agent sees |
+| [Item schemas](apps/docs/reference/schemas.md) | the fields of each item type |
+| [Import](apps/docs/reference/import.md) | bring existing docs, runbooks and ADRs in from a reviewed batch file |
+| [Lint rules](apps/docs/reference/lint.md) | what `netherite lint` reports and which problems it fixes |
+| [Configuration](apps/docs/reference/config.md) | `.netherite/config.yml` |
+| [Obsidian](apps/docs/obsidian.md) | opening the same files in Obsidian |
 
 ## Developing
 
@@ -77,7 +77,7 @@ pnpm build           # all packages and the app
 pnpm test            # unit and integration tests
 pnpm e2e             # the app in a real browser (needs `pnpm build`)
 pnpm lint
-pnpm docs:gen        # regenerate docs/reference from the program
+pnpm docs:gen        # regenerate apps/docs/reference from the program
 ```
 
 This repository tracks its own work in `netherite/`; the plan is in `netherite/docs/`.

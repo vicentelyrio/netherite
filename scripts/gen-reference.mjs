@@ -1,5 +1,5 @@
-// Writes the reference pages in docs/reference/ from the program itself: the CLI's own help, the
-// MCP server's tool and resource listings, and the item types' JSON Schemas; and docs/templates.md
+// Writes the reference pages in apps/docs/reference/ from the program itself: the CLI's own help, the
+// MCP server's tool and resource listings, and the item types' JSON Schemas; and apps/docs/templates.md
 // from the starter templates that ship. They are generated
 // so they cannot drift from the code. `--check` writes nothing and exits 1 if a page is stale.
 // Needs a build: run `pnpm build` first.
@@ -10,7 +10,7 @@ import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const out = join(root, 'docs/reference')
+const out = join(root, 'apps/docs/reference')
 const bin = join(root, 'packages/cli/dist/bin.mjs')
 const check = process.argv.includes('--check')
 const require = createRequire(join(root, 'packages/mcp/package.json'))

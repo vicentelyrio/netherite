@@ -49,7 +49,7 @@ export default defineConfig({
     socialLinks: [{ icon: 'github', link: 'https://github.com/vicentelyrio/netherite' }],
     search: { provider: 'local' },
     editLink: {
-      pattern: 'https://github.com/vicentelyrio/netherite/edit/main/docs/:path',
+      pattern: 'https://github.com/vicentelyrio/netherite/edit/main/apps/docs/:path',
       text: 'Edit this page on GitHub',
     },
     outline: { level: [2, 3] },

@@ -11,7 +11,7 @@ const markdownFiles = (dir: string): string[] =>
     return statSync(path).isDirectory() ? markdownFiles(path) : name.endsWith('.md') ? [path] : []
   })
 
-const pages = [join(repo, 'README.md'), ...markdownFiles(join(repo, 'docs'))]
+const pages = [join(repo, 'README.md'), ...markdownFiles(join(repo, 'apps/docs'))]
 const text = (path: string) => readFileSync(path, 'utf8')
 
 describe('the documentation', () => {
@@ -60,9 +60,9 @@ describe('the documentation', () => {
   test('the generated references are there, and the README points at all of them', () => {
     const readme = text(join(repo, 'README.md'))
     for (const name of ['cli', 'mcp', 'schemas', 'config', 'lint']) {
-      expect(existsSync(join(repo, `docs/reference/${name}.md`))).toBe(true)
-      expect(readme).toContain(`docs/reference/${name}.md`)
+      expect(existsSync(join(repo, `apps/docs/reference/${name}.md`))).toBe(true)
+      expect(readme).toContain(`apps/docs/reference/${name}.md`)
     }
-    expect(readme).toContain('docs/obsidian.md')
+    expect(readme).toContain('apps/docs/obsidian.md')
   })
 })

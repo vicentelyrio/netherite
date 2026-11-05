@@ -14,7 +14,7 @@ const walk = (dir) => {
     else if (name.endsWith('.md')) files.push(path)
   }
 }
-walk('docs')
+walk('apps/docs')
 
 const problems = []
 for (const file of files) {

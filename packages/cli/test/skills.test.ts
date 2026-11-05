@@ -385,14 +385,14 @@ describe('netherite-migrate', () => {
     }
     // The reference is generated from the program's own help, and a test elsewhere keeps it current.
     const reference = readFileSync(
-      join(import.meta.dirname, '../../../docs/reference/cli.md'),
+      join(import.meta.dirname, '../../../apps/docs/reference/cli.md'),
       'utf8',
     )
     const importHelp = reference.slice(reference.indexOf('## `netherite import`'))
     for (const flag of ['--dry-run', '--stub', '--update']) {
       expect(importHelp, flag).toContain(flag)
     }
-    expect(text).toContain('docs/reference/import.md')
+    expect(text).toContain('https://vicentelyrio.github.io/netherite/reference/import')
   })
 })
 

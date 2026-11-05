@@ -15,11 +15,12 @@ rmSync(to, { recursive: true, force: true })
 cpSync(from, to, { recursive: true })
 console.log(`Bundled the app into ${to}`)
 
-// The package page on npm shows the README, where the repository's relative links would not work.
-const base = 'https://github.com/vicentelyrio/netherite/blob/main/'
+// The package page on npm shows the README, where the repository's relative links would not work,
+// so the links to the documentation point at the published site.
+const site = 'https://vicentelyrio.github.io/netherite/'
 const readme = readFileSync(join(here, '../../../README.md'), 'utf8').replace(
-  /\]\((docs\/[^)]+)\)/g,
-  (_, path) => `](${base}${path})`,
+  /\]\(apps\/docs\/([^)#]+?)(?:\.md)?(#[^)]*)?\)/g,
+  (_, path, hash) => `](${site}${path}${hash ?? ''})`,
 )
 writeFileSync(join(here, '../README.md'), readme)
 console.log('Wrote the package README')

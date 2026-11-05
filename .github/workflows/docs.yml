@@ -1,6 +1,6 @@
 name: Docs
 
-# The documentation site (ADR-00028) is built from docs/ on every pull request, so a broken link
+# The documentation site (ADR-00028) is built from apps/docs/ on every pull request, so a broken link
 # or page fails before it is merged, and published to GitHub Pages when main changes. In the
 # repository settings, Pages must use "GitHub Actions" as its source.
 
@@ -8,13 +8,13 @@ on:
   push:
     branches: [main]
     paths:
-      - "docs/**"
+      - "apps/docs/**"
       - "README.md"
       - "scripts/gen-reference.mjs"
       - ".github/workflows/docs.yml"
   pull_request:
     paths:
-      - "docs/**"
+      - "apps/docs/**"
       - "README.md"
       - "scripts/gen-reference.mjs"
       - ".github/workflows/docs.yml"
@@ -55,7 +55,7 @@ jobs:
       - uses: actions/upload-pages-artifact@v4
         if: github.ref == 'refs/heads/main'
         with:
-          path: docs/.vitepress/dist
+          path: apps/docs/.vitepress/dist
 
   deploy:
     name: Publish to GitHub Pages

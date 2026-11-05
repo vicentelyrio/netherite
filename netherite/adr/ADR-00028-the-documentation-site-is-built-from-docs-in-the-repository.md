@@ -2,7 +2,7 @@
 id: ADR-00028
 aliases: [ADR-00028]
 type: adr
-title: The documentation site is built from docs/ in the repository and published on GitHub Pages
+title: The documentation site is built from apps/docs/ in the repository and published on GitHub Pages
 created: 2026-11-04T20:10:01Z
 created_by: "@vicentelyrio"
 status: accepted
@@ -11,16 +11,16 @@ deciders: ["@vicentelyrio"]
 project: PRJ-00008
 ---
 
-# The documentation site is built from docs/ in the repository and published on GitHub Pages
+# The documentation site is built from apps/docs/ in the repository and published on GitHub Pages
 
 ## Context
 
-The documentation is Markdown in `docs/` (getting started, concepts, reference for the CLI, config, lint, MCP and schemas) plus the README. It reads well on GitHub, but it has no search, no navigation, and no pages for installing, using agents, or migrating an existing repository.
+The documentation is Markdown in `apps/docs/` (getting started, concepts, reference for the CLI, config, lint, MCP and schemas) plus the README. It reads well on GitHub, but it has no search, no navigation, and no pages for installing, using agents, or migrating an existing repository.
 
 ## Decision
 
-- **`docs/` stays the source of truth**, in the same repository as the code, so a change to a command and its page can go in one pull request and `lint` can keep checking them together.
-- **VitePress builds it.** It reads the Markdown in `docs/` where it is, so no page moves and GitHub still shows the same files; its local search works offline, with no service behind it; and it is one dev dependency with no framework to keep up. Starlight was the other candidate, but it wants its pages under `src/content/docs` and a workflow publishes it to GitHub Pages on each push to `main`. No server, no account and no cost.
+- **`apps/docs/` stays the source of truth**, in the same repository as the code, so a change to a command and its page can go in one pull request and `lint` can keep checking them together.
+- **VitePress builds it.** It reads the Markdown in `apps/docs/` where it is, so no page moves and GitHub still shows the same files; its local search works offline, with no service behind it; and it is one dev dependency with no framework to keep up. Starlight was the other candidate, but it wants its pages under `src/content/docs` and a workflow publishes it to GitHub Pages on each push to `main`. No server, no account and no cost.
 - **The README stays a short pitch and a quick start** and links to the site; it does not duplicate the pages.
 - **Pages to add** before the first publish: Install (npx, global, dev dependency, Node 24), Agents (what `init` installs, how each skill triggers, MCP setup for Claude Code, Cursor and Codex, the ruleset), Templates (see the templates ADR) and Migrate an existing repository.
 - **Command reference is generated from the CLI's own help** where it can be, so the page cannot disagree with `--help`.
