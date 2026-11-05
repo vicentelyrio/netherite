@@ -366,6 +366,18 @@ describe('netherite-migrate', () => {
     expect(text).toContain('Never commit')
   })
 
+  test('says what the real repository showed: what not to import, how to read statuses and covers', () => {
+    expect(text).toContain('`.mdc` rule files')
+    expect(text).toContain('Per-folder `AGENTS.md` files')
+    expect(text).toContain('Never read `.env*` files')
+    expect(text).toContain('Folders managed by another tool')
+    expect(text).toContain('write a small script that builds the batch')
+    expect(text).toContain('**Status as written:**')
+    expect(text).toContain('Leave out `deciders`')
+    expect(text).toContain('`covers` is what the doc **describes**')
+    expect(text).toContain('turns relative links between imported files')
+  })
+
   test('only names commands and flags that exist', async () => {
     const commands = new Set(['init', 'import'])
     for (const [, command] of text.matchAll(/`netherite ([a-z]+)[^`]*`/g)) {

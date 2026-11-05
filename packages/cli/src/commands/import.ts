@@ -107,6 +107,11 @@ export const importCommand = (env: Env, options: ImportCommandOptions) =>
         if (report.dryRun) env.out.line('Dry run: nothing was written.')
         for (const r of report.results) env.out.line(describe(r, report.dryRun))
         env.out.line(summary(report))
+        if (report.relinked.links > 0) {
+          env.out.line(
+            `Linked ${report.relinked.links} references between imported files, in ${report.relinked.items} items.`,
+          )
+        }
         if (!report.dryRun && report.counts.created + report.counts.updated > 0) {
           env.out.line(
             'Nothing is committed. Run `netherite lint`, then review the changes in git.',

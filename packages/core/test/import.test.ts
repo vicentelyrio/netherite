@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { importBatch, splitSource, withoutManagedBlocks } from '../src/index'
+import { rewriteLinks } from '../src/ops/import-links'
 import { world } from './ops-helpers'
 
 const setup = `---
@@ -241,5 +242,147 @@ describe('importBatch', () => {
     expect(report.dryRun).toBe(true)
     expect(report.counts).toEqual({ created: 1, updated: 0, skipped: 0, failed: 1 })
     expect(w.files()).toEqual(before)
+  })
+})
+
+describe('rewriteLinks', () => {
+  const ids = new Map([
+    ['docs/adr/0003-vitest.md', 'ADR-00003'],
+    ['docs/setup.md', 'DOC-00002'],
+    ['README.md', 'DOC-00001'],
+  ])
+  const run = (text: string, from = 'docs/adr/0004-x.md') => rewriteLinks(text, from, ids)
+
+  test('a relative link to an imported file becomes a link between items', () => {
+    expect(run('See [3. Use Vitest](0003-vitest.md) and [setup](../setup.md).')).toEqual({
+      text: 'See [[ADR-00003|3. Use Vitest]] and [[DOC-00002|setup]].',
+      count: 2,
+    })
+    expect(run('From the root: [home](../../README.md).').text).toBe(
+      'From the root: [[DOC-00001|home]].',
+    )
+  })
+
+  test('the label is dropped when it is the ID, empty, or would break a table', () => {
+    expect(run('[ADR-00003](./0003-vitest.md) and [](./0003-vitest.md)').text).toBe(
+      '[[ADR-00003]] and [[ADR-00003]]',
+    )
+    expect(run('| [the decision](./0003-vitest.md) | accepted |').text).toBe(
+      '| [[ADR-00003]] | accepted |',
+    )
+  })
+
+  test('a heading, a title and an encoded path do not stop it, and the heading is dropped', () => {
+    expect(run('[x](0003-vitest.md#context "Vitest") [y](../setup.md)').text).toBe(
+      '[[ADR-00003|x]] [[DOC-00002|y]]',
+    )
+  })
+
+  test('a link whose label is a code span is a link; one inside a code span is not', () => {
+    expect(run('[`../setup.md`](../setup.md) and `[x](../setup.md)`').text).toBe(
+      '[[DOC-00002|`../setup.md`]] and `[x](../setup.md)`',
+    )
+  })
+
+  test('leaves alone what is not a link to an imported file', () => {
+    const same = [
+      '[web](https://example.com/0003-vitest.md)',
+      '[mail](mailto:a@b.c)',
+      '[here](#context)',
+      '[absolute](/docs/setup.md)',
+      '[not imported](other.md)',
+      '[outside](../../../x.md)',
+      '![image](../setup.md)',
+      'inline `[code](0003-vitest.md)` stays',
+    ].join('\n')
+    expect(run(same)).toEqual({ text: same, count: 0 })
+    const fence = '```md\n[a](0003-vitest.md)\n```\n~~~\n[b](0003-vitest.md)\n~~~'
+    expect(run(fence)).toEqual({ text: fence, count: 0 })
+  })
+
+  test('the frontmatter is not touched', () => {
+    const text = '---\nsource: "[a](0003-vitest.md)"\n---\n\n[a](0003-vitest.md)\n'
+    expect(run(text).text).toBe('---\nsource: "[a](0003-vitest.md)"\n---\n\n[[ADR-00003|a]]\n')
+  })
+})
+
+describe('importBatch links, deciders and titles', () => {
+  test('links between imported files become links between items, in every batch', async () => {
+    const w = await world()
+    w.write('docs/a.md', '# A\n\nSee [B](b.md) and [setup](../README.md).\n')
+    w.write('docs/b.md', '# B\n\nBack to [A](a.md).\n')
+    w.write('README.md', '# Readme\n')
+    const first = await w.run(importBatch(w.repo, [{ source: 'docs/a.md', type: 'doc' }]))
+    expect(first.relinked).toEqual({ items: 0, links: 0 })
+    const second = await w.run(
+      importBatch(w.repo, [
+        { source: 'docs/b.md', type: 'doc' },
+        { source: 'README.md', type: 'doc' },
+      ]),
+    )
+    // A (first batch) now points at B and the README, and B points back at A.
+    expect(second.relinked).toEqual({ items: 2, links: 3 })
+    const a = w.read('netherite/docs/DOC-00002-a.md') as string
+    expect(a).toContain('See [[DOC-00003|B]] and [[DOC-00004|setup]].')
+    expect(w.read('netherite/docs/DOC-00003-b.md')).toContain('Back to [[DOC-00002|A]].')
+    const again = await w.run(importBatch(w.repo, [{ source: 'docs/a.md', type: 'doc' }]))
+    expect(again.relinked).toEqual({ items: 0, links: 0 })
+  })
+
+  test('a dry run rewrites nothing', async () => {
+    const w = await world()
+    w.write('docs/a.md', '# A\n\n[B](b.md)\n')
+    w.write('docs/b.md', '# B\n')
+    await w.run(importBatch(w.repo, [{ source: 'docs/b.md', type: 'doc' }]))
+    const before = w.files()
+    const report = await w.run(
+      importBatch(w.repo, [{ source: 'docs/a.md', type: 'doc' }], { dryRun: true }),
+    )
+    expect(report.relinked).toEqual({ items: 0, links: 0 })
+    expect(w.files()).toEqual(before)
+  })
+
+  test('an imported ADR has no deciders: the person running the import did not decide it', async () => {
+    const w = await prepared()
+    const report = await w.run(
+      importBatch(w.repo, [{ source: 'docs/old/deploy.md', type: 'adr' }], { createdBy: '@ada' }),
+    )
+    const text = w.read(report.results[0]?.path as string) as string
+    expect(text).toContain('created_by: "@ada"')
+    expect(text).not.toContain('deciders')
+    const named = await w.run(
+      importBatch(w.repo, [
+        { source: 'docs/old/setup.md', type: 'adr', fields: { deciders: ['@grace'] } },
+      ]),
+    )
+    expect(w.read(named.results[0]?.path as string)).toContain('deciders: ["@grace"]')
+  })
+
+  test('an ADR title loses the number in front of it, a doc title does not', async () => {
+    const w = await world()
+    w.write('adr/0062-x.md', '# 0062 — v2 runs beside the SPA\n\nText.\n')
+    w.write('adr/3-y.md', '# 3. Use Vitest\n\nText.\n')
+    w.write('adr/adr-7-z.md', '# ADR-7: Use Postgres\n\nText.\n')
+    w.write('adr/0009-no-heading.md', 'Text.\n')
+    w.write('docs/flow.md', '# 3 · Fix\n\nText.\n')
+    const report = await w.run(
+      importBatch(w.repo, [
+        { source: 'adr/0062-x.md', type: 'adr' },
+        { source: 'adr/3-y.md', type: 'adr' },
+        { source: 'adr/adr-7-z.md', type: 'adr' },
+        { source: 'adr/0009-no-heading.md', type: 'adr' },
+        { source: 'docs/flow.md', type: 'doc' },
+      ]),
+    )
+    const titles = report.results.map(
+      (r) => /^title: (.*)$/m.exec(w.read(r.path as string) ?? '')?.[1],
+    )
+    expect(titles).toEqual([
+      'v2 runs beside the SPA',
+      'Use Vitest',
+      'Use Postgres',
+      'No heading',
+      '3 · Fix',
+    ])
   })
 })

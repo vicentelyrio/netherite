@@ -244,6 +244,8 @@ export interface CreateInput {
   readonly body?: string
   /** A git identity such as `@ada`, recorded as `created_by`. */
   readonly createdBy?: string
+  /** An ADR's deciders. Default: the person creating it. An empty list leaves the field out. */
+  readonly deciders?: ReadonlyArray<string>
 }
 
 const reserved = ['id', 'type', 'aliases', 'title', 'created']
@@ -293,6 +295,7 @@ export const createItem = (repo: Repo, input: CreateInput): Op =>
         ? nextId(repo.index.items(), input.type, padding)
         : yield* explicitId(repo, input.type, input.id, padding)
 
+    const deciders = input.deciders ?? (input.createdBy === undefined ? [] : [input.createdBy])
     const firstTodo = repo.workspace.config.states.find((s) => s.category === 'todo')
     const defaults: Record<string, Json> = {
       goal: { status: 'active' },
@@ -301,7 +304,7 @@ export const createItem = (repo: Repo, input: CreateInput): Op =>
       adr: {
         status: 'proposed',
         date: isoDate(now),
-        ...(input.createdBy === undefined ? {} : { deciders: [input.createdBy] }),
+        ...(deciders.length === 0 ? {} : { deciders }),
       },
       doc: {},
       context: {},

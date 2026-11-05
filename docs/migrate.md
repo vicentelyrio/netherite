@@ -46,6 +46,21 @@ the last step by hand: write a batch file and run [`netherite import`](reference
 6. **The end.** You get a count of what was imported, skipped and needs review, and an offer to run
    `netherite-discover`. It only runs if you say yes.
 
+## What real repositories look like
+
+The flow was tried on a monorepo with 79 decision records (with status lines such as
+`accepted (provisional)` and `accepted; read path amended by 0070`), about 90 docs, an `AGENTS.md`
+in nearly every folder and an `openspec/` folder of over a thousand files. That is why the survey:
+
+- **leaves out** per-folder `AGENTS.md` files (agents read them in place, and as context they would
+  fill the budget), stubs that only say `@AGENTS.md`, and folders another tool owns (`openspec/`),
+  and tells you how many it skipped;
+- **reads statuses the way the record means them**: a record wholly superseded is `superseded`, one
+  that is only amended stays `accepted`, and the original status line is kept in the text;
+- **turns the links between imported files into links between items**, 749 of them in 140 files,
+  so the graph and backlinks work from the first run;
+- **leaves `covers` out when unsure**, because a wrong one means false "stale" alarms.
+
 ## What you should review
 
 - **ADR statuses and dates.** They come from the old records. An old record with no stated status

@@ -68,5 +68,15 @@ checks the entries and the IDs but not each field against the schema, so a field
 refuses shows up only when you write it. `--stub` with `mode: "move"` leaves a one-line note where
 the original was, instead of removing it. `--json` prints the whole report, one result per entry.
 
+**Links.** A relative Markdown link from one imported file to another becomes a link between items:
+`[the session]` pointing at `0025-session.md` is written as `[[ADR-00025|the session]]`. It is done at the end of
+every run, in every file that came from an import, so an earlier batch can point at a later one. A
+link to a file that was not imported is left alone, a `#heading` after the path is dropped, and a link
+in a code block or a code span is not touched. The report says how many references were linked.
+
+**Titles and deciders.** An ADR's title loses the number in front of it (`0062 — Use X` gives
+`Use X`). An imported ADR has no `deciders` unless the entry gives them: whoever runs the import did
+not make the decision.
+
 After an import, run `netherite lint` (`source-missing` notes a `source` that was later moved or
 deleted) and review the changes with `git diff`.

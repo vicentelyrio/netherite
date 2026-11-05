@@ -3,6 +3,7 @@ import { type FieldIssue, type ItemType, ValidationError } from '@netherite/sche
 import { Clock, Effect, FileSystem, Path } from 'effect'
 import type { Json } from '../edit'
 import { classifySource, normalizeSource } from '../source'
+import { rewriteLinks } from './import-links'
 import { createItem, readSource, replaceSource, updateFields } from './operations'
 import type { Repo } from './repo'
 
@@ -62,6 +63,8 @@ export interface ImportReport {
   readonly dryRun: boolean
   readonly results: ReadonlyArray<EntryResult>
   readonly counts: Readonly<Record<EntryStatus, number>>
+  /** Links between imported files that were rewritten as links between items. */
+  readonly relinked: { readonly items: number; readonly links: number }
 }
 
 const reserved = ['id', 'type', 'aliases', 'title', 'created', 'source', 'imported_at']
@@ -126,9 +129,16 @@ export const splitSource = (text: string): { readonly title?: string; readonly b
   return { title: heading[1] as string, body: rest.slice(heading[0].length).trim() }
 }
 
+/** A decision record's number in front of its title: `0062 — Use X`, `3. Use X`, `ADR-7: Use X`. */
+const withoutNumber = (title: string) => {
+  const rest = title.replace(/^(?:adr[-_ ]*)?\d+\s*[.:—–)-]\s*/iu, '').trim()
+  return rest === '' ? title : rest
+}
+
 /** A title from a file name: `old-setup_guide.md` gives `Old setup guide`. */
-const titleFromFile = (path: string) => {
-  const name = (path.split('/').pop() ?? path).replace(/\.[^.]*$/u, '').replace(/^\./u, '')
+const titleFromFile = (path: string, type: ImportType) => {
+  const base = (path.split('/').pop() ?? path).replace(/\.[^.]*$/u, '').replace(/^\./u, '')
+  const name = type === 'adr' ? base.replace(/^(?:adr[-_ ]*)?\d+[-_ ]+/iu, '') : base
   const words = name.replace(/[-_]+/gu, ' ').trim()
   return words === '' ? path : words.charAt(0).toUpperCase() + words.slice(1)
 }
@@ -233,7 +243,13 @@ export const importBatch = (
       }
       const split = splitSource(withoutManagedBlocks(entry.body ?? text ?? ''))
       const title =
-        entry.title ?? split.title ?? (where.kind === 'path' ? titleFromFile(where.path) : source)
+        entry.title ??
+        (split.title === undefined
+          ? undefined
+          : entry.type === 'adr'
+            ? withoutNumber(split.title)
+            : split.title) ??
+        (where.kind === 'path' ? titleFromFile(where.path, entry.type) : source)
       const body = split.body
 
       // Already imported?
@@ -318,6 +334,8 @@ export const importBatch = (
           fields: { ...(entry.fields ?? {}), source, imported_at: today },
           body,
           ...(options.createdBy === undefined ? {} : { createdBy: options.createdBy }),
+          // The person who ran the import did not make the decision.
+          deciders: [],
         }),
       )
       if (made._tag === 'Failure') {
@@ -355,7 +373,35 @@ export const importBatch = (
       results.push(result)
     }
 
+    // Files that point at each other by relative links now point at items, in every file that
+    // came from an import, so an earlier batch can link to a later one.
+    const relinked = { items: 0, links: 0 }
+    if (options.dryRun !== true) {
+      const ids = new Map<string, string>()
+      const imported: Array<{ id: string; from: string }> = []
+      for (const item of repo.index.items()) {
+        const data = item.parsed.frontmatter?.data
+        const recorded = isObject(data) ? data.source : undefined
+        if (typeof recorded !== 'string' || item.id === undefined) continue
+        const kind = classifySource(recorded)
+        if (kind.kind !== 'path') continue
+        ids.set(kind.path, item.id)
+        imported.push({ id: item.id, from: kind.path })
+      }
+      for (const { id, from } of imported) {
+        const current = yield* Effect.result(readSource(repo, id))
+        if (current._tag === 'Failure') continue
+        const next = rewriteLinks(current.success.text, from, ids)
+        if (next.count === 0 || next.text === current.success.text) continue
+        const written = yield* Effect.result(replaceSource(repo, id, next.text))
+        if (written._tag === 'Success') {
+          relinked.items++
+          relinked.links += next.count
+        }
+      }
+    }
+
     const counts = { created: 0, updated: 0, skipped: 0, failed: 0 }
     for (const r of results) counts[r.status]++
-    return { dryRun: options.dryRun === true, results, counts } satisfies ImportReport
+    return { dryRun: options.dryRun === true, results, counts, relinked } satisfies ImportReport
   })
