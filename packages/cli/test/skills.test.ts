@@ -26,10 +26,12 @@ const temp = async <A>(use: (dir: string) => Promise<A>) => {
 
 const read = (dir: string, path: string) => readFileSync(join(dir, path), 'utf8')
 const skillPath = (name: string) => `.claude/skills/${name}/SKILL.md`
-const names = ['adr', 'plan', 'task', 'refresh', 'context', 'migrate'].map((n) => `netherite-${n}`)
+const names = ['adr', 'plan', 'task', 'refresh', 'context', 'migrate', 'discover'].map(
+  (n) => `netherite-${n}`,
+)
 
 describe('the skills', () => {
-  test('are the five from ADR-00013 and the migration one from ADR-00026, each with a name and description in its frontmatter', () => {
+  test('are the five from ADR-00013 and the two migration ones from ADR-00026, each with a name and description in its frontmatter', () => {
     expect(skills.map((s) => s.name)).toEqual(names)
     for (const skill of skills) {
       expect(skill.text).toMatch(
@@ -379,5 +381,61 @@ describe('netherite-migrate', () => {
       expect(importHelp, flag).toContain(flag)
     }
     expect(text).toContain('docs/reference/import.md')
+  })
+})
+
+describe('netherite-discover', () => {
+  const text = skills.find((s) => s.name === 'netherite-discover')?.text ?? ''
+
+  test('asks first, and only writes proposed ADRs that say they were reconstructed', () => {
+    for (const heading of [
+      '## 1. Ask first, one question at a time',
+      '## 2. Find the evidence',
+      '## 3. Show the list, and let the person choose',
+      '## 4. Plan and track',
+      '## 5. Write each ADR',
+      '## 6. Finish',
+    ]) {
+      expect(text, heading).toContain(heading)
+    }
+    expect(text).toContain('Run it only when the person has said yes')
+    expect(text).toContain('Do not start without a yes')
+    expect(text).toContain('`fields.status`: `proposed`. Never `accepted`.')
+    expect(text).toContain('`fields.tags`: `["reconstructed"]`')
+    expect(text).toContain('Reconstructed from history')
+    expect(text).toContain('## Evidence')
+  })
+
+  test('defines its confidence levels and refuses to invent a reason', () => {
+    for (const level of ['**high:**', '**medium:**', '**low:**']) expect(text).toContain(level)
+    expect(text).toContain('A reason that is not in the evidence is not written')
+    expect(text).toContain('The reason was not recorded.')
+    expect(text).toContain('Do not name people as deciders')
+    expect(text).toContain('Never commit')
+  })
+
+  test('the template it gives is an ADR the workspace accepts', async () => {
+    await temp(async (dir) => {
+      git(dir, 'init', '-q', '-b', 'main')
+      await cli(dir, 'init', '--no-skills')
+      const body =
+        '## Context\n\n_Reconstructed from history; it was not recorded when it was made._ Jest was slow.\n\n## Decision\n\nUse Vitest.\n\n## Consequences\n\n- \\+ Faster runs.\n- \\- Two syntaxes for a while.\n\n## Evidence\n\n- `a1b2c3d` 2025-03-02 move to vitest\n- Confidence: medium. A reason is stated in the pull request.\n'
+      writeFileSync(join(dir, 'body.md'), body)
+      const made = await cli(
+        dir,
+        'new',
+        'adr',
+        'Use Vitest instead of Jest',
+        '--set',
+        'tags=[reconstructed]',
+        '--set',
+        'date=2025-03-02',
+        '--body-file',
+        'body.md',
+      )
+      expect(made.code).toBe(0)
+      expect(read(dir, made.stdout[0]?.split(/\s+/)[1] as string)).toContain('status: proposed')
+      expect((await cli(dir, 'lint', '--fail-on', 'warning')).code).toBe(0)
+    })
   })
 })
