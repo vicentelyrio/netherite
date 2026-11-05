@@ -29,7 +29,21 @@ export default async function setup(project: TestProject) {
     GIT_CONFIG_GLOBAL: emptyGitConfig,
     GIT_CONFIG_SYSTEM: emptyGitConfig,
   }
-  const git = (...args: string[]) => execFileSync('git', args, { cwd: dir, env, stdio: 'ignore' })
+  // Vitest cannot print the stack of an error thrown from here on some runners (a source map
+  // problem in its own error printer), and then the cause is lost. So the cause is written first.
+  const fail = (what: string, error: unknown): never => {
+    const detail = error instanceof Error ? error.message : String(error)
+    const stderr = (error as { stderr?: Buffer | string }).stderr?.toString() ?? ''
+    process.stderr.write(`\n[web test setup] ${what} failed: ${detail}\n${stderr}\n`)
+    throw error
+  }
+  const git = (...args: string[]) => {
+    try {
+      execFileSync('git', args, { cwd: dir, env, stdio: ['ignore', 'ignore', 'pipe'] })
+    } catch (error) {
+      fail(`git ${args.join(' ')}`, error)
+    }
+  }
   git('init', '-q', '-b', 'main')
   git('config', 'user.name', 'Ada Lovelace')
   git('config', 'user.email', 'ada@example.com')
@@ -40,18 +54,32 @@ export default async function setup(project: TestProject) {
     env,
   })
   let out = ''
+  let err = ''
+  let ready = false
   const started = await new Promise<{ url: string; token: string }>((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error(`serve did not start: ${out}`)), 15_000)
+    const timer = setTimeout(() => {
+      process.stderr.write(`\n[web test setup] serve did not start in 15 s:\n${out}\n${err}\n`)
+      reject(new Error(`serve did not start: ${out}`))
+    }, 15_000)
+    child.stderr.on('data', (chunk) => {
+      err += chunk
+    })
     child.stdout.on('data', (chunk) => {
       out += chunk
       const url = /running at (http:\/\/\S+)/.exec(out)?.[1]
       const token = /Bearer ([0-9a-f]{64})/.exec(out)?.[1]
       if (url && token) {
         clearTimeout(timer)
+        ready = true
         resolve({ url, token })
       }
     })
-    child.on('exit', (code) => reject(new Error(`serve exited ${code}: ${out}`)))
+    child.on('exit', (code) => {
+      // After startup this is the server being stopped at the end, which is not a failure.
+      if (ready) return
+      process.stderr.write(`\n[web test setup] serve exited with ${code}:\n${out}\n${err}\n`)
+      reject(new Error(`serve exited ${code}: ${out}`))
+    })
   })
   project.provide('server', { ...started, dir })
 
