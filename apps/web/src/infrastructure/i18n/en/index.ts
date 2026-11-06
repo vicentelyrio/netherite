@@ -16,6 +16,13 @@ const en = {
   },
   components: {
     breadcrumb: 'Breadcrumb',
+    deleteAction: {
+      title: 'Delete {name}?',
+      text: 'This deletes its file. Anything not committed to git cannot be recovered.',
+      cancel: 'Cancel',
+      confirm: 'Delete',
+    },
+    movePicker: { filter: 'Filter', none: 'Nothing matches.', current: 'Current' },
     freshness: {
       stale: 'Stale · {count:number} {{commit|commits}}',
       behind: '{count:number} {{commit|commits}} behind',
@@ -585,6 +592,9 @@ const en = {
     areaRemoved: 'Area {name} removed',
     areaRemovedText: 'Its goals are now without an area.',
     detail: {
+      delete: 'Delete goal',
+      deleteBlocked: 'Move or delete its projects first',
+      deleted: 'Goal {name} deleted',
       none: 'No goal {id}',
       loadError: 'Could not load this goal',
       back: 'Back to goals',
@@ -601,6 +611,14 @@ const en = {
   },
   projects: {
     title: 'Projects',
+    actions: {
+      move: 'Move to another goal',
+      moveTitle: 'Move {name} to',
+      goalProjects: '{count:number} {{project|projects}}',
+      delete: 'Delete project',
+      deleteBlocked: 'Move or delete its tasks and knowledge first',
+      deleted: 'Project {name} deleted',
+    },
     views: { label: 'Views', tasks: 'Tasks', knowledge: 'Knowledge' },
     none: 'No project {id}',
     loadError: 'Could not load this project',
@@ -638,6 +656,12 @@ const en = {
     },
   },
   tasks: {
+    actions: {
+      move: 'Move to another project',
+      moveTitle: 'Move {name} to',
+      delete: 'Delete task',
+      deleted: 'Task {name} deleted',
+    },
     drawer: {
       path: 'Task path',
       projects: 'Projects',

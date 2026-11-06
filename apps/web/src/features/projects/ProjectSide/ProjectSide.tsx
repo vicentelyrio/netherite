@@ -7,6 +7,7 @@ import { Breadcrumbs, EditableText } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { boardQuery, useWrite } from '@/infrastructure/query'
+import { ProjectActions } from '../ProjectActions'
 import { ProjectGraph } from '../ProjectGraph'
 import { rememberProject } from '../ProjectsEntry/remember'
 import { type ProjectViewId, projectViews } from '../views'
@@ -61,21 +62,24 @@ export function ProjectSide({
         value={board.title}
         onSave={(title) => retitle.mutate(title)}
       />
-      <div className="project-views" role="tablist" aria-label={LL.projects.views.label()}>
-        {projectViews.map((v) => (
-          <button
-            key={v.id}
-            type="button"
-            role="tab"
-            aria-selected={view === v.id}
-            aria-label={LL.projects.views[v.id]()}
-            data-active={view === v.id || undefined}
-            onClick={() => onViewChange(v.id)}
-          >
-            <Icon name={v.icon} />
-          </button>
-        ))}
-        <span className="app-muted">{LL.projects.views[view]()}</span>
+      <div className="project-toolbar">
+        <div className="project-views" role="tablist" aria-label={LL.projects.views.label()}>
+          {projectViews.map((v) => (
+            <button
+              key={v.id}
+              type="button"
+              role="tab"
+              aria-selected={view === v.id}
+              aria-label={LL.projects.views[v.id]()}
+              data-active={view === v.id || undefined}
+              onClick={() => onViewChange(v.id)}
+            >
+              <Icon name={v.icon} />
+            </button>
+          ))}
+          <span className="app-muted">{LL.projects.views[view]()}</span>
+        </div>
+        <ProjectActions board={board} />
       </div>
       <ProjectGraph board={board} />
     </>

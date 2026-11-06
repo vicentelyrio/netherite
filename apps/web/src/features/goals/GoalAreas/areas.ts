@@ -19,3 +19,25 @@ export const sum = (goals: ReadonlyArray<GoalRow>) =>
     }),
     { done: 0, total: 0 },
   )
+
+export interface AreaMove {
+  readonly id: string
+  readonly payload: {
+    readonly set?: { readonly area: string }
+    readonly unset?: ReadonlyArray<string>
+  }
+}
+
+export const areaMoveFor = (
+  goals: ReadonlyArray<{ readonly id: string; readonly area?: string | undefined }>,
+  goalId: string,
+  target: string | undefined,
+): AreaMove | undefined => {
+  const goal = goals.find((g) => g.id === goalId)
+  if (goal === undefined || target === undefined || (goal.area ?? noArea) === target) {
+    return undefined
+  }
+  return target === noArea
+    ? { id: goalId, payload: { unset: ['area'] } }
+    : { id: goalId, payload: { set: { area: target } } }
+}

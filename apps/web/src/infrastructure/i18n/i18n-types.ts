@@ -47,6 +47,39 @@ type RootTranslation = {
 		 * B​r​e​a​d​c​r​u​m​b
 		 */
 		breadcrumb: string
+		deleteAction: {
+			/**
+			 * D​e​l​e​t​e​ ​{​n​a​m​e​}​?
+			 * @param {unknown} name
+			 */
+			title: RequiredParams<'name'>
+			/**
+			 * T​h​i​s​ ​d​e​l​e​t​e​s​ ​i​t​s​ ​f​i​l​e​.​ ​A​n​y​t​h​i​n​g​ ​n​o​t​ ​c​o​m​m​i​t​t​e​d​ ​t​o​ ​g​i​t​ ​c​a​n​n​o​t​ ​b​e​ ​r​e​c​o​v​e​r​e​d​.
+			 */
+			text: string
+			/**
+			 * C​a​n​c​e​l
+			 */
+			cancel: string
+			/**
+			 * D​e​l​e​t​e
+			 */
+			confirm: string
+		}
+		movePicker: {
+			/**
+			 * F​i​l​t​e​r
+			 */
+			filter: string
+			/**
+			 * N​o​t​h​i​n​g​ ​m​a​t​c​h​e​s​.
+			 */
+			none: string
+			/**
+			 * C​u​r​r​e​n​t
+			 */
+			current: string
+		}
 		freshness: {
 			/**
 			 * S​t​a​l​e​ ​·​ ​{​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}
@@ -2176,6 +2209,19 @@ type RootTranslation = {
 		areaRemovedText: string
 		detail: {
 			/**
+			 * D​e​l​e​t​e​ ​g​o​a​l
+			 */
+			'delete': string
+			/**
+			 * M​o​v​e​ ​o​r​ ​d​e​l​e​t​e​ ​i​t​s​ ​p​r​o​j​e​c​t​s​ ​f​i​r​s​t
+			 */
+			deleteBlocked: string
+			/**
+			 * G​o​a​l​ ​{​n​a​m​e​}​ ​d​e​l​e​t​e​d
+			 * @param {unknown} name
+			 */
+			deleted: RequiredParams<'name'>
+			/**
 			 * N​o​ ​g​o​a​l​ ​{​i​d​}
 			 * @param {unknown} id
 			 */
@@ -2232,6 +2278,35 @@ type RootTranslation = {
 		 * P​r​o​j​e​c​t​s
 		 */
 		title: string
+		actions: {
+			/**
+			 * M​o​v​e​ ​t​o​ ​a​n​o​t​h​e​r​ ​g​o​a​l
+			 */
+			move: string
+			/**
+			 * M​o​v​e​ ​{​n​a​m​e​}​ ​t​o
+			 * @param {unknown} name
+			 */
+			moveTitle: RequiredParams<'name'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​p​r​o​j​e​c​t​|​p​r​o​j​e​c​t​s​}​}
+			 * @param {number} count
+			 */
+			goalProjects: RequiredParams<'count'>
+			/**
+			 * D​e​l​e​t​e​ ​p​r​o​j​e​c​t
+			 */
+			'delete': string
+			/**
+			 * M​o​v​e​ ​o​r​ ​d​e​l​e​t​e​ ​i​t​s​ ​t​a​s​k​s​ ​a​n​d​ ​k​n​o​w​l​e​d​g​e​ ​f​i​r​s​t
+			 */
+			deleteBlocked: string
+			/**
+			 * P​r​o​j​e​c​t​ ​{​n​a​m​e​}​ ​d​e​l​e​t​e​d
+			 * @param {unknown} name
+			 */
+			deleted: RequiredParams<'name'>
+		}
 		views: {
 			/**
 			 * V​i​e​w​s
@@ -2387,6 +2462,26 @@ type RootTranslation = {
 		}
 	}
 	tasks: {
+		actions: {
+			/**
+			 * M​o​v​e​ ​t​o​ ​a​n​o​t​h​e​r​ ​p​r​o​j​e​c​t
+			 */
+			move: string
+			/**
+			 * M​o​v​e​ ​{​n​a​m​e​}​ ​t​o
+			 * @param {unknown} name
+			 */
+			moveTitle: RequiredParams<'name'>
+			/**
+			 * D​e​l​e​t​e​ ​t​a​s​k
+			 */
+			'delete': string
+			/**
+			 * T​a​s​k​ ​{​n​a​m​e​}​ ​d​e​l​e​t​e​d
+			 * @param {unknown} name
+			 */
+			deleted: RequiredParams<'name'>
+		}
 		drawer: {
 			/**
 			 * T​a​s​k​ ​p​a​t​h
@@ -2942,6 +3037,38 @@ export type TranslationFunctions = {
 		 * Breadcrumb
 		 */
 		breadcrumb: () => LocalizedString
+		deleteAction: {
+			/**
+			 * Delete {name}?
+			 */
+			title: (arg: { name: unknown }) => LocalizedString
+			/**
+			 * This deletes its file. Anything not committed to git cannot be recovered.
+			 */
+			text: () => LocalizedString
+			/**
+			 * Cancel
+			 */
+			cancel: () => LocalizedString
+			/**
+			 * Delete
+			 */
+			confirm: () => LocalizedString
+		}
+		movePicker: {
+			/**
+			 * Filter
+			 */
+			filter: () => LocalizedString
+			/**
+			 * Nothing matches.
+			 */
+			none: () => LocalizedString
+			/**
+			 * Current
+			 */
+			current: () => LocalizedString
+		}
 		freshness: {
 			/**
 			 * Stale · {count} {{commit|commits}}
@@ -4960,6 +5087,18 @@ export type TranslationFunctions = {
 		areaRemovedText: () => LocalizedString
 		detail: {
 			/**
+			 * Delete goal
+			 */
+			'delete': () => LocalizedString
+			/**
+			 * Move or delete its projects first
+			 */
+			deleteBlocked: () => LocalizedString
+			/**
+			 * Goal {name} deleted
+			 */
+			deleted: (arg: { name: unknown }) => LocalizedString
+			/**
 			 * No goal {id}
 			 */
 			none: (arg: { id: unknown }) => LocalizedString
@@ -5014,6 +5153,32 @@ export type TranslationFunctions = {
 		 * Projects
 		 */
 		title: () => LocalizedString
+		actions: {
+			/**
+			 * Move to another goal
+			 */
+			move: () => LocalizedString
+			/**
+			 * Move {name} to
+			 */
+			moveTitle: (arg: { name: unknown }) => LocalizedString
+			/**
+			 * {count} {{project|projects}}
+			 */
+			goalProjects: (arg: { count: number }) => LocalizedString
+			/**
+			 * Delete project
+			 */
+			'delete': () => LocalizedString
+			/**
+			 * Move or delete its tasks and knowledge first
+			 */
+			deleteBlocked: () => LocalizedString
+			/**
+			 * Project {name} deleted
+			 */
+			deleted: (arg: { name: unknown }) => LocalizedString
+		}
 		views: {
 			/**
 			 * Views
@@ -5162,6 +5327,24 @@ export type TranslationFunctions = {
 		}
 	}
 	tasks: {
+		actions: {
+			/**
+			 * Move to another project
+			 */
+			move: () => LocalizedString
+			/**
+			 * Move {name} to
+			 */
+			moveTitle: (arg: { name: unknown }) => LocalizedString
+			/**
+			 * Delete task
+			 */
+			'delete': () => LocalizedString
+			/**
+			 * Task {name} deleted
+			 */
+			deleted: (arg: { name: unknown }) => LocalizedString
+		}
 		drawer: {
 			/**
 			 * Task path

@@ -46,7 +46,7 @@ export function ContextCard({
     >
       <div className="kf-context-top">
         <Icon name="smart_toy" size={20} />
-        <div>
+        <div className="kf-context-text">
           <strong>{LL.knowledge.doc.context.include()}</strong>
           <span>
             {context.include
