@@ -90,7 +90,7 @@ test('a new goal in an area is created as a file with that area', async ({ page,
     .first()
     .click()
   await page.getByLabel('Goal title').fill('Learn to sail')
-  await page.getByRole('button', { name: 'Create' }).click()
+  await page.getByLabel('Goal title').press('Enter')
 
   await expect(page.getByText('Learn to sail')).toBeVisible()
   await expect

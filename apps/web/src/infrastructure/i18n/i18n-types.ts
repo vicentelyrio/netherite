@@ -47,14 +47,6 @@ type RootTranslation = {
 		 * B​r​e​a​d​c​r​u​m​b
 		 */
 		breadcrumb: string
-		/**
-		 * C​r​e​a​t​e
-		 */
-		createTitle: string
-		/**
-		 * C​a​n​c​e​l
-		 */
-		cancel: string
 		freshness: {
 			/**
 			 * S​t​a​l​e​ ​·​ ​{​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}
@@ -408,11 +400,6 @@ type RootTranslation = {
 			 * N​e​w​ ​r​u​n​b​o​o​k
 			 */
 			newRunbook: string
-			/**
-			 * N​e​w​ ​{​t​y​p​e​}​ ​t​i​t​l​e
-			 * @param {unknown} type
-			 */
-			titleLabel: RequiredParams<'type'>
 		}
 		toolbar: {
 			/**
@@ -2166,10 +2153,6 @@ type RootTranslation = {
 		 */
 		areaExists: string
 		/**
-		 * C​r​e​a​t​e​ ​a​r​e​a
-		 */
-		createArea: string
-		/**
 		 * {​g​o​a​l​s​}​ ​{​{​g​o​a​l​|​g​o​a​l​s​}​}​ ​·​ ​{​p​r​o​j​e​c​t​s​}​ ​{​{​p​r​o​j​e​c​t​|​p​r​o​j​e​c​t​s​}​}​ ​·​ ​{​d​o​n​e​}​/​{​t​o​t​a​l​}​ ​d​o​n​e
 		 * @param {number} done
 		 * @param {number} goals
@@ -2959,14 +2942,6 @@ export type TranslationFunctions = {
 		 * Breadcrumb
 		 */
 		breadcrumb: () => LocalizedString
-		/**
-		 * Create
-		 */
-		createTitle: () => LocalizedString
-		/**
-		 * Cancel
-		 */
-		cancel: () => LocalizedString
 		freshness: {
 			/**
 			 * Stale · {count} {{commit|commits}}
@@ -3306,10 +3281,6 @@ export type TranslationFunctions = {
 			 * New runbook
 			 */
 			newRunbook: () => LocalizedString
-			/**
-			 * New {type} title
-			 */
-			titleLabel: (arg: { type: unknown }) => LocalizedString
 		}
 		toolbar: {
 			/**
@@ -4971,10 +4942,6 @@ export type TranslationFunctions = {
 		 * That area exists: the goal will join it.
 		 */
 		areaExists: () => LocalizedString
-		/**
-		 * Create area
-		 */
-		createArea: () => LocalizedString
 		/**
 		 * {goals} {{goal|goals}} · {projects} {{project|projects}} · {done}/{total} done
 		 */

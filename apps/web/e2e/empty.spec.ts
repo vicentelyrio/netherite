@@ -8,7 +8,7 @@ test('goals start from a small button that creates the first goal', async ({ pag
   await expect(page.getByRole('heading', { name: 'No goals yet' })).toBeVisible()
   await page.getByRole('button', { name: 'New goal' }).click()
   await page.getByLabel('Goal title').fill('Learn to sail')
-  await page.getByRole('button', { name: 'Create' }).click()
+  await page.locator('body').click({ position: { x: 400, y: 800 } })
   await expect(page.getByText('Learn to sail')).toBeVisible()
   await expect(page.getByRole('heading', { name: 'No goals yet' })).toBeHidden()
 })
@@ -36,10 +36,25 @@ const addKnowledge = async (page: Page, url: string, kind: string, title: string
   await page.goto(`${url}/knowledge`)
   await page.getByRole('button', { name: 'New', exact: true }).click()
   await page.getByRole('menuitem', { name: `New ${kind}` }).click()
-  await page.getByLabel(`New ${kind} title`).fill(title)
-  await page.getByRole('button', { name: 'Create' }).click()
-  await expect(page.getByText(title).first()).toBeVisible()
+  await expect(page.getByRole('textbox', { name: `New ${kind}`, exact: true })).toBeFocused()
+  await page.keyboard.type(title)
+  await page.keyboard.press('Enter')
+  await expect(page.getByRole('heading', { name: title, level: 1 })).toBeVisible()
+  await expect(page.locator('.cm-content')).toBeFocused()
 }
+
+test('a new document writes nothing until it has a title', async ({ page, workspace }) => {
+  await page.goto(`${workspace.url}/knowledge`)
+  await page.getByRole('button', { name: 'New', exact: true }).click()
+  await page.getByRole('menuitem', { name: 'New doc' }).click()
+  await expect(page).toHaveURL(/\/knowledge\/new\/doc$/)
+  await page.getByRole('textbox', { name: 'New doc', exact: true }).press('Enter')
+  await expect(page).toHaveURL(/\/knowledge\/new\/doc$/)
+  await page.getByRole('textbox', { name: 'New doc', exact: true }).fill('Abandoned')
+  await page.getByRole('button', { name: 'Close' }).click()
+  await expect(page).toHaveURL(/\/knowledge$/)
+  await expect(page.getByText('Abandoned')).toBeHidden()
+})
 
 test('stats show the dashboard once there is a doc', async ({ page, workspace }) => {
   await addKnowledge(page, workspace.url, 'doc', 'Setup guide')

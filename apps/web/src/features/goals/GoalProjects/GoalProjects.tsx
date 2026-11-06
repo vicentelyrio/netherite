@@ -35,6 +35,7 @@ export function GoalProjects({
       {adding && (
         <TitleForm
           label={LL.goals.detail.projectTitle()}
+          pending={createProject.isPending}
           onCancel={() => setAdding(false)}
           onSubmit={(title) => createProject.mutate(title, { onSuccess: () => setAdding(false) })}
         />

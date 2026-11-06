@@ -4,9 +4,11 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
+  notFound,
   type RouterHistory,
   redirect,
 } from '@tanstack/react-router'
+import { DocDraft, type KnowledgeType, knowledgeTypes } from '@/features/knowledge'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { DecisionsPage } from './pages/decisions'
 import { GoalPage, GoalsPage } from './pages/goals'
@@ -91,6 +93,20 @@ const knowledge = createRoute({
     return <KnowledgePage {...(q ? { q } : {})} />
   },
 })
+const knowledgeNew = createRoute({
+  getParentRoute: () => root,
+  path: '/knowledge/new/$type',
+  validateSearch: (search: Record<string, unknown>): { project?: string } =>
+    typeof search.project === 'string' && search.project !== '' ? { project: search.project } : {},
+  beforeLoad: ({ params }) => {
+    if (!knowledgeTypes.has(params.type)) throw notFound()
+  },
+  component: function KnowledgeNewRoute() {
+    const { type } = knowledgeNew.useParams()
+    const { project } = knowledgeNew.useSearch()
+    return <DocDraft type={type as KnowledgeType} project={project} />
+  },
+})
 const decisions = createRoute({
   getParentRoute: () => root,
   path: '/decisions',
@@ -117,12 +133,14 @@ const graph = createRoute({
 const item = createRoute({
   getParentRoute: () => root,
   path: '/items/$id',
-  validateSearch: (search: Record<string, unknown>): { mode?: 'split' } =>
-    search.mode === 'split' ? { mode: 'split' } : {},
+  validateSearch: (search: Record<string, unknown>): { mode?: 'split'; fill?: boolean } => ({
+    ...(search.mode === 'split' ? { mode: 'split' as const } : {}),
+    ...(search.fill === true ? { fill: true } : {}),
+  }),
   component: function ItemRoute() {
     const { id } = item.useParams()
-    const { mode } = item.useSearch()
-    return <ItemPage id={id} {...(mode ? { mode } : {})} />
+    const { mode, fill } = item.useSearch()
+    return <ItemPage id={id} {...(mode ? { mode } : {})} {...(fill ? { fill } : {})} />
   },
 })
 
@@ -136,6 +154,7 @@ const routeTree = root.addChildren([
   projects,
   project,
   knowledge,
+  knowledgeNew,
   decisions,
   stats,
   tags,

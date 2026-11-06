@@ -483,9 +483,9 @@ describe('goals', () => {
   test('New area asks for a name and a first goal, and the area appears with that goal in it', async () => {
     renderApp('/goals')
     await userEvent.click(await screen.findByRole('button', { name: /New area/ }))
-    await userEvent.type(screen.getByLabelText('Area name'), 'Health')
-    await userEvent.type(screen.getByLabelText('First goal'), 'Sleep well')
-    await userEvent.click(screen.getByRole('button', { name: 'Create area' }))
+    await userEvent.type(screen.getByLabelText('Area name'), 'Health{Enter}')
+    expect(screen.getByLabelText('First goal')).toHaveFocus()
+    await userEvent.keyboard('Sleep well{Enter}')
     const area = await screen.findByRole('region', { name: 'Health' })
     expect(within(area).getByText('Sleep well')).toBeInTheDocument()
     const api = other()
@@ -495,6 +495,36 @@ describe('goals', () => {
     await api.call((c) =>
       c.items.delete({ params: { id: made?.id as string }, query: { force: 'true' } }),
     )
+  })
+
+  test('leaving New area creates it once both fields are filled, and moving between them does not', async () => {
+    renderApp('/goals')
+    await userEvent.click(await screen.findByRole('button', { name: /New area/ }))
+    await userEvent.type(screen.getByLabelText('Area name'), 'Reading')
+    await userEvent.tab()
+    expect(screen.getByLabelText('First goal')).toHaveFocus()
+    await userEvent.click(document.body)
+    expect(screen.getByLabelText('Area name')).toHaveValue('Reading')
+    await userEvent.type(screen.getByLabelText('First goal'), 'Read more')
+    await userEvent.click(document.body)
+    const area = await screen.findByRole('region', { name: 'Reading' })
+    expect(within(area).getByText('Read more')).toBeInTheDocument()
+    const api = other()
+    const goals = await api.call((c) => c.goals.list())
+    const made = goals.goals.find((g) => g.title === 'Read more')
+    await api.call((c) =>
+      c.items.delete({ params: { id: made?.id as string }, query: { force: 'true' } }),
+    )
+  })
+
+  test('New area closes when left empty, and Escape forgets what was typed', async () => {
+    renderApp('/goals')
+    await userEvent.click(await screen.findByRole('button', { name: /New area/ }))
+    await userEvent.click(document.body)
+    await userEvent.click(await screen.findByRole('button', { name: /New area/ }))
+    await userEvent.type(screen.getByLabelText('Area name'), 'Gone{Escape}')
+    await userEvent.click(await screen.findByRole('button', { name: /New area/ }))
+    expect(screen.getByLabelText('Area name')).toHaveValue('')
   })
 
   test('the pencil beside an area name renames the area on its goals', async () => {
@@ -542,8 +572,7 @@ describe('goals', () => {
     renderApp('/goals')
     const area = await screen.findByRole('region', { name: 'No area' })
     await userEvent.click(within(area).getByRole('button', { name: /New goal/ }))
-    await userEvent.type(within(area).getByLabelText('Goal title'), 'Learn to sail')
-    await userEvent.click(within(area).getByRole('button', { name: 'Create' }))
+    await userEvent.type(within(area).getByLabelText('Goal title'), 'Learn to sail{Enter}')
     expect(await within(area).findByText('Learn to sail')).toBeInTheDocument()
     const api = other()
     const goals = await api.call((c) => c.goals.list())
@@ -556,8 +585,7 @@ describe('goals', () => {
   test('New goal asks for a title, creates the goal, and it shows up', async () => {
     renderApp('/goals')
     await userEvent.click(await screen.findByRole('button', { name: /New goal/ }))
-    await userEvent.type(screen.getByLabelText('Goal title'), 'Learn to sail')
-    await userEvent.click(screen.getByRole('button', { name: 'Create' }))
+    await userEvent.type(screen.getByLabelText('Goal title'), 'Learn to sail{Enter}')
     expect(await screen.findByText('Learn to sail')).toBeInTheDocument()
   })
 })

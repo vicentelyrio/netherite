@@ -1,7 +1,8 @@
 import { Button, Icon, type ItemTypeName, TypeBadge } from '@netherite/ui'
+import { useNavigate } from '@tanstack/react-router'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
-import { type KnowledgeType, useKnowledgeIndex } from '../KnowledgeProvider'
+import type { KnowledgeType } from '../KnowledgeProvider'
 import './KnowledgeStarters.css'
 
 const starters: ReadonlyArray<{ type: ItemTypeName; path: string }> = [
@@ -13,7 +14,9 @@ const starters: ReadonlyArray<{ type: ItemTypeName; path: string }> = [
 
 export function KnowledgeStarters() {
   const { LL } = useI18nContext()
-  const { startCreating } = useKnowledgeIndex()
+  const navigate = useNavigate()
+  const start = (type: KnowledgeType) =>
+    void navigate({ to: '/knowledge/new/$type', params: { type } })
   const notices = useNotices()
   const copy = () => {
     void navigator.clipboard?.writeText(LL.knowledge.starters.importPrompt()).then(() =>
@@ -34,7 +37,7 @@ export function KnowledgeStarters() {
         <p>{LL.knowledge.starters.text()}</p>
       </div>
       <div className="kn-empty-actions">
-        <Button variant="primary" icon="add" onClick={() => startCreating('adr')}>
+        <Button variant="primary" icon="add" onClick={() => start('adr')}>
           {LL.knowledge.starters.recordFirst()}
         </Button>
         <Button icon="drive_file_move" onClick={copy}>
@@ -49,8 +52,8 @@ export function KnowledgeStarters() {
             className="kn-starter"
             role="button"
             tabIndex={0}
-            onClick={() => startCreating(s.type as KnowledgeType)}
-            onKeyDown={(e) => e.key === 'Enter' && startCreating(s.type as KnowledgeType)}
+            onClick={() => start(s.type as KnowledgeType)}
+            onKeyDown={(e) => e.key === 'Enter' && start(s.type as KnowledgeType)}
           >
             <TypeBadge type={s.type} />
             <span>{LL.knowledge.starters[s.type as KnowledgeType]()}</span>

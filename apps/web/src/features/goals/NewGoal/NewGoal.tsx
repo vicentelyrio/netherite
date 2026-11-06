@@ -27,6 +27,7 @@ export function NewGoal({
     const form = (
       <TitleForm
         label={LL.goals.goalTitle()}
+        pending={create.isPending}
         onCancel={() => setAdding(false)}
         onSubmit={(title) => create.mutate(title, { onSuccess: () => setAdding(false) })}
       />

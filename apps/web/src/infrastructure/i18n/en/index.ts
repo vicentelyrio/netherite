@@ -16,8 +16,6 @@ const en = {
   },
   components: {
     breadcrumb: 'Breadcrumb',
-    createTitle: 'Create',
-    cancel: 'Cancel',
     freshness: {
       stale: 'Stale · {count:number} {{commit|commits}}',
       behind: '{count:number} {{commit|commits}} behind',
@@ -112,7 +110,6 @@ const en = {
       newAdr: 'New ADR',
       newContext: 'New context',
       newRunbook: 'New runbook',
-      titleLabel: 'New {type} title',
     },
     toolbar: {
       filter: 'Filter by title or path',
@@ -582,7 +579,6 @@ const en = {
     areaName: 'Area name',
     firstGoal: 'First goal',
     areaExists: 'That area exists: the goal will join it.',
-    createArea: 'Create area',
     areaSummary:
       '{goals:number} {{goal|goals}} · {projects:number} {{project|projects}} · {done:number}/{total:number} done',
     removeArea: 'Remove area {name}',

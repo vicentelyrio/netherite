@@ -23,6 +23,7 @@ export function NewTask({
   return adding ? (
     <TitleForm
       label={LL.projects.newTaskIn({ state })}
+      pending={create.isPending}
       onCancel={() => setAdding(false)}
       onSubmit={(title) => create.mutate(title, { onSuccess: () => setAdding(false) })}
     />

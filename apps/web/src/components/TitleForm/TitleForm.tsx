@@ -1,6 +1,4 @@
-import { Button } from '@netherite/ui'
-import { type FormEvent, useState } from 'react'
-import { useI18nContext } from '@/infrastructure/i18n'
+import { type FocusEvent, type FormEvent, useState } from 'react'
 import { TextField } from '../TextField'
 import './TitleForm.css'
 
@@ -8,19 +6,40 @@ export interface TitleFormProps {
   readonly label: string
   readonly onSubmit: (title: string) => void
   readonly onCancel: () => void
+  readonly onEmpty?: () => void
+  readonly pending?: boolean
+  readonly className?: string
 }
 
-export function TitleForm({ label, onSubmit, onCancel }: TitleFormProps) {
-  const { LL } = useI18nContext()
+export function TitleForm({
+  label,
+  onSubmit,
+  onCancel,
+  onEmpty = onCancel,
+  pending = false,
+  className,
+}: TitleFormProps) {
   const [title, setTitle] = useState('')
+  const accept = () => {
+    if (pending) return
+    const trimmed = title.trim()
+    if (trimmed === '') onEmpty()
+    else onSubmit(trimmed)
+  }
   const submit = (e: FormEvent) => {
     e.preventDefault()
-    const trimmed = title.trim()
-    if (trimmed === '') return
-    onSubmit(trimmed)
+    accept()
+  }
+  const blur = (e: FocusEvent<HTMLFormElement>) => {
+    // Switching window or tab blurs the field but leaves it active: a half-typed title must survive.
+    if (document.activeElement !== e.target) accept()
   }
   return (
-    <form className="title-form" onSubmit={submit}>
+    <form
+      className={className === undefined ? 'title-form' : `title-form ${className}`}
+      onSubmit={submit}
+      onBlur={blur}
+    >
       <TextField
         label={label}
         placeholder={label}
@@ -29,12 +48,6 @@ export function TitleForm({ label, onSubmit, onCancel }: TitleFormProps) {
         onEscape={onCancel}
         autoFocus
       />
-      <Button variant="primary" type="submit" size="md">
-        {LL.components.createTitle()}
-      </Button>
-      <Button type="button" size="md" onClick={onCancel}>
-        {LL.components.cancel()}
-      </Button>
     </form>
   )
 }
