@@ -17,11 +17,11 @@ A workspace holds hundreds to a few thousand Markdown files. Search, backlinks, 
 
 ## Decision
 
-- On start, `core` parses every file under the content root into an **item index** (frontmatter, headings, links, checklist, plain text) plus a **graphology** graph of typed edges and references.
-- File watcher events update the affected items and edges incrementally.
-- **Full-text search** uses MiniSearch over id, title, aliases, path and body, with prefix and fuzzy matching and boosts for id and title.
-- No database or on-disk cache in v2. If start-up exceeds the target (2 s for 5,000 files), add a cache in `.netherite/local/` keyed by file hash.
-- The graph layout runs in the browser ([[ADR-00011]]). Node positions are not persisted in v2.
+> - On start, `core` parses every file under the content root into an **item index** (frontmatter, headings, links, checklist, plain text) plus a **graphology** graph of typed edges and references.
+> - File watcher events update the affected items and edges incrementally.
+> - **Full-text search** uses MiniSearch over id, title, aliases, path and body, with prefix and fuzzy matching and boosts for id and title.
+> - No database or on-disk cache in v2. If start-up exceeds the target (2 s for 5,000 files), add a cache in `.netherite/local/` keyed by file hash.
+> - The graph layout runs in the browser ([[ADR-00011]]). Node positions are not persisted in v2.
 
 ## Consequences
 

@@ -19,10 +19,10 @@ project: PRJ-00007
 
 ## Decision
 
-- **Captures** are lines in `inbox.md` at the workspace root, one per line, newest at the bottom. A capture turns into a task, doc, ADR, runbook or context item: the app writes the new file with a suggested project and tags, removes the line from `inbox.md`. The app never commits: the changed files wait in the working tree for the developer, or their agent, to commit. Archiving removes the line. Snoozing is app state (not a file change) until a chosen date.
-- **Raised items** are computed, never stored: each has a stable key (rule, item, commit) so dismissing it survives a refresh. The rules are lint-like and listed in `docs/reference/lint.md` once built.
-- Every action runs through the same operations as the CLI and MCP and only changes files, so accepting an ADR or marking a doc reviewed is one edit that the developer reviews and commits. Archiving and snoozing offer **undo** for a few seconds.
-- Keyboard first: J/K move, E archives, H snoozes.
+> - **Captures** are lines in `inbox.md` at the workspace root, one per line, newest at the bottom. A capture turns into a task, doc, ADR, runbook or context item: the app writes the new file with a suggested project and tags, removes the line from `inbox.md`. The app never commits: the changed files wait in the working tree for the developer, or their agent, to commit. Archiving removes the line. Snoozing is app state (not a file change) until a chosen date.
+> - **Raised items** are computed, never stored: each has a stable key (rule, item, commit) so dismissing it survives a refresh. The rules are lint-like and listed in `docs/reference/lint.md` once built.
+> - Every action runs through the same operations as the CLI and MCP and only changes files, so accepting an ADR or marking a doc reviewed is one edit that the developer reviews and commits. Archiving and snoozing offer **undo** for a few seconds.
+> - Keyboard first: J/K move, E archives, H snoozes.
 
 ## Consequences
 

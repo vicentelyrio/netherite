@@ -19,16 +19,16 @@ project: PRJ-00007
 
 ## Decision
 
-Hue means type, always. Status uses fill, ring and halo, in one component set shared by every screen.
-
-- Progress: a conic pie inside the glyph, filled to the share done (tasks: checklist; projects and goals: tasks done).
-- In progress: a halo ring one step outside the glyph.
-- On hold: a grey pie fill and a dashed ring.
-- Done: a solid fill with a check, drawn at 80% opacity in the graph.
-- Backlog: an empty pie on the ring.
-- ADRs keep their diamond: filled when in force, hollow with a struck title when superseded; lifecycle colours (proposed lavender, accepted green, deprecated red, superseded grey) apply only to pills, not to the glyph.
-- Freshness stays a separate channel: dot, ring or warning icon.
-- The components live in `packages/ui` with tokens in `packages/tokens` (`status-*`, `type-*`) so graph, board, drawer and Timeline cannot disagree.
+> Hue means type, always. Status uses fill, ring and halo, in one component set shared by every screen.
+>
+> - Progress: a conic pie inside the glyph, filled to the share done (tasks: checklist; projects and goals: tasks done).
+> - In progress: a halo ring one step outside the glyph.
+> - On hold: a grey pie fill and a dashed ring.
+> - Done: a solid fill with a check, drawn at 80% opacity in the graph.
+> - Backlog: an empty pie on the ring.
+> - ADRs keep their diamond: filled when in force, hollow with a struck title when superseded; lifecycle colours (proposed lavender, accepted green, deprecated red, superseded grey) apply only to pills, not to the glyph.
+> - Freshness stays a separate channel: dot, ring or warning icon.
+> - The components live in `packages/ui` with tokens in `packages/tokens` (`status-*`, `type-*`) so graph, board, drawer and Timeline cannot disagree.
 
 ## Consequences
 

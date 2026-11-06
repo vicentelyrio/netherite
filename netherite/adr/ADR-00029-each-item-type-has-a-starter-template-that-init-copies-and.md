@@ -19,11 +19,11 @@ People creating a doc, runbook, ADR or task by hand have to know which frontmatt
 
 ## Decision
 
-- **One template per type** (goal, project, task, ADR, doc, context, runbook): real frontmatter with every optional field present and commented, and the body sections the app and lint understand.
-- **Templates ship in the package** and are shown in the documentation site as copyable examples, generated from the same files so the page cannot drift.
-- **`netherite new <type> <title> --template`** uses the template body, and `netherite templates` lists them and prints one. A workspace can override a template by placing a file in `netherite/templates/`; the workspace copy wins.
-- **Templates are validated by the tests**: each one must parse against the schema and pass lint once its placeholders are filled.
-- **Skills use the templates** (`netherite-adr`, `netherite-plan`, `netherite-migrate`), so agents and people write the same shape.
+> - **One template per type** (goal, project, task, ADR, doc, context, runbook): real frontmatter with every optional field present and commented, and the body sections the app and lint understand.
+> - **Templates ship in the package** and are shown in the documentation site as copyable examples, generated from the same files so the page cannot drift.
+> - **`netherite new <type> <title> --template`** uses the template body, and `netherite templates` lists them and prints one. A workspace can override a template by placing a file in `netherite/templates/`; the workspace copy wins.
+> - **Templates are validated by the tests**: each one must parse against the schema and pass lint once its placeholders are filled.
+> - **Skills use the templates** (`netherite-adr`, `netherite-plan`, `netherite-migrate`), so agents and people write the same shape.
 
 ## Consequences
 

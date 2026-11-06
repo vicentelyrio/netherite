@@ -19,15 +19,15 @@ Splitting [[DOC-00002]] into items left no way to say "this doc is replaced" ([[
 
 ## Decision
 
-Docs, runbooks and context items get an optional `status` of `active`, `deprecated` or `superseded`. A missing status means `active`, so no existing file changes. A superseded item may name its replacement in `superseded_by`, and the replacement may list the old one in `supersedes`, as ADRs do.
-
-- `set_state` accepts these statuses for knowledge items, so the app, the CLI and MCP retire a doc the same way they accept an ADR.
-- Retired items are not tracked for freshness (as superseded and deprecated ADRs are not today) and are left out of the stale and orphan counts.
-- A retired item is not given to agents as context: `include_in_context` is ignored while it is retired, and `context sync` leaves it out.
-- Lint warns when an item is `superseded` and names no `superseded_by`, and gives an info note when an active item links to a retired one.
-- The Knowledge index shows a retired title struck through with its status pill, as superseded ADRs already are.
-
-ADRs keep their own lifecycle; this does not change them.
+> Docs, runbooks and context items get an optional `status` of `active`, `deprecated` or `superseded`. A missing status means `active`, so no existing file changes. A superseded item may name its replacement in `superseded_by`, and the replacement may list the old one in `supersedes`, as ADRs do.
+>
+> - `set_state` accepts these statuses for knowledge items, so the app, the CLI and MCP retire a doc the same way they accept an ADR.
+> - Retired items are not tracked for freshness (as superseded and deprecated ADRs are not today) and are left out of the stale and orphan counts.
+> - A retired item is not given to agents as context: `include_in_context` is ignored while it is retired, and `context sync` leaves it out.
+> - Lint warns when an item is `superseded` and names no `superseded_by`, and gives an info note when an active item links to a retired one.
+> - The Knowledge index shows a retired title struck through with its status pill, as superseded ADRs already are.
+>
+> ADRs keep their own lifecycle; this does not change them.
 
 ## Consequences
 

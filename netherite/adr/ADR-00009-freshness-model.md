@@ -17,13 +17,13 @@ The main way knowledge fails is silently going out of date. The design shows fre
 
 ## Decision
 
-- Docs, runbooks and context may declare `covers:`, a list of path globs relative to the repo root.
-- **Baseline** is `reviewed_at` if set, otherwise the date of the last commit that touched the item's own file.
-- **Count** is the number of commits after the baseline that touched any covered path (uncommitted changes to covered paths count as one more).
-- **States** (thresholds in config): `fresh` = 0, `drifting` = 1–9, `stale` ≥ 10. `not tracked` when there is no `covers:`, or for superseded and deprecated ADRs.
-- **Mark reviewed** sets `reviewed_at` to today through a core operation. It is a file edit like any other; no commit.
-- **Co-changed files:** for each item, the files most often changed in the same commits as the item's file. Shown as a hint, and offered as suggestions for `covers:`.
-- Stale and drifting items appear in the Inbox and in `netherite lint` (warning, configurable to error in CI).
+> - Docs, runbooks and context may declare `covers:`, a list of path globs relative to the repo root.
+> - **Baseline** is `reviewed_at` if set, otherwise the date of the last commit that touched the item's own file.
+> - **Count** is the number of commits after the baseline that touched any covered path (uncommitted changes to covered paths count as one more).
+> - **States** (thresholds in config): `fresh` = 0, `drifting` = 1–9, `stale` ≥ 10. `not tracked` when there is no `covers:`, or for superseded and deprecated ADRs.
+> - **Mark reviewed** sets `reviewed_at` to today through a core operation. It is a file edit like any other; no commit.
+> - **Co-changed files:** for each item, the files most often changed in the same commits as the item's file. Shown as a hint, and offered as suggestions for `covers:`.
+> - Stale and drifting items appear in the Inbox and in `netherite lint` (warning, configurable to error in CI).
 
 ## Consequences
 

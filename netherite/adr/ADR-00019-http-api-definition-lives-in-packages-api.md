@@ -19,12 +19,12 @@ project: PRJ-00005
 
 ## Decision
 
-The `HttpApi` definition lives in its own package, `packages/api` (`@netherite/api`): endpoints, request and response schemas, tagged errors with their statuses, and `makeClient`. It depends on `effect` and `@netherite/schema` only and has no Node-only imports, so the app can import it.
-
-- `packages/server` implements it over core (`apiLayer`) and imports `@netherite/api`. `apps/web` imports it for the client and types. No other package does.
-- Biome import rules enforce this: `api` may not import any other workspace package except `schema`; `core`, `git`, `mcp`, `cli`, `ui` and `tokens` may not import `api`.
-- Statuses: a request the API's own schema rejects (wrong type, missing field) is 400, from the framework. A well-formed request that fails item validation is 422 (`Invalid`), a file changed since it was read or a state that forbids the action is 409 (`Conflict`, `Refused`), no such item is 404, no git for history or stats is 503, and anything else is 500.
-- Read models shared with MCP (summaries, item detail, list, search, graph, freshness cache, the combined update) live in `packages/core`, so MCP and HTTP cannot disagree about what an item looks like.
+> The `HttpApi` definition lives in its own package, `packages/api` (`@netherite/api`): endpoints, request and response schemas, tagged errors with their statuses, and `makeClient`. It depends on `effect` and `@netherite/schema` only and has no Node-only imports, so the app can import it.
+>
+> - `packages/server` implements it over core (`apiLayer`) and imports `@netherite/api`. `apps/web` imports it for the client and types. No other package does.
+> - Biome import rules enforce this: `api` may not import any other workspace package except `schema`; `core`, `git`, `mcp`, `cli`, `ui` and `tokens` may not import `api`.
+> - Statuses: a request the API's own schema rejects (wrong type, missing field) is 400, from the framework. A well-formed request that fails item validation is 422 (`Invalid`), a file changed since it was read or a state that forbids the action is 409 (`Conflict`, `Refused`), no such item is 404, no git for history or stats is 503, and anything else is 500.
+> - Read models shared with MCP (summaries, item detail, list, search, graph, freshness cache, the combined update) live in `packages/core`, so MCP and HTTP cannot disagree about what an item looks like.
 
 ## Consequences
 
