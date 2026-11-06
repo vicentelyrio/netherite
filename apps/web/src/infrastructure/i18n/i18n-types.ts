@@ -896,9 +896,9 @@ type RootTranslation = {
 				 */
 				linkedFrom: RequiredParams<'count'>
 				/**
-				 * O​r​p​h​a​n​:​ ​n​o​t​h​i​n​g​ ​l​i​n​k​s​ ​h​e​r​e
+				 * N​o​t​h​i​n​g​ ​l​i​n​k​s​ ​h​e​r​e​ ​y​e​t
 				 */
-				orphan: string
+				noBacklinks: string
 				/**
 				 * O​u​t​g​o​i​n​g​ ​·​ ​{​c​o​u​n​t​}
 				 * @param {number} count
@@ -908,6 +908,50 @@ type RootTranslation = {
 				 * N​o​ ​o​u​t​g​o​i​n​g​ ​l​i​n​k​s
 				 */
 				noLinks: string
+				/**
+				 * N​o​t​ ​l​i​n​k​e​d​ ​t​o​ ​a​n​y​t​h​i​n​g​ ​y​e​t
+				 */
+				notLinked: string
+				/**
+				 * L​i​n​k​ ​t​o​…
+				 */
+				linkTo: string
+				/**
+				 * L​i​n​k​ ​{​n​a​m​e​}​ ​t​o
+				 * @param {unknown} name
+				 */
+				linkTitle: RequiredParams<'name'>
+				/**
+				 * L​i​n​k​e​d
+				 */
+				linked: string
+				/**
+				 * U​n​l​i​n​k​ ​{​i​d​}
+				 * @param {unknown} id
+				 */
+				unlink: RequiredParams<'id'>
+				/**
+				 * C​o​v​e​r​s​ ​·​ ​{​c​o​u​n​t​}
+				 * @param {number} count
+				 */
+				covers: RequiredParams<'count'>
+				/**
+				 * L​i​s​t​ ​t​h​e​ ​f​i​l​e​s​ ​i​t​ ​d​e​s​c​r​i​b​e​s​,​ ​a​n​d​ ​i​t​ ​g​o​e​s​ ​s​t​a​l​e​ ​w​h​e​n​ ​t​h​e​y​ ​c​h​a​n​g​e​.
+				 */
+				coversHint: string
+				/**
+				 * F​i​l​e​ ​o​r​ ​g​l​o​b​,​ ​l​i​k​e​ ​s​r​c​/​*​*
+				 */
+				coverLabel: string
+				/**
+				 * A​d​d​ ​p​a​t​h
+				 */
+				addCover: string
+				/**
+				 * S​t​o​p​ ​c​o​v​e​r​i​n​g​ ​{​p​a​t​h​}
+				 * @param {unknown} path
+				 */
+				uncover: RequiredParams<'path'>
 				/**
 				 * C​o​-​c​h​a​n​g​e​d​ ​f​i​l​e​s
 				 */
@@ -3861,9 +3905,9 @@ export type TranslationFunctions = {
 				 */
 				linkedFrom: (arg: { count: number }) => LocalizedString
 				/**
-				 * Orphan: nothing links here
+				 * Nothing links here yet
 				 */
-				orphan: () => LocalizedString
+				noBacklinks: () => LocalizedString
 				/**
 				 * Outgoing · {count}
 				 */
@@ -3872,6 +3916,46 @@ export type TranslationFunctions = {
 				 * No outgoing links
 				 */
 				noLinks: () => LocalizedString
+				/**
+				 * Not linked to anything yet
+				 */
+				notLinked: () => LocalizedString
+				/**
+				 * Link to…
+				 */
+				linkTo: () => LocalizedString
+				/**
+				 * Link {name} to
+				 */
+				linkTitle: (arg: { name: unknown }) => LocalizedString
+				/**
+				 * Linked
+				 */
+				linked: () => LocalizedString
+				/**
+				 * Unlink {id}
+				 */
+				unlink: (arg: { id: unknown }) => LocalizedString
+				/**
+				 * Covers · {count}
+				 */
+				covers: (arg: { count: number }) => LocalizedString
+				/**
+				 * List the files it describes, and it goes stale when they change.
+				 */
+				coversHint: () => LocalizedString
+				/**
+				 * File or glob, like src/**
+				 */
+				coverLabel: () => LocalizedString
+				/**
+				 * Add path
+				 */
+				addCover: () => LocalizedString
+				/**
+				 * Stop covering {path}
+				 */
+				uncover: (arg: { path: unknown }) => LocalizedString
 				/**
 				 * Co-changed files
 				 */

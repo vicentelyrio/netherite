@@ -313,6 +313,34 @@ describe('orphans and unknown fields', () => {
     expect(only(found, 'orphan').map((d) => d.path)).toEqual(['n/docs/DOC-00001-a.md'])
   })
 
+  test.each([
+    ['explains', 'explains: [GOAL-00001]'],
+    ['project', 'project: PRJ-00001'],
+    ['covers', 'covers: ["src/**"]'],
+  ])('a doc or runbook attached by %s is not an orphan', (_field, extra) => {
+    const runbook = (id: string, more: string) =>
+      item(
+        `n/runbooks/${id}-x.md`,
+        `id: ${id}\naliases: [${id}]\ntype: runbook\ntitle: T ${id}\n${more}`,
+      )
+    const found = run([
+      item('n/docs/DOC-00001-a.md', doc('DOC-00001', extra)),
+      runbook('RUN-00001', extra),
+      runbook('RUN-00002', ''),
+    ])
+    expect(only(found, 'orphan').map((d) => d.path)).toEqual(['n/runbooks/RUN-00002-x.md'])
+  })
+
+  test('explains does not clear the orphan flag on a context item', () => {
+    const found = run([
+      item(
+        'n/context/CTX-00001-x.md',
+        'id: CTX-00001\naliases: [CTX-00001]\ntype: context\ntitle: T\nexplains: [GOAL-00001]',
+      ),
+    ])
+    expect(only(found, 'orphan').map((d) => d.path)).toEqual(['n/context/CTX-00001-x.md'])
+  })
+
   test('an unknown field is info at its key, and does not fail the item', () => {
     const found = run([
       item('n/docs/DOC-00001-a.md', doc('DOC-00001', 'custom_field: 1\nanother: x')),

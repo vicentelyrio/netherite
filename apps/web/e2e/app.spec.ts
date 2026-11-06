@@ -21,10 +21,11 @@ test('dragging a card to another column changes its state in the file', async ({
   await page.mouse.up()
 
   await expect(doing.getByRole('link', { name: 'Core' })).toBeVisible()
+  await expect.poll(() => workspace.diff(task1)).toContain('+position: ')
   const diff = workspace.diff(task1)
   expect(diff).toContain('-state: backlog')
   expect(diff).toContain('+state: doing')
-  expect(diff.split('\n').filter((l) => /^[+-][^+-]/.test(l))).toHaveLength(2)
+  expect(diff.split('\n').filter((l) => /^[+-][^+-]/.test(l))).toHaveLength(3)
 })
 
 test('ticking a checklist item in the task drawer writes the checkbox to the file', async ({

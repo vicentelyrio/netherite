@@ -10,6 +10,8 @@ import {
 import { useId } from 'react'
 import { LinkRow } from '@/components'
 import { isoDay } from '@/infrastructure/datetime'
+import { DocCovers } from '../DocCovers'
+import { DocLinkAction, DocUnlink } from '../DocLinkAction'
 import { SupersessionChain } from '../SupersessionChain'
 import '../shared.css'
 import { useI18nContext } from '@/infrastructure/i18n'
@@ -25,6 +27,9 @@ const statusIcon = {
   active: 'check_circle',
   deprecated: 'block',
 } as const
+
+const stringsOf = (value: unknown): ReadonlyArray<string> =>
+  Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []
 
 export function DocPanel({
   item,
@@ -44,7 +49,9 @@ export function DocPanel({
   const type = item.type as ItemTypeName
   const fresh = item.freshness
   const current = item.status ?? (type === 'adr' ? undefined : 'active')
+  const linkable = type === 'doc' || type === 'runbook'
   const front = (item.frontmatter ?? {}) as Record<string, unknown>
+  const explained = stringsOf(front.explains)
   const owner = [front.owner, front.created_by].find((v) => typeof v === 'string' && v !== '')
   const source = typeof front.source === 'string' && front.source !== '' ? front.source : undefined
   const importedAt = typeof front.imported_at === 'string' ? front.imported_at : undefined
@@ -127,18 +134,36 @@ export function DocPanel({
           <LinkRow key={`${l.kind}:${l.path}`} link={l} />
         ))}
         {item.backlinks.length === 0 && (
-          <div className="kn-none">
-            <Icon name="link_off" size={15} /> {LL.knowledge.doc.panel.orphan()}
-          </div>
+          <p className="app-muted">{LL.knowledge.doc.panel.noBacklinks()}</p>
         )}
       </section>
       <section className="kf-section">
         <h2 className="kf-h">{LL.knowledge.doc.panel.linksTo({ count: item.links.length })}</h2>
         {item.links.map((l) => (
-          <LinkRow key={`${l.kind}:${l.path}`} link={l} />
+          <LinkRow
+            key={`${l.kind}:${l.path}`}
+            link={l}
+            action={
+              linkable &&
+              l.kind === 'explains' &&
+              l.id !== undefined &&
+              explained.includes(l.id) ? (
+                <DocUnlink item={item} to={l.id} />
+              ) : undefined
+            }
+          />
         ))}
-        {item.links.length === 0 && <p className="app-muted">{LL.knowledge.doc.panel.noLinks()}</p>}
+        {item.links.length === 0 &&
+          (linkable ? (
+            <div className="kn-none">
+              <Icon name="link_off" size={15} /> {LL.knowledge.doc.panel.notLinked()}
+            </div>
+          ) : (
+            <p className="app-muted">{LL.knowledge.doc.panel.noLinks()}</p>
+          ))}
+        {linkable && <DocLinkAction item={item} />}
       </section>
+      {type !== 'adr' && <DocCovers item={item} covers={stringsOf(front.covers)} />}
       <section className="kf-section">
         <h2 className="kf-h">
           <Icon name="commit" size={15} /> {LL.knowledge.doc.panel.changesWith()}

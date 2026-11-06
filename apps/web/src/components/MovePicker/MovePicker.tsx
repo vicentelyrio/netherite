@@ -9,7 +9,7 @@ export interface MoveOption {
   readonly id: string
   readonly title: string
   readonly detail?: string
-  readonly progress: { readonly done: number; readonly total: number }
+  readonly progress?: { readonly done: number; readonly total: number }
   readonly current: boolean
 }
 
@@ -22,15 +22,18 @@ export interface MovePickerProps {
   readonly opened: boolean
   readonly title: string
   readonly groups: ReadonlyArray<MoveGroup>
+  readonly currentLabel?: string
   readonly onPick: (id: string) => void
   readonly onClose: () => void
 }
 
 function Choices({
   groups,
+  currentLabel,
   onPick,
 }: {
   readonly groups: ReadonlyArray<MoveGroup>
+  readonly currentLabel: string | undefined
   readonly onPick: (id: string) => void
 }) {
   const { LL } = useI18nContext()
@@ -40,7 +43,7 @@ function Choices({
   const shown = groups
     .map((g) => ({
       ...g,
-      options: g.options.filter((o) => o.title.toLowerCase().includes(wanted)),
+      options: g.options.filter((o) => `${o.id} ${o.title}`.toLowerCase().includes(wanted)),
     }))
     .filter((g) => g.options.length > 0)
   return (
@@ -67,12 +70,14 @@ function Choices({
               <span className="move-picker-title">
                 <strong>{option.title}</strong>
                 {option.current ? (
-                  <span className="app-muted">{text.current()}</span>
+                  <span className="app-muted">{currentLabel ?? text.current()}</span>
                 ) : (
                   option.detail && <span className="app-muted">{option.detail}</span>
                 )}
               </span>
-              <ProgressBar done={option.progress.done} total={option.progress.total} />
+              {option.progress && (
+                <ProgressBar done={option.progress.done} total={option.progress.total} />
+              )}
             </button>
           ))}
         </section>
@@ -81,7 +86,14 @@ function Choices({
   )
 }
 
-export function MovePicker({ opened, title, groups, onPick, onClose }: MovePickerProps) {
+export function MovePicker({
+  opened,
+  title,
+  groups,
+  currentLabel,
+  onPick,
+  onClose,
+}: MovePickerProps) {
   return (
     <Modal
       opened={opened}
@@ -92,6 +104,7 @@ export function MovePicker({ opened, title, groups, onPick, onClose }: MovePicke
     >
       <Choices
         groups={groups}
+        currentLabel={currentLabel}
         onPick={(id) => {
           onClose()
           onPick(id)

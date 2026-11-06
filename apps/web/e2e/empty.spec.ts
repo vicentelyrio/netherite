@@ -56,6 +56,66 @@ test('a new document writes nothing until it has a title', async ({ page, worksp
   await expect(page.getByText('Abandoned')).toBeHidden()
 })
 
+test('a new runbook starts from its template, and linking it clears the orphan tag', async ({
+  page,
+  workspace,
+}) => {
+  const file = 'netherite/runbooks/RUN-00001-restore-backups.md'
+  await addKnowledge(page, workspace.url, 'context', 'House rules')
+  await page.goto(`${workspace.url}/knowledge/new/runbook`)
+  await page.getByRole('textbox', { name: 'New runbook', exact: true }).fill('Restore backups')
+  await page.keyboard.press('Enter')
+  await expect(page.locator('.cm-content')).toBeFocused()
+  expect(workspace.read(file)).toContain('## Before you start')
+  await page.keyboard.type('When the database is lost.')
+  await expect.poll(() => workspace.read(file)).toContain('When the database is lost.')
+  expect(workspace.read(file)).not.toContain('When to use this runbook')
+
+  await page.goto(`${workspace.url}/items/RUN-00001`)
+  const panel = page.getByRole('complementary', { name: 'Related' })
+  await expect(panel.getByText('orphan')).toBeVisible()
+  await expect(panel.getByText('Not linked to anything yet')).toBeVisible()
+  await panel.getByRole('button', { name: 'Link to…' }).click()
+  const picker = page.getByRole('dialog')
+  await picker.getByRole('button', { name: /House rules/ }).click()
+  await expect(picker).toBeHidden()
+
+  await expect(panel.getByRole('link', { name: /House rules/ })).toBeVisible()
+  await expect(panel.getByText('orphan')).toBeHidden()
+  expect(workspace.read(file)).toContain('explains:')
+})
+
+test('a runbook can be unlinked and given covers from its panel', async ({ page, workspace }) => {
+  const file = 'netherite/runbooks/RUN-00001-restore-backups.md'
+  await addKnowledge(page, workspace.url, 'context', 'House rules')
+  await addKnowledge(page, workspace.url, 'runbook', 'Restore backups')
+  await page.goto(`${workspace.url}/items/RUN-00001`)
+  const panel = page.getByRole('complementary', { name: 'Related' })
+  const orphan = panel.getByText('orphan')
+
+  await panel.getByRole('button', { name: 'Link to…' }).click()
+  await page
+    .getByRole('dialog')
+    .getByRole('button', { name: /House rules/ })
+    .click()
+  await panel.getByRole('button', { name: 'Unlink CTX-00001' }).click()
+  await expect(panel.getByText('Not linked to anything yet')).toBeVisible()
+  await expect(orphan).toBeVisible()
+  expect(workspace.read(file)).not.toContain('explains')
+
+  await panel.getByRole('button', { name: 'Add path' }).click()
+  await page.keyboard.type('./scripts/**')
+  await page.keyboard.press('Enter')
+  await expect(panel.getByText('scripts/**', { exact: true })).toBeVisible()
+  await expect(orphan).toBeHidden()
+  expect(workspace.read(file)).toContain('scripts/**')
+  expect(workspace.read(file)).not.toContain('./scripts')
+
+  await panel.getByRole('button', { name: 'Stop covering scripts/**' }).click()
+  await expect(orphan).toBeVisible()
+  expect(workspace.read(file)).not.toContain('covers')
+})
+
 test('stats show the dashboard once there is a doc', async ({ page, workspace }) => {
   await addKnowledge(page, workspace.url, 'doc', 'Setup guide')
   await page.goto(`${workspace.url}/stats`)

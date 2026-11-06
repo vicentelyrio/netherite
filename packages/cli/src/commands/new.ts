@@ -4,8 +4,7 @@ import {
   type ItemType,
   itemTypes,
   openRepo,
-  readTemplates,
-  templateBody,
+  starterBody,
   workspaceGit,
 } from '@netherite/core'
 import { Effect, FileSystem, Path } from 'effect'
@@ -71,11 +70,8 @@ export const newItem = (env: Env, options: NewOptions) =>
       const repo = yield* openRepo(path.resolve(env.cwd, options.dir))
       const createdBy = options.createdBy ?? (yield* gitHandle(yield* workspaceGit(repo.workspace)))
       let text = body
-      if (options.template && text === undefined) {
-        const found = yield* readTemplates(repo.workspace)
-        const own = found.find((t) => t.type === options.type)
-        if (own !== undefined) text = templateBody(own.text, title)
-      }
+      if (options.template && text === undefined)
+        text = yield* starterBody(repo.workspace, options.type as ItemType, title)
       const result = yield* createItem(repo, {
         type: options.type as ItemType,
         title,

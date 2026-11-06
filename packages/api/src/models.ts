@@ -110,6 +110,7 @@ export const CreatePayload = Schema.Struct({
   id: opt(S),
   fields: opt(Fields),
   body: opt(S),
+  template: opt(Schema.Boolean),
   createdBy: opt(S),
 })
 

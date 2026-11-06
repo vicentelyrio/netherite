@@ -14,6 +14,7 @@ import {
 import { DocHeader } from '../DocHeader'
 import { DocMain } from '../DocMain'
 import { DocPanel } from '../DocPanel'
+import { fillSelection } from './fill'
 import './DocView.css'
 
 export function DocView({
@@ -87,7 +88,7 @@ export function DocView({
             {...(fill
               ? {
                   onReady: (editor) => {
-                    editor.dispatch({ selection: { anchor: editor.state.doc.length } })
+                    editor.dispatch({ selection: fillSelection(editor.state.doc.toString()) })
                     editor.focus()
                   },
                 }

@@ -23,7 +23,12 @@ export function DocDraft({
   const create = useWrite(api, (a, title: string) =>
     a.call((c) =>
       c.items.create({
-        payload: { type, title, ...(project === undefined ? {} : { fields: { project } }) },
+        payload: {
+          type,
+          title,
+          ...(type === 'runbook' ? { template: true } : {}),
+          ...(project === undefined ? {} : { fields: { project } }),
+        },
       }),
     ),
   )

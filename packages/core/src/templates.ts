@@ -336,6 +336,18 @@ export const templateBody = (text: string, title: string): string => {
 
 export const templateTypes: ReadonlyArray<ItemType> = itemTypes
 
+export const starterBody = (
+  workspace: Pick<Workspace, 'root' | 'contentRoot'>,
+  type: ItemType,
+  title: string,
+) =>
+  readTemplates(workspace).pipe(
+    Effect.map((found) => {
+      const own = found.find((t) => t.type === type)
+      return own === undefined ? undefined : templateBody(own.text, title)
+    }),
+  )
+
 export const templatesFolder = 'templates'
 
 export interface TemplateSource {
