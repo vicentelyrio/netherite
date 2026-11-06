@@ -31,8 +31,13 @@ const pageHeaders = {
 const escapeAttribute = (text: string) =>
   text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-export const withSession = (html: string, state: Pick<ServerState, 'token' | 'version'>) => {
-  const tags = `<meta name="netherite-token" content="${escapeAttribute(state.token)}"><meta name="netherite-version" content="${escapeAttribute(state.version)}">`
+export const withSession = (
+  html: string,
+  state: Pick<ServerState, 'token' | 'version'> & {
+    readonly repo: { readonly workspace: { readonly root: string } }
+  },
+) => {
+  const tags = `<meta name="netherite-token" content="${escapeAttribute(state.token)}"><meta name="netherite-version" content="${escapeAttribute(state.version)}"><meta name="netherite-workspace" content="${escapeAttribute(state.repo.workspace.root)}">`
   return /<\/head>/i.test(html) ? html.replace(/<\/head>/i, `${tags}</head>`) : `${tags}${html}`
 }
 
