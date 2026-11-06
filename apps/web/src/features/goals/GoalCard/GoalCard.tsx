@@ -1,9 +1,9 @@
-import { useDraggable } from '@dnd-kit/core'
 import type { GoalRow } from '@netherite/api'
 import { Card, Icon, StatusGlyph } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
-import { ProgressBar, TagList } from '@/components'
+import { ProgressBar, TagList, useReorderItem } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
+import { noArea } from '../GoalAreas/areas'
 import { horizonLabel } from '../horizon'
 import { statusOfProgress } from '../status'
 import './GoalCard.css'
@@ -48,15 +48,17 @@ export function GoalCardBody({ goal }: { readonly goal: GoalRow }) {
 }
 
 export function GoalCard({ goal }: { readonly goal: GoalRow }) {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: goal.id,
-    attributes: { role: 'group' },
-  })
+  const { attributes, listeners, setNodeRef, isDragging, edge } = useReorderItem(
+    goal.id,
+    goal.area ?? noArea,
+    'group',
+  )
   return (
     <div
       ref={setNodeRef}
       className="goal-draggable"
       data-dragging={isDragging || undefined}
+      data-drop={edge}
       {...attributes}
       {...listeners}
     >

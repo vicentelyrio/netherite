@@ -1,16 +1,8 @@
-import {
-  DndContext,
-  type DragEndEvent,
-  DragOverlay,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core'
+import { DragOverlay } from '@dnd-kit/core'
 import { Banner, Card, EmptyState } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
-import { CardColumn } from '@/components'
+import { CardColumn, ReorderContext } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { goalsQuery, useWrite } from '@/infrastructure/query'
@@ -25,10 +17,6 @@ export function GoalAreas({ only }: { readonly only?: string }) {
   const { LL } = useI18nContext()
   const api = useApi()
   const query = useQuery(goalsQuery(api))
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
-    useSensor(KeyboardSensor),
-  )
   const [draggingId, setDraggingId] = useState<string | undefined>()
   const move = useWrite(api, (a, v: AreaMove) =>
     a.call((c) => c.items.update({ params: { id: v.id }, payload: v.payload })),
@@ -63,21 +51,14 @@ export function GoalAreas({ only }: { readonly only?: string }) {
     )
   }
   const dragging = query.data.goals.find((g) => g.id === draggingId)
-  const onDragEnd = ({ active, over }: DragEndEvent) => {
-    setDraggingId(undefined)
-    const change = areaMoveFor(
-      query.data.goals,
-      String(active.id),
-      over === null ? undefined : String(over.id),
-    )
-    if (change !== undefined) move.mutate(change)
-  }
   return (
-    <DndContext
-      sensors={sensors}
-      onDragStart={({ active }) => setDraggingId(String(active.id))}
-      onDragCancel={() => setDraggingId(undefined)}
-      onDragEnd={onDragEnd}
+    <ReorderContext
+      onStart={setDraggingId}
+      onEnd={() => setDraggingId(undefined)}
+      onDrop={(id, target) => {
+        const change = areaMoveFor(query.data.goals, id, target)
+        if (change !== undefined) move.mutate(change)
+      }}
     >
       {groups.map(({ area, goals }) => (
         <AreaColumn
@@ -103,6 +84,6 @@ export function GoalAreas({ only }: { readonly only?: string }) {
           </div>
         )}
       </DragOverlay>
-    </DndContext>
+    </ReorderContext>
   )
 }

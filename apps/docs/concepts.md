@@ -66,6 +66,13 @@ for. A goal takes a `horizon`, how far ahead it looks: `forever`, or a length su
 `6 months`, `90d`. Lint warns about a `due` before the item existed, a `milestone` without a `due`,
 and a `horizon` it cannot read.
 
+## Order
+
+Goals inside an area, projects and tasks in a column are arranged by dragging them in the app. A move
+writes one optional `position` number to the moved item's file, so it is a one-line diff. An item
+without `position` sorts by the number in its ID, which is creation order. Areas are alphabetical,
+with goals that have no area last.
+
 ## Freshness
 
 A doc or runbook (or context item) with `covers` globs is **fresh**, **drifting** or **stale**,

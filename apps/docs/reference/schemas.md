@@ -20,6 +20,7 @@ The fields of each item type, as the validator checks them (`netherite lint`, an
 | `due` | string |  | pattern `^\d{4}-\d{2}-\d{2}$` |
 | `horizon` | string |  |  |
 | `owner` | string |  | pattern `^@[A-Za-z0-9][A-Za-z0-9_.-]*$` |
+| `position` | number |  |  |
 
 ## `project`
 
@@ -38,6 +39,7 @@ The fields of each item type, as the validator checks them (`netherite lint`, an
 | `milestone` | string |  |  |
 | `owner` | string |  | pattern `^@[A-Za-z0-9][A-Za-z0-9_.-]*$` |
 | `labels` | string[] |  |  |
+| `position` | number |  |  |
 | `decisions` | string[] |  |  |
 | `design` | object[] |  |  |
 
@@ -56,6 +58,7 @@ The fields of each item type, as the validator checks them (`netherite lint`, an
 | `state` | `backlog` \| `doing` \| `blocked` \| `done` | yes |  |
 | `assignees` | string[] |  |  |
 | `labels` | string[] |  |  |
+| `position` | number |  |  |
 | `decisions` | string[] |  |  |
 | `depends_on` | string[] |  |  |
 | `related` | string \| string \| string \| string \| string \| string \| string[] |  |  |

@@ -20,14 +20,14 @@ const newProject = async (page: Page, title: string) => {
   await expect(page.getByText(title, { exact: true }).first()).toBeVisible()
 }
 
-const drag = async (page: Page, from: Locator, to: Locator) => {
+const drag = async (page: Page, from: Locator, to: Locator, offset = 0) => {
   const start = await from.boundingBox()
   const end = await to.boundingBox()
   if (start === null || end === null) throw new Error('nothing to drag')
   await page.mouse.move(start.x + start.width / 2, start.y + start.height / 2)
   await page.mouse.down()
   await page.mouse.move(start.x + start.width / 2 + 20, start.y + start.height / 2, { steps: 5 })
-  await page.mouse.move(end.x + end.width / 2, end.y + end.height / 2, { steps: 10 })
+  await page.mouse.move(end.x + end.width / 2, end.y + end.height / 2 + offset, { steps: 10 })
   await page.mouse.up()
 }
 
@@ -190,4 +190,65 @@ test('a project moves to another goal, and a task to another project, then is de
   await confirmDelete(page)
   await expect(page).toHaveURL(/\/projects\/PRJ-00001$/)
   await expect(carried).toBeHidden()
+})
+
+test('goals, projects and tasks keep the order they are dragged into', async ({
+  page,
+  workspace,
+}) => {
+  const titles = (scope: Locator, selector: string) => scope.locator(selector).allInnerTexts()
+  await page.goto(`${workspace.url}/goals`)
+  for (const title of ['One', 'Two', 'Three']) await newGoal(page, title)
+  const goals = () => titles(page.locator('.card-column').first(), '.goal-card-title')
+  expect(await goals()).toEqual(['One', 'Two', 'Three'])
+  await drag(
+    page,
+    page.getByText('Three', { exact: true }),
+    page.getByText('One', { exact: true }),
+    -8,
+  )
+  await expect.poll(goals).toEqual(['Three', 'One', 'Two'])
+  await page.reload()
+  await expect.poll(goals).toEqual(['Three', 'One', 'Two'])
+  await expect
+    .poll(() => workspace.read('netherite/goals/GOAL-00003-three.md'))
+    .toContain('position:')
+  await expect
+    .poll(() => workspace.read('netherite/goals/GOAL-00001-one.md'))
+    .not.toContain('position:')
+
+  await page.getByText('One', { exact: true }).first().click()
+  for (const title of ['P one', 'P two']) await newProject(page, title)
+  const projects = () => titles(page.locator('.goal-detail-main'), '.goal-card-title')
+  await expect.poll(projects).toEqual(['P one', 'P two'])
+  await drag(
+    page,
+    page.locator('.goal-detail-main').getByText('P two', { exact: true }),
+    page.locator('.goal-detail-main').getByText('P one', { exact: true }),
+    -8,
+  )
+  await expect.poll(projects).toEqual(['P two', 'P one'])
+
+  await page.locator('.goal-detail-main').getByText('P one', { exact: true }).click()
+  const backlog = page.getByRole('region', { name: 'backlog' })
+  for (const title of ['T one', 'T two']) {
+    await backlog.getByRole('button', { name: 'New task' }).click()
+    await page.keyboard.type(title)
+    await page.keyboard.press('Enter')
+    await expect(backlog.getByText(title, { exact: true })).toBeVisible()
+  }
+  const tasks = () => titles(backlog, '.board-card-title')
+  await expect.poll(tasks).toEqual(['T one', 'T two'])
+  await drag(
+    page,
+    backlog.getByText('T two', { exact: true }),
+    backlog.getByText('T one', { exact: true }),
+    -8,
+  )
+  await expect.poll(tasks).toEqual(['T two', 'T one'])
+
+  const doing = page.getByRole('region', { name: 'doing' })
+  await drag(page, backlog.getByText('T one', { exact: true }), doing)
+  await expect(doing.getByText('T one', { exact: true })).toBeVisible()
+  await expect(tasks()).resolves.toEqual(['T two'])
 })

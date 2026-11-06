@@ -190,6 +190,9 @@ const en = {
         closeTitle: 'Close (Esc)',
         changedLines: 'M {count:number} {{line|lines}} changed',
         markReviewed: 'Mark reviewed',
+        reviewedAt: 'Reviewed at {date}',
+        reviewHint:
+          'Confirms this was checked today. Resets its staleness count and sets its date in Knowledge.',
       },
       main: {
         gets: 'What gets better',

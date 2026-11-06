@@ -40,9 +40,12 @@ test('ticking a checklist item in the task drawer writes the checkbox to the fil
   expect(workspace.diff(task1)).toContain('-- [ ] first')
 })
 
-test('Mark reviewed writes today to reviewed_at', async ({ page, workspace }) => {
+test('the review button shows the date and writes today to reviewed_at', async ({
+  page,
+  workspace,
+}) => {
   await page.goto(`${workspace.url}/items/DOC-00001`)
-  await page.getByRole('button', { name: 'Mark reviewed' }).click()
+  await page.getByRole('button', { name: 'Reviewed at 1 Jan 2026' }).click()
 
   const today = new Date().toISOString().slice(0, 10)
   await expect
@@ -51,6 +54,7 @@ test('Mark reviewed writes today to reviewed_at', async ({ page, workspace }) =>
   expect(workspace.diff('netherite/docs/DOC-00001-overview.md')).toContain(
     '-reviewed_at: 2026-01-01',
   )
+  await expect(page.getByRole('button', { name: /^Reviewed at / })).toBeDisabled()
 })
 
 test('the include switch on a context item writes include_in_context', async ({

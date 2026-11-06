@@ -1,9 +1,8 @@
-import { useDraggable } from '@dnd-kit/core'
 import type { BoardCard } from '@netherite/api'
 import { Avatar, Card, Icon, StatusGlyph, statusOfCategory } from '@netherite/ui'
 import { Link, useNavigate } from '@tanstack/react-router'
 import type { MouseEvent } from 'react'
-import { ProgressBar, TagList } from '@/components'
+import { ProgressBar, TagList, useReorderItem } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 
 export function TaskCardBody({
@@ -63,7 +62,10 @@ export function TaskCard({
   readonly selected: boolean
   readonly overline?: string | undefined
 }) {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: card.id })
+  const { attributes, listeners, setNodeRef, isDragging, edge } = useReorderItem(
+    card.id,
+    card.state,
+  )
   const navigate = useNavigate()
   const open = (e: MouseEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).closest('a, button, input')) return
@@ -77,6 +79,7 @@ export function TaskCard({
       onClick={open}
       className="board-draggable"
       data-dragging={isDragging || undefined}
+      data-drop={edge}
       data-category={category}
       data-selected={selected || undefined}
       {...attributes}

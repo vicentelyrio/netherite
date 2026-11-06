@@ -701,6 +701,15 @@ type RootTranslation = {
 				 * M​a​r​k​ ​r​e​v​i​e​w​e​d
 				 */
 				markReviewed: string
+				/**
+				 * R​e​v​i​e​w​e​d​ ​a​t​ ​{​d​a​t​e​}
+				 * @param {unknown} date
+				 */
+				reviewedAt: RequiredParams<'date'>
+				/**
+				 * C​o​n​f​i​r​m​s​ ​t​h​i​s​ ​w​a​s​ ​c​h​e​c​k​e​d​ ​t​o​d​a​y​.​ ​R​e​s​e​t​s​ ​i​t​s​ ​s​t​a​l​e​n​e​s​s​ ​c​o​u​n​t​ ​a​n​d​ ​s​e​t​s​ ​i​t​s​ ​d​a​t​e​ ​i​n​ ​K​n​o​w​l​e​d​g​e​.
+				 */
+				reviewHint: string
 			}
 			main: {
 				/**
@@ -3669,6 +3678,14 @@ export type TranslationFunctions = {
 				 * Mark reviewed
 				 */
 				markReviewed: () => LocalizedString
+				/**
+				 * Reviewed at {date}
+				 */
+				reviewedAt: (arg: { date: unknown }) => LocalizedString
+				/**
+				 * Confirms this was checked today. Resets its staleness count and sets its date in Knowledge.
+				 */
+				reviewHint: () => LocalizedString
 			}
 			main: {
 				/**

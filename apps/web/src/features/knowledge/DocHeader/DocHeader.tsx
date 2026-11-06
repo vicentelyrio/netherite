@@ -1,6 +1,7 @@
 import type { ItemDetail } from '@netherite/api'
 import { Button, Icon, type ItemTypeName, TypeBadge } from '@netherite/ui'
 import { Link, useNavigate } from '@tanstack/react-router'
+import { formatDate, now } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import type { ReviewAction } from '../DocMain'
 import './DocHeader.css'
@@ -21,6 +22,8 @@ export function DocHeader({
   const type = item.type as ItemTypeName
   const folder = item.path.split('/').slice(-2, -1)[0] ?? ''
   const file = item.path.split('/').at(-1) ?? item.id
+  const reviewedAt = (item.frontmatter as { reviewed_at?: unknown }).reviewed_at
+  const reviewed = typeof reviewedAt === 'string' ? reviewedAt : undefined
   return (
     <header className="kf-head">
       <Icon name="stacks" size={16} />
@@ -40,8 +43,17 @@ export function DocHeader({
       <code className="app-id kf-id">{item.id}</code>
       <span className="kf-spacer" />
       {!stale && (type === 'doc' || type === 'runbook' || type === 'context') && (
-        <Button size="sm" icon="done_all" loading={review.pending} onClick={review.run}>
-          {LL.knowledge.doc.header.markReviewed()}
+        <Button
+          size="sm"
+          icon="done_all"
+          title={LL.knowledge.doc.header.reviewHint()}
+          loading={review.pending}
+          disabled={reviewed === now().format('YYYY-MM-DD')}
+          onClick={review.run}
+        >
+          {reviewed === undefined
+            ? LL.knowledge.doc.header.markReviewed()
+            : LL.knowledge.doc.header.reviewedAt({ date: formatDate(reviewed) })}
         </Button>
       )}
       <button

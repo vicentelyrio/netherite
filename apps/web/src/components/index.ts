@@ -14,6 +14,14 @@ export { LinkRow, type LinkRowProps } from './LinkRow'
 export * from './Markdown'
 export { type MoveGroup, type MoveOption, MovePicker, type MovePickerProps } from './MovePicker'
 export { ProgressBar, type ProgressBarProps } from './ProgressBar'
+export {
+  type DropTarget,
+  placeIn,
+  positionAt,
+  ReorderContext,
+  useReorderItem,
+  useReorderList,
+} from './Reorder'
 export { SearchField, type SearchFieldProps } from './SearchField'
 export { SelectField, type SelectFieldProps } from './SelectField'
 export { StatCard, type StatCardProps } from './StatCard'

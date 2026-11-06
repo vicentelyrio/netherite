@@ -30,6 +30,43 @@ describe('goals for the overview', () => {
     ])
   })
 
+  test('position orders goals inside an area, and an item without one sorts by its ID number', async () => {
+    const w = await world({
+      ...cleanFiles(),
+      ...goal(2, ['area: Life']),
+      ...goal(3, ['area: Life', 'position: 1.5']),
+      ...goal(4, ['area: Life', 'position: 0']),
+      ...goal(5, ['area: Life']),
+    })
+    const rows = goalRows(w.repo).filter((g) => g.area === 'Life')
+    expect(rows.map((g) => [g.id, g.rank])).toEqual([
+      ['GOAL-00004', 0],
+      ['GOAL-00003', 1.5],
+      ['GOAL-00002', 2],
+      ['GOAL-00005', 5],
+    ])
+  })
+
+  test("position orders a goal's projects and a board's tasks", async () => {
+    const w = await world({
+      ...cleanFiles(),
+      ...project(7, ['GOAL-00001']),
+      ...project(8, ['GOAL-00001'], ['position: 0.5']),
+      ...task(1, 'PRJ-00007', 'backlog'),
+      '/repo/netherite/tasks/TASK-00012-t.md':
+        '---\nid: TASK-00012\naliases: [TASK-00012]\ntype: task\ntitle: T2\nproject: PRJ-00007\nstate: backlog\nposition: 3\n---\n\n# T\n',
+    })
+    const parent = w.repo.index.findById('GOAL-00001')[0]
+    const board = w.repo.index.findById('PRJ-00007')[0]
+    if (parent === undefined || board === undefined) throw new Error('missing fixture')
+    expect(goalDetail(w.repo, parent).projectRows.map((p) => p.id)).toEqual([
+      'PRJ-00008',
+      'PRJ-00001',
+      'PRJ-00007',
+    ])
+    expect(boardOf(w.repo, board).tasks.map((t) => t.id)).toEqual(['TASK-00012', 'TASK-00011'])
+  })
+
   test('carry status, due date, tags, and the count of their projects', async () => {
     const w = await world({
       ...cleanFiles(),

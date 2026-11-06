@@ -1,0 +1,19 @@
+[data-drop] {
+  position: relative;
+}
+[data-drop]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: #a5a7ff;
+  pointer-events: none;
+}
+[data-drop="before"]::after {
+  top: -6px;
+}
+[data-drop="after"]::after {
+  bottom: -6px;
+}

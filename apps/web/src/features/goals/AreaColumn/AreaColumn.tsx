@@ -1,7 +1,6 @@
-import { useDroppable } from '@dnd-kit/core'
 import type { GoalRow } from '@netherite/api'
 import { Icon, ProgressRing } from '@netherite/ui'
-import { CardColumn, EditableText } from '@/components'
+import { CardColumn, EditableText, useReorderList } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
@@ -27,8 +26,8 @@ export function AreaColumn({
   readonly dragging: GoalRow | undefined
 }) {
   const { LL } = useI18nContext()
-  const { setNodeRef, isOver } = useDroppable({ id: area })
-  const target = isOver && dragging !== undefined && (dragging.area ?? noArea) !== area
+  const list = useReorderList(area)
+  const target = list.over && dragging !== undefined && (dragging.area ?? noArea) !== area
   const notices = useNotices()
   const api = useApi()
   const remove = useWrite(api, (a) =>
@@ -38,7 +37,7 @@ export function AreaColumn({
     a.call((c) => c.goals.renameArea({ payload: { from: isUnassigned ? '' : area, to } })),
   )
   return (
-    <CardColumn label={area} rootRef={setNodeRef} over={target}>
+    <CardColumn label={area} rootRef={list.setNodeRef} over={target}>
       <header className="goals-area-head">
         <div className="goals-area-name">
           <EditableText
@@ -82,7 +81,9 @@ export function AreaColumn({
       {goals.map((goal) => (
         <GoalCard key={goal.id} goal={goal} />
       ))}
-      {target && <div className="goal-drop">{LL.projects.dropTo({ name: area })}</div>}
+      {target && list.blank && (
+        <div className="goal-drop">{LL.projects.dropTo({ name: area })}</div>
+      )}
       <NewGoal area={isUnassigned ? undefined : area} />
     </CardColumn>
   )

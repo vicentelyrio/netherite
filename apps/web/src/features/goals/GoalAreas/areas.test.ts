@@ -22,34 +22,49 @@ describe('areas', () => {
   })
 })
 
-const moving = [{ id: 'G1', area: 'Health' }, { id: 'G2' }]
+const moving = [
+  { id: 'G1', area: 'Health', rank: 1 },
+  { id: 'G3', area: 'Health', rank: 3 },
+  { id: 'G4', area: 'Work', rank: 4 },
+  { id: 'G2', rank: 2 },
+]
 
-describe('moving a goal between areas', () => {
-  test('sets the new area', () => {
-    expect(areaMoveFor(moving, 'G1', 'Work')).toEqual({
+describe('moving a goal', () => {
+  test('to the end of another area', () => {
+    expect(areaMoveFor(moving, 'G1', { list: 'Work' })).toEqual({
       id: 'G1',
-      payload: { set: { area: 'Work' } },
+      payload: { set: { position: 4.5, area: 'Work' } },
     })
   })
 
-  test('a goal without an area can join one', () => {
-    expect(areaMoveFor(moving, 'G2', 'Work')).toEqual({
+  test('a goal without an area can join one, before a goal in it', () => {
+    expect(areaMoveFor(moving, 'G2', { list: 'Work', item: 'G4', edge: 'before' })).toEqual({
       id: 'G2',
-      payload: { set: { area: 'Work' } },
+      payload: { set: { position: 3, area: 'Work' } },
     })
   })
 
   test('dropping on No area removes the field', () => {
-    expect(areaMoveFor(moving, 'G1', noArea)).toEqual({
+    expect(areaMoveFor(moving, 'G1', { list: noArea })).toEqual({
       id: 'G1',
-      payload: { unset: ['area'] },
+      payload: { set: { position: 2.5 }, unset: ['area'] },
     })
   })
 
-  test('the same area, no target or an unknown goal changes nothing', () => {
-    expect(areaMoveFor(moving, 'G1', 'Health')).toBeUndefined()
-    expect(areaMoveFor(moving, 'G2', noArea)).toBeUndefined()
+  test('within its area only the position changes', () => {
+    expect(areaMoveFor(moving, 'G3', { list: 'Health', item: 'G1', edge: 'before' })).toEqual({
+      id: 'G3',
+      payload: { set: { position: 0 } },
+    })
+  })
+
+  test('its own place, its own column, no target or an unknown goal change nothing', () => {
+    expect(areaMoveFor(moving, 'G1', { list: 'Health' })).toBeUndefined()
+    expect(
+      areaMoveFor(moving, 'G1', { list: 'Health', item: 'G3', edge: 'before' }),
+    ).toBeUndefined()
+    expect(areaMoveFor(moving, 'G2', { list: noArea })).toBeUndefined()
     expect(areaMoveFor(moving, 'G1', undefined)).toBeUndefined()
-    expect(areaMoveFor(moving, 'nope', 'Work')).toBeUndefined()
+    expect(areaMoveFor(moving, 'nope', { list: 'Work' })).toBeUndefined()
   })
 })

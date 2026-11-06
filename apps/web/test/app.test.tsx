@@ -246,9 +246,18 @@ describe('writing, and conflicts', () => {
   const docFile = () =>
     readFileSync(join(server().dir, 'netherite/docs/DOC-00001-overview.md'), 'utf8')
 
-  test('Mark reviewed writes the date to the file', async () => {
+  const reviewedLongAgo = () =>
+    other().call((c) =>
+      c.items.update({
+        params: { id: 'DOC-00001' },
+        payload: { set: { reviewed_at: '2026-01-01' } },
+      }),
+    )
+
+  test('the review button says when, and writes the date to the file', async () => {
+    await reviewedLongAgo()
     renderApp('/items/DOC-00001')
-    await userEvent.click(await screen.findByRole('button', { name: /Mark reviewed/ }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Reviewed at 1 Jan 2026' }))
     const today = new Date().toISOString().slice(0, 10)
     await waitFor(() => expect(docFile()).toContain(`reviewed_at: ${today}`))
     expect(screen.queryByRole('alert')).toBeNull()
@@ -257,7 +266,7 @@ describe('writing, and conflicts', () => {
   test('only docs, runbooks and context can be reviewed', async () => {
     renderApp('/items/TASK-00001')
     await screen.findByRole('heading', { name: 'Core', level: 1 })
-    expect(screen.queryByRole('button', { name: /Mark reviewed/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /Mark reviewed|Reviewed at/ })).toBeNull()
   })
 
   test('if the file changed since it was opened, nothing is saved: the person is told, and Reload fixes it', async () => {
@@ -266,8 +275,9 @@ describe('writing, and conflicts', () => {
       close() {}
     } as never
     try {
+      await reviewedLongAgo()
       renderApp('/items/DOC-00001')
-      const button = await screen.findByRole('button', { name: /Mark reviewed/ })
+      const button = await screen.findByRole('button', { name: /^Reviewed at / })
 
       const api = other()
       const fresh = await api.call((c) => c.items.get({ params: { id: 'DOC-00001' } }))
@@ -291,7 +301,7 @@ describe('writing, and conflicts', () => {
       await waitFor(() =>
         expect(document.querySelector('article')).toHaveAttribute('data-hash', current.hash),
       )
-      await userEvent.click(await screen.findByRole('button', { name: /Mark reviewed/ }))
+      await userEvent.click(await screen.findByRole('button', { name: /^Reviewed at / }))
       const today = new Date().toISOString().slice(0, 10)
       await waitFor(() => expect(docFile()).toContain(`reviewed_at: ${today}`))
       expect(screen.queryByRole('alert')).toBeNull()

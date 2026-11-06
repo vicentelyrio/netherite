@@ -1,11 +1,12 @@
+import { DragOverlay } from '@dnd-kit/core'
 import type { ProjectRow } from '@netherite/api'
-import { Icon } from '@netherite/ui'
+import { Card, Icon } from '@netherite/ui'
 import { useState } from 'react'
-import { TitleForm } from '@/components'
+import { placeIn, ReorderContext, TitleForm } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useWrite } from '@/infrastructure/query'
-import { ProjectCard } from '../ProjectCard'
+import { ProjectCard, ProjectCardBody } from '../ProjectCard'
 import './GoalProjects.css'
 
 export function GoalProjects({
@@ -23,6 +24,13 @@ export function GoalProjects({
       c.items.create({ payload: { type: 'project', title, fields: { goals: [goalId] } } }),
     ),
   )
+  const reorder = useWrite(api, (a, v: { id: string; position: number }) =>
+    a.call((c) =>
+      c.items.update({ params: { id: v.id }, payload: { set: { position: v.position } } }),
+    ),
+  )
+  const [draggingId, setDraggingId] = useState<string | undefined>()
+  const dragging = projects.find((p) => p.id === draggingId)
   return (
     <>
       <header className="goal-projects-head">
@@ -41,9 +49,27 @@ export function GoalProjects({
         />
       )}
       {projects.length === 0 && <p className="app-muted">{LL.goals.detail.noProjects()}</p>}
-      {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} />
-      ))}
+      <ReorderContext
+        onStart={setDraggingId}
+        onEnd={() => setDraggingId(undefined)}
+        onDrop={(id, target) => {
+          const position = placeIn(projects, id, target)
+          if (position !== undefined) reorder.mutate({ id, position })
+        }}
+      >
+        {projects.map((project) => (
+          <ProjectCard key={project.id} project={project} list={goalId} />
+        ))}
+        <DragOverlay dropAnimation={null}>
+          {dragging && (
+            <div className="goal-overlay">
+              <Card>
+                <ProjectCardBody project={dragging} />
+              </Card>
+            </div>
+          )}
+        </DragOverlay>
+      </ReorderContext>
     </>
   )
 }

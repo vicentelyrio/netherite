@@ -44,6 +44,7 @@ const Goal = open(
     due: optional(IsoDate),
     horizon: optional(Text),
     owner: optional(Handle),
+    position: optional(Schema.Finite),
   }),
 )
 
@@ -56,6 +57,7 @@ const Project = open(
     milestone: optional(Text),
     owner: optional(Handle),
     labels: optional(Strings),
+    position: optional(Schema.Finite),
     decisions: optional(ids(AdrId)),
     design: optional(Schema.Array(DesignLink)),
   }),
@@ -109,6 +111,7 @@ const makeTask = (states: Config['states']) =>
       state: Schema.Literals(states.map((s: { name: string }) => s.name) as [string, ...string[]]),
       assignees: optional(ids(Handle)),
       labels: optional(Strings),
+      position: optional(Schema.Finite),
       decisions: optional(ids(AdrId)),
       depends_on: optional(ids(TaskId)),
       related: optional(ids(ItemId)),

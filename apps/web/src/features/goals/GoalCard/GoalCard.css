@@ -39,3 +39,22 @@
   color: #969ab8;
   white-space: nowrap;
 }
+.goal-draggable {
+  touch-action: none;
+  user-select: none;
+}
+.goal-draggable[data-dragging] {
+  opacity: 0.5;
+}
+.goal-overlay {
+  opacity: 0.7;
+  transform: rotate(2.5deg);
+  cursor: grabbing;
+}
+.goal-overlay .nt-card {
+  background: #2a2d45;
+  border-color: #a5a7ff;
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+}
