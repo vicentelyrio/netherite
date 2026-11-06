@@ -1,14 +1,14 @@
+.goal-areas-state {
+  flex: 1;
+  min-width: 0;
+  padding: 8px;
+}
 .goal-draggable {
   touch-action: none;
   user-select: none;
 }
 .goal-draggable[data-dragging] {
   opacity: 0.5;
-}
-[data-over] > .mantine-Stack-root {
-  border-radius: 14px;
-  outline: 1px solid rgba(165, 167, 255, 0.4);
-  outline-offset: 6px;
 }
 .goal-drop {
   height: 96px;

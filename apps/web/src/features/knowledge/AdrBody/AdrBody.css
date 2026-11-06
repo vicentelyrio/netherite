@@ -1,12 +1,13 @@
-.adr-decision {
-  margin: 20px 0;
-  padding: 4px 20px 8px;
+.adr-body .md blockquote {
+  margin: 12px 0 20px;
+  padding: 14px 20px;
+  color: inherit;
   background: rgba(165, 167, 255, 0.08);
   border: 1px solid rgba(165, 167, 255, 0.28);
   border-radius: 10px;
 }
-.adr-decision .md h2 {
-  margin-top: 12px;
+.adr-body .md blockquote > :last-child {
+  margin-bottom: 0;
 }
 .adr-columns {
   display: grid;

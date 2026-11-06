@@ -791,6 +791,16 @@ describe('the knowledge index', () => {
       '/items/ADR-00002',
     )
   })
+
+  test('one click only selects a row, and a double click opens it', async () => {
+    renderApp('/knowledge')
+    const title = await screen.findByText('Promises')
+    await userEvent.click(title)
+    await screen.findByRole('complementary', { name: 'Preview of ADR-00002' })
+    expect(screen.queryByRole('article')).toBeNull()
+    await userEvent.dblClick(title)
+    expect(await screen.findByRole('article')).toBeInTheDocument()
+  })
 })
 
 describe('ADR and context views', () => {

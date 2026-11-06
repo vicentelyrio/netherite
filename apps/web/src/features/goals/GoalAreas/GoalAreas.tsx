@@ -7,7 +7,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import { Banner, Card, EmptyState, Grid } from '@netherite/ui'
+import { Banner, Card, EmptyState } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { CardColumn } from '@/components'
@@ -35,19 +35,15 @@ export function GoalAreas({ only }: { readonly only?: string }) {
   )
 
   if (query.isPending) {
-    return (
-      <Grid.Col span={12}>
-        <div className="app-muted">{LL.common.loading()}</div>
-      </Grid.Col>
-    )
+    return <div className="goal-areas-state app-muted">{LL.common.loading()}</div>
   }
   if (query.isError) {
     return (
-      <Grid.Col span={12}>
+      <div className="goal-areas-state">
         <Banner variant="danger" title={LL.goals.loadError()}>
           {LL.common.serveHint()}
         </Banner>
-      </Grid.Col>
+      </div>
     )
   }
   const all = groupByArea(query.data.goals)
@@ -56,14 +52,14 @@ export function GoalAreas({ only }: { readonly only?: string }) {
   const single = only !== undefined && some.length > 0
   if (!single && groups.length === 0) {
     return (
-      <Grid.Col span={12}>
+      <div className="goal-areas-state">
         <EmptyState
           icon="track_changes"
           title={LL.goals.empty.title()}
           description={LL.goals.empty.text()}
           actions={<NewGoal area={undefined} compact />}
         />
-      </Grid.Col>
+      </div>
     )
   }
   const dragging = query.data.goals.find((g) => g.id === draggingId)

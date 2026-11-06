@@ -1,0 +1,14 @@
+.card-column {
+  --card-column-count-gap: calc(2 * var(--tpl-column-gap, 8px));
+  flex: 0 0 max(min(376px, 100%), calc((100% - var(--card-column-count-gap)) / 3));
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 8px var(--tpl-column-inset, 8px);
+  border-radius: 14px;
+  overflow: hidden auto;
+}
+.card-column[data-over] {
+  background: #313452;
+  outline: 1px solid rgba(165, 167, 255, 0.4);
+  outline-offset: -1px;
+}

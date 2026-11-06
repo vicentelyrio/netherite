@@ -7,7 +7,7 @@ import {
   OrphanTag,
   TypeBadge,
 } from '@netherite/ui'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { FreshnessCell } from '@/components'
 import { ago } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
@@ -24,6 +24,7 @@ export function KnowledgeRow({
   readonly onSelect: () => void
 }) {
   const { LL } = useI18nContext()
+  const navigate = useNavigate()
   const superseded = row.status === 'superseded' || row.status === 'deprecated'
   return (
     // biome-ignore lint/a11y/useSemanticElements: the row holds links, so it cannot be a button
@@ -34,6 +35,7 @@ export function KnowledgeRow({
       aria-pressed={selected}
       data-selected={selected || undefined}
       onClick={onSelect}
+      onDoubleClick={() => void navigate({ to: '/items/$id', params: { id: row.id } })}
       onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onSelect()}
     >
       <TypeBadge type={row.type as ItemTypeName} />

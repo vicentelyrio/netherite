@@ -59,6 +59,63 @@ test('a goal drags between areas, and clicking it still opens it', async ({ page
   await expect(page).toHaveURL(/\/goals\/GOAL-00001$/)
 })
 
+test('areas stay in one row and scroll sideways', async ({ page, workspace }) => {
+  await page.goto(`${workspace.url}/goals`)
+  await newGoal(page, 'First goal')
+  for (const area of ['One', 'Two', 'Three', 'Four']) {
+    await page.getByRole('button', { name: 'New area' }).click()
+    await page.keyboard.type(area)
+    await page.keyboard.press('Enter')
+    await page.keyboard.type(`Goal of ${area}`)
+    await page.keyboard.press('Enter')
+    await expect(page.getByRole('region', { name: area })).toBeVisible()
+  }
+  const row = page.locator('.tpl-columns-scroll')
+  const columns = row.locator('> .card-column')
+  await expect(columns).toHaveCount(6)
+  const tops = await columns.evaluateAll((all) => all.map((c) => c.getBoundingClientRect().top))
+  expect(new Set(tops).size).toBe(1)
+  const box = await row.evaluate((el) => {
+    const rect = el.getBoundingClientRect()
+    const main = document.querySelector('.tpl-app-content')?.getBoundingClientRect()
+    return {
+      scrolls: el.scrollWidth > el.clientWidth,
+      left: rect.left,
+      right: rect.right,
+      bottom: rect.bottom,
+      paddingLeft: Number.parseFloat(getComputedStyle(el).paddingLeft),
+      mainLeft: main?.left,
+      mainBottom: main?.bottom,
+      pageScrolls:
+        (main?.height ?? 0) < (document.querySelector('.tpl-app-content')?.scrollHeight ?? 0),
+    }
+  })
+  expect(box.scrolls).toBe(true)
+  expect(box.left).toBe(box.mainLeft)
+  expect(box.right).toBe(page.viewportSize()?.width)
+  expect(box.bottom).toBe(box.mainBottom)
+  expect(box.paddingLeft).toBeGreaterThan(0)
+  expect(box.pageScrolls).toBe(false)
+  await page.getByRole('button', { name: 'New area' }).scrollIntoViewIfNeeded()
+  await expect(page.getByRole('button', { name: 'New area' })).toBeInViewport()
+})
+
+test('a tall area scrolls on its own and leaves the header where it is', async ({
+  page,
+  workspace,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 500 })
+  await page.goto(`${workspace.url}/goals`)
+  for (const title of ['One', 'Two', 'Three', 'Four', 'Five']) await newGoal(page, title)
+  const column = page.locator('.card-column').first()
+  await expect.poll(() => column.evaluate((el) => el.scrollHeight > el.clientHeight)).toBe(true)
+  const heading = page.getByRole('navigation', { name: 'Breadcrumb' })
+  const before = await heading.boundingBox()
+  await column.evaluate((el) => el.scrollTo(0, el.scrollHeight))
+  expect(await heading.boundingBox()).toEqual(before)
+  await expect(page.getByRole('button', { name: 'New goal' }).first()).toBeInViewport()
+})
+
 test('a goal is deleted only when empty', async ({ page, workspace }) => {
   await page.goto(`${workspace.url}/goals`)
   await newGoal(page, 'Keep')
