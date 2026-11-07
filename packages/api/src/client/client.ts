@@ -1,6 +1,6 @@
 import { HttpClient, HttpClientRequest } from 'effect/http'
 import { HttpApiClient } from 'effect/http-api'
-import { NetheriteApi } from './api'
+import { NetheriteApi } from '../api'
 
 export const makeClient = (
   options: { readonly baseUrl?: string | URL; readonly token?: string } = {},

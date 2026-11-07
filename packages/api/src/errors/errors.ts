@@ -4,6 +4,7 @@ export const Issue = Schema.Struct({
   path: Schema.Array(Schema.Union([Schema.String, Schema.Number])),
   message: Schema.String,
 })
+
 export type Issue = typeof Issue.Type
 
 export class Invalid extends Schema.TaggedError<Invalid>()(
