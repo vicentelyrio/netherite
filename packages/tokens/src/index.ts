@@ -30,6 +30,7 @@ export { baseShade, mantineTheme, mix, scaleOf } from './mantine'
 export {
   fontFamily,
   fontSize,
+  fontSizeExtra,
   fontWeight,
   grid,
   icon,
@@ -38,7 +39,10 @@ export {
   radius,
   radiusExtra,
   shadow,
+  size,
   space,
+  spaceExtra,
+  stroke,
   type TextStyle,
   type TextStyleName,
   textStyle,

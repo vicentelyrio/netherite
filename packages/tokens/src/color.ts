@@ -31,6 +31,7 @@ export const edgeKinds = [
 export type EdgeKind = (typeof edgeKinds)[number]
 
 export const color = {
+  base: { black: '#000000', white: '#FFFFFF' },
   bg: {
     shell: '#1E2032',
     canvas: '#282A3F',

@@ -46,6 +46,8 @@ export const fontSize = {
   display: textStyle.display.size,
 } as const
 
+export const fontSizeExtra = { xxs: 11, xl: 22, xxl: 26, xxxl: 36 } as const
+
 export const space = {
   1: 4,
   2: 8,
@@ -59,8 +61,49 @@ export const space = {
   10: 64,
 } as const
 
+export const spaceExtra = {
+  px: 1,
+  '0-5': 2,
+  '0-75': 3,
+  '1-5': 6,
+  '2-5': 10,
+  '3-5': 14,
+  '4-5': 18,
+  '5-5': 22,
+  '6-5': 28,
+  '7-5': 36,
+  '8-5': 44,
+  '9-5': 56,
+} as const
+
+export const size = {
+  7: 7,
+  9: 9,
+  26: 26,
+  30: 30,
+  34: 34,
+  72: 72,
+  96: 96,
+  100: 100,
+  120: 120,
+  150: 150,
+  160: 160,
+  170: 170,
+  200: 200,
+  220: 220,
+  240: 240,
+  300: 300,
+  320: 320,
+  420: 420,
+  520: 520,
+  560: 560,
+  900: 900,
+} as const
+
+export const stroke = { thin: 1, medium: 1.5, thick: 2, heavy: 3 } as const
+
 export const radius = { xs: 4, sm: 6, md: 10, lg: 14, full: 999 } as const
-export const radiusExtra = { control: 7, tooltip: 8, group: 12 } as const
+export const radiusExtra = { xxs: 2, control: 7, tooltip: 8, group: 12 } as const
 
 export const layout = {
   screen: { width: 1920, height: 1080 },

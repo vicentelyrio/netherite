@@ -2,6 +2,7 @@ import { color, edgeKinds, tint } from './color'
 import { edgeStyle, graphMetrics, nodeSpec } from './graph'
 import {
   fontFamily,
+  fontSizeExtra,
   fontWeight,
   grid,
   icon,
@@ -10,7 +11,10 @@ import {
   radius,
   radiusExtra,
   shadow,
+  size,
   space,
+  spaceExtra,
+  stroke,
   textStyle,
   zIndex,
 } from './scale'
@@ -74,7 +78,11 @@ export const variables = (): Record<string, string> => {
         ]
       }),
     ),
+    ...named('font-size', fontSizeExtra, lengths),
     ...named('space', space, lengths),
+    ...named('space', spaceExtra, lengths),
+    ...named('size', size, lengths),
+    ...named('stroke', stroke, lengths),
     ...named('radius', radius, lengths),
     ...named('radius', radiusExtra, lengths),
     ...named('layout', layout, lengths),
