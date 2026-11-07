@@ -5,10 +5,9 @@ const task1 = 'netherite/tasks/TASK-00001-core.md'
 const normal = '--NORMAL--'
 
 const turnOnVim = async (page: Page, url: string) => {
-  await page.goto(`${url}/settings`)
-  const toggle = page.getByRole('switch', { name: /Vim mode/ })
-  await toggle.click()
-  await expect(toggle).toBeChecked()
+  await page.goto(`${url}/settings?tab=editor`)
+  await page.locator('.mantine-Switch-track').click()
+  await expect(page.getByRole('switch', { name: /Vim mode/ })).toBeChecked()
 }
 
 const openTaskEditor = async (page: Page, url: string) => {

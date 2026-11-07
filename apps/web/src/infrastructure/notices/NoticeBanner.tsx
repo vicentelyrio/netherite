@@ -1,5 +1,6 @@
 import { Banner, Button } from '@netherite/ui'
 import { useEffect } from 'react'
+import { useNoticeSettings } from '../settings'
 import { lifetime } from './lifetime'
 import type { Notice } from './notices.types'
 
@@ -12,7 +13,8 @@ export function NoticeBanner({
   readonly paused: boolean
   readonly onDismiss: (id: number) => void
 }) {
-  const ms = lifetime(notice)
+  const { lifetimeMs } = useNoticeSettings()
+  const ms = lifetime(notice, lifetimeMs)
   useEffect(() => {
     if (ms === undefined || paused) return
     const timer = window.setTimeout(() => onDismiss(notice.id), ms)

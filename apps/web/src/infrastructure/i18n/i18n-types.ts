@@ -978,6 +978,10 @@ type RootTranslation = {
 			 */
 			label: string
 			/**
+			 * G​e​n​e​r​a​l
+			 */
+			general: string
+			/**
 			 * E​d​i​t​o​r
 			 */
 			editor: string
@@ -985,6 +989,32 @@ type RootTranslation = {
 			 * S​h​o​r​t​c​u​t​s
 			 */
 			shortcuts: string
+		}
+		duration: {
+			/**
+			 * {​s​e​c​o​n​d​s​}​ ​s
+			 * @param {number} seconds
+			 */
+			seconds: RequiredParams<'seconds'>
+		}
+		general: {
+			/**
+			 * G​e​n​e​r​a​l
+			 */
+			title: string
+			/**
+			 * S​a​v​e​d​ ​i​n​ ​t​h​i​s​ ​b​r​o​w​s​e​r​.
+			 */
+			subtitle: string
+			/**
+			 * N​o​t​i​c​e​ ​d​u​r​a​t​i​o​n
+			 */
+			noticeDuration: string
+			/**
+			 * H​o​w​ ​l​o​n​g​ ​a​ ​n​o​t​i​c​e​ ​s​t​a​y​s​ ​o​n​ ​s​c​r​e​e​n​.​ ​A​ ​n​o​t​i​c​e​ ​w​i​t​h​ ​a​n​ ​a​c​t​i​o​n​ ​s​t​a​y​s​ ​a​t​ ​l​e​a​s​t​ ​{​s​e​c​o​n​d​s​}​ ​s​e​c​o​n​d​s​.
+			 * @param {number} seconds
+			 */
+			noticeDurationHint: RequiredParams<'seconds'>
 		}
 		actions: {
 			/**
@@ -1061,6 +1091,14 @@ type RootTranslation = {
 			 * S​a​v​e​d​ ​i​n​ ​t​h​i​s​ ​b​r​o​w​s​e​r​.
 			 */
 			subtitle: string
+			/**
+			 * A​u​t​o​s​a​v​e​ ​d​e​l​a​y
+			 */
+			autosaveDelay: string
+			/**
+			 * H​o​w​ ​l​o​n​g​ ​t​o​ ​w​a​i​t​ ​a​f​t​e​r​ ​y​o​u​ ​s​t​o​p​ ​t​y​p​i​n​g​ ​b​e​f​o​r​e​ ​s​a​v​i​n​g​.​ ​A​ ​f​i​l​e​ ​w​i​t​h​ ​e​r​r​o​r​s​ ​i​s​ ​n​o​t​ ​s​a​v​e​d​.
+			 */
+			autosaveDelayHint: string
 			/**
 			 * V​i​m​ ​m​o​d​e
 			 */
@@ -4190,6 +4228,10 @@ export type TranslationFunctions = {
 			 */
 			label: () => LocalizedString
 			/**
+			 * General
+			 */
+			general: () => LocalizedString
+			/**
 			 * Editor
 			 */
 			editor: () => LocalizedString
@@ -4197,6 +4239,30 @@ export type TranslationFunctions = {
 			 * Shortcuts
 			 */
 			shortcuts: () => LocalizedString
+		}
+		duration: {
+			/**
+			 * {seconds} s
+			 */
+			seconds: (arg: { seconds: number }) => LocalizedString
+		}
+		general: {
+			/**
+			 * General
+			 */
+			title: () => LocalizedString
+			/**
+			 * Saved in this browser.
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Notice duration
+			 */
+			noticeDuration: () => LocalizedString
+			/**
+			 * How long a notice stays on screen. A notice with an action stays at least {seconds} seconds.
+			 */
+			noticeDurationHint: (arg: { seconds: number }) => LocalizedString
 		}
 		actions: {
 			/**
@@ -4273,6 +4339,14 @@ export type TranslationFunctions = {
 			 * Saved in this browser.
 			 */
 			subtitle: () => LocalizedString
+			/**
+			 * Autosave delay
+			 */
+			autosaveDelay: () => LocalizedString
+			/**
+			 * How long to wait after you stop typing before saving. A file with errors is not saved.
+			 */
+			autosaveDelayHint: () => LocalizedString
 			/**
 			 * Vim mode
 			 */

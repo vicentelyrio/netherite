@@ -25,7 +25,7 @@ export function SourceEditor({
   const notices = useNotices()
   const source = useQuery(sourceQuery(api, id))
   const saveKeys = useResolvedShortcuts()['editor.save'].keys
-  const { vimMode } = useEditorSettings()
+  const { vimMode, autosaveDelayMs } = useEditorSettings()
   const items = useQuery(itemsQuery(api, { limit: 500 }))
   const targets = useMemo(
     () => (items.data?.items ?? []).map((i) => ({ id: i.id, title: i.title, type: i.type })),
@@ -41,6 +41,7 @@ export function SourceEditor({
       source={source.data}
       saveKeys={saveKeys}
       vimMode={vimMode}
+      autosaveDelay={autosaveDelayMs}
       targets={targets}
       lint={async (text) =>
         (await api.call((c) => c.lintText.lintText({ payload: { id, text } }))).diagnostics

@@ -3,11 +3,13 @@ import { useNavigate } from '@tanstack/react-router'
 import type { ComponentType } from 'react'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { EditorSettings } from '../EditorSettings'
+import { GeneralSettings } from '../GeneralSettings'
 import { ShortcutSettings } from '../ShortcutSettings'
 import { defaultSettingsTab, isSettingsTab, type SettingsTab, settingsTabs } from './tabs'
 import './SettingsTabs.css'
 
 const panels: Readonly<Record<SettingsTab, ComponentType>> = {
+  general: GeneralSettings,
   editor: EditorSettings,
   shortcuts: ShortcutSettings,
 }

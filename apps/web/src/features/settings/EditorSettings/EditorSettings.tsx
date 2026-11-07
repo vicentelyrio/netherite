@@ -1,26 +1,32 @@
 import { Switch } from '@netherite/ui'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useEditorSettings } from '@/infrastructure/settings'
-import './EditorSettings.css'
+import { DurationSetting } from '../DurationSetting'
+import { SettingRow } from '../SettingRow'
+import { SettingsSection } from '../SettingsSection'
+
+const autosavePresetsMs = [500, 1000, 2000, 5000]
 
 export function EditorSettings() {
   const { LL } = useI18nContext()
   const text = LL.settings.editor
-  const { vimMode, setVimMode } = useEditorSettings()
+  const { vimMode, setVimMode, autosaveDelayMs, setAutosaveDelayMs } = useEditorSettings()
   return (
-    <section className="es" aria-label={text.title()}>
-      <header>
-        <h2 className="es-title">{text.title()}</h2>
-        <p className="app-muted">{text.subtitle()}</p>
-      </header>
-      <div className="es-card">
+    <SettingsSection title={text.title()} subtitle={text.subtitle()}>
+      <DurationSetting
+        label={text.autosaveDelay()}
+        hint={text.autosaveDelayHint()}
+        presets={autosavePresetsMs}
+        value={autosaveDelayMs}
+        onChange={setAutosaveDelayMs}
+      />
+      <SettingRow label={text.vimMode()} hint={text.vimModeHint()}>
         <Switch
-          label={text.vimMode()}
-          description={text.vimModeHint()}
+          aria-label={text.vimMode()}
           checked={vimMode}
           onChange={(event) => setVimMode(event.currentTarget.checked)}
         />
-      </div>
-    </section>
+      </SettingRow>
+    </SettingsSection>
   )
 }

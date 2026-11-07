@@ -1,21 +1,50 @@
-import { settingDefaults } from '@netherite/schema'
+import { settingCatalog, settingDefaults } from '@netherite/schema'
 import { type ActionId, isActionId } from '../shortcuts/actions'
 
 export interface EditorPreferences {
   readonly vimMode: boolean
+  readonly autosaveDelayMs: number
+}
+
+export interface NoticePreferences {
+  readonly lifetimeMs: number
 }
 
 export interface Settings {
   readonly shortcuts: Readonly<Partial<Record<ActionId, string | null>>>
   readonly editor: EditorPreferences
+  readonly notices: NoticePreferences
 }
 
 export const defaultSettings: Settings = {
   shortcuts: {},
-  editor: { vimMode: settingDefaults.editor.vimMode },
+  editor: {
+    vimMode: settingDefaults.editor.vimMode,
+    autosaveDelayMs: settingDefaults.editor.autosaveDelayMs,
+  },
+  notices: { lifetimeMs: settingDefaults.notices.lifetimeMs },
 }
 
 export const storageKey = 'netherite.settings'
+
+const IntegerSetting = {
+  AutosaveDelay: 'editor.autosaveDelayMs',
+  NoticeLifetime: 'notices.lifetimeMs',
+} as const
+
+type IntegerSetting = (typeof IntegerSetting)[keyof typeof IntegerSetting]
+
+const withinLimits = (key: IntegerSetting, value: number) => {
+  const limits = settingCatalog.find((setting) => setting.key === key)
+  return (
+    Number.isInteger(value) &&
+    value >= (limits?.min ?? Number.NEGATIVE_INFINITY) &&
+    value <= (limits?.max ?? Number.POSITIVE_INFINITY)
+  )
+}
+
+const parseInteger = (stored: unknown, key: IntegerSetting, fallback: number) =>
+  typeof stored === 'number' && withinLimits(key, stored) ? stored : fallback
 
 const parseShortcuts = (stored: unknown): Settings['shortcuts'] => {
   const shortcuts: Partial<Record<ActionId, string | null>> = {}
@@ -30,8 +59,27 @@ const parseShortcuts = (stored: unknown): Settings['shortcuts'] => {
 }
 
 const parseEditor = (stored: unknown): EditorPreferences => {
-  const vimMode = (stored as { vimMode?: unknown } | null | undefined)?.vimMode
-  return typeof vimMode === 'boolean' ? { vimMode } : defaultSettings.editor
+  const value = stored as Partial<Record<keyof EditorPreferences, unknown>> | null | undefined
+  const { vimMode, autosaveDelayMs } = defaultSettings.editor
+  return {
+    vimMode: typeof value?.vimMode === 'boolean' ? value.vimMode : vimMode,
+    autosaveDelayMs: parseInteger(
+      value?.autosaveDelayMs,
+      IntegerSetting.AutosaveDelay,
+      autosaveDelayMs,
+    ),
+  }
+}
+
+const parseNotices = (stored: unknown): NoticePreferences => {
+  const value = stored as Partial<Record<keyof NoticePreferences, unknown>> | null | undefined
+  return {
+    lifetimeMs: parseInteger(
+      value?.lifetimeMs,
+      IntegerSetting.NoticeLifetime,
+      defaultSettings.notices.lifetimeMs,
+    ),
+  }
 }
 
 export const parseSettings = (raw: string | null | undefined): Settings => {
@@ -42,8 +90,12 @@ export const parseSettings = (raw: string | null | undefined): Settings => {
   } catch {
     return defaultSettings
   }
-  const stored = value as { shortcuts?: unknown; editor?: unknown } | null
-  return { shortcuts: parseShortcuts(stored?.shortcuts), editor: parseEditor(stored?.editor) }
+  const stored = value as { shortcuts?: unknown; editor?: unknown; notices?: unknown } | null
+  return {
+    shortcuts: parseShortcuts(stored?.shortcuts),
+    editor: parseEditor(stored?.editor),
+    notices: parseNotices(stored?.notices),
+  }
 }
 
 export const serializeSettings = (settings: Settings): string => JSON.stringify(settings)

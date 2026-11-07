@@ -1,5 +1,5 @@
 import { NetheriteProvider } from '@netherite/ui'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, test } from 'vitest'
 import { I18nProvider } from '@/infrastructure/i18n'
@@ -35,7 +35,8 @@ describe('the editor settings', () => {
     expect(toggle).toBeChecked()
     expect(JSON.parse(storage.getItem(storageKey) as string)).toEqual({
       shortcuts: { 'go.tags': 'mod+y' },
-      editor: { vimMode: true },
+      editor: { vimMode: true, autosaveDelayMs: 1000 },
+      notices: { lifetimeMs: 5000 },
     })
   })
 
@@ -45,5 +46,28 @@ describe('the editor settings', () => {
     first.unmount()
     setup(memory(JSON.stringify({ editor: { vimMode: 'yes' } })))
     expect(screen.getByRole('switch', { name: /Vim mode/ })).not.toBeChecked()
+  })
+
+  test('the autosave delay is remembered, and a stored value outside its limits is ignored', async () => {
+    const storage = memory(JSON.stringify({ editor: { autosaveDelayMs: 2000 } }))
+    const first = setup(storage)
+    const delay = screen.getByRole('radiogroup', { name: 'Autosave delay' })
+    expect(within(delay).getByRole('radio', { name: '2 s' })).toBeChecked()
+    await userEvent.click(within(delay).getByText('5 s'))
+    expect(JSON.parse(storage.getItem(storageKey) as string).editor.autosaveDelayMs).toBe(5000)
+    first.unmount()
+
+    for (const bad of [5, 3_600_000, 1500.5, 'soon']) {
+      const view = setup(memory(JSON.stringify({ editor: { autosaveDelayMs: bad } })))
+      const group = screen.getByRole('radiogroup', { name: 'Autosave delay' })
+      expect(within(group).getByRole('radio', { name: '1 s' })).toBeChecked()
+      view.unmount()
+    }
+  })
+
+  test('a stored delay within its limits but off the list still shows', () => {
+    setup(memory(JSON.stringify({ editor: { autosaveDelayMs: 1500 } })))
+    const delay = screen.getByRole('radiogroup', { name: 'Autosave delay' })
+    expect(within(delay).getByRole('radio', { name: '1.5 s' })).toBeChecked()
   })
 })

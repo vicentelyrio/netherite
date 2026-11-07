@@ -262,7 +262,20 @@ const en = {
   },
   settings: {
     title: 'Settings',
-    tabs: { label: 'Settings sections', editor: 'Editor', shortcuts: 'Shortcuts' },
+    tabs: {
+      label: 'Settings sections',
+      general: 'General',
+      editor: 'Editor',
+      shortcuts: 'Shortcuts',
+    },
+    duration: { seconds: '{seconds:number} s' },
+    general: {
+      title: 'General',
+      subtitle: 'Saved in this browser.',
+      noticeDuration: 'Notice duration',
+      noticeDurationHint:
+        'How long a notice stays on screen. A notice with an action stays at least {seconds:number} seconds.',
+    },
     actions: {
       searchOpen: 'Search',
       goInbox: 'Go to Inbox',
@@ -284,6 +297,9 @@ const en = {
     editor: {
       title: 'Editor',
       subtitle: 'Saved in this browser.',
+      autosaveDelay: 'Autosave delay',
+      autosaveDelayHint:
+        'How long to wait after you stop typing before saving. A file with errors is not saved.',
       vimMode: 'Vim mode',
       vimModeHint:
         'Edit Markdown with vim keys. :w saves, and Esc stays in the editor instead of closing a drawer.',
