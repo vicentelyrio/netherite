@@ -1,9 +1,10 @@
-import { Button, Icon } from '@netherite/ui'
+import { Button } from '@netherite/ui'
 import { useState } from 'react'
 import { TitleForm } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useWrite } from '@/infrastructure/query'
+import { NewItemButton } from '../NewItemButton'
 import './NewGoal.css'
 
 export function NewGoal({
@@ -27,6 +28,7 @@ export function NewGoal({
     const form = (
       <TitleForm
         label={LL.goals.goalTitle()}
+        pending={create.isPending}
         onCancel={() => setAdding(false)}
         onSubmit={(title) => create.mutate(title, { onSuccess: () => setAdding(false) })}
       />
@@ -38,8 +40,6 @@ export function NewGoal({
       {LL.goals.newGoal()}
     </Button>
   ) : (
-    <button type="button" className="goals-new" onClick={() => setAdding(true)}>
-      <Icon name="add" /> {LL.goals.newGoal()}
-    </button>
+    <NewItemButton onClick={() => setAdding(true)}>{LL.goals.newGoal()}</NewItemButton>
   )
 }

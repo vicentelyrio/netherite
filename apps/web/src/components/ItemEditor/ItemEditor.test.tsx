@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { describe, expect, test, vi } from 'vitest'
 import { I18nProvider } from '@/infrastructure/i18n'
 import { changesField, problemsField } from './extensions'
-import { bodyOf, ItemEditor, type ItemEditorProps } from './ItemEditor'
+import { bodyOf, ItemEditor, type ItemEditorProps } from './index'
 
 const text = `---
 id: TASK-00001

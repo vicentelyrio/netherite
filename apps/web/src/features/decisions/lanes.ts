@@ -1,4 +1,5 @@
 import type { KnowledgeRow } from '@netherite/api'
+import { designColor } from '@netherite/ui'
 
 export interface Transition {
   readonly id: string
@@ -102,8 +103,8 @@ export const statusLabel = (
 ) => LL.decisions.status[status]?.() ?? status
 
 export const statusStyle: Record<string, { label: string; color: string; icon: string }> = {
-  proposed: { label: 'Proposed', color: '#a5a7ff', icon: 'pending' },
-  accepted: { label: 'Accepted', color: '#2cc27e', icon: 'check_circle' },
-  deprecated: { label: 'Deprecated', color: '#f0717e', icon: 'block' },
-  superseded: { label: 'Superseded', color: '#969ab8', icon: 'swap_horiz' },
+  proposed: { label: 'Proposed', color: designColor.adr.proposed, icon: 'pending' },
+  accepted: { label: 'Accepted', color: designColor.adr.accepted, icon: 'check_circle' },
+  deprecated: { label: 'Deprecated', color: designColor.adr.deprecated, icon: 'block' },
+  superseded: { label: 'Superseded', color: designColor.text.muted, icon: 'swap_horiz' },
 }

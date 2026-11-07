@@ -1,6 +1,6 @@
 import { AdrDiamond, AdrIdLink } from '@/components'
-import '../shared.css'
 import { useI18nContext } from '@/infrastructure/i18n'
+import { PanelSection } from '../PanelSection'
 import './SupersessionChain.css'
 
 export function SupersessionChain({
@@ -14,8 +14,7 @@ export function SupersessionChain({
   if (chain.length < 2) return null
   const newest = [...chain].reverse()
   return (
-    <section aria-label={LL.knowledge.doc.chain.title()} className="kf-section">
-      <h2 className="kf-h">{LL.knowledge.doc.chain.title()}</h2>
+    <PanelSection label={LL.knowledge.doc.chain.title()} title={LL.knowledge.doc.chain.title()}>
       <div className="kf-chain">
         {newest.map((link, i) => (
           <div key={link.id}>
@@ -40,6 +39,6 @@ export function SupersessionChain({
           </div>
         ))}
       </div>
-    </section>
+    </PanelSection>
   )
 }

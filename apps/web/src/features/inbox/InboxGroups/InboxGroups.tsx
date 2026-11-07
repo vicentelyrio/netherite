@@ -1,11 +1,14 @@
+import { settingDefaults } from '@netherite/schema'
 import { EmptyState } from '@netherite/ui'
 import { GroupCard } from '@/components'
 import { ago } from '@/infrastructure/datetime'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { InboxItemRow } from '../InboxItemRow'
 import { useInboxState } from '../InboxProvider'
-import '../shared.css'
-import { useI18nContext } from '@/infrastructure/i18n'
+import { InboxRow, InboxRowTitle } from '../InboxRow'
 import './InboxGroups.css'
+
+const { changesShown } = settingDefaults.inbox
 
 export function InboxGroups() {
   const { LL } = useI18nContext()
@@ -23,23 +26,25 @@ export function InboxGroups() {
     <div className="ib-groups">
       <GroupCard
         className="ib-group"
+        headClassName="ib-group-head"
         title={LL.inbox.groups.lint()}
         icon="error"
         count={inbox.errors.length}
       >
         {inbox.errors.map((d) => (
-          <div key={`${d.path}:${d.line}:${d.rule}`} className="ib-row">
+          <InboxRow key={`${d.path}:${d.line}:${d.rule}`}>
             <code className="kn-mono">
               {d.path}:{d.line}
             </code>
-            <span className="ib-title">{d.message}</span>
+            <InboxRowTitle>{d.message}</InboxRowTitle>
             <span className="kn-spacer" />
             <span className="app-muted">{d.rule}</span>
-          </div>
+          </InboxRow>
         ))}
       </GroupCard>
       <GroupCard
         className="ib-group"
+        headClassName="ib-group-head"
         title={LL.inbox.groups.blocked()}
         icon="pause_circle"
         count={inbox.blocked.length}
@@ -56,11 +61,12 @@ export function InboxGroups() {
       </GroupCard>
       <GroupCard
         className="ib-group"
+        headClassName="ib-group-head"
         title={LL.inbox.groups.activity()}
         icon="smart_toy"
         count={inbox.activity.length}
       >
-        {(all ? inbox.activity : inbox.activity.slice(0, 8)).map((a) => (
+        {(all ? inbox.activity : inbox.activity.slice(0, changesShown)).map((a) => (
           <InboxItemRow
             key={a.id}
             id={a.id}
@@ -72,11 +78,12 @@ export function InboxGroups() {
       </GroupCard>
       <GroupCard
         className="ib-group"
+        headClassName="ib-group-head"
         title={LL.inbox.groups.changes()}
         icon="difference"
         count={inbox.changes.length}
       >
-        {(all ? inbox.changes : inbox.changes.slice(0, 8)).map((c) =>
+        {(all ? inbox.changes : inbox.changes.slice(0, changesShown)).map((c) =>
           c.id ? (
             <InboxItemRow
               key={c.path}
@@ -86,15 +93,15 @@ export function InboxGroups() {
               meta={<span className="ib-chip">{c.change}</span>}
             />
           ) : (
-            <div key={c.path} className="ib-row">
+            <InboxRow key={c.path}>
               <code className="kn-mono">{c.path}</code>
               <span className="kn-spacer" />
               <span className="ib-chip">{c.change}</span>
-            </div>
+            </InboxRow>
           ),
         )}
       </GroupCard>
-      {!all && (inbox.activity.length > 8 || inbox.changes.length > 8) && (
+      {!all && (inbox.activity.length > changesShown || inbox.changes.length > changesShown) && (
         <button type="button" className="ib-more" onClick={showAll}>
           {LL.inbox.showAll({ count: inbox.activity.length + inbox.changes.length })}
         </button>

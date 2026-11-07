@@ -4,81 +4,81 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--nt-space-3-5);
 }
 .ar-row {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: var(--nt-space-2);
 }
 .ar-head {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--nt-space-2);
 }
 .ar-name {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: var(--nt-text-body-size);
+  font-weight: var(--nt-font-weight-semibold);
 }
 .ar-goals {
-  font-size: 13px;
-  color: #969ab8;
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-muted);
 }
 .ar-fill {
   flex: 1;
 }
 .ar-gain {
-  font-size: 13px;
-  font-weight: 600;
-  color: #969ab8;
+  font-size: var(--nt-text-caption-size);
+  font-weight: var(--nt-font-weight-semibold);
+  color: var(--nt-color-text-muted);
   font-variant-numeric: tabular-nums;
 }
 .ar-gain[data-up] {
-  color: #2cc27e;
+  color: var(--nt-color-status-success);
 }
 .ar-share {
-  min-width: 44px;
+  min-width: var(--nt-space-8-5);
   text-align: right;
-  font-size: 15px;
-  font-weight: 600;
+  font-size: var(--nt-text-body-size);
+  font-weight: var(--nt-font-weight-semibold);
   font-variant-numeric: tabular-nums;
 }
 .ar-bar {
   display: flex;
-  height: 6px;
-  border-radius: 3px;
-  background: #34374f;
+  height: var(--nt-space-1-5);
+  border-radius: var(--nt-radius-xs);
+  background: var(--nt-color-bg-track);
   overflow: hidden;
 }
 .ar-base {
-  background: rgba(44, 194, 126, 0.42);
+  background: color-mix(in srgb, var(--nt-color-status-success) 42%, transparent);
 }
 .ar-add {
-  background: #2cc27e;
+  background: var(--nt-color-status-success);
 }
 .ar-note {
-  font-size: 12px;
-  color: #8a8fad;
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-line-number);
 }
 
 .ar-foot {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--nt-space-0-5);
   margin: auto 0 0;
-  padding: 14px 0 0;
-  border-top: 1px solid #2f3250;
+  padding: var(--nt-space-3-5) 0 0;
+  border-top: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
   list-style: none;
 }
 .ar-foot li {
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: 28px;
-  font-size: 14px;
-  color: #969ab8;
+  gap: var(--nt-space-2-5);
+  height: var(--nt-space-6-5);
+  font-size: var(--nt-text-body-sm-size);
+  color: var(--nt-color-text-muted);
 }
-.ar-foot .nt-icon {
+.ar-foot .ar-foot-icon {
   flex: none;
 }
 .ar-foot-title {
@@ -87,29 +87,29 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #e8e9f3;
+  color: var(--nt-color-text-primary);
 }
 .ar-foot-note {
-  font-size: 13px;
-  color: #969ab8;
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-muted);
 }
 
 .ar-goal-rows {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  margin: 6px 0 0;
+  gap: var(--nt-space-0-5);
+  margin: var(--nt-space-1-5) 0 0;
   padding: 0;
   list-style: none;
 }
 .ar-goal-rows li {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 160px 44px 36px;
+  grid-template-columns: minmax(0, 1fr) var(--nt-size-160) var(--nt-space-8-5) var(--nt-space-7-5);
   align-items: center;
-  column-gap: 12px;
-  height: 28px;
-  font-size: 13px;
-  color: #b9bcd3;
+  column-gap: var(--nt-space-3);
+  height: var(--nt-space-6-5);
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-secondary);
 }
 .ar-goal-title {
   overflow: hidden;
@@ -117,15 +117,15 @@
   white-space: nowrap;
 }
 .ar-goal-bar {
-  height: 4px;
-  border-radius: 2px;
-  background: #34374f;
+  height: var(--nt-space-1);
+  border-radius: var(--nt-radius-xxs);
+  background: var(--nt-color-bg-track);
   overflow: hidden;
 }
 .ar-goal-bar span {
   display: block;
   height: 100%;
-  background: #2cc27e;
+  background: var(--nt-color-status-success);
 }
 .ar-goal-pct {
   text-align: right;
@@ -133,9 +133,9 @@
 }
 .ar-goal-gain {
   text-align: right;
-  font-size: 12px;
-  color: #969ab8;
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-muted);
 }
 .ar-goal-gain[data-up] {
-  color: #2cc27e;
+  color: var(--nt-color-status-success);
 }

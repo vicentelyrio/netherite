@@ -6,19 +6,24 @@ import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
 import { itemsQuery, keys, noticeFor, sourceQuery } from '@/infrastructure/query'
+import { useResolvedShortcuts } from '@/infrastructure/shortcuts'
 
 export function SourceEditor({
   id,
   fallback,
   ...extra
 }: { readonly id: string; readonly fallback?: ReactNode } & Partial<
-  Pick<ItemEditorProps, 'variant' | 'preview' | 'mode' | 'onModeChange' | 'onStats' | 'branch'>
+  Pick<
+    ItemEditorProps,
+    'variant' | 'preview' | 'mode' | 'onModeChange' | 'onStats' | 'branch' | 'onReady'
+  >
 >) {
   const { LL } = useI18nContext()
   const api = useApi()
   const client = useQueryClient()
   const notices = useNotices()
   const source = useQuery(sourceQuery(api, id))
+  const saveKeys = useResolvedShortcuts()['editor.save'].keys
   const items = useQuery(itemsQuery(api, { limit: 500 }))
   const targets = useMemo(
     () => (items.data?.items ?? []).map((i) => ({ id: i.id, title: i.title, type: i.type })),
@@ -32,6 +37,7 @@ export function SourceEditor({
     <ItemEditor
       {...extra}
       source={source.data}
+      saveKeys={saveKeys}
       targets={targets}
       lint={async (text) =>
         (await api.call((c) => c.lintText.lintText({ payload: { id, text } }))).diagnostics

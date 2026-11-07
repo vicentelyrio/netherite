@@ -1,0 +1,16 @@
+.kf-draft-title .kf-draft-field {
+  height: auto;
+  min-height: var(--nt-size-34);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--nt-text-display-size);
+  line-height: var(--nt-text-display-line-height);
+  font-weight: var(--nt-font-weight-semibold);
+  letter-spacing: -0.01em;
+}

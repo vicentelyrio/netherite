@@ -1,12 +1,12 @@
 .tag-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
 }
 .tag-list-item {
-  background: #2e3149;
-  border-radius: 6px;
-  padding: 2px 8px;
-  font-size: 12px;
-  color: #c9cbe0;
+  background: var(--nt-color-bg-chip);
+  border-radius: var(--nt-radius-sm);
+  padding: var(--nt-space-0-5) var(--nt-space-2);
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-secondary);
 }

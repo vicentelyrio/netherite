@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, test } from 'vitest'
 
 const repo = join(dirname(fileURLToPath(import.meta.url)), '../../..')
+const site = 'https://vicentelyrio.github.io/netherite/'
 
 const markdownFiles = (dir: string): string[] =>
   readdirSync(dir).flatMap((name) => {
@@ -62,8 +63,8 @@ describe('the documentation', () => {
     const readme = text(join(repo, 'README.md'))
     for (const name of ['cli', 'mcp', 'schemas', 'config', 'lint']) {
       expect(existsSync(join(repo, `apps/docs/reference/${name}.md`))).toBe(true)
-      expect(readme).toContain(`apps/docs/reference/${name}.md`)
+      expect(readme).toContain(`${site}reference/${name})`)
     }
-    expect(readme).toContain('apps/docs/obsidian.md')
+    expect(readme).toContain(`${site}obsidian)`)
   })
 })

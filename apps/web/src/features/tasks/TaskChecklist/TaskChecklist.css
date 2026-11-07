@@ -4,25 +4,25 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
 }
 
 .drawer-check-head {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--nt-space-3-5);
 }
 
 .drawer-check-bar {
-  width: 220px;
+  width: var(--nt-size-220);
 }
 
 .drawer-checklist input[type="checkbox"] {
   appearance: none;
-  width: 18px;
-  height: 18px;
-  border: 1.5px solid #4a4e73;
-  border-radius: 5px;
+  width: var(--nt-space-4-5);
+  height: var(--nt-space-4-5);
+  border: var(--nt-stroke-medium) solid var(--nt-color-border-strong);
+  border-radius: var(--nt-radius-sm);
   background: transparent;
   cursor: pointer;
   display: inline-grid;
@@ -31,45 +31,45 @@
 }
 
 .drawer-checklist input[type="checkbox"]:checked {
-  background: #2cc27e;
-  border-color: #2cc27e;
+  background: var(--nt-color-status-success);
+  border-color: var(--nt-color-status-success);
 }
 
 .drawer-checklist input[type="checkbox"]:checked::after {
   content: "";
   width: 5px;
-  height: 9px;
-  border: solid #15162a;
-  border-width: 0 2px 2px 0;
-  transform: translateY(-1px) rotate(45deg);
+  height: var(--nt-size-9);
+  border: solid var(--nt-color-bg-overlay);
+  border-width: 0 var(--nt-stroke-thick) var(--nt-stroke-thick) 0;
+  transform: translateY(calc(var(--nt-space-px) * -1)) rotate(45deg);
 }
 
 .drawer-checklist input[type="checkbox"]:focus-visible {
-  outline: 2px solid #a5a7ff;
-  outline-offset: 2px;
+  outline: var(--nt-stroke-thick) solid var(--nt-color-accent-fg);
+  outline-offset: var(--nt-stroke-thick);
 }
 
 .drawer-checklist {
-  gap: 2px;
-  margin-left: -8px;
+  gap: var(--nt-space-0-5);
+  margin-left: calc(var(--nt-space-2) * -1);
 }
 
 .drawer-checklist li label {
   display: flex;
   align-items: center;
-  gap: 12px;
-  height: 32px;
-  padding: 0 8px;
-  border-radius: 6px;
-  font-size: 15px;
-  line-height: 22px;
+  gap: var(--nt-space-3);
+  height: var(--nt-space-7);
+  padding: 0 var(--nt-space-2);
+  border-radius: var(--nt-radius-sm);
+  font-size: var(--nt-text-body-size);
+  line-height: var(--nt-text-body-line-height);
   cursor: pointer;
 }
 
 .drawer-checklist li label:hover {
-  background: #2e3148;
+  background: var(--nt-color-bg-column);
 }
 
 .drawer-checklist li:has(input:checked) label {
-  color: #b9bcd3;
+  color: var(--nt-color-text-secondary);
 }

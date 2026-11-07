@@ -9,6 +9,8 @@ export interface EditableTextProps {
   readonly as: 'h1' | 'h2'
   readonly className?: string
   readonly draft?: string | undefined
+  readonly rootClassName?: string
+  readonly inputClassName?: string
 }
 
 export function EditableText({
@@ -17,6 +19,8 @@ export function EditableText({
   as: Tag,
   className,
   draft: start,
+  rootClassName,
+  inputClassName,
 }: EditableTextProps) {
   const { LL } = useI18nContext()
   const [draft, setDraft] = useState<string | undefined>(undefined)
@@ -28,7 +32,7 @@ export function EditableText({
   if (draft !== undefined) {
     return (
       <input
-        className={`editable-input ${className ?? ''}`}
+        className={['editable-input', className, inputClassName].filter(Boolean).join(' ')}
         aria-label={LL.common.rename({ name: value })}
         value={draft}
         // biome-ignore lint/a11y/noAutofocus: the person just pressed the pencil to type here
@@ -43,7 +47,7 @@ export function EditableText({
     )
   }
   return (
-    <div className="editable">
+    <div className={rootClassName ? `editable ${rootClassName}` : 'editable'}>
       <Tag className={className}>{value}</Tag>
       <button
         type="button"

@@ -49,7 +49,7 @@ describe('the app', () => {
         Effect.promise(async () => {
           const page = await get(s, '/')
           expect(page.text).toMatch(
-            /<meta name="netherite-token" content="[0-9a-f]{64}"><meta name="netherite-version"[^>]*><\/head>/,
+            /<meta name="netherite-token" content="[0-9a-f]{64}"><meta name="netherite-version"[^>]*><meta name="netherite-workspace"[^>]*><\/head>/,
           )
           expect(page.text).toContain('<div id="root">')
         }),
@@ -172,9 +172,18 @@ describe('the app', () => {
     const html = withSession('<html><head></head><body></body></html>', {
       token: '"><script>alert(1)</script>',
       version: '1',
+      repo: { workspace: { root: '/repo' } },
     })
     expect(html).not.toContain('<script>')
     expect(html).toContain('&quot;&gt;')
+  })
+
+  test('names the workspace, and a path with HTML in it cannot break out of the meta tag', () => {
+    const session = { token: 't', version: '1' }
+    const html = (root: string) =>
+      withSession('<html><head></head></html>', { ...session, repo: { workspace: { root } } })
+    expect(html('/repo')).toContain('<meta name="netherite-workspace" content="/repo">')
+    expect(html('/"><script>alert(1)</script>')).not.toContain('<script>')
   })
 
   test('is behind the same Host and Origin checks as the API', async () => {

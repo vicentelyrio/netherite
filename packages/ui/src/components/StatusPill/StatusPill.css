@@ -1,0 +1,25 @@
+.nt-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nt-space-1-5);
+  height: var(--nt-space-5-5);
+  padding: 0 var(--nt-space-2-5) 0 var(--nt-space-2);
+  font-size: var(--nt-text-micro-size);
+  font-weight: var(--nt-font-weight-semibold);
+  white-space: nowrap;
+  color: var(--nt-pill-color);
+  background: color-mix(
+    in srgb,
+    var(--nt-pill-bg, var(--nt-pill-color)) calc(var(--nt-tint-pill) * 100%),
+    transparent
+  );
+  border-radius: var(--nt-radius-full);
+}
+.nt-status-pill[data-value="superseded"] {
+  --nt-pill-bg: var(--nt-color-text-muted);
+  background: color-mix(
+    in srgb,
+    var(--nt-pill-bg) calc(var(--nt-tint-pill-neutral) * 100%),
+    transparent
+  );
+}

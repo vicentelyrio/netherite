@@ -1,0 +1,1 @@
+export { SettingsHeading } from './SettingsHeading'

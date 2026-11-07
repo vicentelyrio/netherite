@@ -1,27 +1,16 @@
 .goals-new-area {
   align-self: start;
-  margin-top: 4px;
+  margin-top: var(--nt-space-1);
 }
 .goals-area-form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--nt-space-2);
 }
 
-.goals-area-form .text-field {
+.goals-area-form .goals-area-field {
   flex: none;
-}
-.goals-area-actions {
-  display: flex;
-  gap: 8px;
-}
-.goals-area-actions > :first-child {
-  flex: 1;
-}
-
-.goals-area-form .text-field,
-.goals-area-actions button {
   box-sizing: border-box;
-  height: 36px;
-  min-height: 36px;
+  height: var(--nt-space-7-5);
+  min-height: var(--nt-space-7-5);
 }

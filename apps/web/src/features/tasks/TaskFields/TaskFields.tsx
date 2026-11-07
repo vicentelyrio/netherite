@@ -3,9 +3,9 @@ import { Avatar, Icon, Menu, type StateCategory, TaskStatePill } from '@netherit
 import { TagList } from '@/components'
 import { formatDateTime } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
+import { DrawerLabel } from '../DrawerLabel'
 import { type BoardColumnInfo, field, strings } from '../fields'
 import './TaskFields.css'
-import '../shared.css'
 
 export function TaskFields({
   task,
@@ -30,7 +30,7 @@ export function TaskFields({
   return (
     <div className="drawer-meta">
       <div className="drawer-cell">
-        <span className="drawer-cell-label">{LL.tasks.fields.state()}</span>
+        <DrawerLabel>{LL.tasks.fields.state()}</DrawerLabel>
         <Menu>
           <Menu.Target>
             <button
@@ -52,14 +52,14 @@ export function TaskFields({
         </Menu>
       </div>
       <div className="drawer-cell">
-        <span className="drawer-cell-label">{LL.tasks.fields.created()}</span>
+        <DrawerLabel>{LL.tasks.fields.created()}</DrawerLabel>
         <span>{created ?? '—'}</span>
         {typeof by === 'string' && (
           <span className="app-muted">{LL.tasks.fields.by({ name: by.replace(/^@/, '') })}</span>
         )}
       </div>
       <div className="drawer-cell">
-        <span className="drawer-cell-label">{LL.tasks.fields.assignees()}</span>
+        <DrawerLabel>{LL.tasks.fields.assignees()}</DrawerLabel>
         <span className="drawer-people">
           {assignees.map((a) => (
             <span key={a} className="drawer-person">
@@ -70,7 +70,7 @@ export function TaskFields({
         </span>
       </div>
       <div className="drawer-cell">
-        <span className="drawer-cell-label">{LL.tasks.fields.labels()}</span>
+        <DrawerLabel>{LL.tasks.fields.labels()}</DrawerLabel>
         <span className="drawer-labels">
           <TagList tags={labels} />
           {labels.length === 0 && '—'}

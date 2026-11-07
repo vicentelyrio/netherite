@@ -17,21 +17,21 @@ tags: [effect, tooling, dependencies]
 
 ## Decision
 
-The decisions in those ADRs stand. Only the package names change. Netherite uses **Effect 4** and these packages:
-
-| Need | Package and module |
-|---|---|
-| Schema, JSON Schema, Standard Schema | `effect` (`Schema`, `JsonSchema`, `StandardSchema`); JSON Schema from `Schema.toJsonSchemaDocument` |
-| Services, layers, errors, streams, config | `effect` (`Context`, `Layer`, `Stream`, `Config`, `Data`) |
-| File system and paths | `effect` (`FileSystem`, `Path`) with the Node layers from `@effect/platform-node` |
-| Run `git` | `effect/process` (`ChildProcess`, `ChildProcessSpawner`) with `NodeChildProcessSpawner` |
-| HTTP server, API and typed client | `effect/http`, `effect/http-api` (`HttpApi`, `HttpApiBuilder`, `HttpApiClient`) with `NodeHttpServer` |
-| CLI | `effect/cli` |
-| Tests | `@effect/vitest` |
-
-- `effect`, `@effect/platform-node` and `@effect/vitest` are pinned to the same exact version.
-- The browser imports `effect/schema`-level modules and the HTTP client only.
-- Where [[ADR-00003]] and others say `@effect/platform`, `@effect/cli` or `JSONSchema.make`, read the table above.
+> The decisions in those ADRs stand. Only the package names change. Netherite uses **Effect 4** and these packages:
+>
+> | Need | Package and module |
+> |---|---|
+> | Schema, JSON Schema, Standard Schema | `effect` (`Schema`, `JsonSchema`, `StandardSchema`); JSON Schema from `Schema.toJsonSchemaDocument` |
+> | Services, layers, errors, streams, config | `effect` (`Context`, `Layer`, `Stream`, `Config`, `Data`) |
+> | File system and paths | `effect` (`FileSystem`, `Path`) with the Node layers from `@effect/platform-node` |
+> | Run `git` | `effect/process` (`ChildProcess`, `ChildProcessSpawner`) with `NodeChildProcessSpawner` |
+> | HTTP server, API and typed client | `effect/http`, `effect/http-api` (`HttpApi`, `HttpApiBuilder`, `HttpApiClient`) with `NodeHttpServer` |
+> | CLI | `effect/cli` |
+> | Tests | `@effect/vitest` |
+>
+> - `effect`, `@effect/platform-node` and `@effect/vitest` are pinned to the same exact version.
+> - The browser imports `effect/schema`-level modules and the HTTP client only.
+> - Where [[ADR-00003]] and others say `@effect/platform`, `@effect/cli` or `JSONSchema.make`, read the table above.
 
 ## Consequences
 

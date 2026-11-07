@@ -26,6 +26,7 @@ import {
   WidgetType,
 } from '@codemirror/view'
 import { tags as t } from '@lezer/highlight'
+import { toCodeMirrorKey } from '@/infrastructure/shortcuts'
 import { type LinkTarget, linkOptions, openWikiLink } from './complete'
 import type { Problem } from './diagnostics'
 import { diffLines, type LineChanges, noChanges } from './diff'
@@ -360,9 +361,10 @@ const theme = EditorView.theme(
 export interface EditorOptions {
   readonly onSave: () => void
   readonly targets: () => ReadonlyArray<LinkTarget>
+  readonly saveKeys: string | null
 }
 
-export const editorExtensions = ({ onSave, targets }: EditorOptions): Extension[] => [
+export const editorExtensions = ({ onSave, targets, saveKeys }: EditorOptions): Extension[] => [
   headField,
   changesField,
   problemsField,
@@ -383,14 +385,18 @@ export const editorExtensions = ({ onSave, targets }: EditorOptions): Extension[
   checks,
   wikiCompletion(targets),
   keymap.of([
-    {
-      key: 'Mod-s',
-      preventDefault: true,
-      run: () => {
-        onSave()
-        return true
-      },
-    },
+    ...(saveKeys === null
+      ? []
+      : [
+          {
+            key: toCodeMirrorKey(saveKeys),
+            preventDefault: true,
+            run: () => {
+              onSave()
+              return true
+            },
+          },
+        ]),
     ...completionKeymap,
     ...historyKeymap,
     ...defaultKeymap,

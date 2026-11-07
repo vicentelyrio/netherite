@@ -1,108 +1,12 @@
-import { createProcessor, type WikiLink } from '@netherite/markdown'
-import { useRouter } from '@tanstack/react-router'
-import type { Element, Nodes, Root } from 'hast'
-import { toJsxRuntime } from 'hast-util-to-jsx-runtime'
-import type { ComponentProps, MouseEvent, ReactElement } from 'react'
-import { Fragment, jsx, jsxs } from 'react/jsx-runtime'
-import remarkRehype from 'remark-rehype'
+import { renderMarkdown } from './renderMarkdown'
 import './Markdown.css'
 
-const itemId = /^[A-Z]{2,8}-\d{3,}$/
-
-export const wikiHref = (target: string) =>
-  itemId.test(target)
-    ? `/items/${encodeURIComponent(target)}`
-    : `/knowledge?q=${encodeURIComponent(target)}`
-
-const processor = createProcessor().use(remarkRehype, {
-  handlers: {
-    yaml: () => undefined,
-    wikiLink: (_state, node: WikiLink): Element => {
-      const { target, heading, label } = node.data
-      return {
-        type: 'element',
-        tagName: 'a',
-        properties: {
-          href: wikiHref(target) + (heading ? `#${encodeURIComponent(heading)}` : ''),
-          'data-wikilink': target,
-        },
-        children: [{ type: 'text', value: label ?? (heading ? `${target} › ${heading}` : target) }],
-      }
-    },
-  },
-})
-
-export const safeUrl = (
-  url: string | undefined,
-): { href: string; external: boolean } | undefined => {
-  if (url === undefined || url === '') return undefined
-  const trimmed = url.trim()
-  if (trimmed.startsWith('/') && !trimmed.startsWith('//'))
-    return { href: trimmed, external: false }
-  if (trimmed.startsWith('#')) return { href: trimmed, external: false }
-  try {
-    const parsed = new URL(trimmed)
-    if (
-      parsed.protocol === 'http:' ||
-      parsed.protocol === 'https:' ||
-      parsed.protocol === 'mailto:'
-    ) {
-      return { href: parsed.href, external: parsed.protocol !== 'mailto:' }
-    }
-  } catch {}
-  return undefined
-}
-
-function Anchor({
-  href,
-  children,
-  node: _node,
-  ...rest
-}: ComponentProps<'a'> & { node?: unknown }) {
-  const wiki = 'data-wikilink' in rest
-  const safe = safeUrl(href)
-  const router = useRouter({ warn: false })
-  if (safe === undefined) return <span className="md-dead-link">{children}</span>
-  const inside = !safe.external && safe.href.startsWith('/')
-  const follow = (event: MouseEvent<HTMLAnchorElement>) => {
-    const plain =
-      event.button === 0 && !(event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
-    if (event.defaultPrevented || !plain || !router) return
-    event.preventDefault()
-    void router.navigate({ href: safe.href })
-  }
-  return (
-    <a
-      {...rest}
-      href={safe.href}
-      {...(wiki ? { className: 'md-wikilink' } : {})}
-      {...(inside ? { onClick: follow } : {})}
-      {...(safe.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-    >
-      {children}
-    </a>
-  )
-}
-
-function Image({ src, alt, node: _node }: ComponentProps<'img'> & { node?: unknown }) {
-  const safe = typeof src === 'string' ? safeUrl(src) : undefined
-  if (safe === undefined || !/^https?:/.test(safe.href))
-    return <span className="md-dead-link">{alt || 'image'}</span>
-  return <img src={safe.href} alt={alt ?? ''} loading="lazy" referrerPolicy="no-referrer" />
-}
-
-const components = { a: Anchor, img: Image }
-
-export const renderMarkdown = (source: string): ReactElement => {
-  const tree = processor.runSync(processor.parse(source), source) as Nodes as Root
-  return toJsxRuntime(tree, {
-    Fragment,
-    jsx,
-    jsxs,
-    components: components as never,
-  }) as ReactElement
-}
-
-export function Markdown({ source }: { readonly source: string }) {
-  return <div className="md">{renderMarkdown(source)}</div>
+export function Markdown({
+  source,
+  className,
+}: {
+  readonly source: string
+  readonly className?: string
+}) {
+  return <div className={className ? `md ${className}` : 'md'}>{renderMarkdown(source)}</div>
 }

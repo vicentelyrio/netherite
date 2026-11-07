@@ -1,0 +1,18 @@
+.goal-areas-state {
+  flex: 1;
+  min-width: 0;
+  padding: var(--nt-space-2);
+}
+.goal-drop {
+  height: var(--nt-size-96);
+  border: var(--nt-stroke-medium) dashed var(--nt-color-accent-solid);
+  border-radius: var(--nt-radius-md);
+  background: color-mix(in srgb, var(--nt-color-accent-solid) 8%, transparent);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--nt-text-micro-size);
+  font-weight: var(--nt-font-weight-medium);
+  color: var(--nt-color-accent-fg-hover);
+}

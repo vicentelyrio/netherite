@@ -1,4 +1,3 @@
-import { EmptyState } from '@netherite/ui'
 import { GroupCard } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { groupsOf, keyOf, shareOf } from '../rules'
@@ -54,9 +53,4 @@ export function TagsList() {
       {shown.length === 0 && <div className="kn-nomatch">{LL.tags.noMatch()}</div>}
     </GroupCard>
   )
-}
-
-export function NoTags() {
-  const { LL } = useI18nContext()
-  return <EmptyState icon="sell" title={LL.tags.empty.title()} description={LL.tags.empty.text()} />
 }

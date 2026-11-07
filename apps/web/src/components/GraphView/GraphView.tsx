@@ -1,242 +1,45 @@
 import {
   designColor,
-  type EdgeKind,
-  edgeStyle,
   graphMetrics,
   Icon,
   type ItemTypeName,
   itemTypeNames,
   nodeSpec,
-  StatusGlyph,
   statusGlyph,
-  typeLabels,
 } from '@netherite/ui'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { formatDay } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
+import { GraphArrows } from './GraphArrows'
+import { GraphControls } from './GraphControls'
+import { GraphEdge } from './GraphEdge'
+import { GraphFocus } from './GraphFocus'
+import { GraphNode } from './GraphNode'
+import { GraphTooltip } from './GraphTooltip'
 import {
-  fitTo,
-  type GraphData,
-  type GraphNodeData,
-  type Live,
-  layout,
-  live,
-  neighbourhood,
-  type Placed,
-  subgraph,
-  toGraphology,
-} from './layout'
+  buttonFactor,
+  fitScale,
+  nodeScaleDefault,
+  padDefault,
+  panSlop,
+  statusNames,
+  wheelFactor,
+  zoomLimits,
+} from './GraphView.constants'
+import type { GraphViewProps, NodeStatus, StatusFilter } from './GraphView.types'
+import { LegendMini } from './LegendMini'
+import { LegendPanel } from './LegendPanel'
+import { LegendRow } from './LegendRow'
+import { labelPlacement } from './labelPlacement'
+import { fitTo, layout, neighbourhood, type Placed, subgraph, toGraphology } from './layout'
+import { NodeLabel } from './NodeLabel'
+import { styleOf } from './styleOf'
 import { graphTarget } from './target'
+import { toggled } from './toggled'
+import { useBox } from './useBox'
+import { useLegendMin } from './useLegendMin'
+import { useNodeDrag } from './useNodeDrag'
 import './GraphView.css'
-
-const NODE_SCALE = 1.25
-
-const styleOf = (kind: string) => edgeStyle[kind as EdgeKind] ?? edgeStyle.reference
-const canvas = '#282A3F'
-
-function Shape({
-  type,
-  x,
-  y,
-  scale,
-  hollow,
-}: {
-  readonly type: ItemTypeName
-  readonly x: number
-  readonly y: number
-  readonly scale: number
-  readonly hollow?: boolean
-}) {
-  const spec = nodeSpec[type]
-  const r = spec.radius * scale
-  const d = r * 2
-  const fill = designColor.type[type]
-  switch (spec.shape) {
-    case 'diamond': {
-      const side = d * 0.78
-      return (
-        <rect
-          x={x - side / 2}
-          y={y - side / 2}
-          width={side}
-          height={side}
-          rx={2}
-          fill={hollow ? 'transparent' : fill}
-          stroke={hollow ? fill : 'none'}
-          strokeWidth={1.5}
-          transform={`rotate(45 ${x} ${y})`}
-        />
-      )
-    }
-    case 'square': {
-      const side = d * 0.86
-      return (
-        <rect x={x - side / 2} y={y - side / 2} width={side} height={side} rx={3} fill={fill} />
-      )
-    }
-    case 'ring':
-      return <circle cx={x} cy={y} r={r - 1} fill={`${fill}33`} stroke={fill} strokeWidth={2} />
-    case 'bar':
-      return (
-        <rect
-          x={x - d * 0.65}
-          y={y - d * 0.35}
-          width={d * 1.3}
-          height={d * 0.7}
-          rx={3}
-          fill={fill}
-        />
-      )
-    default:
-      return <circle cx={x} cy={y} r={r} fill={fill} />
-  }
-}
-
-type NodeStatus = NonNullable<GraphNodeData['status']>
-
-const wedge = (x: number, y: number, r: number, share: number) => {
-  if (share >= 1) return `M${x - r},${y} a${r},${r} 0 1 0 ${2 * r},0 a${r},${r} 0 1 0 ${-2 * r},0`
-  const angle = share * Math.PI * 2
-  const ex = x + r * Math.sin(angle)
-  const ey = y - r * Math.cos(angle)
-  return `M${x},${y} L${x},${y - r} A${r},${r} 0 ${share > 0.5 ? 1 : 0} 1 ${ex},${ey} Z`
-}
-
-function StatusShape({
-  type,
-  status,
-  progress,
-  x,
-  y,
-  scale,
-}: {
-  readonly type: ItemTypeName
-  readonly status: NodeStatus
-  readonly progress: number
-  readonly x: number
-  readonly y: number
-  readonly scale: number
-}) {
-  const r = nodeSpec[type].radius * scale
-  const color = designColor.type[type]
-  const ring = r * 2 >= statusGlyph.thickFrom ? statusGlyph.ring.thick : statusGlyph.ring.thin
-  const inner = r - ring / 2
-  const fill = status === 'hold' ? statusGlyph.holdFill : color
-  if (status === 'done') {
-    const c = r * 0.72
-    return (
-      <g opacity={statusGlyph.doneOpacity}>
-        <circle cx={x} cy={y} r={r} fill={color} />
-        <path
-          d={`M${x - c * 0.5},${y + c * 0.05} L${x - c * 0.1},${y + c * 0.45} L${x + c * 0.55},${y - c * 0.4}`}
-          fill="none"
-          stroke={designColor.bg.shell}
-          strokeWidth={Math.max(1.2, r * 0.22)}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </g>
-    )
-  }
-  return (
-    <g>
-      {status === 'progress' && (
-        <circle
-          cx={x}
-          cy={y}
-          r={r + statusGlyph.halo.gap + statusGlyph.halo.width / 2}
-          fill="none"
-          stroke={color}
-          strokeWidth={statusGlyph.halo.width}
-        />
-      )}
-      <circle cx={x} cy={y} r={inner} fill={color} fillOpacity={statusGlyph.trackShare / 100} />
-      {progress > 0 && <path d={wedge(x, y, inner, progress)} fill={fill} />}
-      <circle
-        cx={x}
-        cy={y}
-        r={inner}
-        fill="none"
-        stroke={color}
-        strokeWidth={ring}
-        strokeDasharray={status === 'hold' ? `${ring * 2} ${ring * 1.4}` : undefined}
-      />
-    </g>
-  )
-}
-
-function StaleDot({ x, y, r }: { readonly x: number; readonly y: number; readonly r: number }) {
-  return (
-    <circle
-      cx={x + r * 0.55 + 3}
-      cy={y - r * 0.55 - 3}
-      r={3.5}
-      fill={designColor.status.warning}
-      stroke={canvas}
-      strokeWidth={2}
-    />
-  )
-}
-
-function Label({
-  node,
-  x,
-  y,
-  anchor,
-  size,
-  weight,
-  color,
-}: {
-  readonly node: Placed
-  readonly x: number
-  readonly y: number
-  readonly anchor: 'start' | 'middle' | 'end'
-  readonly size: number
-  readonly weight: number
-  readonly color: string
-}) {
-  const text = node.title.length > 30 ? `${node.title.slice(0, 29)}…` : node.title
-  const width = text.length * size * 0.54 + 12
-  const left = anchor === 'middle' ? x - width / 2 : anchor === 'start' ? x : x - width
-  return (
-    <g className="gv-label" pointerEvents="none">
-      <rect
-        x={left}
-        y={y}
-        width={width}
-        height={size + 4}
-        rx={4}
-        fill={designColor.graph.labelBg}
-      />
-      <text
-        x={left + width / 2}
-        y={y + size}
-        textAnchor="middle"
-        fontSize={size}
-        fontWeight={weight}
-        fill={color}
-      >
-        {text}
-      </text>
-    </g>
-  )
-}
-
-export interface GraphViewProps {
-  readonly data: GraphData
-  readonly scope?: ReadonlySet<string> | undefined
-  readonly label: string
-  readonly variant?: 'full' | 'embedded'
-  readonly focus?: string | undefined
-  readonly legend?: 'panel' | 'row' | 'none'
-  readonly labels?: 'focus' | 'neighbors' | 'all'
-  readonly nodeScale?: number
-  readonly pad?: number
-  readonly padBottom?: number
-  readonly zoomButtons?: boolean
-  readonly glow?: ReadonlySet<string> | undefined
-}
 
 export function GraphView({
   data,
@@ -246,15 +49,15 @@ export function GraphView({
   focus: initialFocus,
   legend = 'panel',
   labels = 'neighbors',
-  nodeScale = NODE_SCALE,
-  pad = 60,
+  nodeScale = nodeScaleDefault,
+  pad = padDefault,
   padBottom,
   zoomButtons,
   glow,
+  className,
+  legendClassName,
 }: GraphViewProps) {
   const { LL } = useI18nContext()
-  const edgeLabel = (kind: string) =>
-    (LL.components.graph.edges as Record<string, (() => string) | undefined>)[kind]?.() ?? kind
   const embedded = variant === 'embedded'
   const navigate = useNavigate()
   const open = (id: string) => {
@@ -263,32 +66,13 @@ export function GraphView({
   }
   const wrap = useRef<HTMLDivElement>(null)
   const svg = useRef<SVGSVGElement>(null)
-  const [box, setBox] = useState({ width: 1000, height: 700 })
-  useEffect(() => {
-    const el = wrap.current
-    if (el === null || typeof ResizeObserver === 'undefined') return
-    const measure = () => {
-      const { width, height } = el.getBoundingClientRect()
-      if (width > 0 && height > 0) {
-        setBox((b) =>
-          Math.abs(b.width - width) < 1 && Math.abs(b.height - height) < 1 ? b : { width, height },
-        )
-      }
-    }
-    measure()
-    const observer = new ResizeObserver(measure)
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
+  const box = useBox(wrap)
 
   const shown = useMemo(() => subgraph(data, scope), [data, scope])
   const graph = useMemo(() => toGraphology(shown), [shown])
   const laid = useMemo(() => layout(shown), [shown])
-  const [moved, setMoved] = useState<ReadonlyMap<string, { x: number; y: number }>>(new Map())
-  const placed = useMemo(
-    () => (moved.size === 0 ? laid : laid.map((p) => ({ ...p, ...(moved.get(p.id) ?? {}) }))),
-    [laid, moved],
-  )
+  const [view, setView] = useState({ x: 0, y: 0, k: 1 })
+  const { placed, startNodeDrag, consumeClick } = useNodeDrag(shown, laid, svg, view)
   const at = useMemo(() => new Map(placed.map((p) => [p.id, p])), [placed])
   const parents = useMemo(() => {
     const map = new Map<string, string>()
@@ -297,87 +81,16 @@ export function GraphView({
     return map
   }, [shown])
 
-  const [legendMin, setLegendMinState] = useState(() => {
-    try {
-      return localStorage.getItem('netherite:graph-legend-min') === '1'
-    } catch {
-      return false
-    }
-  })
-  const setLegendMin = (min: boolean) => {
-    setLegendMinState(min)
-    try {
-      localStorage.setItem('netherite:graph-legend-min', min ? '1' : '0')
-    } catch {}
-  }
+  const [legendMin, setLegendMin] = useLegendMin()
   const [hiddenTypes, setHiddenTypes] = useState<ReadonlySet<string>>(new Set())
   const [hiddenKinds, setHiddenKinds] = useState<ReadonlySet<string>>(
     () => new Set(data.edges.map((e) => e.kind).filter((k) => !styleOf(k).inDesign)),
   )
-  const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'done'>('all')
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [focus, setFocus] = useState<string | undefined>(initialFocus)
   const [hover, setHover] = useState<Placed | undefined>()
-  const [view, setView] = useState({ x: 0, y: 0, k: 1 })
   const drag = useRef<{ x: number; y: number; moved: boolean } | undefined>(undefined)
-  const viewRef = useRef(view)
-  viewRef.current = view
-  const placedRef = useRef(placed)
-  placedRef.current = placed
-  const sim = useRef<Live | undefined>(undefined)
-  const nodeDrag = useRef<{ id: string; x: number; y: number; moved: boolean } | undefined>(
-    undefined,
-  )
-  const swallowClick = useRef(false)
 
-  useEffect(() => {
-    sim.current?.stop()
-    sim.current = undefined
-    setMoved(new Map())
-  }, [laid])
-  useEffect(() => () => sim.current?.stop(), [])
-
-  const startNodeDrag = (id: string, e: React.PointerEvent) => {
-    e.stopPropagation()
-    if (e.button !== 0) return
-    nodeDrag.current = { id, x: e.clientX, y: e.clientY, moved: false }
-    const onMove = (m: PointerEvent) => {
-      const d = nodeDrag.current
-      const el = svg.current
-      if (d === undefined || el === null) return
-      if (!d.moved && Math.abs(m.clientX - d.x) + Math.abs(m.clientY - d.y) < 4) return
-      if (!d.moved) {
-        d.moved = true
-        if (sim.current === undefined) {
-          sim.current = live(shown, placedRef.current)
-          sim.current.onTick((at) => setMoved(at))
-        }
-      }
-      const rect = el.getBoundingClientRect()
-      const v = viewRef.current
-      sim.current?.hold(
-        d.id,
-        (m.clientX - rect.left - v.x) / v.k,
-        (m.clientY - rect.top - v.y) / v.k,
-      )
-    }
-    const onUp = () => {
-      window.removeEventListener('pointermove', onMove, true)
-      window.removeEventListener('pointerup', onUp, true)
-      window.removeEventListener('pointercancel', onUp, true)
-      const d = nodeDrag.current
-      nodeDrag.current = undefined
-      if (d?.moved) {
-        sim.current?.release(d.id)
-        swallowClick.current = true
-        setTimeout(() => {
-          swallowClick.current = false
-        }, 0)
-      }
-    }
-    window.addEventListener('pointermove', onMove, true)
-    window.addEventListener('pointerup', onUp, true)
-    window.addEventListener('pointercancel', onUp, true)
-  }
   const sat = useMemo(
     () =>
       new Map(
@@ -396,9 +109,7 @@ export function GraphView({
   const active = hover?.id ?? focus
   const near = active === undefined ? undefined : neighbourhood(graph, active)
   const focusNear = focus === undefined ? undefined : neighbourhood(graph, focus)
-  const statusesPresent = (['backlog', 'progress', 'hold', 'done'] as const).filter((st) =>
-    placed.some((p) => p.status === st),
-  )
+  const statusesPresent = statusNames.filter((st) => placed.some((p) => p.status === st))
   const kindsPresent = [...new Set(shown.edges.map((e) => e.kind))].sort()
   const typesPresent = itemTypeNames.filter((t) => placed.some((p) => p.type === t))
 
@@ -412,12 +123,18 @@ export function GraphView({
     return around.length > 1 ? around : points
   }
   const doFit = (points: ReadonlyArray<Placed>) =>
-    fitTo(fitPoints(points), box, pad, padBottom ?? pad, embedded ? 3 : 2)
+    fitTo(
+      fitPoints(points),
+      box,
+      pad,
+      padBottom ?? pad,
+      embedded ? fitScale.embedded : fitScale.full,
+    )
   useEffect(() => setView(doFit(laid)), [laid, box])
 
   const zoom = (factor: number, cx = box.width / 2, cy = box.height / 2) =>
     setView((v) => {
-      const k = Math.min(4, Math.max(0.2, v.k * factor))
+      const k = Math.min(zoomLimits.max, Math.max(zoomLimits.min, v.k * factor))
       const ratio = k / v.k
       return { k, x: cx - (cx - v.x) * ratio, y: cy - (cy - v.y) * ratio }
     })
@@ -427,18 +144,15 @@ export function GraphView({
     const onWheel = (e: WheelEvent) => {
       e.preventDefault()
       const rect = el.getBoundingClientRect()
-      zoom(e.deltaY < 0 ? 1.15 : 1 / 1.15, e.clientX - rect.left, e.clientY - rect.top)
+      zoom(
+        e.deltaY < 0 ? wheelFactor : 1 / wheelFactor,
+        e.clientX - rect.left,
+        e.clientY - rect.top,
+      )
     }
     el.addEventListener('wheel', onWheel, { passive: false })
     return () => el.removeEventListener('wheel', onWheel)
   }, [embedded, box])
-
-  const toggle = (set: ReadonlySet<string>, value: string) => {
-    const next = new Set(set)
-    if (next.has(value)) next.delete(value)
-    else next.add(value)
-    return next
-  }
 
   const passes = (p: Placed) =>
     p.status === undefined ||
@@ -452,29 +166,23 @@ export function GraphView({
     p.id === focus ||
     p.id === hover?.id ||
     (labels === 'neighbors' && (focusNear?.has(p.id) ?? false))
-  const labelPlacement = (p: Placed) => {
-    const r = radius(p)
+  const parentOnScreen = (p: Placed) => {
     const parent = parents.get(p.id)
-    const par = parent === undefined ? undefined : sat.get(parent)
-    if (par !== undefined && p.type === 'task') {
-      const angle = Math.atan2(p.y - par.y, p.x - par.x)
-      const ux = Math.cos(angle)
-      const uy = Math.sin(angle)
-      if (ux > 0.38) return { x: p.x + r + 6, y: p.y - 10, anchor: 'start' as const }
-      if (ux < -0.38) return { x: p.x - r - 6, y: p.y - 10, anchor: 'end' as const }
-      if (uy < 0) return { x: p.x, y: p.y - r - 24, anchor: 'middle' as const }
-    }
-    return { x: p.x, y: p.y + r + 5, anchor: 'middle' as const }
+    return parent === undefined ? undefined : sat.get(parent)
   }
 
   const statusCount = (st: NodeStatus) => shown.nodes.filter((n) => n.status === st).length
   const typeCount = (t: string) => shown.nodes.filter((n) => n.type === t).length
   const kindCount = (k: string) => shown.edges.filter((e) => e.kind === k).length
-  const showTypeLegend = legend !== 'none'
   const focused = focus === undefined ? undefined : at.get(focus)
+  const hoverScreen = hover === undefined ? undefined : sat.get(hover.id)
+  const hoverParent = hover === undefined ? undefined : parents.get(hover.id)
 
   return (
-    <div ref={wrap} className={embedded ? 'gv gv--embedded' : 'gv'}>
+    <div
+      ref={wrap}
+      className={['gv', embedded ? 'gv--embedded' : '', className ?? ''].filter(Boolean).join(' ')}
+    >
       <svg
         ref={svg}
         className="gv-svg"
@@ -489,7 +197,7 @@ export function GraphView({
           if (d === undefined) return
           const dx = e.clientX - d.x
           const dy = e.clientY - d.y
-          if (Math.abs(dx) + Math.abs(dy) > 3) d.moved = true
+          if (Math.abs(dx) + Math.abs(dy) > panSlop) d.moved = true
           if (d.moved) {
             drag.current = { x: e.clientX, y: e.clientY, moved: true }
             setView((v) => ({ ...v, x: v.x + dx, y: v.y + dy }))
@@ -501,405 +209,117 @@ export function GraphView({
           if (!moved) setFocus(undefined)
         }}
       >
-        <defs>
-          {[
-            ['gv-arrow', '#7A7EA6'],
-            ['gv-arrow-hot', '#B7B9FF'],
-          ].map(([id, fill]) => (
-            <marker
-              key={id}
-              id={id}
-              viewBox="0 0 10 10"
-              refX="9"
-              refY="5"
-              markerWidth="7"
-              markerHeight="7"
-              markerUnits="userSpaceOnUse"
-              orient="auto"
-            >
-              <path d="M0,1 L10,5 L0,9 z" fill={fill} />
-            </marker>
-          ))}
-        </defs>
+        <GraphArrows />
         <g>
           {edges.map((e) => {
             const a = sat.get(e.from)
             const b = sat.get(e.to)
             if (a === undefined || b === undefined) return null
-            const s = styleOf(e.kind)
             const hot = active !== undefined && (e.from === active || e.to === active)
-            const warm = !hot && focus !== undefined && (e.from === focus || e.to === focus)
-            const typed = e.kind !== 'belongs_to' && e.kind !== 'reference'
-            let x2 = b.x
-            let y2 = b.y
-            if (s.arrow) {
-              const len = Math.hypot(b.x - a.x, b.y - a.y) || 1
-              const gap = radius(b) + graphMetrics.arrowGap
-              x2 = b.x - ((b.x - a.x) / len) * gap
-              y2 = b.y - ((b.y - a.y) / len) * gap
-            }
             return (
-              <line
+              <GraphEdge
                 key={`${e.kind}:${e.from}>${e.to}`}
-                data-kind={e.kind}
-                x1={a.x}
-                y1={a.y}
-                x2={x2}
-                y2={y2}
-                stroke={
-                  hot
-                    ? designColor.accent.edgeActive
-                    : warm
-                      ? designColor.graph.edgeWarm
-                      : typed
-                        ? designColor.graph.edgeTyped
-                        : designColor.graph.edge
-                }
-                strokeWidth={s.width + (hot ? graphMetrics.hotWidthBoost : 0)}
-                strokeOpacity={
-                  !passes(a) || !passes(b)
-                    ? statusGlyph.filteredOpacity
-                    : hot
-                      ? graphMetrics.hotOpacity
-                      : warm
-                        ? graphMetrics.warmOpacity
-                        : typed
-                          ? 0.7
-                          : 0.45
-                }
-                strokeDasharray={s.dash.length > 0 ? s.dash.join(' ') : undefined}
-                strokeLinecap="round"
-                markerEnd={s.arrow ? `url(#${hot ? 'gv-arrow-hot' : 'gv-arrow'})` : undefined}
+                kind={e.kind}
+                a={a}
+                b={b}
+                hot={hot}
+                warm={!hot && focus !== undefined && (e.from === focus || e.to === focus)}
+                filtered={!passes(a) || !passes(b)}
+                targetRadius={radius(b)}
               />
             )
           })}
-          {onScreen.map((p) => {
-            const type = p.type as ItemTypeName
-            const color = designColor.type[type]
-            const r = radius(p)
-            return (
-              // biome-ignore lint/a11y/useSemanticElements: an SVG group cannot be a <button>
-              <g
-                key={p.id}
-                role="button"
-                tabIndex={0}
-                aria-label={`${p.id} ${p.title}`}
-                aria-pressed={focus === p.id}
-                data-node={p.id}
-                data-status={p.status}
-                className="gv-node"
-                opacity={
-                  !passes(p)
-                    ? statusGlyph.filteredOpacity
-                    : dim(p.id)
-                      ? graphMetrics.dimmedOpacity
-                      : 1
-                }
-                onPointerDown={(e) => startNodeDrag(p.id, e)}
-                onPointerUp={(e) => e.stopPropagation()}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  if (swallowClick.current) {
-                    swallowClick.current = false
-                    return
-                  }
-                  setFocus(focus === p.id ? undefined : p.id)
-                }}
-                onDoubleClick={(e) => {
-                  e.stopPropagation()
-                  open(p.id)
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    open(p.id)
-                  } else if (e.key === ' ') {
-                    e.preventDefault()
-                    setFocus(focus === p.id ? undefined : p.id)
-                  }
-                }}
-                onPointerEnter={() => setHover(p)}
-                onPointerLeave={() => setHover(undefined)}
-                onFocus={() => setHover(p)}
-                onBlur={() => setHover(undefined)}
-              >
-                {glow?.has(p.id) === true && (
-                  <circle
-                    cx={p.x}
-                    cy={p.y}
-                    r={r + 4}
-                    fill="none"
-                    stroke={color}
-                    strokeWidth={2}
-                    className="gv-new"
-                  />
-                )}
-                {p.id === focus ? (
-                  <>
-                    <circle
-                      cx={p.x}
-                      cy={p.y}
-                      r={r + 5}
-                      fill="none"
-                      stroke={color}
-                      strokeWidth={2}
-                      className="gv-glow"
-                      style={{ filter: `drop-shadow(0 0 8px ${color}99)` }}
-                    />
-                    <circle
-                      cx={p.x}
-                      cy={p.y}
-                      r={r + 3.2}
-                      fill="none"
-                      stroke={canvas}
-                      strokeWidth={2.4}
-                    />
-                  </>
-                ) : (
-                  p.id === hover?.id && (
-                    <circle
-                      cx={p.x}
-                      cy={p.y}
-                      r={r + 3}
-                      fill="none"
-                      stroke="#E8E9F3"
-                      strokeWidth={1.5}
-                    />
-                  )
-                )}
-                {p.status !== undefined ? (
-                  <StatusShape
-                    type={type}
-                    status={p.status}
-                    progress={p.progress ?? 0}
-                    x={p.x}
-                    y={p.y}
-                    scale={nodeScale}
-                  />
-                ) : (
-                  <Shape type={type} x={p.x} y={p.y} scale={nodeScale} />
-                )}
-                {p.stale && <StaleDot x={p.x} y={p.y} r={r} />}
-              </g>
-            )
-          })}
+          {onScreen.map((p) => (
+            <GraphNode
+              key={p.id}
+              node={p}
+              radius={radius(p)}
+              scale={nodeScale}
+              opacity={
+                !passes(p)
+                  ? statusGlyph.filteredOpacity
+                  : dim(p.id)
+                    ? graphMetrics.dimmedOpacity
+                    : 1
+              }
+              focused={p.id === focus}
+              hovered={p.id === hover?.id}
+              glowing={glow?.has(p.id) === true}
+              onDragStart={(e) => startNodeDrag(p.id, e)}
+              onClick={() => {
+                if (!consumeClick()) setFocus(focus === p.id ? undefined : p.id)
+              }}
+              onOpen={() => open(p.id)}
+              onHover={(on) => setHover(on ? p : undefined)}
+            />
+          ))}
           {onScreen.filter(named).map((p) => {
-            const place = labelPlacement(p)
             const isFocus = p.id === focus
             const hot = isFocus || p.id === hover?.id
             return (
-              <Label
+              <NodeLabel
                 key={`l-${p.id}`}
                 node={p}
-                {...place}
+                {...labelPlacement(p, radius(p), parentOnScreen(p))}
                 size={isFocus ? graphMetrics.labelSizeFocus : graphMetrics.labelSize}
                 weight={isFocus ? 600 : 500}
-                color={hot ? '#E8E9F3' : near?.has(p.id) ? '#B9BCD3' : '#8A8FAD'}
+                color={
+                  hot
+                    ? designColor.text.primary
+                    : near?.has(p.id)
+                      ? designColor.text.secondary
+                      : designColor.text.lineNumber
+                }
               />
             )
           })}
         </g>
       </svg>
 
-      {hover !== undefined && sat.get(hover.id) !== undefined && (
-        <div
-          role="tooltip"
-          className="gv-tooltip"
-          data-below={(sat.get(hover.id)?.y ?? 0) - radius(hover) < 140 || undefined}
-          style={{
-            left: Math.min(Math.max(sat.get(hover.id)?.x ?? 0, 140), box.width - 140),
-            top:
-              (sat.get(hover.id)?.y ?? 0) -
-              radius(hover) -
-              8 +
-              ((sat.get(hover.id)?.y ?? 0) - radius(hover) < 140 ? 2 * radius(hover) + 24 : 0),
-          }}
-        >
-          <div className="gv-tooltip-kind">
-            <span style={{ background: designColor.type[hover.type as ItemTypeName] }} />
-            {typeLabels[hover.type as ItemTypeName]}
-            {parents.has(hover.id) && at.get(parents.get(hover.id) as string)
-              ? LL.components.graph.tooltipIn({
-                  parent: at.get(parents.get(hover.id) as string)?.title ?? '',
-                })
-              : ''}
-          </div>
-          <div className="gv-tooltip-title">
-            {hover.id} {hover.title}
-          </div>
-          <div className="gv-tooltip-meta">
-            {hover.status !== undefined &&
-              `${LL.components.graph.tooltipStatus({
-                status: LL.components.graph.status[hover.status](),
-                percent: Math.round((hover.progress ?? 0) * 100),
-              })}${
-                hover.since === undefined
-                  ? ''
-                  : ` ${LL.components.graph.tooltipSince({ day: formatDay(hover.since) })}`
-              } · `}
-            {LL.components.graph.links({
-              count: graph.hasNode(hover.id) ? graph.degree(hover.id) : 0,
-            })}
-          </div>
-        </div>
+      {hover !== undefined && hoverScreen !== undefined && (
+        <GraphTooltip
+          node={hover}
+          screen={hoverScreen}
+          radius={radius(hover)}
+          width={box.width}
+          parentTitle={hoverParent === undefined ? undefined : at.get(hoverParent)?.title}
+          degree={graph.hasNode(hover.id) ? graph.degree(hover.id) : 0}
+        />
       )}
 
-      {showTypeLegend && legend === 'panel' && legendMin && (
-        <aside className="gv-legend gv-legend--mini" aria-label={LL.components.graph.legend()}>
-          {typesPresent.map((t) => (
-            <label key={t} data-off={hiddenTypes.has(t) || undefined}>
-              <input
-                type="checkbox"
-                className="nt-visually-hidden"
-                checked={!hiddenTypes.has(t)}
-                onChange={() => setHiddenTypes(toggle(hiddenTypes, t))}
-              />
-              <span className="gv-glyph gv-glyph--small">
-                <svg width="10" height="10" aria-hidden="true">
-                  <Shape type={t} x={5} y={5} scale={0.5} />
-                </svg>
-              </span>
-              {typeLabels[t]} <span className="gv-count">{typeCount(t)}</span>
-            </label>
-          ))}
-          <button
-            type="button"
-            className="gv-legend-toggle"
-            aria-expanded={false}
-            aria-label={LL.components.graph.legendExpand()}
-            title={LL.components.graph.legendExpand()}
-            onClick={() => setLegendMin(false)}
-          >
-            <Icon name="unfold_more" size="inline" />
-          </button>
-        </aside>
+      {legend === 'panel' && legendMin && (
+        <LegendMini
+          types={typesPresent}
+          hidden={hiddenTypes}
+          countOf={typeCount}
+          onToggle={(t) => setHiddenTypes(toggled(hiddenTypes, t))}
+          onExpand={() => setLegendMin(false)}
+        />
       )}
-      {showTypeLegend && legend === 'panel' && !legendMin && (
-        <aside className="gv-legend" aria-label={LL.components.graph.legend()}>
-          <button
-            type="button"
-            className="gv-legend-toggle gv-legend-toggle--corner"
-            aria-expanded
-            aria-label={LL.components.graph.legendMinify()}
-            title={LL.components.graph.legendMinify()}
-            onClick={() => setLegendMin(true)}
-          >
-            <Icon name="unfold_less" size="inline" />
-          </button>
-          <div>
-            <h2 className="gv-legend-h">{LL.components.graph.nodes()}</h2>
-            {typesPresent.map((t) => (
-              <label key={t} className="gv-legend-row" data-off={hiddenTypes.has(t) || undefined}>
-                <input
-                  type="checkbox"
-                  className="nt-visually-hidden"
-                  checked={!hiddenTypes.has(t)}
-                  onChange={() => setHiddenTypes(toggle(hiddenTypes, t))}
-                />
-                <span className="gv-glyph">
-                  <svg width="14" height="14" aria-hidden="true">
-                    <Shape type={t} x={7} y={7} scale={0.7} />
-                  </svg>
-                </span>
-                <span className="gv-legend-name">{LL.components.graph.types[t]()}</span>
-                <span className="gv-count">{typeCount(t)}</span>
-              </label>
-            ))}
-          </div>
-          <div>
-            <h2 className="gv-legend-h">{LL.components.graph.edgesTitle()}</h2>
-            {kindsPresent.map((k) => {
-              const style = styleOf(k)
-              return (
-                <label key={k} className="gv-legend-row" data-off={hiddenKinds.has(k) || undefined}>
-                  <input
-                    type="checkbox"
-                    className="nt-visually-hidden"
-                    checked={!hiddenKinds.has(k)}
-                    onChange={() => setHiddenKinds(toggle(hiddenKinds, k))}
-                  />
-                  <svg width="24" height="8" aria-hidden="true">
-                    <line
-                      x1="1"
-                      y1="4"
-                      x2={style.arrow ? 17 : 23}
-                      y2="4"
-                      stroke={designColor.graph.sample}
-                      strokeWidth={1.5}
-                      strokeDasharray={style.dash.join(' ') || undefined}
-                      strokeLinecap="round"
-                    />
-                    {style.arrow && (
-                      <path d="M17,1 L23,4 L17,7 z" fill={designColor.graph.sample} />
-                    )}
-                  </svg>
-                  <span className="gv-legend-name">{edgeLabel(k)}</span>
-                  <span className="gv-count">{kindCount(k)}</span>
-                </label>
-              )
-            })}
-            <div className="gv-legend-row gv-legend-stale">
-              <span className="gv-stale-dot" />
-              <span className="gv-legend-name">{LL.components.graph.staleDoc()}</span>
-            </div>
-          </div>
-          <div>
-            <h2 className="gv-legend-h">{LL.components.graph.statusTitle()}</h2>
-            {statusesPresent.map((st) => (
-              <div key={st} className="gv-legend-row">
-                <span className="gv-glyph">
-                  <StatusGlyph
-                    type="task"
-                    status={st}
-                    progress={st === 'progress' ? 0.6 : st === 'hold' ? 0.4 : 0}
-                    size={12}
-                    color={designColor.graph.sample}
-                  />
-                </span>
-                <span className="gv-legend-name">{LL.components.graph.status[st]()}</span>
-                <span className="gv-count">{statusCount(st)}</span>
-              </div>
-            ))}
-            <div
-              className="gv-filter"
-              role="radiogroup"
-              aria-label={LL.components.graph.statusFilter()}
-            >
-              {(['all', 'open', 'done'] as const).map((f) => (
-                <label key={f} data-on={statusFilter === f || undefined}>
-                  <input
-                    type="radio"
-                    name="gv-status"
-                    className="nt-visually-hidden"
-                    checked={statusFilter === f}
-                    onChange={() => setStatusFilter(f)}
-                  />
-                  {LL.components.graph.filters[f]()}
-                </label>
-              ))}
-            </div>
-          </div>
-        </aside>
+      {legend === 'panel' && !legendMin && (
+        <LegendPanel
+          types={typesPresent}
+          kinds={kindsPresent}
+          statuses={statusesPresent}
+          hiddenTypes={hiddenTypes}
+          hiddenKinds={hiddenKinds}
+          statusFilter={statusFilter}
+          typeCount={typeCount}
+          kindCount={kindCount}
+          statusCount={statusCount}
+          onToggleType={(t) => setHiddenTypes(toggled(hiddenTypes, t))}
+          onToggleKind={(k) => setHiddenKinds(toggled(hiddenKinds, k))}
+          onStatusFilter={setStatusFilter}
+          onMinify={() => setLegendMin(true)}
+        />
       )}
-      {showTypeLegend && legend === 'row' && (
-        <aside className="gv-legend gv-legend--row" aria-label={LL.components.graph.legend()}>
-          {typesPresent.map((t) => (
-            <label key={t} data-off={hiddenTypes.has(t) || undefined}>
-              <input
-                type="checkbox"
-                className="nt-visually-hidden"
-                checked={!hiddenTypes.has(t)}
-                onChange={() => setHiddenTypes(toggle(hiddenTypes, t))}
-              />
-              <span className="gv-glyph gv-glyph--small">
-                <svg width="10" height="10" aria-hidden="true">
-                  <Shape type={t} x={5} y={5} scale={0.5} />
-                </svg>
-              </span>
-              {typeLabels[t]}
-            </label>
-          ))}
-        </aside>
+      {legend === 'row' && (
+        <LegendRow
+          types={typesPresent}
+          hidden={hiddenTypes}
+          onToggle={(t) => setHiddenTypes(toggled(hiddenTypes, t))}
+          className={legendClassName}
+        />
       )}
 
       {!embedded && (
@@ -908,44 +328,14 @@ export function GraphView({
         </div>
       )}
       {(zoomButtons ?? (!embedded || box.width > 500)) && (
-        <div className="gv-controls" role="toolbar" aria-label={LL.components.graph.zoom()}>
-          <button
-            type="button"
-            aria-label={LL.components.graph.zoomIn()}
-            title={LL.components.graph.zoomIn()}
-            onClick={() => zoom(1.3)}
-          >
-            <Icon name="add" />
-          </button>
-          <button
-            type="button"
-            aria-label={LL.components.graph.zoomOut()}
-            title={LL.components.graph.zoomOut()}
-            onClick={() => zoom(1 / 1.3)}
-          >
-            <Icon name="remove" />
-          </button>
-          <span className="gv-controls-rule" />
-          <button
-            type="button"
-            aria-label={LL.components.graph.fit()}
-            title={LL.components.graph.fitTitle()}
-            onClick={() => setView(doFit(visible))}
-          >
-            <Icon name="fit_screen" />
-          </button>
-        </div>
+        <GraphControls
+          onZoomIn={() => zoom(buttonFactor)}
+          onZoomOut={() => zoom(1 / buttonFactor)}
+          onFit={() => setView(doFit(visible))}
+        />
       )}
       {!embedded && focused !== undefined && (
-        <div className="gv-focus" role="status">
-          <strong>{focused.id}</strong> {focused.title}{' '}
-          <Link to="/items/$id" params={{ id: focused.id }}>
-            {LL.components.graph.open()}
-          </Link>{' '}
-          <button type="button" onClick={() => setFocus(undefined)}>
-            {LL.components.graph.clearFocus()}
-          </button>
-        </div>
+        <GraphFocus node={focused} onClear={() => setFocus(undefined)} />
       )}
     </div>
   )

@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
 
-const server = process.env.NETHERITE_URL ?? 'http://127.0.0.1:4747'
+const server = process.env.NETHERITE_URL ?? 'http://127.0.0.1:4848'
 
 const sessionToken = (): Plugin => ({
   name: 'netherite-session-token',
@@ -11,10 +11,10 @@ const sessionToken = (): Plugin => ({
   async transformIndexHtml(html) {
     try {
       const page = await (await fetch(`${server}/`)).text()
-      const tags = page.match(/<meta name="netherite-(?:token|version)"[^>]*>/g) ?? []
+      const tags = page.match(/<meta name="netherite-(?:token|version|workspace)"[^>]*>/g) ?? []
       return html.replace('</head>', `${tags.join('')}</head>`)
     } catch {
-      console.warn(`[netherite] no server at ${server}: start \`netherite serve --no-open\` first`)
+      console.warn(`[netherite] no server at ${server}: start \`pnpm dev:server\` first`)
       return html
     }
   },

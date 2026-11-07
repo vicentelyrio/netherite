@@ -3,24 +3,24 @@
   table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
-  border: 1px solid #2a2c42;
-  border-radius: 10px;
-  background: #1d1f31;
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-rail);
+  border-radius: var(--nt-radius-md);
+  background: var(--nt-color-bg-shell);
   overflow: hidden;
-  font-size: 14px;
-  color: #e8e9f3;
+  font-size: var(--nt-text-body-sm-size);
+  color: var(--nt-color-text-primary);
 }
 
 .pkv th,
 .pkv td {
-  padding: 0 8px;
+  padding: 0 var(--nt-space-2);
   text-align: left;
   vertical-align: middle;
 }
 
 .pkv th:first-child,
 .pkv td:first-child {
-  padding-left: 16px;
+  padding-left: var(--nt-space-4);
   width: 90px;
 }
 
@@ -31,7 +31,7 @@
 
 .pkv th[data-col="linkedTo"],
 .pkv td:nth-child(4) {
-  width: 170px;
+  width: var(--nt-size-170);
 }
 
 .pkv th[data-col="modified"],
@@ -45,32 +45,32 @@
 }
 
 .pkv thead th {
-  height: 32px;
-  font-size: 12px;
-  font-weight: 600;
+  height: var(--nt-space-7);
+  font-size: var(--nt-text-micro-size);
+  font-weight: var(--nt-font-weight-semibold);
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #969ab8;
+  color: var(--nt-color-text-muted);
 }
 
 .pkv-head th {
-  height: 34px;
-  padding-left: 16px;
-  background: #18192a;
-  font-size: 13px;
-  font-weight: 600;
-  color: #e8e9f3;
+  height: var(--nt-size-34);
+  padding-left: var(--nt-space-4);
+  background: var(--nt-color-bg-sunken);
+  font-size: var(--nt-text-caption-size);
+  font-weight: var(--nt-font-weight-semibold);
+  color: var(--nt-color-text-primary);
 }
 
 .pkv-head span {
-  margin-left: 6px;
-  font-weight: 400;
-  color: #969ab8;
+  margin-left: var(--nt-space-1-5);
+  font-weight: var(--nt-font-weight-regular);
+  color: var(--nt-color-text-muted);
 }
 
 .pkv-row td {
-  height: 44px;
-  border-top: 1px solid #2a2c42;
+  height: var(--nt-space-8-5);
+  border-top: var(--nt-stroke-thin) solid var(--nt-color-border-rail);
 }
 
 .pkv-title {
@@ -80,27 +80,27 @@
 }
 
 .pkv-title > span {
-  margin-left: 10px;
-  font-weight: 600;
+  margin-left: var(--nt-space-2-5);
+  font-weight: var(--nt-font-weight-semibold);
 }
 
 .pkv-title > span[data-superseded] {
   text-decoration: line-through;
-  color: #969ab8;
+  color: var(--nt-color-text-muted);
 }
 
 .pkv-id {
   font-family: ui-monospace, monospace;
-  font-size: 12px;
-  color: #969ab8;
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-muted);
   text-decoration: none;
 }
 
 .pkv-wrap {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--nt-space-4);
 }
-.pkv-wrap > .filter-tabs {
+.pkv-wrap > .pkv-filter {
   align-self: flex-start;
 }

@@ -1,4 +1,4 @@
-import { SearchSelect } from '@netherite/ui'
+import { designColor, SearchSelect } from '@netherite/ui'
 import { FilterTabs } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useDecisions } from '../DecisionProvider'
@@ -17,7 +17,10 @@ export function DecisionLegend() {
         </span>
       ))}
       <span>
-        <span className="dl-legend-dot" style={{ borderColor: '#969ab8', background: '#282a3f' }} />
+        <span
+          className="dl-legend-dot"
+          style={{ borderColor: designColor.text.muted, background: designColor.bg.canvas }}
+        />
         {LL.decisions.supersession()}
       </span>
       <span className="dl-rule" />

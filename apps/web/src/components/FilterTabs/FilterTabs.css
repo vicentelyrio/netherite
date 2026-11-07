@@ -4,56 +4,56 @@
 .filter-tabs label {
   display: flex;
   align-items: center;
-  gap: 6px;
-  color: #b9bcd3;
-  font-weight: 500;
+  gap: var(--nt-space-1-5);
+  color: var(--nt-color-text-secondary);
+  font-weight: var(--nt-font-weight-medium);
   cursor: pointer;
   white-space: nowrap;
 }
 .filter-tabs-count {
-  color: #969ab8;
+  color: var(--nt-color-text-muted);
   font-variant-numeric: tabular-nums;
 }
 
 .filter-tabs--segmented {
-  gap: 2px;
-  padding: 3px;
-  background: #18192a;
-  border-radius: 8px;
+  gap: var(--nt-space-0-5);
+  padding: var(--nt-space-0-75);
+  background: var(--nt-color-bg-sunken);
+  border-radius: var(--nt-radius-tooltip);
 }
 .filter-tabs--segmented label {
-  height: 28px;
-  padding: 0 10px;
-  border-radius: 6px;
-  font-size: 13px;
+  height: var(--nt-space-6-5);
+  padding: 0 var(--nt-space-2-5);
+  border-radius: var(--nt-radius-sm);
+  font-size: var(--nt-text-caption-size);
 }
 .filter-tabs--segmented label[data-on] {
-  background: #34365a;
-  color: #e8e9f3;
+  background: var(--nt-color-accent-subtle);
+  color: var(--nt-color-text-primary);
 }
 .filter-tabs--segmented label:has(:focus-visible) {
-  outline: 1px solid #a5a7ff;
+  outline: var(--nt-stroke-thin) solid var(--nt-color-accent-fg);
 }
 .filter-tabs--segmented .filter-tabs-count {
-  font-size: 12px;
+  font-size: var(--nt-text-micro-size);
 }
 
 .filter-tabs--chips {
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
 }
 .filter-tabs--chips label {
-  height: 26px;
-  padding: 0 10px;
-  border-radius: 999px;
-  border: 1px solid #3a3d58;
-  font-size: 12px;
+  height: var(--nt-size-26);
+  padding: 0 var(--nt-space-2-5);
+  border-radius: var(--nt-radius-full);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-overlay);
+  font-size: var(--nt-text-micro-size);
 }
 .filter-tabs--chips label[data-on] {
-  background: #34365a;
-  border-color: #7f82ea;
-  color: #e8e9f3;
+  background: var(--nt-color-accent-subtle);
+  border-color: var(--nt-color-accent-solid);
+  color: var(--nt-color-text-primary);
 }
 .filter-tabs--chips label:has(:focus-visible) {
-  outline: 1px solid #a5a7ff;
+  outline: var(--nt-stroke-thin) solid var(--nt-color-accent-fg);
 }

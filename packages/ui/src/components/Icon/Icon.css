@@ -1,0 +1,26 @@
+.nt-icon {
+  font-family: var(--nt-font-icon, "Material Symbols Rounded Variable");
+  font-weight: var(--nt-font-weight-regular);
+  font-style: normal;
+  font-size: var(--nt-icon-switcher-size, 20px);
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: "liga";
+  font-variation-settings:
+    "FILL" var(--nt-icon-fill, 0),
+    "wght" var(--nt-icon-weight, 400);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  flex-shrink: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+:root[data-nt-icons="ready"] .nt-icon {
+  visibility: visible;
+}

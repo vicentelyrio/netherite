@@ -1,7 +1,7 @@
 .goal-graph {
   height: 100%;
 }
-.goal-graph .gv {
+.goal-graph .goal-graph-view {
   height: 100%;
   min-height: 0;
 }

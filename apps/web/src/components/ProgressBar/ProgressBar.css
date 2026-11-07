@@ -1,20 +1,20 @@
 .progress-bar {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: var(--nt-space-3-5);
 }
 .progress-bar > :first-child {
   flex: 1;
 }
 .progress-bar-count {
-  min-width: 40px;
+  min-width: var(--nt-space-8);
   text-align: right;
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 600;
-  color: #b9bcd3;
+  font-size: var(--nt-text-caption-size);
+  line-height: var(--nt-text-micro-line-height);
+  font-weight: var(--nt-font-weight-semibold);
+  color: var(--nt-color-text-secondary);
   font-variant-numeric: tabular-nums;
 }
 .progress-bar-count[data-done] {
-  color: #2cc27e;
+  color: var(--nt-color-status-success);
 }

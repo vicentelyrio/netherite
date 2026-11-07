@@ -1,29 +1,29 @@
 .ia {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--nt-space-4);
 }
 .ia-keys {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--nt-space-4);
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 13px;
-  color: #969ab8;
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-muted);
 }
 .ia-keys li {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
 }
 .ia-keys kbd {
-  padding: 0 5px;
-  border: 1px solid #33364f;
-  border-radius: 4px;
-  background: #26283d;
-  color: #b9bcd3;
+  padding: 0 var(--nt-space-1-5);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
+  border-radius: var(--nt-radius-xs);
+  background: var(--nt-color-bg-card-hover);
+  color: var(--nt-color-text-secondary);
   font-family: var(--nt-font-mono, "Source Code Pro", monospace);
-  font-size: 12px;
+  font-size: var(--nt-text-micro-size);
 }

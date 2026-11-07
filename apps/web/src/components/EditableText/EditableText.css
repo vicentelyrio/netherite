@@ -1,7 +1,7 @@
 .editable {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
   min-width: 0;
 }
 .editable > :first-child {
@@ -12,13 +12,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: var(--nt-space-6);
+  height: var(--nt-space-6);
   padding: 0;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--nt-radius-sm);
   background: transparent;
-  color: var(--nt-color-text-muted, #969ab8);
+  color: var(--nt-color-text-muted);
   cursor: pointer;
   opacity: 0;
 }
@@ -27,8 +27,8 @@
   opacity: 1;
 }
 .editable-edit:hover {
-  background: var(--nt-color-surface-hover, #2e3148);
-  color: var(--nt-color-text, #e8e9f3);
+  background: var(--nt-color-bg-column);
+  color: var(--nt-color-text-primary);
 }
 .editable-input {
   min-width: 0;
@@ -36,8 +36,8 @@
   box-sizing: border-box;
   color: inherit;
   background: transparent;
-  border: 1px solid var(--nt-color-border-focus, #a5a7ff);
-  border-radius: 6px;
-  padding: 0 10px;
+  border: var(--nt-stroke-thin) solid var(--nt-color-accent-fg);
+  border-radius: var(--nt-radius-sm);
+  padding: 0 var(--nt-space-2-5);
   outline: none;
 }

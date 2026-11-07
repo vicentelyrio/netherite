@@ -1,8 +1,7 @@
 import { GroupCard } from '@/components'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { useKnowledgeIndex } from '../KnowledgeProvider'
 import { KnowledgeRow } from '../KnowledgeRow'
-import '../shared.css'
-import { useI18nContext } from '@/infrastructure/i18n'
 import './KnowledgeTable.css'
 
 const groupNames = ['adr', 'doc', 'context', 'runbook'] as const

@@ -21,10 +21,11 @@ test('dragging a card to another column changes its state in the file', async ({
   await page.mouse.up()
 
   await expect(doing.getByRole('link', { name: 'Core' })).toBeVisible()
+  await expect.poll(() => workspace.diff(task1)).toContain('+position: ')
   const diff = workspace.diff(task1)
   expect(diff).toContain('-state: backlog')
   expect(diff).toContain('+state: doing')
-  expect(diff.split('\n').filter((l) => /^[+-][^+-]/.test(l))).toHaveLength(2)
+  expect(diff.split('\n').filter((l) => /^[+-][^+-]/.test(l))).toHaveLength(3)
 })
 
 test('ticking a checklist item in the task drawer writes the checkbox to the file', async ({
@@ -40,9 +41,12 @@ test('ticking a checklist item in the task drawer writes the checkbox to the fil
   expect(workspace.diff(task1)).toContain('-- [ ] first')
 })
 
-test('Mark reviewed writes today to reviewed_at', async ({ page, workspace }) => {
+test('the review button shows the date and writes today to reviewed_at', async ({
+  page,
+  workspace,
+}) => {
   await page.goto(`${workspace.url}/items/DOC-00001`)
-  await page.getByRole('button', { name: 'Mark reviewed' }).click()
+  await page.getByRole('button', { name: 'Reviewed at 1 Jan 2026' }).click()
 
   const today = new Date().toISOString().slice(0, 10)
   await expect
@@ -51,6 +55,7 @@ test('Mark reviewed writes today to reviewed_at', async ({ page, workspace }) =>
   expect(workspace.diff('netherite/docs/DOC-00001-overview.md')).toContain(
     '-reviewed_at: 2026-01-01',
   )
+  await expect(page.getByRole('button', { name: /^Reviewed at / })).toBeDisabled()
 })
 
 test('the include switch on a context item writes include_in_context', async ({
@@ -90,7 +95,7 @@ test('a new goal in an area is created as a file with that area', async ({ page,
     .first()
     .click()
   await page.getByLabel('Goal title').fill('Learn to sail')
-  await page.getByRole('button', { name: 'Create' }).click()
+  await page.getByLabel('Goal title').press('Enter')
 
   await expect(page.getByText('Learn to sail')).toBeVisible()
   await expect

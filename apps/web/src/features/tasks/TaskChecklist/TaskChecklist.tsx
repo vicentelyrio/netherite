@@ -1,8 +1,8 @@
 import type { ItemDetail } from '@netherite/api'
 import { ProgressBar } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
+import { DrawerHeading, DrawerSection } from '../DrawerSection'
 import './TaskChecklist.css'
-import '../shared.css'
 
 export function TaskChecklist({
   task,
@@ -13,9 +13,9 @@ export function TaskChecklist({
 }) {
   const { LL } = useI18nContext()
   return (
-    <section className="drawer-section" aria-label={LL.tasks.checklist.label()}>
+    <DrawerSection label={LL.tasks.checklist.label()}>
       <div className="drawer-check-head">
-        <h3 className="drawer-h">{LL.tasks.checklist.title()}</h3>
+        <DrawerHeading>{LL.tasks.checklist.title()}</DrawerHeading>
         {task.progress !== null && (
           <div className="drawer-check-bar">
             <ProgressBar
@@ -41,6 +41,6 @@ export function TaskChecklist({
         ))}
         {task.checklist.length === 0 && <li className="app-muted">{LL.tasks.checklist.none()}</li>}
       </ul>
-    </section>
+    </DrawerSection>
   )
 }

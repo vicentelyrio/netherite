@@ -62,7 +62,7 @@
 }
 
 .md a.md-wikilink {
-  border-bottom: 1px dotted var(--nt-color-accent-fg);
+  border-bottom: var(--nt-stroke-thin) dotted var(--nt-color-accent-fg);
 }
 
 .md .md-dead-link {
@@ -70,7 +70,7 @@
 }
 
 .md code {
-  padding: 1px 5px;
+  padding: var(--nt-space-px) var(--nt-space-1-5);
   font-family: var(--nt-font-mono);
   font-size: var(--nt-text-mono-size);
   color: var(--nt-color-syntax-key);
@@ -82,7 +82,7 @@
   padding: var(--nt-space-3) var(--nt-space-4);
   overflow-x: auto;
   background: var(--nt-color-bg-card);
-  border: 1px solid var(--nt-color-border-subtle);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
   border-radius: var(--nt-radius-md);
 }
 
@@ -95,7 +95,7 @@
 .md blockquote {
   padding-inline-start: var(--nt-space-4);
   color: var(--nt-color-text-secondary);
-  border-inline-start: 3px solid var(--nt-color-border-strong);
+  border-inline-start: var(--nt-stroke-heavy) solid var(--nt-color-border-strong);
 }
 
 .md table {
@@ -105,7 +105,7 @@
 .md th,
 .md td {
   padding: var(--nt-space-1) var(--nt-space-3);
-  border: 1px solid var(--nt-color-border-subtle);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
 }
 
 .md th {
@@ -119,5 +119,5 @@
 
 .md hr {
   border: 0;
-  border-top: 1px solid var(--nt-color-border-divider);
+  border-top: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
 }

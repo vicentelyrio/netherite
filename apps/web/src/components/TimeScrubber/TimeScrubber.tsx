@@ -31,21 +31,21 @@ export function TimeScrubber({
   const peak = Math.max(1, ...activity.map((w) => w.count))
   const isToday = value >= to
   return (
-    <section className="nt-scrubber" aria-label={LL.graph.scrubber.label()}>
+    <section className="scrubber" aria-label={LL.graph.scrubber.label()}>
       <button
         type="button"
-        className="nt-scrubber-play"
+        className="scrubber-play"
         aria-label={playing ? LL.graph.scrubber.pause() : LL.graph.scrubber.play()}
         onClick={onPlayToggle}
       >
         <Icon name={playing ? 'pause' : 'play_arrow'} size="inline" filled />
       </button>
-      <div className="nt-scrubber-track">
-        <div className="nt-scrubber-bars" aria-hidden="true">
+      <div className="scrubber-track">
+        <div className="scrubber-bars" aria-hidden="true">
           {activity.map((w) => (
             <span
               key={w.week}
-              className="nt-scrubber-bar"
+              className="scrubber-bar"
               data-past={w.week <= value || undefined}
               style={{
                 left: `${(Math.max(0, dayIndex(from, w.week)) / total) * 100}%`,
@@ -57,7 +57,7 @@ export function TimeScrubber({
           ))}
         </div>
         <input
-          className="nt-scrubber-range"
+          className="scrubber-range"
           type="range"
           min={0}
           max={total}
@@ -68,10 +68,10 @@ export function TimeScrubber({
           onChange={(e) => onChange(dayAt(from, Number(e.target.value)))}
         />
       </div>
-      <time className="nt-scrubber-date" dateTime={value}>
+      <time className="scrubber-date" dateTime={value}>
         {formatDate(value)}
       </time>
-      <button type="button" className="nt-scrubber-today" disabled={isToday} onClick={onToday}>
+      <button type="button" className="scrubber-today" disabled={isToday} onClick={onToday}>
         {LL.graph.scrubber.today()}
       </button>
     </section>

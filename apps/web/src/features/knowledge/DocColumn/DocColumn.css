@@ -1,0 +1,6 @@
+.kf-main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--nt-space-7-5) var(--nt-space-9);
+  overflow: auto;
+}

@@ -8,10 +8,19 @@ export interface GroupCardProps {
   readonly count?: number
   readonly label?: string
   readonly className?: string
+  readonly headClassName?: string
   readonly children: ReactNode
 }
 
-export function GroupCard({ title, icon, count, label, className, children }: GroupCardProps) {
+export function GroupCard({
+  title,
+  icon,
+  count,
+  label,
+  className,
+  headClassName,
+  children,
+}: GroupCardProps) {
   if (count === 0) return null
   return (
     <section
@@ -19,7 +28,7 @@ export function GroupCard({ title, icon, count, label, className, children }: Gr
       aria-label={label ?? title}
     >
       {title !== undefined && (
-        <div className="group-card-head">
+        <div className={headClassName ? `group-card-head ${headClassName}` : 'group-card-head'}>
           {icon && <Icon name={icon} size={16} />}
           <strong>{title}</strong>
           {count !== undefined && <span>{count}</span>}

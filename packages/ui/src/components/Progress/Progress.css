@@ -1,0 +1,12 @@
+.nt-progress {
+  background: var(--nt-color-bg-track);
+}
+.nt-progress-section {
+  transition: width var(--nt-duration-base) var(--nt-easing-standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nt-progress-section {
+    transition: none;
+  }
+}

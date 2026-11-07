@@ -14,7 +14,3 @@ export function PageHeader({ children, actions }: PageHeaderProps) {
     </header>
   )
 }
-
-export function PageToolbar({ children }: { readonly children: ReactNode }) {
-  return <div className="tpl-page-toolbar">{children}</div>
-}

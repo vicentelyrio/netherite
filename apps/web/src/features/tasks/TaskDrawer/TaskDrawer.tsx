@@ -45,7 +45,7 @@ export function TaskDrawer({
   const preview =
     id === undefined ? null : (
       <div className="drawer-preview">
-        <TaskContent id={id} columns={columns} />
+        <TaskContent id={id} projectId={projectId} columns={columns} />
         <Link to="/items/$id" params={{ id }} className="drawer-full">
           {LL.tasks.drawer.openFull()}
         </Link>

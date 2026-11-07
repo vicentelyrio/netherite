@@ -1,6 +1,6 @@
-import { useDroppable } from '@dnd-kit/core'
 import type { BoardCard } from '@netherite/api'
 import { Icon, type StateCategory } from '@netherite/ui'
+import { useReorderList } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { NewTask } from '../NewTask'
 import { TaskCard } from '../TaskCard'
@@ -30,11 +30,11 @@ export function BoardColumn({
   readonly dragging: BoardCard | undefined
 }) {
   const { LL } = useI18nContext()
-  const { setNodeRef, isOver } = useDroppable({ id: name })
-  const target = isOver && dragging !== undefined && dragging.state !== name
+  const list = useReorderList(name)
+  const target = list.over && dragging !== undefined && dragging.state !== name
   return (
     <section
-      ref={setNodeRef}
+      ref={list.setNodeRef}
       className="board-column"
       data-over={target || undefined}
       aria-label={name}
@@ -61,7 +61,7 @@ export function BoardColumn({
             overline={overline}
           />
         ))}
-        {target && <div className="board-drop">{LL.projects.dropTo({ name })}</div>}
+        {target && list.blank && <div className="board-drop">{LL.projects.dropTo({ name })}</div>}
       </div>
       <NewTask projectId={projectId} state={name} />
     </section>

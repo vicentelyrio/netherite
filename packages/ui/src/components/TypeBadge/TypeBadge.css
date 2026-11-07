@@ -1,0 +1,14 @@
+.nt-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nt-space-1-5);
+  height: var(--nt-space-5-5);
+  padding: 0 var(--nt-space-2);
+  font-size: var(--nt-text-micro-size);
+  line-height: var(--nt-text-micro-line-height);
+  font-weight: var(--nt-text-micro-weight);
+  color: var(--nt-badge-color);
+  white-space: nowrap;
+  background: var(--nt-color-bg-chip);
+  border-radius: var(--nt-radius-xs);
+}

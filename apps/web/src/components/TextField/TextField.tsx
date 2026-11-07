@@ -7,6 +7,7 @@ export interface TextFieldProps {
   readonly placeholder?: string
   readonly autoFocus?: boolean
   readonly onEscape?: () => void
+  readonly className?: string
 }
 
 export function TextField({
@@ -16,10 +17,11 @@ export function TextField({
   placeholder,
   autoFocus,
   onEscape,
+  className,
 }: TextFieldProps) {
   return (
     <input
-      className="text-field"
+      className={className ? `text-field ${className}` : 'text-field'}
       aria-label={label}
       {...(placeholder === undefined ? {} : { placeholder })}
       value={value}

@@ -17,20 +17,20 @@ v1 is an early prototype: Apollo with type-graphql and typedi, a filesystem serv
 
 ## Decision
 
-Remove, rather than migrate incrementally:
-
-- `services/graphql`, `services/fs`
-- `packages/core`, `packages/ds-components`, `packages/ds-tokens`, `packages/ds-assets`, `packages/logger`, `packages/eslint-config-netherite`, `packages/tsconfig`
-- `apps/desktop`, `apps/web` (replaced by a new `apps/web`)
-- yarn 1, ESLint, Prettier and CircleCI configuration
-
-Kept or carried over:
-
-- The monorepo layout (`apps/`, `packages/`), changesets, `.editorconfig`, README, licence and community files.
-- The idea behind `ds-assets` (brand logo) moves into `packages/ui` where still useful.
-- Reading Markdown with gray-matter-style frontmatter, now through `core`.
-
-The v1 code stays reachable in git history (and on `main` until v2 merges).
+> Remove, rather than migrate incrementally:
+>
+> - `services/graphql`, `services/fs`
+> - `packages/core`, `packages/ds-components`, `packages/ds-tokens`, `packages/ds-assets`, `packages/logger`, `packages/eslint-config-netherite`, `packages/tsconfig`
+> - `apps/desktop`, `apps/web` (replaced by a new `apps/web`)
+> - yarn 1, ESLint, Prettier and CircleCI configuration
+>
+> Kept or carried over:
+>
+> - The monorepo layout (`apps/`, `packages/`), changesets, `.editorconfig`, README, licence and community files.
+> - The idea behind `ds-assets` (brand logo) moves into `packages/ui` where still useful.
+> - Reading Markdown with gray-matter-style frontmatter, now through `core`.
+>
+> The v1 code stays reachable in git history (and on `main` until v2 merges).
 
 ## Consequences
 

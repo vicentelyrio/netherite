@@ -1,37 +1,37 @@
 .tri-groups {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--nt-space-3);
 }
 .tri-card {
   overflow: hidden;
-  border: 1px solid #2f3250;
-  border-radius: 10px;
-  background: #212336;
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
+  border-radius: var(--nt-radius-md);
+  background: var(--nt-color-bg-card);
 }
 .tri-card-head {
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: 32px;
-  padding: 0 16px;
-  background: #1f2134;
+  gap: var(--nt-space-2);
+  height: var(--nt-space-7);
+  padding: 0 var(--nt-space-4);
+  background: var(--nt-color-bg-shell);
 }
 .tri-card-head h2 {
   margin: 0;
-  font-size: 13px;
-  line-height: 18px;
-  font-weight: 600;
+  font-size: var(--nt-text-caption-size);
+  line-height: var(--nt-text-caption-line-height);
+  font-weight: var(--nt-font-weight-semibold);
 }
 .tri-count {
-  font-size: 12px;
-  color: #969ab8;
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-muted);
 }
 .tri-src {
   margin-left: auto;
   font-family: var(--nt-font-mono, "Source Code Pro", monospace);
-  font-size: 12px;
-  color: #969ab8;
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-muted);
 }
 .tri-list {
   list-style: none;
@@ -41,44 +41,44 @@
 .tri-row {
   position: relative;
   display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) auto 48px;
+  grid-template-columns: var(--nt-space-7) minmax(0, 1fr) auto var(--nt-space-9);
   align-items: center;
-  column-gap: 14px;
+  column-gap: var(--nt-space-3-5);
   width: 100%;
   height: 54px;
-  padding: 0 16px;
+  padding: 0 var(--nt-space-4);
   border: 0;
-  border-top: 1px solid #2a2c42;
+  border-top: var(--nt-stroke-thin) solid var(--nt-color-border-rail);
   background: transparent;
-  color: #e8e9f3;
+  color: var(--nt-color-text-primary);
   text-align: left;
   font: inherit;
   cursor: pointer;
 }
 .tri-row:hover {
-  background: #25273c;
+  background: var(--nt-color-bg-card-hover);
 }
 .tri-row[aria-current] {
-  background: #2a2d48;
+  background: var(--nt-color-bg-active-line);
 }
 .tri-row[aria-current]::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 12px;
-  bottom: 12px;
-  width: 3px;
-  border-radius: 0 3px 3px 0;
-  background: #a5a7ff;
+  top: var(--nt-space-3);
+  bottom: var(--nt-space-3);
+  width: var(--nt-space-0-75);
+  border-radius: 0 var(--nt-radius-xs) var(--nt-radius-xs) 0;
+  background: var(--nt-color-accent-fg);
 }
 .tri-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: #2e3149;
+  width: var(--nt-space-7);
+  height: var(--nt-space-7);
+  border-radius: var(--nt-radius-tooltip);
+  background: var(--nt-color-bg-chip);
   color: var(--tri-tone);
 }
 .tri-text {
@@ -88,35 +88,35 @@
 }
 .tri-title {
   overflow: hidden;
-  font-size: 15px;
-  line-height: 20px;
-  font-weight: 600;
+  font-size: var(--nt-text-body-size);
+  line-height: var(--nt-text-body-sm-line-height);
+  font-weight: var(--nt-font-weight-semibold);
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 .tri-detail {
   overflow: hidden;
   font-family: var(--nt-font-mono, "Source Code Pro", monospace);
-  font-size: 12px;
-  line-height: 16px;
-  color: #969ab8;
+  font-size: var(--nt-text-micro-size);
+  line-height: var(--nt-text-micro-line-height);
+  color: var(--nt-color-text-muted);
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 .tri-chip {
   display: flex;
   align-items: center;
-  height: 22px;
-  padding: 0 9px;
-  border-radius: 999px;
+  height: var(--nt-space-5-5);
+  padding: 0 var(--nt-space-2-5);
+  border-radius: var(--nt-radius-full);
   background: color-mix(in srgb, var(--tri-tone) 14%, transparent);
   color: var(--tri-tone);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--nt-text-micro-size);
+  font-weight: var(--nt-font-weight-semibold);
 }
 .tri-age {
   text-align: right;
-  font-size: 13px;
-  color: #969ab8;
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-muted);
   font-variant-numeric: tabular-nums;
 }

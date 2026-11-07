@@ -1,41 +1,24 @@
-.goal-card {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
 .goal-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: -4px;
+  gap: var(--nt-space-2);
+  margin-bottom: calc(var(--nt-space-1) * -1);
 }
-.goal-card-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 16px;
-  line-height: 22px;
-  font-weight: 600;
-}
+
 .goal-achieved {
-  color: #6fcf97;
-  font-weight: 600;
-  font-size: 12px;
-}
-.goal-overline {
-  font-size: 12px;
-  font-weight: 500;
-  color: #a5a7ff;
+  color: var(--nt-color-status-success);
+  font-weight: var(--nt-font-weight-semibold);
+  font-size: var(--nt-text-micro-size);
 }
 
 .goal-horizon {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  line-height: 18px;
-  font-weight: 500;
-  color: #969ab8;
+  gap: var(--nt-space-1-5);
+  font-size: var(--nt-text-caption-size);
+  line-height: var(--nt-text-caption-line-height);
+  font-weight: var(--nt-font-weight-medium);
+  color: var(--nt-color-text-muted);
   white-space: nowrap;
 }

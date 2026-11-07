@@ -1,6 +1,6 @@
 .st-controls {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--nt-space-4);
   flex-wrap: wrap;
 }

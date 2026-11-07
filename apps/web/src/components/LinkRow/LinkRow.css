@@ -1,14 +1,14 @@
 .link-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: 30px;
-  font-size: 14px;
+  gap: var(--nt-space-2-5);
+  height: var(--nt-size-30);
+  font-size: var(--nt-text-body-sm-size);
 }
 
 .link-row a {
   flex: 1;
-  color: #e8e9f3;
+  color: var(--nt-color-text-primary);
   text-decoration: none;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -16,8 +16,8 @@
 }
 
 .link-row-dot {
-  width: 8px;
-  height: 8px;
+  width: var(--nt-space-2);
+  height: var(--nt-space-2);
   border-radius: 50%;
-  background: #d9a646;
+  background: var(--nt-color-type-task);
 }

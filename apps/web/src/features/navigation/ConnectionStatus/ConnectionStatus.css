@@ -3,23 +3,23 @@
   align-items: center;
   justify-content: flex-end;
   gap: var(--nt-space-4);
-  height: 32px;
+  height: var(--nt-space-7);
   padding: 0 var(--nt-space-4);
   font-size: var(--nt-text-micro-size);
   background: var(--nt-color-bg-sunken);
-  border-bottom: 1px solid var(--nt-color-border-divider);
+  border-bottom: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
 }
 
 .app-status {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
   color: var(--nt-color-text-secondary);
 }
 
 .app-status-dot {
-  width: 8px;
-  height: 8px;
+  width: var(--nt-space-2);
+  height: var(--nt-space-2);
   background: var(--nt-color-text-muted);
   border-radius: var(--nt-radius-full);
 }

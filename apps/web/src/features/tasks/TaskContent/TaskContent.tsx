@@ -5,6 +5,7 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { itemQuery, itemsQuery, useWrite } from '@/infrastructure/query'
 import { summaryOf } from '@/infrastructure/text'
 import type { BoardColumnInfo } from '../fields'
+import { TaskActions } from '../TaskActions'
 import { TaskChecklist } from '../TaskChecklist'
 import { TaskDecisions } from '../TaskDecisions'
 import { TaskFields } from '../TaskFields'
@@ -13,9 +14,11 @@ import './TaskContent.css'
 
 export function TaskContent({
   id,
+  projectId,
   columns,
 }: {
   readonly id: string
+  readonly projectId: string
   readonly columns: ReadonlyArray<BoardColumnInfo>
 }) {
   const { LL } = useI18nContext()
@@ -64,6 +67,7 @@ export function TaskContent({
 
   return (
     <div className="drawer-body" data-hash={task.hash}>
+      <TaskActions task={task} projectId={projectId} />
       <TaskFields
         task={task}
         columns={columns}

@@ -1,5 +1,7 @@
 import type { Inbox } from '@netherite/api'
+import { designColor } from '@netherite/ui'
 import dayjs from 'dayjs'
+import { workspaceKey } from '@/infrastructure/config'
 import { addDays } from '@/infrastructure/datetime'
 
 export type Raised = (typeof Inbox.Type)['raised'][number]
@@ -16,14 +18,14 @@ export const captureEntry = (text: string): Entry => ({
 })
 
 export const ruleLook: Readonly<Record<Rule, { icon: string; tone: string }>> = {
-  capture: { icon: 'edit_note', tone: '#b9bcd3' },
-  'stale-doc': { icon: 'warning', tone: '#e2ae4c' },
-  'proposed-adr': { icon: 'pending', tone: '#a5a7ff' },
-  orphan: { icon: 'link_off', tone: '#b9bcd3' },
-  'overdue-task': { icon: 'event_busy', tone: '#f0717e' },
-  'closing-commit': { icon: 'commit', tone: '#2cc27e' },
-  'new-todo': { icon: 'code', tone: '#8fc3f2' },
-  'similar-tag': { icon: 'sell', tone: '#a5a7ff' },
+  capture: { icon: 'edit_note', tone: designColor.text.secondary },
+  'stale-doc': { icon: 'warning', tone: designColor.status.warning },
+  'proposed-adr': { icon: 'pending', tone: designColor.accent.fg },
+  orphan: { icon: 'link_off', tone: designColor.text.secondary },
+  'overdue-task': { icon: 'event_busy', tone: designColor.status.danger },
+  'closing-commit': { icon: 'commit', tone: designColor.status.success },
+  'new-todo': { icon: 'code', tone: designColor.type.doc },
+  'similar-tag': { icon: 'sell', tone: designColor.accent.fg },
 }
 
 export const tabOf = (rule: Rule): (typeof groups)[number] =>
@@ -37,11 +39,11 @@ export type Hidden = Readonly<
   Record<string, { readonly kind: 'archive' } | { readonly kind: 'snooze'; readonly until: string }>
 >
 
-const storeKey = 'netherite:inbox-hidden'
+const storeKey = () => workspaceKey('inbox-hidden')
 
 export const readHidden = (): Hidden => {
   try {
-    const raw = localStorage.getItem(storeKey)
+    const raw = localStorage.getItem(storeKey())
     return raw === null ? {} : (JSON.parse(raw) as Hidden)
   } catch {
     return {}
@@ -50,7 +52,7 @@ export const readHidden = (): Hidden => {
 
 export const writeHidden = (hidden: Hidden) => {
   try {
-    localStorage.setItem(storeKey, JSON.stringify(hidden))
+    localStorage.setItem(storeKey(), JSON.stringify(hidden))
   } catch {}
 }
 

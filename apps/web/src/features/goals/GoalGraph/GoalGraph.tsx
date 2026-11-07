@@ -14,6 +14,7 @@ export function GoalGraph({ id }: { readonly id: string }) {
   return (
     <div className="goal-graph">
       <GraphView
+        className="goal-graph-view"
         data={graph.data}
         variant="embedded"
         focus={id}

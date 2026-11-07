@@ -1,4 +1,4 @@
-import { Avatar, Icon } from '@netherite/ui'
+import { Avatar, designColor, Icon } from '@netherite/ui'
 import { AdrDiamond, AdrIdLink } from '@/components'
 import { formatDay, formatYear } from '@/infrastructure/datetime'
 import { type CommitCardData, statusStyle } from '../lanes'
@@ -7,7 +7,7 @@ import './CommitCard.css'
 
 export function CommitCard({ commit }: { readonly commit: CommitCardData }) {
   const top = commit.changes.find((c) => c.to !== 'superseded') ?? commit.changes[0]
-  const color = statusStyle[top?.to ?? '']?.color ?? '#b9bcd3'
+  const color = statusStyle[top?.to ?? '']?.color ?? designColor.text.secondary
   const chain = commit.changes.some((c) => c.link)
   return (
     <div className="dl-commit">
@@ -18,7 +18,7 @@ export function CommitCard({ commit }: { readonly commit: CommitCardData }) {
       <div className="dl-node-col">
         <span
           className="dl-node"
-          style={{ borderColor: color, background: chain ? '#282a3f' : color }}
+          style={{ borderColor: color, background: chain ? designColor.bg.canvas : color }}
         />
       </div>
       <div className="dl-card" data-chain={chain || undefined}>

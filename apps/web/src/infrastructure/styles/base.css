@@ -43,7 +43,7 @@ body,
 }
 
 .app-link-list li {
-  padding: 2px 0;
+  padding: var(--nt-space-0-5) 0;
 }
 
 .kn-spacer {
@@ -52,49 +52,49 @@ body,
 
 .kn-id {
   font-family: var(--nt-font-mono, monospace);
-  font-size: 13px;
-  color: #969ab8;
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-muted);
   text-decoration: none;
   flex: none;
 }
 
 .kn-mono {
   font-family: var(--nt-font-mono, monospace);
-  font-size: 12px;
-  line-height: 16px;
-  color: #969ab8;
+  font-size: var(--nt-text-micro-size);
+  line-height: var(--nt-text-micro-line-height);
+  color: var(--nt-color-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .kn-nomatch {
-  height: 120px;
-  margin-top: 12px;
+  height: var(--nt-size-120);
+  margin-top: var(--nt-space-3);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  border: 1px dashed #3a3d58;
-  border-radius: 10px;
-  color: #969ab8;
-  font-size: 14px;
+  gap: var(--nt-space-2);
+  border: var(--nt-stroke-thin) dashed var(--nt-color-border-overlay);
+  border-radius: var(--nt-radius-md);
+  color: var(--nt-color-text-muted);
+  font-size: var(--nt-text-body-sm-size);
 }
 
 .kn-nomatch button {
   background: none;
   border: 0;
-  color: #a5a7ff;
+  color: var(--nt-color-accent-fg);
   cursor: pointer;
   font: inherit;
 }
 
 .kn-h1 {
-  margin: 16px 0 0;
+  margin: var(--nt-space-4) 0 0;
 }
 
 .kn-sub {
-  margin: 6px 0 0;
-  font-size: 14px;
-  color: #b9bcd3;
+  margin: var(--nt-space-1-5) 0 0;
+  font-size: var(--nt-text-body-sm-size);
+  color: var(--nt-color-text-secondary);
 }

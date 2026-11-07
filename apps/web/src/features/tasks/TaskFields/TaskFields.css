@@ -5,20 +5,20 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--nt-space-1);
   padding: 0;
 }
 
 .drawer-meta {
   display: grid;
-  grid-template-columns: 120px 200px 170px 1fr;
-  column-gap: 24px;
+  grid-template-columns: var(--nt-size-120) var(--nt-size-200) var(--nt-size-170) 1fr;
+  column-gap: var(--nt-space-6);
 }
 
 .drawer-cell {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
   align-items: flex-start;
 }
 
@@ -26,12 +26,12 @@
 .drawer-labels {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
   align-items: center;
 }
 
 .drawer-person {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
 }

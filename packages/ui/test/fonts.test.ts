@@ -7,7 +7,8 @@ import { describe, expect, test } from 'vitest'
 
 const require = createRequire(import.meta.url)
 const root = join(import.meta.dirname, '..')
-const fontsCss = readFileSync(join(root, 'fonts.css'), 'utf8')
+const fontsCss = readFileSync(join(root, 'src/theme/fonts.css'), 'utf8')
+const iconCss = readFileSync(join(root, 'src/components/Icon/Icon.css'), 'utf8')
 const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as {
   exports: Record<string, unknown>
   files: string[]
@@ -129,7 +130,7 @@ describe('what fonts.css brings in', () => {
 })
 
 describe('the icon class', () => {
-  const rule = /\.nt-icon\s*\{([^}]*)\}/.exec(fontsCss)?.[1] ?? ''
+  const rule = /\.nt-icon\s*\{([^}]*)\}/.exec(iconCss)?.[1] ?? ''
 
   test('turns a name into an icon with ligatures, at a fixed size, and does not wrap', () => {
     expect(rule).toMatch(/font-feature-settings: ["']liga["']/)
@@ -151,8 +152,8 @@ describe('the icon class', () => {
 
 describe('the package', () => {
   test('exports fonts.css and ships it', () => {
-    expect(pkg.exports['./fonts.css']).toBe('./fonts.css')
-    expect(pkg.files).toContain('fonts.css')
+    expect(pkg.exports['./fonts.css']).toBe('./src/theme/fonts.css')
+    expect(pkg.files).toContain('src/**/*.css')
   })
 
   test('depends on the three font packages at exact versions', () => {

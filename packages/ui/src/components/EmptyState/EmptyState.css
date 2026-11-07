@@ -1,0 +1,36 @@
+.nt-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nt-space-2);
+  padding: var(--nt-space-9) var(--nt-space-6);
+  text-align: center;
+}
+.nt-empty-icon {
+  padding: var(--nt-space-3);
+  color: var(--nt-color-text-muted);
+  background: var(--nt-color-bg-card);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
+  border-radius: var(--nt-radius-full);
+  box-sizing: content-box;
+}
+.nt-empty-title {
+  margin: var(--nt-space-2) 0 0;
+  font-size: var(--nt-text-heading-size);
+  line-height: var(--nt-text-heading-line-height);
+  font-weight: var(--nt-text-heading-weight);
+}
+.nt-empty-text {
+  margin: 0;
+  max-width: 26rem;
+  font-size: var(--nt-text-caption-size);
+  line-height: var(--nt-text-caption-line-height);
+  color: var(--nt-color-text-secondary);
+}
+.nt-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--nt-space-2);
+  margin-top: var(--nt-space-3);
+}

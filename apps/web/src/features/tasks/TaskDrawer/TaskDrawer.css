@@ -1,14 +1,14 @@
 .drawer-title {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--nt-space-2);
 }
 
 .drawer-fields {
   display: grid;
-  grid-template-columns: 100px 1fr;
-  gap: 6px 12px;
-  margin: 12px 0 0;
+  grid-template-columns: var(--nt-size-100) 1fr;
+  gap: var(--nt-space-1-5) var(--nt-space-3);
+  margin: var(--nt-space-3) 0 0;
 }
 
 .drawer-fields dt {
@@ -18,35 +18,36 @@
 .drawer-fields dd {
   margin: 0;
   display: flex;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
   flex-wrap: wrap;
 }
 
 .drawer-full {
-  margin-top: 24px;
+  margin-top: var(--nt-space-6);
   display: inline-block;
 }
 
 .drawer-inner {
-  left: 64px;
+  left: var(--nt-space-10);
 }
 
 .drawer-overlay {
-  left: 64px;
-  background: rgba(14, 15, 26, 0.62);
+  left: var(--nt-space-10);
+  background: color-mix(in srgb, var(--nt-color-bg-stage) 62%, transparent);
 }
 
 .drawer-content {
-  background: #282a3f;
-  box-shadow: 24px 0 64px rgba(0, 0, 0, 0.4);
+  background: var(--nt-color-bg-canvas);
+  box-shadow: var(--nt-space-6) 0 var(--nt-space-10)
+    color-mix(in srgb, var(--nt-color-base-black) 40%, transparent);
 }
 
 .drawer-head.drawer-head {
-  height: 48px;
-  min-height: 48px;
-  padding: 0 12px 0 24px;
-  background: #23253a;
-  border-bottom: 1px solid #33364f;
+  height: var(--nt-space-9);
+  min-height: var(--nt-space-9);
+  padding: 0 var(--nt-space-3) 0 var(--nt-space-6);
+  background: var(--nt-color-bg-card-hover);
+  border-bottom: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
 }
 
 .drawer-title-slot {
@@ -57,10 +58,10 @@
 .drawer-crumbs {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--nt-space-2);
   font-family: var(--nt-font-mono, monospace);
-  font-size: 13px;
-  color: #b9bcd3;
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-secondary);
 }
 
 .drawer-crumbs {
@@ -82,17 +83,17 @@
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #e6e7f2;
-  font-weight: 500;
+  color: var(--nt-color-text-primary);
+  font-weight: var(--nt-font-weight-medium);
 }
 
 .drawer-lines {
-  background: rgba(240, 180, 41, 0.14);
-  color: #f0b429;
-  border-radius: 6px;
-  padding: 2px 8px;
+  background: color-mix(in srgb, var(--nt-color-status-warning) 14%, transparent);
+  color: var(--nt-color-status-warning);
+  border-radius: var(--nt-radius-sm);
+  padding: var(--nt-space-0-5) var(--nt-space-2);
   font-family: inherit;
-  font-size: 12px;
+  font-size: var(--nt-text-micro-size);
 }
 
 .drawer-frame.drawer-frame {
@@ -105,7 +106,7 @@
 }
 
 .drawer-preview {
-  padding: 40px 56px;
+  padding: var(--nt-space-8) var(--nt-space-9-5);
 }
 
 .drawer-content {
@@ -118,7 +119,7 @@
 }
 
 .drawer-crumbs a {
-  color: #a5a7ff;
+  color: var(--nt-color-accent-fg);
   text-decoration: none;
 }
 .drawer-crumbs a:hover {

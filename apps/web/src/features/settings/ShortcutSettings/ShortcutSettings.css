@@ -1,0 +1,93 @@
+.sk {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nt-space-6);
+  max-width: var(--nt-size-900);
+}
+
+.sk-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--nt-space-4);
+}
+
+.sk-title {
+  margin: 0 0 var(--nt-space-1);
+  font-size: var(--nt-text-title-size);
+  line-height: var(--nt-text-title-line-height);
+  font-weight: var(--nt-text-title-weight);
+}
+
+.sk-group-title {
+  margin: 0 0 var(--nt-space-2);
+  font-size: var(--nt-text-overline-size);
+  line-height: var(--nt-text-overline-line-height);
+  font-weight: var(--nt-text-overline-weight);
+  letter-spacing: var(--nt-text-overline-letter-spacing);
+  text-transform: uppercase;
+  color: var(--nt-color-text-muted);
+}
+
+.sk-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--nt-color-bg-card);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
+  border-radius: var(--nt-radius-md);
+}
+
+.sk-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--nt-size-200) var(--nt-size-240);
+  align-items: center;
+  gap: var(--nt-space-2) var(--nt-space-4);
+  min-height: var(--nt-space-9);
+  padding: var(--nt-space-1-5) var(--nt-space-4);
+  border-top: var(--nt-stroke-thin) solid var(--nt-color-border-rail);
+  font-size: var(--nt-text-body-sm-size);
+}
+
+.sk-row:first-child {
+  border-top: 0;
+}
+
+.sk-row[data-recording] {
+  background: var(--nt-color-bg-card-selected);
+}
+
+.sk-label {
+  color: var(--nt-color-text-primary);
+}
+
+.sk-press {
+  color: var(--nt-color-accent-fg);
+  font-size: var(--nt-text-caption-size);
+}
+
+.sk-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--nt-space-1);
+}
+
+.sk-clash {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: var(--nt-space-2);
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-status-warning-text);
+}
+
+.sk-clash > span {
+  flex: 1;
+}
+
+.sk-note {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-muted);
+}

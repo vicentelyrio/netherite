@@ -3,7 +3,7 @@
   display: flex;
   flex-direction: column;
 
-  margin: 12px 0 -40px calc(-1 * var(--tpl-start));
+  margin: var(--nt-space-3) 0 calc(var(--nt-space-8) * -1) calc(-1 * var(--tpl-start));
   width: calc(100% + var(--tpl-start));
   flex: 1;
   min-height: 404px;
@@ -12,26 +12,26 @@
 .project-graph-open {
   position: absolute;
   right: var(--nt-space-4);
-  bottom: 40px;
+  bottom: var(--nt-space-8);
   z-index: 2;
   display: inline-flex;
   align-items: center;
-  height: 20px;
-  color: #969ab8;
+  height: var(--nt-space-5);
+  color: var(--nt-color-text-muted);
 }
 
-.project-graph .gv-legend--row {
+.project-graph .project-graph-legend {
   left: var(--nt-space-4);
-  right: calc(var(--nt-space-4) + 32px);
-  bottom: 40px;
-  min-height: 20px;
+  right: calc(var(--nt-space-4) + var(--nt-space-7));
+  bottom: var(--nt-space-8);
+  min-height: var(--nt-space-5);
 }
 
 .project-graph-open:hover {
-  color: #e6e7f2;
+  color: var(--nt-color-text-primary);
 }
 
-.project-graph .gv {
+.project-graph .project-graph-view {
   flex: 1;
   height: auto;
   min-height: 0;

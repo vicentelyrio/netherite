@@ -1,54 +1,9 @@
-import { useDraggable } from '@dnd-kit/core'
 import type { BoardCard } from '@netherite/api'
-import { Avatar, Card, Icon, StatusGlyph, statusOfCategory } from '@netherite/ui'
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Card } from '@netherite/ui'
+import { useNavigate } from '@tanstack/react-router'
 import type { MouseEvent } from 'react'
-import { ProgressBar, TagList } from '@/components'
-import { useI18nContext } from '@/infrastructure/i18n'
-
-export function TaskCardBody({
-  card,
-  projectId,
-  overline,
-  category,
-}: {
-  readonly card: BoardCard
-  readonly projectId: string
-  readonly overline?: string | undefined
-  readonly category?: string | undefined
-}) {
-  const { LL } = useI18nContext()
-  const assignee = card.assignees[0]
-  return (
-    <div className="board-card">
-      {overline && <span className="board-overline">{overline}</span>}
-      <div className="board-card-top">
-        <StatusGlyph
-          type="task"
-          status={statusOfCategory[category as keyof typeof statusOfCategory] ?? 'backlog'}
-          size={10}
-        />
-        <Link
-          to="/projects/$id"
-          params={{ id: projectId }}
-          search={{ task: card.id }}
-          className="board-card-title"
-        >
-          {card.title}
-        </Link>
-        {assignee !== undefined && <Avatar name={assignee} size={24} />}
-      </div>
-      <TagList tags={card.labels} />
-      {card.waitingOn.length > 0 && (
-        <div className="board-waiting">
-          <Icon name="link" />{' '}
-          {LL.projects.waitingOn({ names: card.waitingOn.map((d) => d.title).join(', ') })}
-        </div>
-      )}
-      {card.checklist && <ProgressBar done={card.checklist.done} total={card.checklist.total} />}
-    </div>
-  )
-}
+import { useReorderItem } from '@/components'
+import { TaskCardBody } from './TaskCardBody'
 
 export function TaskCard({
   card,
@@ -63,7 +18,10 @@ export function TaskCard({
   readonly selected: boolean
   readonly overline?: string | undefined
 }) {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: card.id })
+  const { attributes, listeners, setNodeRef, isDragging, edge } = useReorderItem(
+    card.id,
+    card.state,
+  )
   const navigate = useNavigate()
   const open = (e: MouseEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).closest('a, button, input')) return
@@ -77,12 +35,13 @@ export function TaskCard({
       onClick={open}
       className="board-draggable"
       data-dragging={isDragging || undefined}
+      data-drop={edge}
       data-category={category}
       data-selected={selected || undefined}
       {...attributes}
       {...listeners}
     >
-      <Card interactive>
+      <Card interactive className="board-card-surface">
         <TaskCardBody card={card} projectId={projectId} overline={overline} category={category} />
       </Card>
     </div>

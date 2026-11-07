@@ -1,48 +1,42 @@
-.kf-main {
-  flex: 1;
-  min-width: 0;
-  padding: 36px 48px;
-  overflow: auto;
-}
-
 .kf-title {
-  font-size: 28px;
-  line-height: 34px;
-  font-weight: 600;
+  font-size: var(--nt-text-display-size);
+  line-height: var(--nt-text-display-line-height);
+  font-weight: var(--nt-font-weight-semibold);
   letter-spacing: -0.01em;
-  margin: 0 0 12px;
+  margin: 0 0 var(--nt-space-3);
 }
 
 .kf-warning-actions {
   display: flex;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
   align-self: center;
 }
 
 .kf-amber,
 .kf-amber-ghost {
-  height: 28px;
-  padding: 0 10px;
-  border-radius: 6px;
+  height: var(--nt-space-6-5);
+  padding: 0 var(--nt-space-2-5);
+  border-radius: var(--nt-radius-sm);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--nt-text-caption-size);
   cursor: pointer;
 }
 
 .kf-amber {
-  background: #e2ae4c;
+  background: var(--nt-color-status-warning);
   border: 0;
-  color: #1e2032;
-  font-weight: 600;
+  color: var(--nt-color-bg-shell);
+  font-weight: var(--nt-font-weight-semibold);
 }
 
 .kf-amber-ghost {
   background: transparent;
-  border: 1px solid rgba(226, 174, 76, 0.45);
-  color: #e8e9f3;
-  font-weight: 500;
+  border: var(--nt-stroke-thin) solid
+    color-mix(in srgb, var(--nt-color-status-warning) 45%, transparent);
+  color: var(--nt-color-text-primary);
+  font-weight: var(--nt-font-weight-medium);
 }
 
 .kf-amber-ghost:hover {
-  background: rgba(226, 174, 76, 0.12);
+  background: color-mix(in srgb, var(--nt-color-status-warning) 12%, transparent);
 }

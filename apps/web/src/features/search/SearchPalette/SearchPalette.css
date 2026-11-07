@@ -1,8 +1,9 @@
 .sp-content {
-  background: #212336;
-  border: 1px solid #3a3d58;
-  border-radius: 14px;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  background: var(--nt-color-bg-card);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-overlay);
+  border-radius: var(--nt-radius-lg);
+  box-shadow: 0 var(--nt-space-6) 80px
+    color-mix(in srgb, var(--nt-color-base-black) 55%, transparent);
   overflow: hidden;
 }
 
@@ -17,11 +18,11 @@
 .sp-input {
   display: flex;
   align-items: center;
-  gap: 12px;
-  height: 56px;
-  padding: 0 16px;
-  border-bottom: 1px solid #33364f;
-  color: #a5a7ff;
+  gap: var(--nt-space-3);
+  height: var(--nt-space-9-5);
+  padding: 0 var(--nt-space-4);
+  border-bottom: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
+  color: var(--nt-color-accent-fg);
 }
 
 .sp-input input {
@@ -30,12 +31,12 @@
   background: transparent;
   border: 0;
   outline: 0;
-  color: #e8e9f3;
+  color: var(--nt-color-text-primary);
   font: inherit;
-  font-size: 17px;
+  font-size: var(--nt-text-heading-size);
 }
 
 .sp-chips {
-  padding: 10px 16px;
-  border-bottom: 1px solid #2a2c42;
+  padding: var(--nt-space-2-5) var(--nt-space-4);
+  border-bottom: var(--nt-stroke-thin) solid var(--nt-color-border-rail);
 }

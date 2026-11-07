@@ -1,0 +1,33 @@
+.nt-button {
+  height: var(--nt-layout-switcher-height);
+  padding-inline: var(--nt-space-3);
+  font-size: var(--nt-text-caption-size);
+  font-weight: var(--nt-font-weight-medium);
+  border-radius: var(--nt-radius-sm);
+  transition:
+    background-color var(--nt-duration-base) var(--nt-easing-standard),
+    border-color var(--nt-duration-base) var(--nt-easing-standard);
+}
+.nt-button[data-variant="default"] {
+  color: var(--nt-color-text-primary);
+  background: var(--nt-color-bg-card);
+  border-color: var(--nt-color-border-strong);
+}
+.nt-button[data-variant="default"]:hover {
+  background: var(--nt-color-bg-column);
+}
+.nt-button[data-variant="filled"] {
+  color: var(--nt-color-text-on-accent);
+}
+.nt-button-label {
+  overflow: visible;
+}
+.nt-button-section {
+  margin-inline: 0 var(--nt-space-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nt-button {
+    transition: none;
+  }
+}

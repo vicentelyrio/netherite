@@ -5,7 +5,7 @@
   grid-template-columns: repeat(var(--nt-grid-columns), minmax(0, 1fr));
   column-gap: var(--nt-grid-gutter);
   height: 100%;
-  padding-block: 40px;
+  padding-block: var(--nt-space-8);
   padding-inline: var(--tpl-start) var(--tpl-end);
   box-sizing: border-box;
 }
@@ -22,8 +22,8 @@
   min-height: 0;
   overflow: auto;
 }
-.tpl-board-main:has(> .board) {
-  margin: 0 calc(-1 * var(--tpl-end)) -40px 0;
+.tpl-board-main:has(> [data-bleed]) {
+  margin: 0 calc(-1 * var(--tpl-end)) calc(var(--nt-space-8) * -1) 0;
 }
 .tpl-board:has(> .tpl-board-main--bleed) {
   height: auto;
@@ -34,7 +34,7 @@
   top: 0;
   align-self: start;
   height: 100cqh;
-  margin: -40px calc(-1 * var(--tpl-end)) -40px 0;
+  margin: calc(var(--nt-space-8) * -1) calc(-1 * var(--tpl-end)) calc(var(--nt-space-8) * -1) 0;
   overflow: hidden;
 }
 @media (max-width: 1279px) {

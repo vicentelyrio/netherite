@@ -1,0 +1,17 @@
+export {
+  AlreadyExists,
+  AmbiguousId,
+  BadMarkers,
+  ConfigInvalid,
+  type ConfigIssue,
+  ConfigReadError,
+  ConflictError,
+  EditError,
+  type EditFailure,
+  formatConfigIssue,
+  IoError,
+  ItemReadError,
+  NotFound,
+  StillLinked,
+  WorkspaceNotFound,
+} from './errors'

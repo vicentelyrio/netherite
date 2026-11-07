@@ -1,20 +1,20 @@
 .adr-id-link {
   font-family: var(--nt-font-mono, monospace);
-  font-size: 12px;
-  color: #d2a8f0;
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-type-adr);
   text-decoration: none;
   white-space: nowrap;
 }
 .adr-diamond {
   flex: none;
-  width: 7px;
-  height: 7px;
+  width: var(--nt-size-7);
+  height: var(--nt-size-7);
   box-sizing: border-box;
-  border-radius: 1px;
+  border-radius: var(--nt-radius-xxs);
   transform: rotate(45deg);
-  background: #d2a8f0;
+  background: var(--nt-color-type-adr);
 }
 .adr-diamond[data-hollow] {
   background: transparent;
-  border: 1.5px solid #d2a8f0;
+  border: var(--nt-stroke-medium) solid var(--nt-color-type-adr);
 }

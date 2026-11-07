@@ -1,15 +1,15 @@
 .tgt-search {
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: 36px;
-  padding: 0 10px;
-  border: 1px solid #33364f;
-  border-radius: 8px;
-  background: #212336;
+  gap: var(--nt-space-2);
+  height: var(--nt-space-7-5);
+  padding: 0 var(--nt-space-2-5);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
+  border-radius: var(--nt-radius-tooltip);
+  background: var(--nt-color-bg-card);
 }
 .tgt-search input {
-  width: 200px;
+  width: var(--nt-size-200);
   border: 0;
   outline: none;
   background: transparent;
@@ -17,28 +17,28 @@
   font: inherit;
 }
 .tgt-search kbd {
-  padding: 0 6px;
-  border: 1px solid #33364f;
-  border-radius: 4px;
-  font-size: 11px;
-  color: #969ab8;
+  padding: 0 var(--nt-space-1-5);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
+  border-radius: var(--nt-radius-xs);
+  font-size: var(--nt-font-size-xxs);
+  color: var(--nt-color-text-muted);
 }
 
 .tgt-legend {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: var(--nt-space-4-5);
   margin: 0 0 0 auto;
   padding: 0;
   list-style: none;
-  font-size: 13px;
-  color: #969ab8;
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-muted);
   white-space: nowrap;
 }
 .tgt-legend li {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--nt-space-2);
 }
 .tgt-key {
   display: inline-block;
@@ -46,22 +46,22 @@
 }
 .tgt-key[data-kind="small"],
 .tgt-key[data-kind="big"] {
-  border: 1.5px solid #6e7292;
+  border: var(--nt-stroke-medium) solid var(--nt-color-text-faint);
   border-radius: 50%;
 }
 .tgt-key[data-kind="small"] {
-  width: 10px;
-  height: 10px;
+  width: var(--nt-space-2-5);
+  height: var(--nt-space-2-5);
 }
 .tgt-key[data-kind="big"] {
-  width: 16px;
-  height: 16px;
+  width: var(--nt-space-4);
+  height: var(--nt-space-4);
 }
 .tgt-key[data-kind="thick"] {
-  width: 22px;
-  border-top: 3px solid #474b6e;
+  width: var(--nt-space-5-5);
+  border-top: var(--nt-stroke-heavy) solid var(--nt-color-border-strong);
 }
 .tgt-key[data-kind="dup"] {
-  width: 22px;
-  border-top: 2px dashed #a5a7ff;
+  width: var(--nt-space-5-5);
+  border-top: var(--nt-stroke-thick) dashed var(--nt-color-accent-fg);
 }

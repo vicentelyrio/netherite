@@ -16,7 +16,7 @@
   },
   "scripts": {
     "dev": "turbo run dev --continue",
-    "dev:server": "node packages/cli/dist/bin.mjs serve --no-open --port 4747",
+    "dev:server": "node packages/cli/dist/bin.mjs serve --no-open --port 4848",
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "lint": "biome check .",

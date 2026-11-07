@@ -17,16 +17,16 @@ v1 used yarn 1 (frozen), ESLint plus Prettier, and CircleCI. A Rust core (as in 
 
 ## Decision
 
-- **Language:** TypeScript everywhere, `strict`, ESM only. Node: current LTS, pinned in `.nvmrc`.
-- **Package manager:** pnpm workspaces.
-- **Task runner:** turbo.
-- **Lint and format:** Biome (replaces ESLint and Prettier).
-- **Library builds:** tsdown. The app builds with Vite.
-- **One library:** **Effect** (`effect`, `@effect/platform`, `@effect/platform-node`, `@effect/cli`, `@effect/vitest`) for schemas, errors, services, filesystem, processes, HTTP and the CLI ([[ADR-00006]]). Exact versions are pinned.
-- **Tests:** Vitest with `@effect/vitest` for units; Playwright for app end-to-end; golden-file tests for format-preserving edits ([[ADR-00008]]).
-- **Versioning:** changesets. The published package is `netherite` (CLI, server, MCP, bundled UI).
-- **Git hooks:** lefthook (lint and typecheck on pre-commit).
-- **CI:** GitHub Actions replaces CircleCI. It runs lint, typecheck, tests and `netherite lint` on this repo's own `netherite/` folder.
+> - **Language:** TypeScript everywhere, `strict`, ESM only. Node: current LTS, pinned in `.nvmrc`.
+> - **Package manager:** pnpm workspaces.
+> - **Task runner:** turbo.
+> - **Lint and format:** Biome (replaces ESLint and Prettier).
+> - **Library builds:** tsdown. The app builds with Vite.
+> - **One library:** **Effect** (`effect`, `@effect/platform`, `@effect/platform-node`, `@effect/cli`, `@effect/vitest`) for schemas, errors, services, filesystem, processes, HTTP and the CLI ([[ADR-00006]]). Exact versions are pinned.
+> - **Tests:** Vitest with `@effect/vitest` for units; Playwright for app end-to-end; golden-file tests for format-preserving edits ([[ADR-00008]]).
+> - **Versioning:** changesets. The published package is `netherite` (CLI, server, MCP, bundled UI).
+> - **Git hooks:** lefthook (lint and typecheck on pre-commit).
+> - **CI:** GitHub Actions replaces CircleCI. It runs lint, typecheck, tests and `netherite lint` on this repo's own `netherite/` folder.
 
 ## Consequences
 

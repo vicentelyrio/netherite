@@ -1,0 +1,41 @@
+.nt-card {
+  padding: var(--nt-layout-card-padding);
+  background: var(--nt-color-bg-card);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
+  border-radius: var(--nt-radius-tooltip);
+  transition:
+    background-color var(--nt-duration-base) var(--nt-easing-standard),
+    border-color var(--nt-duration-base) var(--nt-easing-standard),
+    box-shadow var(--nt-duration-base) var(--nt-easing-standard);
+}
+.nt-card[data-interactive] {
+  cursor: pointer;
+}
+.nt-card[data-interactive]:hover {
+  background: var(--nt-color-bg-card-hover);
+  border-color: var(--nt-color-border-strong);
+}
+.nt-card[data-selected] {
+  background: var(--nt-color-bg-card-selected);
+  border-color: var(--nt-color-accent-fg);
+  box-shadow: 0 0 0 var(--nt-stroke-heavy)
+    color-mix(
+      in srgb,
+      var(--nt-color-accent-fg) calc(var(--nt-tint-selected-ring) * 100%),
+      transparent
+    );
+}
+.nt-card[data-drop-target] {
+  border: var(--nt-stroke-medium) dashed var(--nt-color-accent-solid);
+  background: color-mix(
+    in srgb,
+    var(--nt-color-accent-solid) calc(var(--nt-tint-drop-target) * 100%),
+    transparent
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nt-card {
+    transition: none;
+  }
+}

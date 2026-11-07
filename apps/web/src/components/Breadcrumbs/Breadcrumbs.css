@@ -1,21 +1,21 @@
 .breadcrumbs {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  margin-bottom: 24px;
+  gap: var(--nt-space-1-5);
+  font-size: var(--nt-text-body-sm-size);
+  margin-bottom: var(--nt-space-6);
   color: var(--mantine-color-dimmed);
 }
 .breadcrumbs a {
-  color: #a5a7ff;
+  color: var(--nt-color-accent-fg);
   text-decoration: none;
 }
 .breadcrumbs strong {
-  color: #e6e7f2;
+  color: var(--nt-color-text-primary);
 }
 .breadcrumbs-title {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--nt-text-body-sm-size);
+  font-weight: var(--nt-font-weight-semibold);
   margin: 0;
-  color: #e6e7f2;
+  color: var(--nt-color-text-primary);
 }

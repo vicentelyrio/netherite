@@ -1,71 +1,67 @@
 .kn-sort select {
   background: transparent;
   border: 0;
-  color: #e8e9f3;
+  color: var(--nt-color-text-primary);
   font: inherit;
-  font-weight: 500;
+  font-weight: var(--nt-font-weight-medium);
   cursor: pointer;
 }
 
 .kn-pill {
   display: flex;
   align-items: center;
-  gap: 6px;
-  height: 34px;
-  padding: 0 12px 0 10px;
-  border-radius: 999px;
-  background: transparent;
-  border: 1px solid #3a3d58;
-  color: #b9bcd3;
+  gap: var(--nt-space-1-5);
+  height: var(--nt-space-5-5);
+  padding: 0 var(--nt-space-2-5);
+  border-radius: var(--nt-radius-full);
+  background: color-mix(in srgb, var(--nt-color-text-muted) 16%, transparent);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-overlay);
+  color: var(--nt-color-text-secondary);
   font: inherit;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--nt-text-micro-size);
+  font-weight: var(--nt-font-weight-semibold);
   cursor: pointer;
 }
 
 .kn-pill span {
-  font-weight: 500;
-  color: #969ab8;
+  font-weight: var(--nt-font-weight-medium);
+  color: var(--nt-color-text-muted);
 }
 
 .kn-pill[aria-pressed="true"] {
-  background: #34365a;
-  border-color: #7f82ea;
-}
-
-.kn-pill--stale {
-  color: #e2ae4c;
+  background: var(--nt-color-accent-subtle);
+  border-color: var(--nt-color-accent-solid);
 }
 
 .kn-pill--stale span {
-  color: #ddb168;
+  color: var(--nt-color-status-warning-text);
 }
 
 .kn-pill--stale[aria-pressed="true"] {
-  background: rgba(226, 174, 76, 0.16);
-  border-color: #e2ae4c;
+  background: color-mix(in srgb, var(--nt-color-status-warning) 16%, transparent);
+  border-color: var(--nt-color-status-warning);
 }
 
 .kn-sort {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: #969ab8;
+  gap: var(--nt-space-1-5);
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-muted);
 }
 
 .kn-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 40px 0 20px;
+  gap: var(--nt-space-2-5);
+  margin: var(--nt-space-8) 0 var(--nt-space-5);
   flex-wrap: wrap;
 }
 
 .kn-extra {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--nt-space-2-5);
   flex: 1 1 auto;
   min-width: max-content;
 }

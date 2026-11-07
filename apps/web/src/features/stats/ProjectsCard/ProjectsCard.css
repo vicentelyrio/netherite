@@ -4,18 +4,20 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--nt-space-2-5);
 }
 .pj-row {
   display: grid;
-  grid-template-columns: minmax(120px, 1.8fr) minmax(48px, 0.7fr) 24px 68px;
+  grid-template-columns: minmax(var(--nt-size-120), 1.8fr) minmax(var(--nt-space-9), 0.7fr) var(
+      --nt-space-6
+    ) 68px;
   align-items: center;
-  column-gap: 12px;
+  column-gap: var(--nt-space-3);
 }
 .pj-name {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--nt-space-2);
   color: inherit;
   text-decoration: none;
   overflow: hidden;
@@ -26,15 +28,15 @@
   text-decoration: underline;
 }
 .pj-bar {
-  height: 8px;
-  border-radius: 4px;
-  background: #33364f;
+  height: var(--nt-space-2);
+  border-radius: var(--nt-radius-xs);
+  background: var(--nt-color-border-divider);
   overflow: hidden;
 }
 .pj-bar > span {
   display: block;
   height: 100%;
-  background: #3ba474;
+  background: var(--nt-color-type-project);
 }
 .pj-count {
   text-align: right;
@@ -43,16 +45,16 @@
 .pj-cycle {
   overflow: hidden;
   white-space: nowrap;
-  font-size: 12px;
-  color: #8a8fad;
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-line-number);
 }
 
 .pj-dot {
   flex: none;
-  width: 7px;
-  height: 7px;
+  width: var(--nt-size-7);
+  height: var(--nt-size-7);
   border-radius: 50%;
-  background: #3ba474;
+  background: var(--nt-color-type-project);
 }
 
 .pj-name {

@@ -1,43 +1,43 @@
 .kf-panel {
   width: 340px;
   flex: none;
-  border-left: 1px solid #33364f;
-  background: #25273c;
-  padding: 32px 24px;
+  border-left: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
+  background: var(--nt-color-bg-card-hover);
+  padding: var(--nt-space-7) var(--nt-space-6);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--nt-space-6);
   overflow: auto;
 }
 
 .kf-status-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--nt-space-2);
 }
 
 .kf-stale-line {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #e2ae4c;
+  gap: var(--nt-space-1-5);
+  font-size: var(--nt-text-caption-size);
+  font-weight: var(--nt-font-weight-semibold);
+  color: var(--nt-color-status-warning);
 }
 
 .kf-commit {
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: 24px;
-  font-size: 13px;
-  color: #d4d6e8;
+  gap: var(--nt-space-2);
+  height: var(--nt-space-6);
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-syntax-text);
 }
 
 .kf-commit code {
-  font-size: 12px;
-  color: #969ab8;
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-muted);
 }
 
 .kf-commit span:nth-child(2) {
@@ -48,16 +48,16 @@
 }
 
 .kf-source {
-  margin: 0 0 4px;
-  font-size: 13px;
-  color: #c9cbe3;
+  margin: 0 0 var(--nt-space-1);
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-secondary);
   word-break: break-word;
 }
 
 .kf-owner {
-  margin: 8px 0 0;
-  font-size: 13px;
-  color: #a2a5c4;
+  margin: var(--nt-space-2) 0 0;
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-icon);
 }
 
 .kf-switch {
@@ -65,53 +65,53 @@
   align-self: flex-start;
   width: fit-content;
   max-width: 100%;
-  gap: 2px;
-  margin-top: 10px;
-  padding: 3px;
-  border-radius: 8px;
-  background: #18192a;
+  gap: var(--nt-space-0-5);
+  margin-top: var(--nt-space-2-5);
+  padding: var(--nt-space-0-75);
+  border-radius: var(--nt-radius-tooltip);
+  background: var(--nt-color-bg-sunken);
 }
 .kf-switch label {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  height: 26px;
-  padding: 0 8px;
+  gap: var(--nt-space-1-5);
+  height: var(--nt-size-26);
+  padding: 0 var(--nt-space-2);
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--nt-radius-sm);
   background: transparent;
-  color: #b9bcd3;
+  color: var(--nt-color-text-secondary);
   font: inherit;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--nt-text-micro-size);
+  font-weight: var(--nt-font-weight-medium);
   cursor: pointer;
 }
 .kf-switch label:hover:not([data-on]) {
-  color: #e8e9f3;
+  color: var(--nt-color-text-primary);
 }
 .kf-switch label[data-on] {
-  font-weight: 600;
+  font-weight: var(--nt-font-weight-semibold);
 }
-.kf-switch label[data-status="proposed"] .nt-icon {
-  color: #a5a7ff;
+.kf-switch label[data-status="proposed"] .kf-switch-icon {
+  color: var(--nt-color-accent-fg);
 }
-.kf-switch label[data-status="accepted"] .nt-icon,
-.kf-switch label[data-status="active"] .nt-icon {
-  color: #2cc27e;
+.kf-switch label[data-status="accepted"] .kf-switch-icon,
+.kf-switch label[data-status="active"] .kf-switch-icon {
+  color: var(--nt-color-status-success);
 }
-.kf-switch label[data-status="deprecated"] .nt-icon {
-  color: #f0717e;
+.kf-switch label[data-status="deprecated"] .kf-switch-icon {
+  color: var(--nt-color-status-danger);
 }
 .kf-switch label[data-status="proposed"][data-on] {
-  background: rgba(165, 167, 255, 0.16);
-  color: #a5a7ff;
+  background: color-mix(in srgb, var(--nt-color-accent-fg) 16%, transparent);
+  color: var(--nt-color-accent-fg);
 }
 .kf-switch label[data-status="accepted"][data-on],
 .kf-switch label[data-status="active"][data-on] {
-  background: rgba(44, 194, 126, 0.16);
-  color: #2cc27e;
+  background: color-mix(in srgb, var(--nt-color-status-success) 16%, transparent);
+  color: var(--nt-color-status-success);
 }
 .kf-switch label[data-status="deprecated"][data-on] {
-  background: rgba(240, 113, 126, 0.16);
-  color: #f0717e;
+  background: color-mix(in srgb, var(--nt-color-status-danger) 16%, transparent);
+  color: var(--nt-color-status-danger);
 }

@@ -1,31 +1,31 @@
 .drawer-decisions {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--nt-space-2);
   align-items: center;
 }
 
 .drawer-row {
   display: grid;
-  grid-template-columns: 120px minmax(0, 1fr);
+  grid-template-columns: var(--nt-size-120) minmax(0, 1fr);
   align-items: center;
-  column-gap: 24px;
-  margin-top: 20px;
+  column-gap: var(--nt-space-6);
+  margin-top: var(--nt-space-5);
 }
 
 .drawer-adr {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: #2e3149;
-  border-radius: 6px;
-  padding: 3px 10px;
-  color: #e6e7f2;
+  gap: var(--nt-space-1-5);
+  background: var(--nt-color-bg-chip);
+  border-radius: var(--nt-radius-sm);
+  padding: var(--nt-space-0-75) var(--nt-space-2-5);
+  color: var(--nt-color-text-primary);
   text-decoration: none;
-  font-size: 13px;
+  font-size: var(--nt-text-caption-size);
 }
 
 .drawer-adr-id {
   font-family: var(--nt-font-mono, monospace);
-  color: #c7a8f0;
+  color: var(--nt-color-type-adr);
 }

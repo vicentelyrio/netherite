@@ -1,9 +1,9 @@
 .tm {
   position: relative;
-  height: clamp(520px, calc(100vh - 300px), 900px);
-  background: #212336;
-  border: 1px solid #2f3250;
-  border-radius: 14px;
+  height: clamp(var(--nt-size-520), calc(100vh - var(--nt-size-300)), var(--nt-size-900));
+  background: var(--nt-color-bg-card);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
+  border-radius: var(--nt-radius-lg);
   overflow: hidden;
 }
 .tm-svg {
@@ -18,21 +18,21 @@
   cursor: grabbing;
 }
 .tm-edge {
-  stroke: #4d5180;
+  stroke: var(--nt-color-graph-edge);
   stroke-opacity: 0.55;
   stroke-linecap: round;
 }
 .tm-edge[data-dupe] {
-  stroke: #e2ae4c;
+  stroke: var(--nt-color-status-warning);
   stroke-opacity: 0.9;
 }
 .tm-edge[data-dim] {
   stroke-opacity: 0.08;
 }
 .tm-cluster {
-  fill: #8a8fad;
-  font-size: 13px;
-  font-weight: 600;
+  fill: var(--nt-color-text-line-number);
+  font-size: var(--nt-text-caption-size);
+  font-weight: var(--nt-font-weight-semibold);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -45,39 +45,39 @@
   opacity: 0.25;
 }
 .tm-bubble:focus-visible circle {
-  stroke: #e8e9f3;
+  stroke: var(--nt-color-text-primary);
   stroke-width: 3;
 }
 .tm-name {
-  fill: #e8e9f3;
-  font-size: 13px;
-  font-weight: 500;
+  fill: var(--nt-color-text-primary);
+  font-size: var(--nt-text-caption-size);
+  font-weight: var(--nt-font-weight-medium);
   pointer-events: none;
 }
 .tm-count {
-  fill: #969ab8;
-  font-size: 11px;
+  fill: var(--nt-color-text-muted);
+  font-size: var(--nt-font-size-xxs);
   pointer-events: none;
 }
 .tm-zoom {
   position: absolute;
-  right: 12px;
-  bottom: 12px;
+  right: var(--nt-space-3);
+  bottom: var(--nt-space-3);
   display: flex;
   flex-direction: column;
-  border: 1px solid #33364f;
-  border-radius: 8px;
-  background: rgba(24, 25, 42, 0.94);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
+  border-radius: var(--nt-radius-tooltip);
+  background: color-mix(in srgb, var(--nt-color-bg-sunken) 94%, transparent);
   overflow: hidden;
 }
 .tm-zoom button {
-  width: 32px;
-  height: 32px;
+  width: var(--nt-space-7);
+  height: var(--nt-space-7);
   border: 0;
   background: transparent;
-  color: #e8e9f3;
+  color: var(--nt-color-text-primary);
   cursor: pointer;
 }
 .tm-zoom button + button {
-  border-top: 1px solid #33364f;
+  border-top: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
 }

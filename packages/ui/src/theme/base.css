@@ -1,0 +1,25 @@
+.nt-visually-hidden {
+  position: absolute;
+  width: var(--nt-space-px);
+  height: var(--nt-space-px);
+  margin: calc(var(--nt-space-px) * -1);
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+:focus-visible {
+  outline: var(--nt-layout-focus-ring) solid var(--nt-color-accent-fg);
+  outline-offset: var(--nt-stroke-thin);
+}
+
+.nt-overline {
+  font-size: var(--nt-text-overline-size);
+  line-height: var(--nt-text-overline-line-height);
+  font-weight: var(--nt-text-overline-weight);
+  letter-spacing: var(--nt-text-overline-letter-spacing);
+  text-transform: uppercase;
+  color: var(--nt-color-text-muted);
+}

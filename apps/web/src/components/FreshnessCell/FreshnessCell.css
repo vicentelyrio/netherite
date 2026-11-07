@@ -1,36 +1,36 @@
 .kn-fresh {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: #b9bcd3;
-  font-weight: 500;
+  gap: var(--nt-space-1-5);
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-secondary);
+  font-weight: var(--nt-font-weight-medium);
   white-space: nowrap;
 }
 
 .kn-fresh--stale {
-  color: #e2ae4c;
-  font-weight: 600;
+  color: var(--nt-color-status-warning);
+  font-weight: var(--nt-font-weight-semibold);
 }
 
 .kn-fresh--drift {
-  color: #ddb168;
+  color: var(--nt-color-status-warning-text);
 }
 
 .kn-fresh--na {
-  color: #8a8fad;
+  color: var(--nt-color-text-line-number);
 }
 
 .kn-dot {
-  width: 8px;
-  height: 8px;
+  width: var(--nt-space-2);
+  height: var(--nt-space-2);
   border-radius: 50%;
-  background: #2cc27e;
-  margin: 0 3px;
+  background: var(--nt-color-status-success);
+  margin: 0 var(--nt-space-0-75);
 }
 
 .kn-dot--ring {
   background: transparent;
-  border: 1.5px solid #e2ae4c;
+  border: var(--nt-stroke-medium) solid var(--nt-color-status-warning);
   box-sizing: border-box;
 }

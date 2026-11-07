@@ -6,31 +6,24 @@ import './AdrBody.css'
 export function AdrBody({ source }: { readonly source: string }) {
   const { LL } = useI18nContext()
   const { intro, sections } = adrSections(source)
-  const named = (title: string) => (s: { title: string }) => s.title.toLowerCase() === title
-  if (!sections.some(named('decision'))) return <Markdown source={source} />
   return (
     <div className="adr-body">
-      {intro.trim() !== '' && <Markdown source={intro} />}
+      {intro.trim() !== '' && <Markdown className="adr-md" source={intro} />}
       {sections.map((s) => {
-        if (named('decision')(s)) {
-          return (
-            <section key={s.title} className="adr-decision" aria-label={s.title}>
-              <Markdown source={s.text} />
-            </section>
-          )
-        }
-        const consequences = named('consequences')(s) ? consequencesOf(s.text) : undefined
-        if (consequences === undefined) return <Markdown key={s.title} source={s.text} />
+        const consequences =
+          s.title.toLowerCase() === 'consequences' ? consequencesOf(s.text) : undefined
+        if (consequences === undefined)
+          return <Markdown className="adr-md" key={s.title} source={s.text} />
         return (
           <section key={s.title} className="adr-consequences" aria-label={s.title}>
-            <Markdown source={`## ${s.title}\n\n${consequences.lead}`} />
+            <Markdown className="adr-md" source={`## ${s.title}\n\n${consequences.lead}`} />
             <div className="adr-columns">
               <div className="adr-col" data-kind="good">
                 <h3>{LL.knowledge.doc.main.gets()}</h3>
                 <ul>
                   {consequences.good.map((t) => (
                     <li key={t}>
-                      <Markdown source={t} />
+                      <Markdown className="adr-md" source={t} />
                     </li>
                   ))}
                 </ul>
@@ -40,7 +33,7 @@ export function AdrBody({ source }: { readonly source: string }) {
                 <ul>
                   {consequences.bad.map((t) => (
                     <li key={t}>
-                      <Markdown source={t} />
+                      <Markdown className="adr-md" source={t} />
                     </li>
                   ))}
                 </ul>

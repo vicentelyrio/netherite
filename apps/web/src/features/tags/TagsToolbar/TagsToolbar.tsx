@@ -1,7 +1,8 @@
 import { Icon } from '@netherite/ui'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { FilterTabs } from '@/components'
 import { useI18nContext } from '@/infrastructure/i18n'
+import { useActionShortcuts, useShortcutHint } from '@/infrastructure/shortcuts'
 import { useTags } from '../TagsProvider'
 import './TagsToolbar.css'
 
@@ -13,17 +14,8 @@ export function TagsToolbar() {
   const { LL } = useI18nContext()
   const { all, q, setQ, field, setField, count, view, setView } = useTags()
   const input = useRef<HTMLInputElement>(null)
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const typing =
-        e.target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)
-      if (e.key !== '/' || typing || e.metaKey || e.ctrlKey || e.altKey) return
-      e.preventDefault()
-      input.current?.focus()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [])
+  useActionShortcuts({ 'tags.search': () => input.current?.focus() })
+  const hint = useShortcutHint('tags.search')
   if (all.length === 0) return null
   return (
     <>
@@ -36,7 +28,7 @@ export function TagsToolbar() {
           onChange={(e) => setQ(e.currentTarget.value)}
           onKeyDown={(e) => e.key === 'Escape' && e.currentTarget.blur()}
         />
-        <kbd>/</kbd>
+        {hint !== undefined && <kbd>{hint}</kbd>}
       </label>
       <FilterTabs
         label={LL.tags.kind()}

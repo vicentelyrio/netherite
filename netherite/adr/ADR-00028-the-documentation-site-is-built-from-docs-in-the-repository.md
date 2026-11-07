@@ -19,11 +19,11 @@ The documentation is Markdown in `apps/docs/` (getting started, concepts, refere
 
 ## Decision
 
-- **`apps/docs/` stays the source of truth**, in the same repository as the code, so a change to a command and its page can go in one pull request and `lint` can keep checking them together.
-- **VitePress builds it.** It reads the Markdown in `apps/docs/` where it is, so no page moves and GitHub still shows the same files; its local search works offline, with no service behind it; and it is one dev dependency with no framework to keep up. Starlight was the other candidate, but it wants its pages under `src/content/docs` and a workflow publishes it to GitHub Pages on each push to `main`. No server, no account and no cost.
-- **The README stays a short pitch and a quick start** and links to the site; it does not duplicate the pages.
-- **Pages to add** before the first publish: Install (npx, global, dev dependency, Node 24), Agents (what `init` installs, how each skill triggers, MCP setup for Claude Code, Cursor and Codex, the ruleset), Templates (see the templates ADR) and Migrate an existing repository.
-- **Command reference is generated from the CLI's own help** where it can be, so the page cannot disagree with `--help`.
+> - **`apps/docs/` stays the source of truth**, in the same repository as the code, so a change to a command and its page can go in one pull request and `lint` can keep checking them together.
+> - **VitePress builds it.** It reads the Markdown in `apps/docs/` where it is, so no page moves and GitHub still shows the same files; its local search works offline, with no service behind it; and it is one dev dependency with no framework to keep up. Starlight was the other candidate, but it wants its pages under `src/content/docs` and a workflow publishes it to GitHub Pages on each push to `main`. No server, no account and no cost.
+> - **The README stays a short pitch and a quick start** and links to the site; it does not duplicate the pages.
+> - **Pages to add** before the first publish: Install (npx, global, dev dependency, Node 24), Agents (what `init` installs, how each skill triggers, MCP setup for Claude Code, Cursor and Codex, the ruleset), Templates (see the templates ADR) and Migrate an existing repository.
+> - **Command reference is generated from the CLI's own help** where it can be, so the page cannot disagree with `--help`.
 
 ## Consequences
 

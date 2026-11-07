@@ -1,15 +1,8 @@
-import {
-  DndContext,
-  type DragEndEvent,
-  DragOverlay,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core'
+import { DragOverlay } from '@dnd-kit/core'
 import type { Board, BoardCard } from '@netherite/api'
 import { Card } from '@netherite/ui'
 import { useState } from 'react'
+import { type DropTarget, placeIn, ReorderContext } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useWrite } from '@/infrastructure/query'
 import { BoardColumn } from '../BoardColumn'
@@ -35,32 +28,36 @@ export function TaskBoard({
   readonly selected: string | undefined
 }) {
   const api = useApi()
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
-    useSensor(KeyboardSensor),
-  )
   const [dragging, setDragging] = useState<BoardCard | undefined>()
-  const move = useWrite(api, (a, v: { id: string; state: string }) =>
-    a.call((c) => c.items.setState({ params: { id: v.id }, payload: { state: v.state } })),
-  )
+  const move = useWrite(api, async (a, v: { id: string; state?: string; position?: number }) => {
+    const { id, state, position } = v
+    if (state !== undefined) {
+      await a.call((c) => c.items.setState({ params: { id }, payload: { state } }))
+    }
+    if (position !== undefined) {
+      await a.call((c) => c.items.update({ params: { id }, payload: { set: { position } } }))
+    }
+  })
   const overline = board.goals[0]?.title.toLowerCase()
-  const onDragEnd = ({ active, over }: DragEndEvent) => {
-    setDragging(undefined)
-    const change = moveFor(
-      board.tasks,
-      String(active.id),
-      over === null ? undefined : String(over.id),
-    )
-    if (change !== undefined) move.mutate(change)
+  const onDrop = (id: string, target: DropTarget) => {
+    const change = moveFor(board.tasks, id, target.list)
+    if (change === undefined && target.item === undefined) return
+    const cards = board.tasks.filter((t) => t.state === target.list)
+    const position = placeIn(cards, id, target)
+    if (change === undefined && position === undefined) return
+    move.mutate({
+      id,
+      ...(change === undefined ? {} : { state: change.state }),
+      ...(position === undefined ? {} : { position }),
+    })
   }
   return (
-    <DndContext
-      sensors={sensors}
-      onDragStart={({ active }) => setDragging(board.tasks.find((t) => t.id === active.id))}
-      onDragCancel={() => setDragging(undefined)}
-      onDragEnd={onDragEnd}
+    <ReorderContext
+      onStart={(id) => setDragging(board.tasks.find((t) => t.id === id))}
+      onEnd={() => setDragging(undefined)}
+      onDrop={onDrop}
     >
-      <div className="board">
+      <div className="board" data-bleed>
         {board.columns.map((column) => (
           <BoardColumn
             key={column.name}
@@ -77,7 +74,7 @@ export function TaskBoard({
       <DragOverlay dropAnimation={null}>
         {dragging && (
           <div className="board-overlay">
-            <Card>
+            <Card className="board-overlay-card">
               <TaskCardBody
                 card={dragging}
                 projectId={board.id}
@@ -88,6 +85,6 @@ export function TaskBoard({
           </div>
         )}
       </DragOverlay>
-    </DndContext>
+    </ReorderContext>
   )
 }

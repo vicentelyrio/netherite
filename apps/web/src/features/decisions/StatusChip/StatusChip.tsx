@@ -1,4 +1,4 @@
-import { Icon } from '@netherite/ui'
+import { designColor, Icon } from '@netherite/ui'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { statusLabel, statusStyle } from '../lanes'
 import './StatusChip.css'
@@ -11,7 +11,11 @@ export function StatusChip({
   readonly faded?: boolean
 }) {
   const { LL } = useI18nContext()
-  const s = statusStyle[status] ?? { label: status, color: '#b9bcd3', icon: 'circle' }
+  const s = statusStyle[status] ?? {
+    label: status,
+    color: designColor.text.secondary,
+    icon: 'circle',
+  }
   return (
     <span
       className="dl-chip"

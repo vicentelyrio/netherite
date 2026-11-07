@@ -1,4 +1,5 @@
 export { GoalAreas } from './GoalAreas'
+export { groupByArea } from './GoalAreas/areas'
 export { GoalDetail } from './GoalDetail'
 export { GoalGraph } from './GoalGraph'
 export { GoalsHeading } from './GoalsHeading'

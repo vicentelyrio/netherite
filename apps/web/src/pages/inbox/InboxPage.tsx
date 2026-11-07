@@ -1,26 +1,12 @@
 import {
-  CaptureBox,
   InboxActions,
-  InboxGroups,
   InboxHeading,
   InboxProvider,
   InboxToolbar,
   TriageDetail,
-  TriageList,
-  useInboxState,
 } from '@/features/inbox'
 import { SplitTemplate } from '@/templates'
-
-function Main() {
-  const { tab } = useInboxState()
-  if (tab === 'changes') return <InboxGroups />
-  return (
-    <>
-      <CaptureBox />
-      <TriageList />
-    </>
-  )
-}
+import { InboxMain } from './InboxMain'
 
 export function InboxPage() {
   return (
@@ -29,7 +15,7 @@ export function InboxPage() {
         header={<InboxHeading />}
         actions={<InboxActions />}
         toolbar={<InboxToolbar />}
-        main={<Main />}
+        main={<InboxMain />}
         aside={<TriageDetail />}
       />
     </InboxProvider>
