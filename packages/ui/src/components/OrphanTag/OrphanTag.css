@@ -1,0 +1,12 @@
+.nt-orphan {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nt-space-1);
+  height: var(--nt-space-5);
+  padding: 0 var(--nt-space-2);
+  font-size: var(--nt-text-micro-size);
+  font-weight: var(--nt-font-weight-medium);
+  color: var(--nt-color-text-secondary);
+  border: var(--nt-stroke-thin) dashed var(--nt-color-border-strong);
+  border-radius: var(--nt-radius-xs);
+}

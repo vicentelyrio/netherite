@@ -1,0 +1,27 @@
+.nt-menu {
+  padding: var(--nt-space-1);
+  background: var(--nt-color-bg-overlay);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-overlay);
+  border-radius: var(--nt-radius-tooltip);
+  box-shadow: var(--nt-shadow-popover);
+}
+.nt-menu-item {
+  padding: var(--nt-space-1-5) var(--nt-space-2);
+  font-size: var(--nt-text-caption-size);
+  border-radius: var(--nt-radius-xs);
+}
+.nt-menu-item:hover,
+.nt-menu-item[data-hovered] {
+  background: var(--nt-color-bg-column);
+}
+.nt-menu-label {
+  padding: var(--nt-space-1) var(--nt-space-2);
+  font-size: var(--nt-text-overline-size);
+  font-weight: var(--nt-text-overline-weight);
+  letter-spacing: var(--nt-text-overline-letter-spacing);
+  text-transform: uppercase;
+  color: var(--nt-color-text-muted);
+}
+.nt-menu-divider {
+  border-color: var(--nt-color-border-divider);
+}

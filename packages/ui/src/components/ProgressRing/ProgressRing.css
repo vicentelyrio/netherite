@@ -1,0 +1,28 @@
+.nt-ring {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+.nt-ring-inner {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--nt-color-bg-canvas);
+  color: var(--nt-color-status-success);
+}
+.nt-ring-text {
+  display: inline-flex;
+  align-items: baseline;
+  font-weight: var(--nt-font-weight-semibold);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.nt-ring-unit {
+  font-size: var(--nt-font-size-xxs);
+}
+.nt-ring-count {
+  font-weight: var(--nt-font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}

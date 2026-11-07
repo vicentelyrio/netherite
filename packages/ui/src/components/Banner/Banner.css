@@ -1,0 +1,67 @@
+.nt-banner {
+  --nt-banner-color: var(--nt-color-accent-fg);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nt-space-3);
+  padding: var(--nt-space-3-5) var(--nt-space-4);
+  color: var(--nt-color-text-primary);
+  background: color-mix(
+    in srgb,
+    var(--nt-banner-color) calc(var(--nt-tint-banner) * 100%),
+    transparent
+  );
+  border: var(--nt-stroke-thin) solid
+    color-mix(
+      in srgb,
+      var(--nt-banner-color) calc(var(--nt-tint-banner-border) * 100%),
+      transparent
+    );
+  border-radius: var(--nt-radius-md);
+}
+.nt-banner[data-variant="success"] {
+  --nt-banner-color: var(--nt-color-status-success);
+}
+.nt-banner[data-variant="warning"] {
+  --nt-banner-color: var(--nt-color-status-warning);
+}
+.nt-banner[data-variant="danger"] {
+  --nt-banner-color: var(--nt-color-status-danger);
+}
+.nt-banner-icon {
+  color: var(--nt-banner-color);
+}
+.nt-banner-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nt-space-0-5);
+  min-width: 0;
+}
+.nt-banner-title {
+  font-size: var(--nt-text-body-sm-size);
+  line-height: var(--nt-text-body-sm-line-height);
+  font-weight: var(--nt-font-weight-semibold);
+}
+.nt-banner-text {
+  font-size: var(--nt-text-caption-size);
+  line-height: var(--nt-text-caption-line-height);
+  color: var(--nt-color-text-secondary);
+}
+.nt-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--nt-space-2);
+}
+.nt-banner-close {
+  display: inline-flex;
+  padding: var(--nt-space-1);
+  color: var(--nt-color-text-secondary);
+  background: none;
+  border: 0;
+  border-radius: var(--nt-radius-xs);
+  cursor: pointer;
+}
+.nt-banner-close:hover {
+  color: var(--nt-color-text-primary);
+  background: var(--nt-color-bg-column);
+}

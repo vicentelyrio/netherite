@@ -1,0 +1,18 @@
+.nt-drawer {
+  background: var(--nt-color-bg-canvas);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
+  box-shadow: var(--nt-shadow-popover);
+}
+.nt-drawer-header {
+  padding: var(--nt-space-4) var(--nt-space-5);
+  background: var(--nt-color-bg-canvas);
+  border-bottom: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
+}
+.nt-drawer-title {
+  font-size: var(--nt-text-heading-size);
+  line-height: var(--nt-text-heading-line-height);
+  font-weight: var(--nt-text-heading-weight);
+}
+.nt-drawer-body {
+  padding: var(--nt-space-5);
+}

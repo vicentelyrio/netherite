@@ -1,0 +1,14 @@
+.nt-tooltip {
+  display: flex;
+  align-items: center;
+  min-height: var(--nt-layout-tooltip-height);
+  padding: 0 var(--nt-space-1-5) 0 var(--nt-space-3);
+  font-size: var(--nt-text-caption-size);
+  line-height: var(--nt-text-caption-line-height);
+  font-weight: var(--nt-font-weight-medium);
+  color: var(--nt-color-text-primary);
+  background: var(--nt-color-bg-overlay);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-overlay);
+  border-radius: var(--nt-radius-sm);
+  box-shadow: var(--nt-shadow-tooltip);
+}

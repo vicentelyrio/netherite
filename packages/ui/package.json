@@ -8,15 +8,13 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./fonts.css": "./fonts.css",
-    "./styles.css": "./styles.css",
-    "./components.css": "./components.css"
+    "./fonts.css": "./src/theme/fonts.css",
+    "./styles.css": "./src/styles.css",
+    "./components.css": "./src/components/index.css"
   },
   "files": [
     "dist",
-    "fonts.css",
-    "components.css",
-    "styles.css"
+    "src/**/*.css"
   ],
   "scripts": {
     "build": "tsdown",

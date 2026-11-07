@@ -1,0 +1,17 @@
+.nt-chip {
+  height: var(--nt-space-6);
+  padding-inline: var(--nt-space-3);
+  font-size: var(--nt-text-micro-size);
+  font-weight: var(--nt-font-weight-medium);
+  color: var(--nt-color-text-secondary);
+  border-color: var(--nt-color-border-strong);
+  border-radius: var(--nt-radius-xs);
+}
+.nt-chip[data-checked] {
+  color: var(--nt-color-accent-fg);
+  background: var(--nt-color-accent-subtle);
+  border-color: var(--nt-color-accent-solid);
+}
+.nt-chip-icon {
+  width: var(--nt-space-4);
+}

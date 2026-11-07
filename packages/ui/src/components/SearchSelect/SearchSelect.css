@@ -1,0 +1,30 @@
+.nt-select-input {
+  height: var(--nt-size-34);
+  background: var(--nt-color-bg-column);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
+  color: var(--nt-color-text-primary);
+  font-size: var(--nt-text-caption-size);
+}
+.nt-select-input:focus,
+.nt-select-input:focus-within {
+  border-color: var(--nt-color-accent-fg);
+}
+.nt-select-section {
+  color: var(--nt-color-text-muted);
+}
+.nt-select-dropdown {
+  padding: var(--nt-space-1);
+  background: var(--nt-color-bg-overlay);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-overlay);
+  border-radius: var(--nt-radius-tooltip);
+  box-shadow: var(--nt-shadow-popover);
+}
+.nt-select-option {
+  padding: var(--nt-space-1-5) var(--nt-space-2);
+  font-size: var(--nt-text-caption-size);
+  border-radius: var(--nt-radius-xs);
+}
+.nt-select-option:hover,
+.nt-select-option[data-combobox-selected] {
+  background: var(--nt-color-bg-column);
+}

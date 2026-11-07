@@ -1,0 +1,10 @@
+.nt-kbd {
+  padding: var(--nt-space-px) var(--nt-space-1-5);
+  font:
+    var(--nt-text-mono-sm-weight) var(--nt-text-mono-sm-size) / var(--nt-text-mono-sm-line-height)
+    var(--nt-font-mono);
+  color: var(--nt-color-text-secondary);
+  background: var(--nt-color-bg-column);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
+  border-radius: var(--nt-radius-xs);
+}

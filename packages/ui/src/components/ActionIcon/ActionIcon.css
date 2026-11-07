@@ -1,0 +1,23 @@
+.nt-action-icon {
+  width: var(--nt-layout-switcher-height);
+  height: var(--nt-layout-switcher-height);
+  color: var(--nt-color-text-icon);
+  border-radius: var(--nt-radius-control);
+  transition:
+    background-color var(--nt-duration-base) var(--nt-easing-standard),
+    color var(--nt-duration-base) var(--nt-easing-standard);
+}
+.nt-action-icon:hover {
+  color: var(--nt-color-text-primary);
+  background: var(--nt-color-bg-column);
+}
+.nt-action-icon[data-active] {
+  color: var(--nt-color-accent-fg-hover);
+  background: var(--nt-color-accent-subtle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nt-action-icon {
+    transition: none;
+  }
+}

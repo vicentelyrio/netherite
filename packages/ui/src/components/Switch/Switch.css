@@ -1,0 +1,10 @@
+.nt-switch-track {
+  cursor: pointer;
+}
+.nt-switch-thumb {
+  background: var(--nt-color-bg-thumb);
+}
+.nt-switch-label {
+  font-size: var(--nt-text-body-sm-size);
+  color: var(--nt-color-text-primary);
+}

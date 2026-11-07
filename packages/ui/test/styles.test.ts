@@ -1,14 +1,29 @@
 // @vitest-environment node
-import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { readdirSync, readFileSync, statSync } from 'node:fs'
+import { join, relative } from 'node:path'
 import { stylesheet, variables } from '@netherite/tokens'
 import { describe, expect, test } from 'vitest'
 import { classNames } from '../src/index'
 
 const root = join(import.meta.dirname, '..')
-const css = readFileSync(join(root, 'components.css'), 'utf8')
-const entry = readFileSync(join(root, 'styles.css'), 'utf8')
-const preview = readFileSync(join(root, 'src/preview.tsx'), 'utf8')
+const src = join(root, 'src')
+
+const walk = (dir: string): string[] =>
+  readdirSync(dir).flatMap((name) => {
+    const path = join(dir, name)
+    return statSync(path).isDirectory() ? walk(path) : [path]
+  })
+
+const read = (path: string) => readFileSync(path, 'utf8')
+const files = walk(src)
+const cssFiles = files.filter((f) => f.endsWith('.css'))
+const css = cssFiles.map(read).join('\n')
+const code = files.filter((f) => /\.tsx?$/.test(f) && !f.includes('.test.'))
+const entry = read(join(src, 'styles.css'))
+const preview = walk(join(src, 'components/UiPreview'))
+  .filter((f) => f.endsWith('.tsx'))
+  .map(read)
+  .join('\n')
 
 const usedClasses = () => {
   const names = new Set<string>()
@@ -18,13 +33,8 @@ const usedClasses = () => {
       for (const v of Object.values(value)) fromTheme(v)
   }
   fromTheme(classNames)
-  for (const file of [
-    'components/domain.tsx',
-    'components/controls.tsx',
-    'rail.tsx',
-    'preview.tsx',
-  ]) {
-    const text = readFileSync(join(root, 'src', file), 'utf8')
+  for (const file of code) {
+    const text = read(file)
     for (const m of text.matchAll(/["'`]((?:nt-[a-z0-9-]+)(?: nt-[a-z0-9-]+)*)["'`]/g)) {
       for (const name of (m[1] as string).split(' ')) names.add(name)
     }
@@ -35,12 +45,16 @@ const usedClasses = () => {
   return names
 }
 
-describe('components.css', () => {
-  test('every nt- class the components use has a rule (fonts.css owns nt-icon)', () => {
-    const fonts = readFileSync(join(root, 'fonts.css'), 'utf8')
-    const missing = [...usedClasses()].filter(
-      (name) => !css.includes(`.${name}`) && !fonts.includes(`.${name}`),
-    )
+const classesIn = (text: string) =>
+  new Set(
+    [...text.replace(/\{[^{}]*\}/g, '{}').matchAll(/\.(nt-[a-z0-9-]+)/g)].map(
+      (m) => m[1] as string,
+    ),
+  )
+
+describe('the component stylesheets', () => {
+  test('every nt- class the components use has a rule', () => {
+    const missing = [...usedClasses()].filter((name) => !css.includes(`.${name}`))
     expect(missing).toEqual([])
   })
 
@@ -59,6 +73,8 @@ describe('components.css', () => {
       '--nt-pill-bg',
       '--nt-badge-color',
       '--nt-banner-color',
+      '--nt-icon-fill',
+      '--nt-icon-weight',
     ])
     const unknown = [...used].filter((v) => !defined.has(v) && !local.has(v))
     expect(unknown).toEqual([])
@@ -79,13 +95,14 @@ describe('components.css', () => {
 })
 
 describe('styles.css', () => {
-  test('loads tokens, fonts, the library (in a layer) and ours, in that order', () => {
+  test('loads tokens, fonts, the library (in a layer), the base and the components, in that order', () => {
     const order = [...entry.matchAll(/@import\s+["']([^"']+)["']/g)].map((m) => m[1])
     expect(order).toEqual([
       '@netherite/tokens/tokens.css',
-      './fonts.css',
+      './theme/fonts.css',
       '@mantine/core/styles.layer.css',
-      './components.css',
+      './theme/base.css',
+      './components/index.css',
     ])
   })
 
@@ -93,6 +110,49 @@ describe('styles.css', () => {
     const tokens = stylesheet()
     expect(tokens).toContain(':root {')
     expect(tokens).toContain('color-scheme: dark;')
+  })
+})
+
+describe('the structure', () => {
+  const components = readdirSync(join(src, 'components')).filter((name) =>
+    statSync(join(src, 'components', name)).isDirectory(),
+  )
+
+  test('nothing but the entry points sits at the root of src', () => {
+    const loose = readdirSync(src).filter((name) => statSync(join(src, name)).isFile())
+    expect(loose.sort()).toEqual(['index.ts', 'styles.css'])
+    const folders = readdirSync(src).filter((name) => statSync(join(src, name)).isDirectory())
+    expect(folders.sort()).toEqual(['components', 'shortcuts', 'theme'])
+  })
+
+  test('every component is a folder with an entry, and only folders live in components', () => {
+    const loose = readdirSync(join(src, 'components')).filter((name) => !components.includes(name))
+    expect(loose).toEqual(['index.css'])
+    for (const name of components) {
+      expect(readdirSync(join(src, 'components', name)), name).toContain('index.ts')
+    }
+  })
+
+  test('a class is styled in one file only, the one of the component it belongs to', () => {
+    const owners = new Map<string, string[]>()
+    for (const file of cssFiles) {
+      for (const name of classesIn(read(file))) {
+        owners.set(name, [...(owners.get(name) ?? []), relative(src, file)])
+      }
+    }
+    const shared = [...owners].filter(([, where]) => where.length > 1)
+    expect(shared).toEqual([])
+  })
+
+  test('every stylesheet of a component is loaded, and none is written in TypeScript', () => {
+    const index = read(join(src, 'components/index.css'))
+    for (const file of cssFiles.filter(
+      (f) => f.includes('/components/') && !f.endsWith('index.css'),
+    )) {
+      const name = file.split('/').pop() as string
+      expect(index, name).toContain(`/${name}"`)
+    }
+    for (const file of code) expect(read(file), file).not.toMatch(/import ['"].*\.css['"]/)
   })
 })
 

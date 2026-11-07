@@ -1,0 +1,17 @@
+.nt-segmented {
+  background: var(--nt-color-bg-sunken);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
+  border-radius: var(--nt-radius-sm);
+}
+.nt-segmented-indicator {
+  background: var(--nt-color-accent-subtle);
+  border-radius: var(--nt-radius-xs);
+}
+.nt-segmented-label {
+  font-size: var(--nt-text-caption-size);
+  font-weight: var(--nt-font-weight-medium);
+  color: var(--nt-color-text-icon);
+}
+.nt-segmented-label[data-active] {
+  color: var(--nt-color-accent-fg-hover);
+}
