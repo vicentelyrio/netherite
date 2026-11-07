@@ -10,3 +10,8 @@ export const readConfig = (): AppConfig => ({
   baseUrl: window.location.origin,
   token: meta('netherite-token'),
 })
+
+export const workspaceKey = (name: string) => {
+  const workspace = meta('netherite-workspace')
+  return workspace === undefined ? `netherite:${name}` : `netherite:${workspace}:${name}`
+}

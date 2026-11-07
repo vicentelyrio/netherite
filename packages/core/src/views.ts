@@ -275,6 +275,7 @@ export interface GoalRow {
   readonly tags: ReadonlyArray<string>
   readonly progress: { readonly done: number; readonly total: number } | null
   readonly projects: number
+  readonly rank: number
 }
 
 export interface ProjectRow {
@@ -285,7 +286,18 @@ export interface ProjectRow {
   readonly tags: ReadonlyArray<string>
   readonly progress: { readonly done: number; readonly total: number } | null
   readonly goals: ReadonlyArray<{ readonly id: string; readonly title: string }>
+  readonly rank: number
 }
+
+const rankOf = (item: ScannedItem) => {
+  const position = fieldsOf(item).position
+  if (typeof position === 'number' && Number.isFinite(position)) return position
+  const number = /(\d+)$/.exec(item.id ?? '')
+  return number === null ? 0 : Number(number[1])
+}
+
+const byRank = (a: ScannedItem, b: ScannedItem) =>
+  rankOf(a) - rankOf(b) || (a.id ?? '').localeCompare(b.id ?? '')
 
 const idOrNull = (item: ScannedItem) => (item.id === undefined ? null : item.id)
 
@@ -316,6 +328,7 @@ const goalRow = (repo: Repo, item: ScannedItem): GoalRow => {
     tags: strings(f.tags),
     progress: repo.index.progress(item.path) ?? null,
     projects: projectsOf(repo, item.path).length,
+    rank: rankOf(item),
   }
 }
 
@@ -333,6 +346,7 @@ const projectRow = (repo: Repo, item: ScannedItem): ProjectRow => {
     tags: strings(f.tags),
     progress: repo.index.progress(item.path) ?? null,
     goals,
+    rank: rankOf(item),
   }
 }
 
@@ -343,13 +357,15 @@ export const goalRows = (repo: Repo): GoalRow[] =>
     .map((i) => goalRow(repo, i))
     .sort((a, b) => {
       if ((a.area === undefined) !== (b.area === undefined)) return a.area === undefined ? 1 : -1
-      return (a.area ?? '').localeCompare(b.area ?? '') || a.id.localeCompare(b.id)
+      return (
+        (a.area ?? '').localeCompare(b.area ?? '') || a.rank - b.rank || a.id.localeCompare(b.id)
+      )
     })
 
 export const goalDetail = (repo: Repo, item: ScannedItem) => ({
   ...goalRow(repo, item),
   projectRows: projectsOf(repo, item.path)
-    .sort((a, b) => (a.id ?? '').localeCompare(b.id ?? ''))
+    .sort(byRank)
     .map((p) => projectRow(repo, p)),
 })
 
@@ -363,6 +379,7 @@ export interface BoardCard {
   readonly due: string | undefined
   readonly checklist: { readonly done: number; readonly total: number } | null
   readonly waitingOn: ReadonlyArray<{ readonly id: string; readonly title: string }>
+  readonly rank: number
 }
 
 export interface BoardColumn {
@@ -396,6 +413,7 @@ const taskCard = (repo: Repo, item: ScannedItem, doneStates: ReadonlySet<string>
     due: typeof f.due === 'string' ? f.due : undefined,
     checklist: repo.index.progress(item.path) ?? null,
     waitingOn,
+    rank: rankOf(item),
   }
 }
 
@@ -403,7 +421,7 @@ export const projectRows = (repo: Repo): ProjectRow[] =>
   repo.index
     .items()
     .filter((i) => i.type === 'project' && i.id !== undefined)
-    .sort((a, b) => (a.id ?? '').localeCompare(b.id ?? ''))
+    .sort(byRank)
     .map((i) => projectRow(repo, i))
 
 export const boardOf = (repo: Repo, project: ScannedItem) => {
@@ -415,7 +433,7 @@ export const boardOf = (repo: Repo, project: ScannedItem) => {
       const item = repo.index.get(e.from)
       return item?.type === 'task' && item.id !== undefined ? [item] : []
     })
-    .sort((a, b) => (a.id ?? '').localeCompare(b.id ?? ''))
+    .sort(byRank)
     .map((t) => taskCard(repo, t, doneStates))
   const others = repo.index
     .backlinks(project.path)

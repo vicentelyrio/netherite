@@ -1,0 +1,18 @@
+.goal-areas-state {
+  flex: 1;
+  min-width: 0;
+  padding: 8px;
+}
+.goal-drop {
+  height: 96px;
+  border: 1.5px dashed #7f82ea;
+  border-radius: 10px;
+  background: rgba(127, 130, 234, 0.08);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #c9caff;
+}

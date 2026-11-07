@@ -14,14 +14,17 @@ import {
 import { DocHeader } from '../DocHeader'
 import { DocMain } from '../DocMain'
 import { DocPanel } from '../DocPanel'
+import { fillSelection } from './fill'
 import './DocView.css'
 
 export function DocView({
   item,
   mode: start,
+  fill = false,
 }: {
   readonly item: ItemDetail
   readonly mode?: 'split'
+  readonly fill?: boolean
 }) {
   const api = useApi()
   const client = useQueryClient()
@@ -82,6 +85,14 @@ export function DocView({
             mode={mode}
             onModeChange={(m) => setMode(m as 'split' | 'text')}
             onStats={(stats) => setChangedLines(stats.changedLines)}
+            {...(fill
+              ? {
+                  onReady: (editor) => {
+                    editor.dispatch({ selection: fillSelection(editor.state.doc.toString()) })
+                    editor.focus()
+                  },
+                }
+              : {})}
             branch={health.data?.branch}
           />
         </div>

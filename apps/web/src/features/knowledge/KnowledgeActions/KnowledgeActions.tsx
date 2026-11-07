@@ -1,15 +1,14 @@
 import { Button, Icon, Menu } from '@netherite/ui'
-import { Link } from '@tanstack/react-router'
-import { TitleForm } from '@/components'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useI18nContext } from '@/infrastructure/i18n'
-import { type KnowledgeType, useKnowledgeIndex } from '../KnowledgeProvider'
+import type { KnowledgeType } from '../KnowledgeProvider'
 import './KnowledgeActions.css'
 
 const kinds: ReadonlyArray<KnowledgeType> = ['doc', 'adr', 'context', 'runbook']
 
 export function KnowledgeActions() {
   const { LL } = useI18nContext()
-  const { startCreating } = useKnowledgeIndex()
+  const navigate = useNavigate()
   const newLabels = {
     doc: LL.knowledge.actions.newDoc(),
     adr: LL.knowledge.actions.newAdr(),
@@ -29,25 +28,15 @@ export function KnowledgeActions() {
         </Menu.Target>
         <Menu.Dropdown>
           {kinds.map((type) => (
-            <Menu.Item key={type} onClick={() => startCreating(type)}>
+            <Menu.Item
+              key={type}
+              onClick={() => void navigate({ to: '/knowledge/new/$type', params: { type } })}
+            >
               {newLabels[type]}
             </Menu.Item>
           ))}
         </Menu.Dropdown>
       </Menu>
     </div>
-  )
-}
-
-export function KnowledgeCreateForm() {
-  const { LL } = useI18nContext()
-  const { creating, startCreating, create } = useKnowledgeIndex()
-  if (creating === undefined) return null
-  return (
-    <TitleForm
-      label={LL.knowledge.actions.titleLabel({ type: creating })}
-      onCancel={() => startCreating(undefined)}
-      onSubmit={(title) => create(creating, title)}
-    />
   )
 }

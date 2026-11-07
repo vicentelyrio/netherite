@@ -110,6 +110,7 @@ export const CreatePayload = Schema.Struct({
   id: opt(S),
   fields: opt(Fields),
   body: opt(S),
+  template: opt(Schema.Boolean),
   createdBy: opt(S),
 })
 
@@ -441,6 +442,7 @@ export const GoalRow = Schema.Struct({
   tags: Schema.Array(S),
   progress: OptProgress,
   projects: N,
+  rank: N,
 })
 export type GoalRow = typeof GoalRow.Type
 
@@ -454,6 +456,7 @@ export const ProjectRow = Schema.Struct({
   tags: Schema.Array(S),
   progress: OptProgress,
   goals: Schema.Array(Schema.Struct({ id: S, title: S })),
+  rank: N,
 })
 export type ProjectRow = typeof ProjectRow.Type
 
@@ -475,6 +478,7 @@ export const BoardCard = Schema.Struct({
   due: opt(S),
   checklist: Schema.NullOr(Progress),
   waitingOn: Schema.Array(Schema.Struct({ id: S, title: S })),
+  rank: N,
 })
 export type BoardCard = typeof BoardCard.Type
 

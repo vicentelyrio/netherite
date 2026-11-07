@@ -246,9 +246,18 @@ describe('writing, and conflicts', () => {
   const docFile = () =>
     readFileSync(join(server().dir, 'netherite/docs/DOC-00001-overview.md'), 'utf8')
 
-  test('Mark reviewed writes the date to the file', async () => {
+  const reviewedLongAgo = () =>
+    other().call((c) =>
+      c.items.update({
+        params: { id: 'DOC-00001' },
+        payload: { set: { reviewed_at: '2026-01-01' } },
+      }),
+    )
+
+  test('the review button says when, and writes the date to the file', async () => {
+    await reviewedLongAgo()
     renderApp('/items/DOC-00001')
-    await userEvent.click(await screen.findByRole('button', { name: /Mark reviewed/ }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Reviewed at 1 Jan 2026' }))
     const today = new Date().toISOString().slice(0, 10)
     await waitFor(() => expect(docFile()).toContain(`reviewed_at: ${today}`))
     expect(screen.queryByRole('alert')).toBeNull()
@@ -257,7 +266,7 @@ describe('writing, and conflicts', () => {
   test('only docs, runbooks and context can be reviewed', async () => {
     renderApp('/items/TASK-00001')
     await screen.findByRole('heading', { name: 'Core', level: 1 })
-    expect(screen.queryByRole('button', { name: /Mark reviewed/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /Mark reviewed|Reviewed at/ })).toBeNull()
   })
 
   test('if the file changed since it was opened, nothing is saved: the person is told, and Reload fixes it', async () => {
@@ -266,8 +275,9 @@ describe('writing, and conflicts', () => {
       close() {}
     } as never
     try {
+      await reviewedLongAgo()
       renderApp('/items/DOC-00001')
-      const button = await screen.findByRole('button', { name: /Mark reviewed/ })
+      const button = await screen.findByRole('button', { name: /^Reviewed at / })
 
       const api = other()
       const fresh = await api.call((c) => c.items.get({ params: { id: 'DOC-00001' } }))
@@ -291,7 +301,7 @@ describe('writing, and conflicts', () => {
       await waitFor(() =>
         expect(document.querySelector('article')).toHaveAttribute('data-hash', current.hash),
       )
-      await userEvent.click(await screen.findByRole('button', { name: /Mark reviewed/ }))
+      await userEvent.click(await screen.findByRole('button', { name: /^Reviewed at / }))
       const today = new Date().toISOString().slice(0, 10)
       await waitFor(() => expect(docFile()).toContain(`reviewed_at: ${today}`))
       expect(screen.queryByRole('alert')).toBeNull()
@@ -483,9 +493,9 @@ describe('goals', () => {
   test('New area asks for a name and a first goal, and the area appears with that goal in it', async () => {
     renderApp('/goals')
     await userEvent.click(await screen.findByRole('button', { name: /New area/ }))
-    await userEvent.type(screen.getByLabelText('Area name'), 'Health')
-    await userEvent.type(screen.getByLabelText('First goal'), 'Sleep well')
-    await userEvent.click(screen.getByRole('button', { name: 'Create area' }))
+    await userEvent.type(screen.getByLabelText('Area name'), 'Health{Enter}')
+    expect(screen.getByLabelText('First goal')).toHaveFocus()
+    await userEvent.keyboard('Sleep well{Enter}')
     const area = await screen.findByRole('region', { name: 'Health' })
     expect(within(area).getByText('Sleep well')).toBeInTheDocument()
     const api = other()
@@ -495,6 +505,36 @@ describe('goals', () => {
     await api.call((c) =>
       c.items.delete({ params: { id: made?.id as string }, query: { force: 'true' } }),
     )
+  })
+
+  test('leaving New area creates it once both fields are filled, and moving between them does not', async () => {
+    renderApp('/goals')
+    await userEvent.click(await screen.findByRole('button', { name: /New area/ }))
+    await userEvent.type(screen.getByLabelText('Area name'), 'Reading')
+    await userEvent.tab()
+    expect(screen.getByLabelText('First goal')).toHaveFocus()
+    await userEvent.click(document.body)
+    expect(screen.getByLabelText('Area name')).toHaveValue('Reading')
+    await userEvent.type(screen.getByLabelText('First goal'), 'Read more')
+    await userEvent.click(document.body)
+    const area = await screen.findByRole('region', { name: 'Reading' })
+    expect(within(area).getByText('Read more')).toBeInTheDocument()
+    const api = other()
+    const goals = await api.call((c) => c.goals.list())
+    const made = goals.goals.find((g) => g.title === 'Read more')
+    await api.call((c) =>
+      c.items.delete({ params: { id: made?.id as string }, query: { force: 'true' } }),
+    )
+  })
+
+  test('New area closes when left empty, and Escape forgets what was typed', async () => {
+    renderApp('/goals')
+    await userEvent.click(await screen.findByRole('button', { name: /New area/ }))
+    await userEvent.click(document.body)
+    await userEvent.click(await screen.findByRole('button', { name: /New area/ }))
+    await userEvent.type(screen.getByLabelText('Area name'), 'Gone{Escape}')
+    await userEvent.click(await screen.findByRole('button', { name: /New area/ }))
+    expect(screen.getByLabelText('Area name')).toHaveValue('')
   })
 
   test('the pencil beside an area name renames the area on its goals', async () => {
@@ -542,8 +582,7 @@ describe('goals', () => {
     renderApp('/goals')
     const area = await screen.findByRole('region', { name: 'No area' })
     await userEvent.click(within(area).getByRole('button', { name: /New goal/ }))
-    await userEvent.type(within(area).getByLabelText('Goal title'), 'Learn to sail')
-    await userEvent.click(within(area).getByRole('button', { name: 'Create' }))
+    await userEvent.type(within(area).getByLabelText('Goal title'), 'Learn to sail{Enter}')
     expect(await within(area).findByText('Learn to sail')).toBeInTheDocument()
     const api = other()
     const goals = await api.call((c) => c.goals.list())
@@ -556,8 +595,7 @@ describe('goals', () => {
   test('New goal asks for a title, creates the goal, and it shows up', async () => {
     renderApp('/goals')
     await userEvent.click(await screen.findByRole('button', { name: /New goal/ }))
-    await userEvent.type(screen.getByLabelText('Goal title'), 'Learn to sail')
-    await userEvent.click(screen.getByRole('button', { name: 'Create' }))
+    await userEvent.type(screen.getByLabelText('Goal title'), 'Learn to sail{Enter}')
     expect(await screen.findByText('Learn to sail')).toBeInTheDocument()
   })
 })
@@ -762,6 +800,16 @@ describe('the knowledge index', () => {
       'href',
       '/items/ADR-00002',
     )
+  })
+
+  test('one click only selects a row, and a double click opens it', async () => {
+    renderApp('/knowledge')
+    const title = await screen.findByText('Promises')
+    await userEvent.click(title)
+    await screen.findByRole('complementary', { name: 'Preview of ADR-00002' })
+    expect(screen.queryByRole('article')).toBeNull()
+    await userEvent.dblClick(title)
+    expect(await screen.findByRole('article')).toBeInTheDocument()
   })
 })
 

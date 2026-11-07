@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { createContext, type ReactNode, useContext, useMemo, useState } from 'react'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
-import { knowledgeQuery, useWrite } from '@/infrastructure/query'
+import { knowledgeQuery } from '@/infrastructure/query'
 import { type Filters, filterKnowledge, noFilters, typeCounts } from '../filters'
 
 export type KnowledgeType = 'doc' | 'adr' | 'context' | 'runbook'
@@ -18,9 +18,6 @@ export interface KnowledgeIndexState {
   readonly counts: Readonly<Record<string, number>>
   readonly current: KnowledgeRow | undefined
   readonly select: (id: string) => void
-  readonly creating: KnowledgeType | undefined
-  readonly startCreating: (type: KnowledgeType | undefined) => void
-  readonly create: (type: KnowledgeType, title: string) => void
 }
 
 const Context = createContext<KnowledgeIndexState | undefined>(undefined)
@@ -43,10 +40,6 @@ export function KnowledgeProvider({
   const query = useQuery(knowledgeQuery(api))
   const [filters, setFilters] = useState<Filters>({ ...noFilters, q: initialQuery ?? '' })
   const [selected, setSelected] = useState<string | undefined>()
-  const [creating, setCreating] = useState<KnowledgeType | undefined>()
-  const createItem = useWrite(api, (a, v: { type: KnowledgeType; title: string }) =>
-    a.call((c) => c.items.create({ payload: v })),
-  )
   const rows = query.data?.items
   const value = useMemo<KnowledgeIndexState | undefined>(() => {
     if (rows === undefined) return undefined
@@ -60,12 +53,8 @@ export function KnowledgeProvider({
       counts: typeCounts(rows, filters),
       current: shown.find((r) => r.id === selected) ?? shown[0],
       select: setSelected,
-      creating,
-      startCreating: setCreating,
-      create: (type, title) =>
-        createItem.mutate({ type, title }, { onSuccess: () => setCreating(undefined) }),
     }
-  }, [rows, filters, selected, creating, createItem])
+  }, [rows, filters, selected])
 
   if (query.isPending) return <div className="app-page app-muted">{LL.common.loading()}</div>
   if (query.isError || value === undefined) {

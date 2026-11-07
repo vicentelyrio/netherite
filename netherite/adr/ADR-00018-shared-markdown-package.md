@@ -17,11 +17,11 @@ tags: [markdown, packages, parsing]
 
 ## Decision
 
-Add `packages/markdown` (`@netherite/markdown`).
-
-- It holds the unified processor (remark-parse, remark-frontmatter, remark-gfm), the wikilink plugin ([[ADR-00004]]), and `parseMarkdown`, which returns the frontmatter with offsets and errors, the mdast tree, and headings (with section ranges), links, checklist items (with the offset to toggle) and plain text, all with absolute source positions.
-- It is pure and browser-safe: no Node imports, no `@netherite/*` dependencies. `core` and `apps/web` may depend on it. Nothing else needs to.
-- It reads and parses; it never writes. Edits stay in `core` ([[ADR-00008]]), which uses the positions this package returns.
+> Add `packages/markdown` (`@netherite/markdown`).
+>
+> - It holds the unified processor (remark-parse, remark-frontmatter, remark-gfm), the wikilink plugin ([[ADR-00004]]), and `parseMarkdown`, which returns the frontmatter with offsets and errors, the mdast tree, and headings (with section ranges), links, checklist items (with the offset to toggle) and plain text, all with absolute source positions.
+> - It is pure and browser-safe: no Node imports, no `@netherite/*` dependencies. `core` and `apps/web` may depend on it. Nothing else needs to.
+> - It reads and parses; it never writes. Edits stay in `core` ([[ADR-00008]]), which uses the positions this package returns.
 
 ## Consequences
 

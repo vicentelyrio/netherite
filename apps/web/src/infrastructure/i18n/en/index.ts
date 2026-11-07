@@ -16,8 +16,13 @@ const en = {
   },
   components: {
     breadcrumb: 'Breadcrumb',
-    createTitle: 'Create',
-    cancel: 'Cancel',
+    deleteAction: {
+      title: 'Delete {name}?',
+      text: 'This deletes its file. Anything not committed to git cannot be recovered.',
+      cancel: 'Cancel',
+      confirm: 'Delete',
+    },
+    movePicker: { filter: 'Filter', none: 'Nothing matches.', current: 'Current' },
     freshness: {
       stale: 'Stale · {count:number} {{commit|commits}}',
       behind: '{count:number} {{commit|commits}} behind',
@@ -112,7 +117,6 @@ const en = {
       newAdr: 'New ADR',
       newContext: 'New context',
       newRunbook: 'New runbook',
-      titleLabel: 'New {type} title',
     },
     toolbar: {
       filter: 'Filter by title or path',
@@ -186,6 +190,9 @@ const en = {
         closeTitle: 'Close (Esc)',
         changedLines: 'M {count:number} {{line|lines}} changed',
         markReviewed: 'Mark reviewed',
+        reviewedAt: 'Reviewed at {date}',
+        reviewHint:
+          'Confirms this was checked today. Resets its staleness count and sets its date in Knowledge.',
       },
       main: {
         gets: 'What gets better',
@@ -234,9 +241,19 @@ const en = {
         importedFrom: 'Imported from {source}',
         importedOn: 'On {date}',
         linkedFrom: 'Backlinks · {count:number}',
-        orphan: 'Orphan: nothing links here',
+        noBacklinks: 'Nothing links here yet',
         linksTo: 'Outgoing · {count:number}',
         noLinks: 'No outgoing links',
+        notLinked: 'Not linked to anything yet',
+        linkTo: 'Link to…',
+        linkTitle: 'Link {name} to',
+        linked: 'Linked',
+        unlink: 'Unlink {id}',
+        covers: 'Covers · {count:number}',
+        coversHint: 'List the files it describes, and it goes stale when they change.',
+        coverLabel: 'File or glob, like src/**',
+        addCover: 'Add path',
+        uncover: 'Stop covering {path}',
         changesWith: 'Co-changed files',
         needsGit: 'Needs git history.',
         noCoChanged: 'No files change with it yet',
@@ -582,13 +599,15 @@ const en = {
     areaName: 'Area name',
     firstGoal: 'First goal',
     areaExists: 'That area exists: the goal will join it.',
-    createArea: 'Create area',
     areaSummary:
       '{goals:number} {{goal|goals}} · {projects:number} {{project|projects}} · {done:number}/{total:number} done',
     removeArea: 'Remove area {name}',
     areaRemoved: 'Area {name} removed',
     areaRemovedText: 'Its goals are now without an area.',
     detail: {
+      delete: 'Delete goal',
+      deleteBlocked: 'Move or delete its projects first',
+      deleted: 'Goal {name} deleted',
       none: 'No goal {id}',
       loadError: 'Could not load this goal',
       back: 'Back to goals',
@@ -605,6 +624,14 @@ const en = {
   },
   projects: {
     title: 'Projects',
+    actions: {
+      move: 'Move to another goal',
+      moveTitle: 'Move {name} to',
+      goalProjects: '{count:number} {{project|projects}}',
+      delete: 'Delete project',
+      deleteBlocked: 'Move or delete its tasks and knowledge first',
+      deleted: 'Project {name} deleted',
+    },
     views: { label: 'Views', tasks: 'Tasks', knowledge: 'Knowledge' },
     none: 'No project {id}',
     loadError: 'Could not load this project',
@@ -642,6 +669,12 @@ const en = {
     },
   },
   tasks: {
+    actions: {
+      move: 'Move to another project',
+      moveTitle: 'Move {name} to',
+      delete: 'Delete task',
+      deleted: 'Task {name} deleted',
+    },
     drawer: {
       path: 'Task path',
       projects: 'Projects',

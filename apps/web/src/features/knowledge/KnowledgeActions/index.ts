@@ -1,1 +1,1 @@
-export { KnowledgeActions, KnowledgeCreateForm } from './KnowledgeActions'
+export { KnowledgeActions } from './KnowledgeActions'

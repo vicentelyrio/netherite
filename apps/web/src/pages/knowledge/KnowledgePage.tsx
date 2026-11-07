@@ -1,6 +1,5 @@
 import {
   KnowledgeActions,
-  KnowledgeCreateForm,
   KnowledgeHeading,
   KnowledgePreview,
   KnowledgeProvider,
@@ -16,19 +15,13 @@ function Content() {
   if (rows.length === 0) {
     return (
       <PageTemplate header={<KnowledgeHeading />} actions={<KnowledgeActions />}>
-        <KnowledgeCreateForm />
         <KnowledgeStarters />
       </PageTemplate>
     )
   }
   return (
     <SplitTemplate
-      header={
-        <>
-          <KnowledgeHeading />
-          <KnowledgeCreateForm />
-        </>
-      }
+      header={<KnowledgeHeading />}
       actions={<KnowledgeActions />}
       toolbar={<KnowledgeToolbar />}
       main={<KnowledgeTable />}

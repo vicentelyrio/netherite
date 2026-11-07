@@ -6,20 +6,12 @@ import './AdrBody.css'
 export function AdrBody({ source }: { readonly source: string }) {
   const { LL } = useI18nContext()
   const { intro, sections } = adrSections(source)
-  const named = (title: string) => (s: { title: string }) => s.title.toLowerCase() === title
-  if (!sections.some(named('decision'))) return <Markdown source={source} />
   return (
     <div className="adr-body">
       {intro.trim() !== '' && <Markdown source={intro} />}
       {sections.map((s) => {
-        if (named('decision')(s)) {
-          return (
-            <section key={s.title} className="adr-decision" aria-label={s.title}>
-              <Markdown source={s.text} />
-            </section>
-          )
-        }
-        const consequences = named('consequences')(s) ? consequencesOf(s.text) : undefined
+        const consequences =
+          s.title.toLowerCase() === 'consequences' ? consequencesOf(s.text) : undefined
         if (consequences === undefined) return <Markdown key={s.title} source={s.text} />
         return (
           <section key={s.title} className="adr-consequences" aria-label={s.title}>

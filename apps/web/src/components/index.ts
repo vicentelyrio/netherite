@@ -2,6 +2,7 @@ export { AdrDiamond, AdrIdLink } from './AdrMark'
 export { Breadcrumbs, type BreadcrumbsProps } from './Breadcrumbs'
 export { CardColumn } from './CardColumn'
 export { ChartCard } from './ChartCard'
+export { DeleteAction, type DeleteActionProps } from './DeleteAction'
 export { EditableText, type EditableTextProps } from './EditableText'
 export { type FilterOption, FilterTabs, type FilterTabsProps } from './FilterTabs'
 export { FreshnessCell, type FreshnessCellProps } from './FreshnessCell'
@@ -11,7 +12,16 @@ export { Highlight } from './Highlight'
 export { bodyOf, ItemEditor, type ItemEditorProps } from './ItemEditor'
 export { LinkRow, type LinkRowProps } from './LinkRow'
 export * from './Markdown'
+export { type MoveGroup, type MoveOption, MovePicker, type MovePickerProps } from './MovePicker'
 export { ProgressBar, type ProgressBarProps } from './ProgressBar'
+export {
+  type DropTarget,
+  placeIn,
+  positionAt,
+  ReorderContext,
+  useReorderItem,
+  useReorderList,
+} from './Reorder'
 export { SearchField, type SearchFieldProps } from './SearchField'
 export { SelectField, type SelectFieldProps } from './SelectField'
 export { StatCard, type StatCardProps } from './StatCard'

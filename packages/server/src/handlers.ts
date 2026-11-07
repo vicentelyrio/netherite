@@ -54,6 +54,7 @@ import {
   type ScannedItem,
   searchItems,
   setState,
+  starterBody,
   summarize,
   summaryOf,
   supersessionChain,
@@ -177,15 +178,22 @@ const items = (state: ServerState) =>
       )
       .handle('create', ({ payload }) =>
         w(
-          createItem(state.repo, {
-            type: payload.type,
-            title: payload.title,
-            ...(payload.id === undefined ? {} : { id: payload.id }),
-            ...(payload.fields === undefined ? {} : { fields: payload.fields as never }),
-            ...(payload.body === undefined ? {} : { body: payload.body }),
-            ...((payload.createdBy ?? state.createdBy) === undefined
-              ? {}
-              : { createdBy: (payload.createdBy ?? state.createdBy) as string }),
+          Effect.gen(function* () {
+            const body =
+              payload.body ??
+              (payload.template === true
+                ? yield* starterBody(state.repo.workspace, payload.type, payload.title)
+                : undefined)
+            return yield* createItem(state.repo, {
+              type: payload.type,
+              title: payload.title,
+              ...(payload.id === undefined ? {} : { id: payload.id }),
+              ...(payload.fields === undefined ? {} : { fields: payload.fields as never }),
+              ...(body === undefined ? {} : { body }),
+              ...((payload.createdBy ?? state.createdBy) === undefined
+                ? {}
+                : { createdBy: (payload.createdBy ?? state.createdBy) as string }),
+            })
           }),
         ),
       )

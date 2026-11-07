@@ -80,6 +80,22 @@ const stringList = (value: unknown): string[] =>
 
 const stringOf = (value: unknown): string[] => (typeof value === 'string' ? [value] : [])
 
+const isAttached = (item: ScannedItem): boolean => {
+  const data = item.parsed.frontmatter?.data
+  if ((item.type !== 'doc' && item.type !== 'runbook') || typeof data !== 'object' || data === null)
+    return false
+  const { explains, project, covers } = data as Record<string, unknown>
+  return (
+    stringList(explains).length > 0 || stringOf(project).length > 0 || stringList(covers).length > 0
+  )
+}
+
+const canBeOrphan = (item: ScannedItem): boolean =>
+  knowledgeTypes.has(item.type ?? '') &&
+  !isRetired(item) &&
+  !isGivenToAgents(item) &&
+  !isAttached(item)
+
 type FieldSpec = readonly [field: string, kind: EdgeKind, direction: 'out' | 'in', many: boolean]
 
 const frontmatterFields: Record<string, ReadonlyArray<FieldSpec>> = {
@@ -416,24 +432,11 @@ export const createIndex = (options: IndexOptions) => {
 
     isOrphan: (path: string) => {
       const item = entries.get(path)?.item
-      if (
-        item === undefined ||
-        !knowledgeTypes.has(item.type ?? '') ||
-        isRetired(item) ||
-        isGivenToAgents(item)
-      )
-        return false
-      return incoming(path).length === 0
+      return item !== undefined && canBeOrphan(item) && incoming(path).length === 0
     },
     orphans: () =>
       [...entries.values()]
-        .filter(
-          ({ item }) =>
-            knowledgeTypes.has(item.type ?? '') &&
-            !isRetired(item) &&
-            !isGivenToAgents(item) &&
-            graph.inDegree(item.path) === 0,
-        )
+        .filter(({ item }) => canBeOrphan(item) && graph.inDegree(item.path) === 0)
         .map((e) => e.item.path)
         .sort(),
 

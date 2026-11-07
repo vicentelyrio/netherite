@@ -21,14 +21,14 @@ Storing event dates in frontmatter (`started_at`, `done_at`, `held_since`) would
 
 ## Decision
 
-Progression is a read model computed from the history of each item's file. Nothing about it is stored.
-
-- A **lifecycle event** is one commit that changed a tracked field: `state` (to a state of category active, blocked or done), `status` of a project or ADR, `due`. Each carries the item ID, the field, the old and new value, the commit and its date.
-- For a task: *created* = first commit that has the file (frontmatter `created` wins when earlier); *started* = first move into an active state; *held* = move into a blocked state, until the next move out of it; *done* = last move into a done state, cleared if it later reopens; *waiting time* = created to started.
-- For a project: *start* = its created date; *holds* = spans where the project status is not `active`; *done* = move to a done status. `due`, and a milestone label, are frontmatter, because they are intent and not history.
-- For an ADR: *proposed* and *accepted* (or deprecated, superseded) are the dates of the commits that set `status`.
-- The same events answer "as of date D": replay them up to D to get every item's state at D.
-- Items with no history (untracked files, a fresh clone with a shallow history) fall back to `created` and the current state, and the UI shows what is missing instead of inventing dates.
+> Progression is a read model computed from the history of each item's file. Nothing about it is stored.
+>
+> - A **lifecycle event** is one commit that changed a tracked field: `state` (to a state of category active, blocked or done), `status` of a project or ADR, `due`. Each carries the item ID, the field, the old and new value, the commit and its date.
+> - For a task: *created* = first commit that has the file (frontmatter `created` wins when earlier); *started* = first move into an active state; *held* = move into a blocked state, until the next move out of it; *done* = last move into a done state, cleared if it later reopens; *waiting time* = created to started.
+> - For a project: *start* = its created date; *holds* = spans where the project status is not `active`; *done* = move to a done status. `due`, and a milestone label, are frontmatter, because they are intent and not history.
+> - For an ADR: *proposed* and *accepted* (or deprecated, superseded) are the dates of the commits that set `status`.
+> - The same events answer "as of date D": replay them up to D to get every item's state at D.
+> - Items with no history (untracked files, a fresh clone with a shallow history) fall back to `created` and the current state, and the UI shows what is missing instead of inventing dates.
 
 ## Consequences
 

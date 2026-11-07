@@ -47,14 +47,39 @@ type RootTranslation = {
 		 * B​r​e​a​d​c​r​u​m​b
 		 */
 		breadcrumb: string
-		/**
-		 * C​r​e​a​t​e
-		 */
-		createTitle: string
-		/**
-		 * C​a​n​c​e​l
-		 */
-		cancel: string
+		deleteAction: {
+			/**
+			 * D​e​l​e​t​e​ ​{​n​a​m​e​}​?
+			 * @param {unknown} name
+			 */
+			title: RequiredParams<'name'>
+			/**
+			 * T​h​i​s​ ​d​e​l​e​t​e​s​ ​i​t​s​ ​f​i​l​e​.​ ​A​n​y​t​h​i​n​g​ ​n​o​t​ ​c​o​m​m​i​t​t​e​d​ ​t​o​ ​g​i​t​ ​c​a​n​n​o​t​ ​b​e​ ​r​e​c​o​v​e​r​e​d​.
+			 */
+			text: string
+			/**
+			 * C​a​n​c​e​l
+			 */
+			cancel: string
+			/**
+			 * D​e​l​e​t​e
+			 */
+			confirm: string
+		}
+		movePicker: {
+			/**
+			 * F​i​l​t​e​r
+			 */
+			filter: string
+			/**
+			 * N​o​t​h​i​n​g​ ​m​a​t​c​h​e​s​.
+			 */
+			none: string
+			/**
+			 * C​u​r​r​e​n​t
+			 */
+			current: string
+		}
 		freshness: {
 			/**
 			 * S​t​a​l​e​ ​·​ ​{​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}
@@ -408,11 +433,6 @@ type RootTranslation = {
 			 * N​e​w​ ​r​u​n​b​o​o​k
 			 */
 			newRunbook: string
-			/**
-			 * N​e​w​ ​{​t​y​p​e​}​ ​t​i​t​l​e
-			 * @param {unknown} type
-			 */
-			titleLabel: RequiredParams<'type'>
 		}
 		toolbar: {
 			/**
@@ -681,6 +701,15 @@ type RootTranslation = {
 				 * M​a​r​k​ ​r​e​v​i​e​w​e​d
 				 */
 				markReviewed: string
+				/**
+				 * R​e​v​i​e​w​e​d​ ​a​t​ ​{​d​a​t​e​}
+				 * @param {unknown} date
+				 */
+				reviewedAt: RequiredParams<'date'>
+				/**
+				 * C​o​n​f​i​r​m​s​ ​t​h​i​s​ ​w​a​s​ ​c​h​e​c​k​e​d​ ​t​o​d​a​y​.​ ​R​e​s​e​t​s​ ​i​t​s​ ​s​t​a​l​e​n​e​s​s​ ​c​o​u​n​t​ ​a​n​d​ ​s​e​t​s​ ​i​t​s​ ​d​a​t​e​ ​i​n​ ​K​n​o​w​l​e​d​g​e​.
+				 */
+				reviewHint: string
 			}
 			main: {
 				/**
@@ -867,9 +896,9 @@ type RootTranslation = {
 				 */
 				linkedFrom: RequiredParams<'count'>
 				/**
-				 * O​r​p​h​a​n​:​ ​n​o​t​h​i​n​g​ ​l​i​n​k​s​ ​h​e​r​e
+				 * N​o​t​h​i​n​g​ ​l​i​n​k​s​ ​h​e​r​e​ ​y​e​t
 				 */
-				orphan: string
+				noBacklinks: string
 				/**
 				 * O​u​t​g​o​i​n​g​ ​·​ ​{​c​o​u​n​t​}
 				 * @param {number} count
@@ -879,6 +908,50 @@ type RootTranslation = {
 				 * N​o​ ​o​u​t​g​o​i​n​g​ ​l​i​n​k​s
 				 */
 				noLinks: string
+				/**
+				 * N​o​t​ ​l​i​n​k​e​d​ ​t​o​ ​a​n​y​t​h​i​n​g​ ​y​e​t
+				 */
+				notLinked: string
+				/**
+				 * L​i​n​k​ ​t​o​…
+				 */
+				linkTo: string
+				/**
+				 * L​i​n​k​ ​{​n​a​m​e​}​ ​t​o
+				 * @param {unknown} name
+				 */
+				linkTitle: RequiredParams<'name'>
+				/**
+				 * L​i​n​k​e​d
+				 */
+				linked: string
+				/**
+				 * U​n​l​i​n​k​ ​{​i​d​}
+				 * @param {unknown} id
+				 */
+				unlink: RequiredParams<'id'>
+				/**
+				 * C​o​v​e​r​s​ ​·​ ​{​c​o​u​n​t​}
+				 * @param {number} count
+				 */
+				covers: RequiredParams<'count'>
+				/**
+				 * L​i​s​t​ ​t​h​e​ ​f​i​l​e​s​ ​i​t​ ​d​e​s​c​r​i​b​e​s​,​ ​a​n​d​ ​i​t​ ​g​o​e​s​ ​s​t​a​l​e​ ​w​h​e​n​ ​t​h​e​y​ ​c​h​a​n​g​e​.
+				 */
+				coversHint: string
+				/**
+				 * F​i​l​e​ ​o​r​ ​g​l​o​b​,​ ​l​i​k​e​ ​s​r​c​/​*​*
+				 */
+				coverLabel: string
+				/**
+				 * A​d​d​ ​p​a​t​h
+				 */
+				addCover: string
+				/**
+				 * S​t​o​p​ ​c​o​v​e​r​i​n​g​ ​{​p​a​t​h​}
+				 * @param {unknown} path
+				 */
+				uncover: RequiredParams<'path'>
 				/**
 				 * C​o​-​c​h​a​n​g​e​d​ ​f​i​l​e​s
 				 */
@@ -2166,10 +2239,6 @@ type RootTranslation = {
 		 */
 		areaExists: string
 		/**
-		 * C​r​e​a​t​e​ ​a​r​e​a
-		 */
-		createArea: string
-		/**
 		 * {​g​o​a​l​s​}​ ​{​{​g​o​a​l​|​g​o​a​l​s​}​}​ ​·​ ​{​p​r​o​j​e​c​t​s​}​ ​{​{​p​r​o​j​e​c​t​|​p​r​o​j​e​c​t​s​}​}​ ​·​ ​{​d​o​n​e​}​/​{​t​o​t​a​l​}​ ​d​o​n​e
 		 * @param {number} done
 		 * @param {number} goals
@@ -2192,6 +2261,19 @@ type RootTranslation = {
 		 */
 		areaRemovedText: string
 		detail: {
+			/**
+			 * D​e​l​e​t​e​ ​g​o​a​l
+			 */
+			'delete': string
+			/**
+			 * M​o​v​e​ ​o​r​ ​d​e​l​e​t​e​ ​i​t​s​ ​p​r​o​j​e​c​t​s​ ​f​i​r​s​t
+			 */
+			deleteBlocked: string
+			/**
+			 * G​o​a​l​ ​{​n​a​m​e​}​ ​d​e​l​e​t​e​d
+			 * @param {unknown} name
+			 */
+			deleted: RequiredParams<'name'>
 			/**
 			 * N​o​ ​g​o​a​l​ ​{​i​d​}
 			 * @param {unknown} id
@@ -2249,6 +2331,35 @@ type RootTranslation = {
 		 * P​r​o​j​e​c​t​s
 		 */
 		title: string
+		actions: {
+			/**
+			 * M​o​v​e​ ​t​o​ ​a​n​o​t​h​e​r​ ​g​o​a​l
+			 */
+			move: string
+			/**
+			 * M​o​v​e​ ​{​n​a​m​e​}​ ​t​o
+			 * @param {unknown} name
+			 */
+			moveTitle: RequiredParams<'name'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​p​r​o​j​e​c​t​|​p​r​o​j​e​c​t​s​}​}
+			 * @param {number} count
+			 */
+			goalProjects: RequiredParams<'count'>
+			/**
+			 * D​e​l​e​t​e​ ​p​r​o​j​e​c​t
+			 */
+			'delete': string
+			/**
+			 * M​o​v​e​ ​o​r​ ​d​e​l​e​t​e​ ​i​t​s​ ​t​a​s​k​s​ ​a​n​d​ ​k​n​o​w​l​e​d​g​e​ ​f​i​r​s​t
+			 */
+			deleteBlocked: string
+			/**
+			 * P​r​o​j​e​c​t​ ​{​n​a​m​e​}​ ​d​e​l​e​t​e​d
+			 * @param {unknown} name
+			 */
+			deleted: RequiredParams<'name'>
+		}
 		views: {
 			/**
 			 * V​i​e​w​s
@@ -2404,6 +2515,26 @@ type RootTranslation = {
 		}
 	}
 	tasks: {
+		actions: {
+			/**
+			 * M​o​v​e​ ​t​o​ ​a​n​o​t​h​e​r​ ​p​r​o​j​e​c​t
+			 */
+			move: string
+			/**
+			 * M​o​v​e​ ​{​n​a​m​e​}​ ​t​o
+			 * @param {unknown} name
+			 */
+			moveTitle: RequiredParams<'name'>
+			/**
+			 * D​e​l​e​t​e​ ​t​a​s​k
+			 */
+			'delete': string
+			/**
+			 * T​a​s​k​ ​{​n​a​m​e​}​ ​d​e​l​e​t​e​d
+			 * @param {unknown} name
+			 */
+			deleted: RequiredParams<'name'>
+		}
 		drawer: {
 			/**
 			 * T​a​s​k​ ​p​a​t​h
@@ -2959,14 +3090,38 @@ export type TranslationFunctions = {
 		 * Breadcrumb
 		 */
 		breadcrumb: () => LocalizedString
-		/**
-		 * Create
-		 */
-		createTitle: () => LocalizedString
-		/**
-		 * Cancel
-		 */
-		cancel: () => LocalizedString
+		deleteAction: {
+			/**
+			 * Delete {name}?
+			 */
+			title: (arg: { name: unknown }) => LocalizedString
+			/**
+			 * This deletes its file. Anything not committed to git cannot be recovered.
+			 */
+			text: () => LocalizedString
+			/**
+			 * Cancel
+			 */
+			cancel: () => LocalizedString
+			/**
+			 * Delete
+			 */
+			confirm: () => LocalizedString
+		}
+		movePicker: {
+			/**
+			 * Filter
+			 */
+			filter: () => LocalizedString
+			/**
+			 * Nothing matches.
+			 */
+			none: () => LocalizedString
+			/**
+			 * Current
+			 */
+			current: () => LocalizedString
+		}
 		freshness: {
 			/**
 			 * Stale · {count} {{commit|commits}}
@@ -3306,10 +3461,6 @@ export type TranslationFunctions = {
 			 * New runbook
 			 */
 			newRunbook: () => LocalizedString
-			/**
-			 * New {type} title
-			 */
-			titleLabel: (arg: { type: unknown }) => LocalizedString
 		}
 		toolbar: {
 			/**
@@ -3571,6 +3722,14 @@ export type TranslationFunctions = {
 				 * Mark reviewed
 				 */
 				markReviewed: () => LocalizedString
+				/**
+				 * Reviewed at {date}
+				 */
+				reviewedAt: (arg: { date: unknown }) => LocalizedString
+				/**
+				 * Confirms this was checked today. Resets its staleness count and sets its date in Knowledge.
+				 */
+				reviewHint: () => LocalizedString
 			}
 			main: {
 				/**
@@ -3746,9 +3905,9 @@ export type TranslationFunctions = {
 				 */
 				linkedFrom: (arg: { count: number }) => LocalizedString
 				/**
-				 * Orphan: nothing links here
+				 * Nothing links here yet
 				 */
-				orphan: () => LocalizedString
+				noBacklinks: () => LocalizedString
 				/**
 				 * Outgoing · {count}
 				 */
@@ -3757,6 +3916,46 @@ export type TranslationFunctions = {
 				 * No outgoing links
 				 */
 				noLinks: () => LocalizedString
+				/**
+				 * Not linked to anything yet
+				 */
+				notLinked: () => LocalizedString
+				/**
+				 * Link to…
+				 */
+				linkTo: () => LocalizedString
+				/**
+				 * Link {name} to
+				 */
+				linkTitle: (arg: { name: unknown }) => LocalizedString
+				/**
+				 * Linked
+				 */
+				linked: () => LocalizedString
+				/**
+				 * Unlink {id}
+				 */
+				unlink: (arg: { id: unknown }) => LocalizedString
+				/**
+				 * Covers · {count}
+				 */
+				covers: (arg: { count: number }) => LocalizedString
+				/**
+				 * List the files it describes, and it goes stale when they change.
+				 */
+				coversHint: () => LocalizedString
+				/**
+				 * File or glob, like src/**
+				 */
+				coverLabel: () => LocalizedString
+				/**
+				 * Add path
+				 */
+				addCover: () => LocalizedString
+				/**
+				 * Stop covering {path}
+				 */
+				uncover: (arg: { path: unknown }) => LocalizedString
 				/**
 				 * Co-changed files
 				 */
@@ -4972,10 +5171,6 @@ export type TranslationFunctions = {
 		 */
 		areaExists: () => LocalizedString
 		/**
-		 * Create area
-		 */
-		createArea: () => LocalizedString
-		/**
 		 * {goals} {{goal|goals}} · {projects} {{project|projects}} · {done}/{total} done
 		 */
 		areaSummary: (arg: { done: number, goals: number, projects: number, total: number }) => LocalizedString
@@ -4992,6 +5187,18 @@ export type TranslationFunctions = {
 		 */
 		areaRemovedText: () => LocalizedString
 		detail: {
+			/**
+			 * Delete goal
+			 */
+			'delete': () => LocalizedString
+			/**
+			 * Move or delete its projects first
+			 */
+			deleteBlocked: () => LocalizedString
+			/**
+			 * Goal {name} deleted
+			 */
+			deleted: (arg: { name: unknown }) => LocalizedString
 			/**
 			 * No goal {id}
 			 */
@@ -5047,6 +5254,32 @@ export type TranslationFunctions = {
 		 * Projects
 		 */
 		title: () => LocalizedString
+		actions: {
+			/**
+			 * Move to another goal
+			 */
+			move: () => LocalizedString
+			/**
+			 * Move {name} to
+			 */
+			moveTitle: (arg: { name: unknown }) => LocalizedString
+			/**
+			 * {count} {{project|projects}}
+			 */
+			goalProjects: (arg: { count: number }) => LocalizedString
+			/**
+			 * Delete project
+			 */
+			'delete': () => LocalizedString
+			/**
+			 * Move or delete its tasks and knowledge first
+			 */
+			deleteBlocked: () => LocalizedString
+			/**
+			 * Project {name} deleted
+			 */
+			deleted: (arg: { name: unknown }) => LocalizedString
+		}
 		views: {
 			/**
 			 * Views
@@ -5195,6 +5428,24 @@ export type TranslationFunctions = {
 		}
 	}
 	tasks: {
+		actions: {
+			/**
+			 * Move to another project
+			 */
+			move: () => LocalizedString
+			/**
+			 * Move {name} to
+			 */
+			moveTitle: (arg: { name: unknown }) => LocalizedString
+			/**
+			 * Delete task
+			 */
+			'delete': () => LocalizedString
+			/**
+			 * Task {name} deleted
+			 */
+			deleted: (arg: { name: unknown }) => LocalizedString
+		}
 		drawer: {
 			/**
 			 * Task path

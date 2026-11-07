@@ -19,11 +19,11 @@ The README tells people to run `npx netherite init`. The unscoped name `netherit
 
 ## Decision
 
-- **npm is the distribution channel.** One public package holds the CLI, the MCP server, the local app and the agent skills; the internal `@netherite/*` packages stay private and are bundled into it.
-- **The published name is `@vicentelyrio/netherite`**, run as `npx @vicentelyrio/netherite` or installed globally with `npm install --global @vicentelyrio/netherite`. A scope cannot be taken from us, and the `bin` stays `netherite`, so the installed command is short. An npm organisation scope remains possible later if the project outgrows one person's account.
-- **Skills, the ruleset and templates ship inside the package**, copied into a repository by `netherite init` and `netherite skills install`. Nothing is fetched at install time and there is no separate skills registry.
-- **Documentation, the README and every message that prints a command use the published name**, so a copy-pasted command works.
-- **Releases are unchanged:** merging the Changesets pull request publishes, and nothing publishes from a developer machine.
+> - **npm is the distribution channel.** One public package holds the CLI, the MCP server, the local app and the agent skills; the internal `@netherite/*` packages stay private and are bundled into it.
+> - **The published name is `@vicentelyrio/netherite`**, run as `npx @vicentelyrio/netherite` or installed globally with `npm install --global @vicentelyrio/netherite`. A scope cannot be taken from us, and the `bin` stays `netherite`, so the installed command is short. An npm organisation scope remains possible later if the project outgrows one person's account.
+> - **Skills, the ruleset and templates ship inside the package**, copied into a repository by `netherite init` and `netherite skills install`. Nothing is fetched at install time and there is no separate skills registry.
+> - **Documentation, the README and every message that prints a command use the published name**, so a copy-pasted command works.
+> - **Releases are unchanged:** merging the Changesets pull request publishes, and nothing publishes from a developer machine.
 
 ## Consequences
 

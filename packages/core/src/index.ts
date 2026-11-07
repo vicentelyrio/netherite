@@ -177,6 +177,7 @@ export {
   fillTemplate,
   MissingTemplateValue,
   readTemplates,
+  starterBody,
   type TemplateSource,
   type TemplateValues,
   templateBody,

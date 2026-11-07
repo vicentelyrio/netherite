@@ -17,11 +17,11 @@ Freshness, co-change, the decision log, stats, authorship and "uncommitted" mark
 
 ## Decision
 
-- `packages/git` spawns the system `git` binary through `@effect/platform` `Command` (argument arrays, no shell, timeouts), exposed as a `Git` service. Output is machine-readable: `status --porcelain=v2`, `log --format=… --name-only`, `diff --numstat`, `rev-parse`, `config user.*`.
-- Only read commands are allowed. The adapter exposes no API that stages, commits, checks out, resets or pushes.
-- Results are cached per `HEAD` and invalidated when `HEAD` or the index changes.
-- Without git (not a repo, or git missing) Netherite still works; git-derived features show "not available" instead of failing. Shallow clones show freshness as "unknown" past the history boundary.
-- isomorphic-git and libgit2 bindings were rejected: the first is slow on long histories, the second adds native builds.
+> - `packages/git` spawns the system `git` binary through `@effect/platform` `Command` (argument arrays, no shell, timeouts), exposed as a `Git` service. Output is machine-readable: `status --porcelain=v2`, `log --format=… --name-only`, `diff --numstat`, `rev-parse`, `config user.*`.
+> - Only read commands are allowed. The adapter exposes no API that stages, commits, checks out, resets or pushes.
+> - Results are cached per `HEAD` and invalidated when `HEAD` or the index changes.
+> - Without git (not a repo, or git missing) Netherite still works; git-derived features show "not available" instead of failing. Shallow clones show freshness as "unknown" past the history boundary.
+> - isomorphic-git and libgit2 bindings were rejected: the first is slow on long histories, the second adds native builds.
 
 ## Consequences
 

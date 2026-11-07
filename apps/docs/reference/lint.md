@@ -23,7 +23,7 @@ check uses `warning`). `netherite lint --fix` applies the fixes marked below, ne
 | `invalid-horizon` | warning | a goal's `horizon` is not `forever` or a length such as `10 years`, `6 months`, `90d` | |
 | `template-unknown-field` | warning | a template of your own under `templates/` in the content folder names a frontmatter field its type does not have, so every item made from it would carry that field unchecked | |
 | `source-missing` | info | an imported item whose `source` is a path in the repository that is no longer there: the original may have been moved or deleted | |
-| `orphan` | info | nothing links to this item (a context item given to agents is exempt: `context sync` uses it) | |
+| `orphan` | info | nothing links to this item (exempt: a context item given to agents, since `context sync` uses it; a doc or runbook that sets `explains`, `project` or `covers`) | |
 | `unknown-field` | info | a frontmatter field the schema does not know (it is kept as it is) | |
 
 `stale` and `drifting` need git history and are skipped with `--no-git` or when the workspace is not

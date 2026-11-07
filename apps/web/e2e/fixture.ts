@@ -82,7 +82,9 @@ export const test = base.extend<{ seeded: boolean; workspace: Workspace }>({
         }),
     })
 
-    child.kill('SIGINT')
+    const exited = new Promise((resolve) => child.once('exit', resolve))
+    child.kill('SIGKILL')
+    await exited
     rmSync(dir, { recursive: true, force: true })
   },
 })

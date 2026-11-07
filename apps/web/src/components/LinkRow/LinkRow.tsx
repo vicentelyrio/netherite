@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import type { ReactNode } from 'react'
 import './LinkRow.css'
 
 export interface LinkRowProps {
@@ -8,9 +9,10 @@ export interface LinkRowProps {
     readonly title?: string | undefined
     readonly path: string
   }
+  readonly action?: ReactNode
 }
 
-export function LinkRow({ link }: LinkRowProps) {
+export function LinkRow({ link, action }: LinkRowProps) {
   return (
     <div className="link-row">
       <span className="link-row-dot" />
@@ -22,6 +24,7 @@ export function LinkRow({ link }: LinkRowProps) {
         <code>{link.path}</code>
       )}
       <span className="app-muted">{link.kind.replace('_', ' ')}</span>
+      {action}
     </div>
   )
 }

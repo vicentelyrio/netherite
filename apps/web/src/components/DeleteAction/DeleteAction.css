@@ -1,0 +1,9 @@
+.delete-action-text {
+  margin: 0 0 16px;
+  color: var(--nt-color-text-muted, #969ab8);
+}
+.delete-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

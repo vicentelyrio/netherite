@@ -1,5 +1,6 @@
 import type { Inbox } from '@netherite/api'
 import dayjs from 'dayjs'
+import { workspaceKey } from '@/infrastructure/config'
 import { addDays } from '@/infrastructure/datetime'
 
 export type Raised = (typeof Inbox.Type)['raised'][number]
@@ -37,11 +38,11 @@ export type Hidden = Readonly<
   Record<string, { readonly kind: 'archive' } | { readonly kind: 'snooze'; readonly until: string }>
 >
 
-const storeKey = 'netherite:inbox-hidden'
+const storeKey = () => workspaceKey('inbox-hidden')
 
 export const readHidden = (): Hidden => {
   try {
-    const raw = localStorage.getItem(storeKey)
+    const raw = localStorage.getItem(storeKey())
     return raw === null ? {} : (JSON.parse(raw) as Hidden)
   } catch {
     return {}
@@ -50,7 +51,7 @@ export const readHidden = (): Hidden => {
 
 export const writeHidden = (hidden: Hidden) => {
   try {
-    localStorage.setItem(storeKey, JSON.stringify(hidden))
+    localStorage.setItem(storeKey(), JSON.stringify(hidden))
   } catch {}
 }
 

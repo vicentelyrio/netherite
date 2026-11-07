@@ -19,12 +19,12 @@ The graph gets a time scrubber (drag or play to watch the workspace grow) and th
 
 ## Decision
 
-One endpoint family serves both, built on the lifecycle events of [[ADR-00020]]:
-
-- `GET /graph?asOf=YYYY-MM-DD` returns only items that existed on that date, each with its state, pie progress and stale flag as of then; supersession edges appear from the date the successor was accepted.
-- `GET /timeline?from&to` returns, per goal and project, its span, holds, due and milestone; per task its created, started, done, held and due dates; per ADR its proposed and decided dates; and commits per week for the activity strip.
-- Both are cached by the head commit and invalidated over SSE like every other read model.
-- The graph scrubber's activity histogram is the same weekly series.
+> One endpoint family serves both, built on the lifecycle events of [[ADR-00020]]:
+>
+> - `GET /graph?asOf=YYYY-MM-DD` returns only items that existed on that date, each with its state, pie progress and stale flag as of then; supersession edges appear from the date the successor was accepted.
+> - `GET /timeline?from&to` returns, per goal and project, its span, holds, due and milestone; per task its created, started, done, held and due dates; per ADR its proposed and decided dates; and commits per week for the activity strip.
+> - Both are cached by the head commit and invalidated over SSE like every other read model.
+> - The graph scrubber's activity histogram is the same weekly series.
 
 ## Consequences
 

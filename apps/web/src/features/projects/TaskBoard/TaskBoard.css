@@ -35,6 +35,8 @@
   gap: 8px;
   flex: 1;
   min-height: 0;
+  margin-block: -4px;
+  padding-block: 4px;
   overflow-y: auto;
 }
 
@@ -195,6 +197,7 @@
 }
 
 .board-overlay {
+  opacity: 0.7;
   transform: rotate(2.5deg);
   cursor: grabbing;
 }

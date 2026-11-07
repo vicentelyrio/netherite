@@ -3,6 +3,12 @@
   flex-direction: column;
   gap: 14px;
 }
+.goal-crumbs {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
 .goal-head {
   display: flex;
   align-items: flex-start;
