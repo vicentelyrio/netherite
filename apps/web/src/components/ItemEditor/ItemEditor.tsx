@@ -1,5 +1,6 @@
 import { EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
+import { settingDefaults } from '@netherite/schema'
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { Markdown } from '@/components/Markdown'
 import { useI18nContext } from '@/infrastructure/i18n'
@@ -13,7 +14,7 @@ import type { EditorMode, ItemEditorProps } from './ItemEditor.types'
 import { isDirty, reduce, startSession } from './session'
 import './ItemEditor.css'
 
-const lintDelay = 400
+const { autosaveDelayMs, lintDelayMs: lintDelay } = settingDefaults.editor
 
 export function ItemEditor({
   source,
@@ -27,7 +28,7 @@ export function ItemEditor({
   preview,
   onStats,
   branch,
-  autosaveDelay = 1000,
+  autosaveDelay = autosaveDelayMs,
   saveKeys = 'mod+s',
 }: ItemEditorProps) {
   const { LL } = useI18nContext()

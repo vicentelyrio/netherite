@@ -1,3 +1,4 @@
+import { settingDefaults } from '@netherite/schema'
 import { EmptyState } from '@netherite/ui'
 import { GroupCard } from '@/components'
 import { ago } from '@/infrastructure/datetime'
@@ -6,6 +7,8 @@ import { InboxItemRow } from '../InboxItemRow'
 import { useInboxState } from '../InboxProvider'
 import { InboxRow, InboxRowTitle } from '../InboxRow'
 import './InboxGroups.css'
+
+const { changesShown } = settingDefaults.inbox
 
 export function InboxGroups() {
   const { LL } = useI18nContext()
@@ -63,7 +66,7 @@ export function InboxGroups() {
         icon="smart_toy"
         count={inbox.activity.length}
       >
-        {(all ? inbox.activity : inbox.activity.slice(0, 8)).map((a) => (
+        {(all ? inbox.activity : inbox.activity.slice(0, changesShown)).map((a) => (
           <InboxItemRow
             key={a.id}
             id={a.id}
@@ -80,7 +83,7 @@ export function InboxGroups() {
         icon="difference"
         count={inbox.changes.length}
       >
-        {(all ? inbox.changes : inbox.changes.slice(0, 8)).map((c) =>
+        {(all ? inbox.changes : inbox.changes.slice(0, changesShown)).map((c) =>
           c.id ? (
             <InboxItemRow
               key={c.path}
@@ -98,7 +101,7 @@ export function InboxGroups() {
           ),
         )}
       </GroupCard>
-      {!all && (inbox.activity.length > 8 || inbox.changes.length > 8) && (
+      {!all && (inbox.activity.length > changesShown || inbox.changes.length > changesShown) && (
         <button type="button" className="ib-more" onClick={showAll}>
           {LL.inbox.showAll({ count: inbox.activity.length + inbox.changes.length })}
         </button>
