@@ -1,9 +1,9 @@
 .text-field {
   flex: 1;
-  height: 36px;
-  background: #212336;
+  height: var(--nt-space-7-5);
+  background: var(--nt-color-bg-card);
   color: inherit;
-  border: 1px solid #2f3250;
-  border-radius: 8px;
-  padding: 0 10px;
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
+  border-radius: var(--nt-radius-tooltip);
+  padding: 0 var(--nt-space-2-5);
 }

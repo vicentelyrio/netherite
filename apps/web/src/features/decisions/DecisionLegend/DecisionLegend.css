@@ -3,30 +3,30 @@
   flex-wrap: wrap;
   width: 100%;
   align-items: center;
-  gap: 16px;
-  font-size: 13px;
-  color: #b9bcd3;
+  gap: var(--nt-space-4);
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-secondary);
 }
 
 .dl-legend > span {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
 }
 
 .dl-legend-dot {
-  width: 10px;
-  height: 10px;
+  width: var(--nt-space-2-5);
+  height: var(--nt-space-2-5);
   box-sizing: border-box;
   border-radius: 50%;
-  border: 2px solid;
+  border: var(--nt-stroke-thick) solid;
 }
 
 .dl-rule {
-  width: 1px;
-  height: 20px;
-  background: #3a3d58;
-  margin: 0 4px;
+  width: var(--nt-space-px);
+  height: var(--nt-space-5);
+  background: var(--nt-color-border-overlay);
+  margin: 0 var(--nt-space-1);
 }
 .dl-spacer {
   flex: 1;

@@ -1,28 +1,28 @@
 .goal-projects-head {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 8px;
+  gap: var(--nt-space-2);
+  margin-top: var(--nt-space-2);
 }
 .goal-projects-title {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--nt-text-heading-size);
+  font-weight: var(--nt-font-weight-semibold);
   margin: 0;
 }
 .goal-link-button {
   margin-left: auto;
   background: none;
   border: 0;
-  color: #a5a7ff;
+  color: var(--nt-color-accent-fg);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 13px;
+  gap: var(--nt-space-1);
+  font-size: var(--nt-text-caption-size);
 }
 .goal-count {
-  background: #2e3149;
-  border-radius: 10px;
-  padding: 0 8px;
-  font-size: 12px;
+  background: var(--nt-color-bg-chip);
+  border-radius: var(--nt-radius-md);
+  padding: 0 var(--nt-space-2);
+  font-size: var(--nt-text-micro-size);
 }

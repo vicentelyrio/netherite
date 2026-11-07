@@ -1,12 +1,12 @@
 .dl-title {
-  margin: 16px 0 0;
+  margin: var(--nt-space-4) 0 0;
 }
 
 .dl-code {
   font-family: var(--nt-font-mono, monospace);
-  font-size: 13px;
-  color: #e8e9f3;
-  background: #2e3149;
-  border-radius: 4px;
-  padding: 1px 6px;
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-primary);
+  background: var(--nt-color-bg-chip);
+  border-radius: var(--nt-radius-xs);
+  padding: var(--nt-space-px) var(--nt-space-1-5);
 }

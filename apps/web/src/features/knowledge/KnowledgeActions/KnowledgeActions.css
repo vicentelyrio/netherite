@@ -1,23 +1,23 @@
 .kn-link-button {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 32px;
-  padding: 0 10px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #a5a7ff;
+  gap: var(--nt-space-1-5);
+  height: var(--nt-space-7);
+  padding: 0 var(--nt-space-2-5);
+  border-radius: var(--nt-radius-sm);
+  font-size: var(--nt-text-caption-size);
+  font-weight: var(--nt-font-weight-medium);
+  color: var(--nt-color-accent-fg);
   text-decoration: none;
 }
 
 .kn-link-button:hover {
-  background: #34365a;
+  background: var(--nt-color-accent-subtle);
 }
 
 .kn-head-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 40px;
+  gap: var(--nt-space-2);
+  margin-top: var(--nt-space-8);
 }

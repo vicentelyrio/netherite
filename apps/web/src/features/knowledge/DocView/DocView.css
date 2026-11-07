@@ -3,14 +3,14 @@
   top: 0;
   right: 0;
   bottom: 0;
-  left: 64px;
+  left: var(--nt-space-10);
   z-index: 5;
 }
 
 .kf-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(14, 15, 26, 0.62);
+  background: color-mix(in srgb, var(--nt-color-bg-stage) 62%, transparent);
 }
 
 .kf-sheet {
@@ -22,8 +22,9 @@
   width: min(1792px, 100%);
   display: flex;
   flex-direction: column;
-  background: #282a3f;
-  box-shadow: 24px 0 64px rgba(0, 0, 0, 0.4);
+  background: var(--nt-color-bg-canvas);
+  box-shadow: var(--nt-space-6) 0 var(--nt-space-10)
+    color-mix(in srgb, var(--nt-color-base-black) 40%, transparent);
 }
 
 .kf-body {

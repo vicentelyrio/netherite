@@ -1,29 +1,29 @@
 .cb {
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: 36px;
-  margin-bottom: 12px;
-  padding: 0 8px 0 12px;
+  gap: var(--nt-space-2);
+  height: var(--nt-space-7-5);
+  margin-bottom: var(--nt-space-3);
+  padding: 0 var(--nt-space-2) 0 var(--nt-space-3);
   box-sizing: border-box;
-  border: 1px solid #33364f;
-  border-radius: 8px;
-  background: #18192a;
-  color: #a5a7ff;
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
+  border-radius: var(--nt-radius-tooltip);
+  background: var(--nt-color-bg-sunken);
+  color: var(--nt-color-accent-fg);
 }
 .cb:focus-within {
-  border-color: #7f82ea;
+  border-color: var(--nt-color-accent-solid);
 }
 .cb-input {
   flex: 1;
   min-width: 0;
   border: 0;
   background: transparent;
-  color: #e8e9f3;
+  color: var(--nt-color-text-primary);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--nt-text-body-sm-size);
   outline: 0;
 }
 .cb-input::placeholder {
-  color: #969ab8;
+  color: var(--nt-color-text-muted);
 }

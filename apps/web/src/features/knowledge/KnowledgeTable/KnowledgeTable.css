@@ -1,8 +1,8 @@
 .kn-cols {
-  height: 28px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #969ab8;
+  height: var(--nt-space-6-5);
+  font-size: var(--nt-text-micro-size);
+  font-weight: var(--nt-font-weight-semibold);
+  color: var(--nt-color-text-muted);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }

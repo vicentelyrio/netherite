@@ -1,16 +1,16 @@
 .goals-new-area {
   align-self: start;
-  margin-top: 4px;
+  margin-top: var(--nt-space-1);
 }
 .goals-area-form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--nt-space-2);
 }
 
 .goals-area-form .text-field {
   flex: none;
   box-sizing: border-box;
-  height: 36px;
-  min-height: 36px;
+  height: var(--nt-space-7-5);
+  min-height: var(--nt-space-7-5);
 }

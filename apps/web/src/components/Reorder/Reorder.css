@@ -6,14 +6,14 @@
   position: absolute;
   left: 0;
   right: 0;
-  height: 3px;
-  border-radius: 2px;
-  background: #a5a7ff;
+  height: var(--nt-space-0-75);
+  border-radius: var(--nt-radius-xxs);
+  background: var(--nt-color-accent-fg);
   pointer-events: none;
 }
 [data-drop="before"]::after {
-  top: -6px;
+  top: calc(var(--nt-space-1-5) * -1);
 }
 [data-drop="after"]::after {
-  bottom: -6px;
+  bottom: calc(var(--nt-space-1-5) * -1);
 }

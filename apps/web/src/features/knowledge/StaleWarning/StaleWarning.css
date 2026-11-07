@@ -1,5 +1,6 @@
 .kf-warning {
-  background: rgba(226, 174, 76, 0.1);
-  border: 1px solid rgba(226, 174, 76, 0.35);
-  color: #e2ae4c;
+  background: color-mix(in srgb, var(--nt-color-status-warning) 10%, transparent);
+  border: var(--nt-stroke-thin) solid
+    color-mix(in srgb, var(--nt-color-status-warning) 35%, transparent);
+  color: var(--nt-color-status-warning);
 }

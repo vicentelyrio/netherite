@@ -1,6 +1,6 @@
 .title-form {
   display: flex;
-  gap: 8px;
+  gap: var(--nt-space-2);
   width: 100%;
   align-items: center;
 }
@@ -8,8 +8,8 @@
 .title-form .text-field,
 .title-form button {
   box-sizing: border-box;
-  height: 36px;
-  min-height: 36px;
+  height: var(--nt-space-7-5);
+  min-height: var(--nt-space-7-5);
   margin: 0;
 }
 .title-form .text-field {

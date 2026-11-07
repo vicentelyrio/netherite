@@ -1,16 +1,16 @@
 .drawer-section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--nt-space-2);
 }
 
 .drawer-cell-label {
-  font-size: 12px;
-  color: #8a8fad;
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-line-number);
 }
 
 .drawer-h {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: var(--nt-text-heading-size);
+  font-weight: var(--nt-font-weight-semibold);
   margin: 0;
 }

@@ -1,6 +1,6 @@
 .tg-rename {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 16px 12px 42px;
+  gap: var(--nt-space-2);
+  padding: var(--nt-space-2) var(--nt-space-4) var(--nt-space-3) 42px;
 }

@@ -1,20 +1,20 @@
 .kpi-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 24px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(var(--nt-size-200), 1fr));
+  gap: var(--nt-space-6);
+  margin-bottom: var(--nt-space-6);
 }
 .kpi {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--nt-space-2);
   min-height: 112px;
   box-sizing: border-box;
-  padding: 18px 20px;
-  background: #212336;
-  border: 1px solid #2f3250;
-  border-radius: 12px;
+  padding: var(--nt-space-4-5) var(--nt-space-5);
+  background: var(--nt-color-bg-card);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
+  border-radius: var(--nt-radius-group);
 }
 .kpi-top {
   display: flex;
@@ -22,43 +22,43 @@
   justify-content: space-between;
 }
 .kpi-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: #b9bcd3;
+  font-size: var(--nt-text-caption-size);
+  font-weight: var(--nt-font-weight-medium);
+  color: var(--nt-color-text-secondary);
 }
 .kpi-change {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  font-size: 13px;
-  font-weight: 600;
+  gap: var(--nt-space-0-5);
+  font-size: var(--nt-text-caption-size);
+  font-weight: var(--nt-font-weight-semibold);
   font-variant-numeric: tabular-nums;
 }
 .kpi-change[data-tone="good"] {
-  color: #2cc27e;
+  color: var(--nt-color-status-success);
 }
 .kpi-change[data-tone="bad"] {
-  color: #f0717e;
+  color: var(--nt-color-status-danger);
 }
 .kpi-change[data-tone="flat"] {
-  color: #969ab8;
+  color: var(--nt-color-text-muted);
 }
 .kpi-value {
   display: flex;
   align-items: baseline;
-  gap: 10px;
+  gap: var(--nt-space-2-5);
 }
 .kpi-value strong {
-  font-size: 36px;
-  line-height: 40px;
-  font-weight: 600;
+  font-size: var(--nt-font-size-xxxl);
+  line-height: var(--nt-space-8);
+  font-weight: var(--nt-font-weight-semibold);
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 .kpi[data-warn] .kpi-value strong {
-  color: #e2ae4c;
+  color: var(--nt-color-status-warning);
 }
 .kpi-value span {
-  font-size: 13px;
-  color: #969ab8;
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-muted);
 }

@@ -1,18 +1,18 @@
 .goal-areas-state {
   flex: 1;
   min-width: 0;
-  padding: 8px;
+  padding: var(--nt-space-2);
 }
 .goal-drop {
-  height: 96px;
-  border: 1.5px dashed #7f82ea;
-  border-radius: 10px;
-  background: rgba(127, 130, 234, 0.08);
+  height: var(--nt-size-96);
+  border: var(--nt-stroke-medium) dashed var(--nt-color-accent-solid);
+  border-radius: var(--nt-radius-md);
+  background: color-mix(in srgb, var(--nt-color-accent-solid) 8%, transparent);
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: 500;
-  color: #c9caff;
+  font-size: var(--nt-text-micro-size);
+  font-weight: var(--nt-font-weight-medium);
+  color: var(--nt-color-accent-fg-hover);
 }

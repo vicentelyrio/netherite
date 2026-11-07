@@ -1,127 +1,127 @@
 .st-kbar {
   display: flex;
-  gap: 2px;
-  height: 8px;
-  border-radius: 4px;
+  gap: var(--nt-space-0-5);
+  height: var(--nt-space-2);
+  border-radius: var(--nt-radius-xs);
   overflow: hidden;
-  background: #33364f;
+  background: var(--nt-color-border-divider);
 }
 .st-kbar > span,
 .kn-swatch {
-  background: #4d5180;
+  background: var(--nt-color-graph-edge);
 }
 .st-kbar > [data-kind="fresh"],
 .kn-swatch[data-kind="fresh"] {
-  background: #2cc27e;
+  background: var(--nt-color-status-success);
 }
 .st-kbar > [data-kind="drifting"],
 .kn-swatch[data-kind="drifting"] {
-  background: #e2ae4c;
+  background: var(--nt-color-status-warning);
 }
 .st-kbar > [data-kind="stale"] {
-  background: #e2ae4c;
+  background: var(--nt-color-status-warning);
 }
 .st-kbar > [data-kind="drifting"] {
   background: transparent;
-  border: 1.5px solid #e2ae4c;
+  border: var(--nt-stroke-medium) solid var(--nt-color-status-warning);
   box-sizing: border-box;
 }
 .kn-swatch[data-kind="drifting"] {
   background: transparent;
-  border: 1.5px solid #e2ae4c;
+  border: var(--nt-stroke-medium) solid var(--nt-color-status-warning);
   box-sizing: border-box;
 }
 .kn-legend .nt-icon {
-  color: #e2ae4c;
+  color: var(--nt-color-status-warning);
 }
 .kn-swatch {
-  width: 8px;
-  height: 8px;
+  width: var(--nt-space-2);
+  height: var(--nt-space-2);
   border-radius: 50%;
 }
 .kn-legend {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px 12px;
-  margin: 10px 0 0;
+  gap: var(--nt-space-1-5) var(--nt-space-3);
+  margin: var(--nt-space-2-5) 0 0;
   padding: 0;
   list-style: none;
-  font-size: 13px;
-  color: #b9bcd3;
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-secondary);
 }
 .kn-legend li {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
 }
 .kn-legend strong {
-  color: #e8e9f3;
+  color: var(--nt-color-text-primary);
 }
 .kn-h {
-  margin: 20px 0 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: #969ab8;
+  margin: var(--nt-space-5) 0 0;
+  font-size: var(--nt-text-caption-size);
+  font-weight: var(--nt-font-weight-semibold);
+  color: var(--nt-color-text-muted);
 }
 
 .kn-code {
   list-style: none;
-  margin: 8px 0 0;
+  margin: var(--nt-space-2) 0 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-size: 12px;
+  gap: var(--nt-space-1-5);
+  font-size: var(--nt-text-micro-size);
 }
 .kn-code li {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--nt-space-3);
 }
 .kn-code code {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #c9cbe0;
+  color: var(--nt-color-text-secondary);
 }
 .kn-code span {
   flex: none;
-  color: #969ab8;
+  color: var(--nt-color-text-muted);
 }
 
 .kn-open {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--nt-text-caption-size);
+  font-weight: var(--nt-font-weight-medium);
 }
 .kn-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin: 8px 0 0;
+  gap: var(--nt-space-1-5);
+  margin: var(--nt-space-2) 0 0;
   padding: 0;
   list-style: none;
 }
 .kn-pill {
   display: flex;
   align-items: center;
-  height: 22px;
-  padding: 0 9px;
-  border-radius: 999px;
-  background: rgba(150, 154, 184, 0.16);
-  color: #b9bcd3;
-  font-size: 12px;
-  font-weight: 600;
+  height: var(--nt-space-5-5);
+  padding: 0 var(--nt-space-2-5);
+  border-radius: var(--nt-radius-full);
+  background: color-mix(in srgb, var(--nt-color-text-muted) 16%, transparent);
+  color: var(--nt-color-text-secondary);
+  font-size: var(--nt-text-micro-size);
+  font-weight: var(--nt-font-weight-semibold);
 }
 .kn-pill[data-status="proposed"] {
-  background: rgba(165, 167, 255, 0.14);
-  color: #a5a7ff;
+  background: color-mix(in srgb, var(--nt-color-accent-fg) 14%, transparent);
+  color: var(--nt-color-accent-fg);
 }
 .kn-pill[data-status="accepted"] {
-  background: rgba(44, 194, 126, 0.14);
-  color: #2cc27e;
+  background: color-mix(in srgb, var(--nt-color-status-success) 14%, transparent);
+  color: var(--nt-color-status-success);
 }
 .kn-pill[data-status="deprecated"] {
-  background: rgba(240, 113, 126, 0.14);
-  color: #f0717e;
+  background: color-mix(in srgb, var(--nt-color-status-danger) 14%, transparent);
+  color: var(--nt-color-status-danger);
 }

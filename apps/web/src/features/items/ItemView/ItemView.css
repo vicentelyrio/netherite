@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: var(--nt-space-3);
-  max-width: 320px;
+  max-width: var(--nt-size-320);
   margin-bottom: var(--nt-space-4);
 }
 

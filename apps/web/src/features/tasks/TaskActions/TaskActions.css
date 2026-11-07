@@ -1,6 +1,6 @@
 .task-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 4px;
-  margin-bottom: 8px;
+  gap: var(--nt-space-1);
+  margin-bottom: var(--nt-space-2);
 }

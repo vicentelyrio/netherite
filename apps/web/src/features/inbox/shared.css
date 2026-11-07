@@ -1,22 +1,22 @@
 .ib-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-height: 44px;
-  padding: 0 16px;
-  border-top: 1px solid #2a2c42;
-  color: #e8e9f3;
+  gap: var(--nt-space-3);
+  min-height: var(--nt-space-8-5);
+  padding: 0 var(--nt-space-4);
+  border-top: var(--nt-stroke-thin) solid var(--nt-color-border-rail);
+  color: var(--nt-color-text-primary);
   text-decoration: none;
-  font-size: 14px;
+  font-size: var(--nt-text-body-sm-size);
 }
 
 a.ib-row:hover {
-  background: #25273c;
+  background: var(--nt-color-bg-card-hover);
 }
 
 .ib-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: 600;
+  font-weight: var(--nt-font-weight-semibold);
 }

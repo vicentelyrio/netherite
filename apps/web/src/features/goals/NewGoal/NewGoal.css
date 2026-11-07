@@ -1,19 +1,19 @@
 .goals-new {
-  height: 44px;
+  height: var(--nt-space-8-5);
   width: 100%;
   background: transparent;
-  color: #b9bcd3;
-  border: 1px dashed #3a3d58;
-  border-radius: 10px;
+  color: var(--nt-color-text-secondary);
+  border: var(--nt-stroke-thin) dashed var(--nt-color-border-overlay);
+  border-radius: var(--nt-radius-md);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
 }
 .goals-new:hover {
-  border-color: #7f82ea;
-  color: #e6e7f2;
+  border-color: var(--nt-color-accent-solid);
+  color: var(--nt-color-text-primary);
 }
 .goals-new-form {
   width: 26rem;

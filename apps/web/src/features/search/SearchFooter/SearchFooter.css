@@ -1,31 +1,31 @@
 .sp kbd,
 .sp-foot kbd {
   font-family: var(--nt-font-mono, monospace);
-  font-size: 12px;
-  line-height: 16px;
-  color: #b9bcd3;
-  background: #26283d;
-  border: 1px solid #33364f;
-  border-radius: 4px;
-  padding: 1px 6px;
+  font-size: var(--nt-text-micro-size);
+  line-height: var(--nt-text-micro-line-height);
+  color: var(--nt-color-text-secondary);
+  background: var(--nt-color-bg-card-hover);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
+  border-radius: var(--nt-radius-xs);
+  padding: var(--nt-space-px) var(--nt-space-1-5);
 }
 
 .sp-foot {
   display: flex;
   align-items: center;
-  gap: 16px;
-  height: 36px;
-  padding: 0 16px;
-  border-top: 1px solid #33364f;
-  background: #1e2032;
-  font-size: 12px;
-  color: #969ab8;
+  gap: var(--nt-space-4);
+  height: var(--nt-space-7-5);
+  padding: 0 var(--nt-space-4);
+  border-top: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
+  background: var(--nt-color-bg-shell);
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-muted);
 }
 
 .sp-foot span {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
 }
 
 .sp-spacer {

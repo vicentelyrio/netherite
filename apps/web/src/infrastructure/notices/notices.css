@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--nt-space-2);
-  width: min(420px, calc(100vw - var(--nt-layout-rail-width) - var(--nt-space-4) * 2));
+  width: min(var(--nt-size-420), calc(100vw - var(--nt-layout-rail-width) - var(--nt-space-4) * 2));
 }
 
 .app-notices .nt-banner {

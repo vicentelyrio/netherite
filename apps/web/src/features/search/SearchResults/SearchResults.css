@@ -1,7 +1,7 @@
 .sp-results {
   display: flex;
   flex-direction: column;
-  padding: 6px 8px 8px;
+  padding: var(--nt-space-1-5) var(--nt-space-2) var(--nt-space-2);
   max-height: 640px;
   overflow: auto;
 }
@@ -10,20 +10,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 30px;
-  padding: 6px 10px 0;
-  font-size: 12px;
-  font-weight: 600;
-  color: #969ab8;
+  height: var(--nt-size-30);
+  padding: var(--nt-space-1-5) var(--nt-space-2-5) 0;
+  font-size: var(--nt-text-micro-size);
+  font-weight: var(--nt-font-weight-semibold);
+  color: var(--nt-color-text-muted);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .sp-empty {
-  height: 120px;
+  height: var(--nt-size-120);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #969ab8;
-  font-size: 14px;
+  color: var(--nt-color-text-muted);
+  font-size: var(--nt-text-body-sm-size);
 }

@@ -1,10 +1,10 @@
 .kf-path {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--nt-space-2);
   font-family: var(--nt-font-mono, monospace);
-  font-size: 13px;
-  color: #b9bcd3;
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-secondary);
 }
 .kf-path {
   min-width: 0;
@@ -18,16 +18,16 @@
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #e6e7f2;
-  font-weight: 500;
+  color: var(--nt-color-text-primary);
+  font-weight: var(--nt-font-weight-medium);
 }
 .kf-lines {
-  background: rgba(240, 180, 41, 0.14);
-  color: #f0b429;
-  border-radius: 6px;
-  padding: 2px 8px;
+  background: color-mix(in srgb, var(--nt-color-status-warning) 14%, transparent);
+  color: var(--nt-color-status-warning);
+  border-radius: var(--nt-radius-sm);
+  padding: var(--nt-space-0-5) var(--nt-space-2);
   font-family: inherit;
-  font-size: 12px;
+  font-size: var(--nt-text-micro-size);
 }
 
 .kf-spacer {
@@ -35,15 +35,15 @@
 }
 
 .kf-head {
-  height: 48px;
+  height: var(--nt-space-9);
   flex: none;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 0 12px 0 24px;
-  border-bottom: 1px solid #33364f;
-  background: #23253a;
-  color: #969ab8;
+  gap: var(--nt-space-3);
+  padding: 0 var(--nt-space-3) 0 var(--nt-space-6);
+  border-bottom: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
+  background: var(--nt-color-bg-card-hover);
+  color: var(--nt-color-text-muted);
 }
 
 .kf-id {
@@ -51,12 +51,12 @@
 }
 
 .kf-close {
-  width: 32px;
-  height: 32px;
+  width: var(--nt-space-7);
+  height: var(--nt-space-7);
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--nt-radius-sm);
   background: transparent;
-  color: #b9bcd3;
+  color: var(--nt-color-text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -64,12 +64,12 @@
 }
 
 .kf-close:hover {
-  background: #33364f;
-  color: #e8e9f3;
+  background: var(--nt-color-border-divider);
+  color: var(--nt-color-text-primary);
 }
 
 .kf-path a {
-  color: #a5a7ff;
+  color: var(--nt-color-accent-fg);
   text-decoration: none;
 }
 .kf-path a:hover {

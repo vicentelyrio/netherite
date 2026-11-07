@@ -1,6 +1,6 @@
 .highlight {
-  background: rgba(165, 167, 255, 0.22);
-  color: #e8e9f3;
-  border-radius: 3px;
-  padding: 0 1px;
+  background: color-mix(in srgb, var(--nt-color-accent-fg) 22%, transparent);
+  color: var(--nt-color-text-primary);
+  border-radius: var(--nt-radius-xs);
+  padding: 0 var(--nt-space-px);
 }

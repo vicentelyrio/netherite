@@ -1,21 +1,21 @@
 .kn-row {
-  height: 48px;
-  border-top: 1px solid #2a2c42;
+  height: var(--nt-space-9);
+  border-top: var(--nt-stroke-thin) solid var(--nt-color-border-rail);
   cursor: pointer;
   outline: none;
 }
 
 .kn-row:hover {
-  background: #25273c;
+  background: var(--nt-color-bg-card-hover);
 }
 
 .kn-row[data-selected] {
-  background: #2a2d48;
+  background: var(--nt-color-bg-active-line);
 }
 
 .kn-row:focus-visible {
-  outline: 1px solid #a5a7ff;
-  outline-offset: -1px;
+  outline: var(--nt-stroke-thin) solid var(--nt-color-accent-fg);
+  outline-offset: calc(var(--nt-stroke-thin) * -1);
 }
 
 .kn-title-cell {
@@ -27,57 +27,57 @@
 .kn-title-line {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--nt-space-2);
   min-width: 0;
 }
 
 .kn-title {
-  font-size: 15px;
-  line-height: 20px;
-  font-weight: 600;
+  font-size: var(--nt-text-body-size);
+  line-height: var(--nt-text-body-sm-line-height);
+  font-weight: var(--nt-font-weight-semibold);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .kn-title[data-superseded] {
-  color: #b9bcd3;
+  color: var(--nt-color-text-secondary);
   text-decoration: line-through;
 }
 
 .kn-project {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: #b9bcd3;
+  gap: var(--nt-space-1-5);
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-secondary);
 }
 
 .kn-project-dot {
-  width: 7px;
-  height: 7px;
+  width: var(--nt-size-7);
+  height: var(--nt-size-7);
   border-radius: 50%;
-  background: #3ba474;
+  background: var(--nt-color-type-project);
 }
 
 .kn-modified {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: #b9bcd3;
+  gap: var(--nt-space-2);
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-secondary);
 }
 
 .kn-ai {
   flex: none;
-  height: 20px;
-  padding: 0 8px;
+  height: var(--nt-space-5);
+  padding: 0 var(--nt-space-2);
   display: inline-flex;
   align-items: center;
-  border-radius: 10px;
-  background: rgba(165, 167, 255, 0.16);
-  color: #a5a7ff;
-  font-size: 12px;
-  font-weight: 500;
+  border-radius: var(--nt-radius-md);
+  background: color-mix(in srgb, var(--nt-color-accent-fg) 16%, transparent);
+  color: var(--nt-color-accent-fg);
+  font-size: var(--nt-text-micro-size);
+  font-weight: var(--nt-font-weight-medium);
   white-space: nowrap;
 }

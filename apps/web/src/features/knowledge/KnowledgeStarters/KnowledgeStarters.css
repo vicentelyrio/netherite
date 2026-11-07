@@ -1,71 +1,71 @@
 .kn-empty {
-  border: 1px dashed #3a3d58;
-  border-radius: 14px;
-  min-height: 520px;
-  margin-top: 40px;
+  border: var(--nt-stroke-thin) dashed var(--nt-color-border-overlay);
+  border-radius: var(--nt-radius-lg);
+  min-height: var(--nt-size-520);
+  margin-top: var(--nt-space-8);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: var(--nt-space-5);
 }
 
 .kn-empty-icon {
-  width: 72px;
-  height: 72px;
+  width: var(--nt-size-72);
+  height: var(--nt-size-72);
   border-radius: 50%;
-  background: #2e3148;
+  background: var(--nt-color-bg-column);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #a5a7ff;
+  color: var(--nt-color-accent-fg);
 }
 
 .kn-empty-text {
-  max-width: 560px;
+  max-width: var(--nt-size-560);
   text-align: center;
 }
 
 .kn-empty-text h2 {
-  font-size: 20px;
-  line-height: 26px;
-  font-weight: 600;
-  margin: 0 0 6px;
+  font-size: var(--nt-text-title-size);
+  line-height: var(--nt-text-title-line-height);
+  font-weight: var(--nt-font-weight-semibold);
+  margin: 0 0 var(--nt-space-1-5);
 }
 
 .kn-empty-text p {
   margin: 0;
-  font-size: 15px;
-  line-height: 22px;
-  color: #b9bcd3;
+  font-size: var(--nt-text-body-size);
+  line-height: var(--nt-text-body-line-height);
+  color: var(--nt-color-text-secondary);
 }
 
 .kn-empty-actions {
   display: flex;
-  gap: 8px;
+  gap: var(--nt-space-2);
 }
 
 .kn-starters {
   display: grid;
-  grid-template-columns: repeat(4, 240px);
-  gap: 12px;
-  margin-top: 20px;
+  grid-template-columns: repeat(4, var(--nt-size-240));
+  gap: var(--nt-space-3);
+  margin-top: var(--nt-space-5);
 }
 
 .kn-starter {
-  background: #212336;
-  border: 1px solid #2f3250;
-  border-radius: 10px;
-  padding: 16px;
+  background: var(--nt-color-bg-card);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
+  border-radius: var(--nt-radius-md);
+  padding: var(--nt-space-4);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: var(--nt-space-2);
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--nt-text-body-sm-size);
 }
 
 .kn-starter:hover {
-  border-color: #474b6e;
-  background: #25273c;
+  border-color: var(--nt-color-border-strong);
+  background: var(--nt-color-bg-card-hover);
 }

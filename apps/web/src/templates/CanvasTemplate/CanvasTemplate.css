@@ -14,7 +14,7 @@
   z-index: 2;
 }
 .tpl-canvas-header {
-  top: 40px;
+  top: var(--nt-space-8);
   left: var(--nt-grid-margin-start);
   pointer-events: none;
 }
@@ -22,11 +22,11 @@
   pointer-events: auto;
 }
 .tpl-canvas-controls {
-  top: 40px;
-  right: 40px;
+  top: var(--nt-space-8);
+  right: var(--nt-space-8);
 }
 .tpl-canvas-footer {
   left: var(--nt-grid-margin-start);
-  right: 40px;
-  bottom: 40px;
+  right: var(--nt-space-8);
+  bottom: var(--nt-space-8);
 }

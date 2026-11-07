@@ -3,14 +3,17 @@
 }
 .tg-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) 64px minmax(120px, 1fr) minmax(0, 1.4fr) minmax(0, 0.8fr);
+  grid-template-columns: minmax(0, 1.2fr) var(--nt-space-10) minmax(var(--nt-size-120), 1fr) minmax(
+      0,
+      1.4fr
+    ) minmax(0, 0.8fr);
   align-items: center;
-  column-gap: 16px;
+  column-gap: var(--nt-space-4);
   width: 100%;
-  min-height: 48px;
-  padding: 0 16px;
+  min-height: var(--nt-space-9);
+  padding: 0 var(--nt-space-4);
   border: 0;
-  border-top: 1px solid #2a2c42;
+  border-top: var(--nt-stroke-thin) solid var(--nt-color-border-rail);
   background: transparent;
   color: inherit;
   font: inherit;
@@ -22,59 +25,59 @@
 }
 .tg-row:hover,
 .tg-row[aria-pressed="true"] {
-  background: rgba(165, 167, 255, 0.08);
+  background: color-mix(in srgb, var(--nt-color-accent-fg) 8%, transparent);
 }
 .tg-name {
-  font-weight: 500;
+  font-weight: var(--nt-font-weight-medium);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .tg-field {
-  font-size: 12px;
-  color: #969ab8;
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 .tg-usage {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--nt-space-2-5);
 }
 .tg-usage-bar {
   flex: 1;
-  height: 6px;
-  border-radius: 3px;
-  background: #33364f;
+  height: var(--nt-space-1-5);
+  border-radius: var(--nt-radius-xs);
+  background: var(--nt-color-border-divider);
   overflow: hidden;
 }
 .tg-usage-bar > span {
   display: block;
   height: 100%;
-  background: #8f91f2;
+  background: var(--nt-color-type-goal);
 }
 .tg-total {
-  min-width: 24px;
+  min-width: var(--nt-space-6);
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 .tg-often {
   display: flex;
-  gap: 6px;
+  gap: var(--nt-space-1-5);
   min-width: 0;
   overflow: hidden;
 }
 .tg-chip {
-  padding: 1px 8px;
-  border-radius: 999px;
-  background: #2a2c45;
-  color: #b9bcd3;
-  font-size: 12px;
+  padding: var(--nt-space-px) var(--nt-space-2);
+  border-radius: var(--nt-radius-full);
+  background: var(--nt-color-bg-active-line);
+  color: var(--nt-color-text-secondary);
+  font-size: var(--nt-text-micro-size);
   white-space: nowrap;
 }
 .tg-cluster {
-  font-size: 12px;
-  color: #8a8fad;
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-line-number);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
