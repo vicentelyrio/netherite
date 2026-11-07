@@ -1,47 +1,22 @@
 import type { ServerEvent } from '@netherite/api'
 import {
-  type FreshnessCache,
   freshnessCache,
-  type GitRepository,
   type History,
   type Repo,
   readHistory,
   withWorkingTree,
 } from '@netherite/core'
 import { Effect, PubSub, Semaphore } from 'effect'
-import { newToken } from './security'
+import { newToken } from '../security'
+import type { ServerOptions, ServerState } from './state.types'
 
-export interface ServerOptions {
-  readonly git?: GitRepository | undefined
-  readonly createdBy?: string | undefined
-  readonly version?: string
-  readonly token?: string
-  readonly origins?: ReadonlyArray<string>
-}
-
-export interface ServerState {
-  readonly repo: Repo
-  readonly git: GitRepository | undefined
-  readonly createdBy: string | undefined
-  readonly version: string
-  readonly token: string
-  readonly origins: ReadonlyArray<string>
-  readonly freshness: FreshnessCache
-  readonly writes: Semaphore.Semaphore
-  readonly history: Effect.Effect<
-    History | undefined,
-    import('@netherite/core').GitError,
-    import('effect').FileSystem.FileSystem | import('effect').Path.Path
-  >
-  readonly events: PubSub.PubSub<ServerEvent>
-  readonly publish: (event: ServerEvent) => Effect.Effect<void>
-  readonly invalidate: () => void
-}
+const unknownVersion = '0.0.0'
+const oneWriteAtATime = 1
 
 export const makeState = (repo: Repo, options: ServerOptions = {}) =>
   Effect.gen(function* () {
     const freshness = freshnessCache(repo, options.git)
-    const writes = yield* Semaphore.make(1)
+    const writes = yield* Semaphore.make(oneWriteAtATime)
     const events = yield* PubSub.unbounded<ServerEvent>()
     let cached: { head: string | undefined; history: History } | undefined
 
@@ -63,7 +38,7 @@ export const makeState = (repo: Repo, options: ServerOptions = {}) =>
       repo,
       git: options.git,
       createdBy: options.createdBy,
-      version: options.version ?? '0.0.0',
+      version: options.version ?? unknownVersion,
       token: options.token ?? newToken(),
       origins: options.origins ?? [],
       freshness,
