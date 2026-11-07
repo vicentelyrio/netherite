@@ -276,6 +276,36 @@ const en = {
       invalidText:
         'Fix .netherite/config.yml by hand and these settings come back. Nothing here will overwrite it.',
       loadError: 'Could not load the workspace settings',
+      states: {
+        title: 'Task states',
+        subtitle:
+          'The columns of every board, in order. The category decides colour and what counts as done.',
+        name: 'Name of state {position:number}',
+        category: 'Category of {name:string}',
+        moveUp: 'Move {name:string} up',
+        moveDown: 'Move {name:string} down',
+        remove: 'Remove {name:string}',
+        add: 'Add a state',
+        newName: 'new_state',
+        discard: 'Discard',
+        save: 'Save states',
+        categories: { todo: 'To do', active: 'Active', blocked: 'Blocked', done: 'Done' },
+        problems: {
+          empty: 'Every state needs a name.',
+          duplicate: 'Two states have the same name.',
+          none: 'Keep at least one state.',
+        },
+        confirm: {
+          title: 'Tasks may be using these states',
+          text: 'Tasks keep the state written in their file. Until you update them, they fail lint and do not show in a board column. Running netherite lint lists them.',
+          renamed: '{from:string} → {to:string}',
+          removed: '{name:string} (removed)',
+          count: '{count:number} {{task|tasks}}',
+          counting: 'Counting…',
+          cancel: 'Keep editing',
+          confirm: 'Save anyway',
+        },
+      },
       inbox: {
         title: 'Inbox',
         subtitle: 'What the repository may raise in the Inbox.',

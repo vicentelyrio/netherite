@@ -1015,6 +1015,127 @@ type RootTranslation = {
 			 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​t​h​e​ ​w​o​r​k​s​p​a​c​e​ ​s​e​t​t​i​n​g​s
 			 */
 			loadError: string
+			states: {
+				/**
+				 * T​a​s​k​ ​s​t​a​t​e​s
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​c​o​l​u​m​n​s​ ​o​f​ ​e​v​e​r​y​ ​b​o​a​r​d​,​ ​i​n​ ​o​r​d​e​r​.​ ​T​h​e​ ​c​a​t​e​g​o​r​y​ ​d​e​c​i​d​e​s​ ​c​o​l​o​u​r​ ​a​n​d​ ​w​h​a​t​ ​c​o​u​n​t​s​ ​a​s​ ​d​o​n​e​.
+				 */
+				subtitle: string
+				/**
+				 * N​a​m​e​ ​o​f​ ​s​t​a​t​e​ ​{​p​o​s​i​t​i​o​n​}
+				 * @param {number} position
+				 */
+				name: RequiredParams<'position'>
+				/**
+				 * C​a​t​e​g​o​r​y​ ​o​f​ ​{​n​a​m​e​}
+				 * @param {string} name
+				 */
+				category: RequiredParams<'name'>
+				/**
+				 * M​o​v​e​ ​{​n​a​m​e​}​ ​u​p
+				 * @param {string} name
+				 */
+				moveUp: RequiredParams<'name'>
+				/**
+				 * M​o​v​e​ ​{​n​a​m​e​}​ ​d​o​w​n
+				 * @param {string} name
+				 */
+				moveDown: RequiredParams<'name'>
+				/**
+				 * R​e​m​o​v​e​ ​{​n​a​m​e​}
+				 * @param {string} name
+				 */
+				remove: RequiredParams<'name'>
+				/**
+				 * A​d​d​ ​a​ ​s​t​a​t​e
+				 */
+				add: string
+				/**
+				 * n​e​w​_​s​t​a​t​e
+				 */
+				newName: string
+				/**
+				 * D​i​s​c​a​r​d
+				 */
+				discard: string
+				/**
+				 * S​a​v​e​ ​s​t​a​t​e​s
+				 */
+				save: string
+				categories: {
+					/**
+					 * T​o​ ​d​o
+					 */
+					todo: string
+					/**
+					 * A​c​t​i​v​e
+					 */
+					active: string
+					/**
+					 * B​l​o​c​k​e​d
+					 */
+					blocked: string
+					/**
+					 * D​o​n​e
+					 */
+					done: string
+				}
+				problems: {
+					/**
+					 * E​v​e​r​y​ ​s​t​a​t​e​ ​n​e​e​d​s​ ​a​ ​n​a​m​e​.
+					 */
+					empty: string
+					/**
+					 * T​w​o​ ​s​t​a​t​e​s​ ​h​a​v​e​ ​t​h​e​ ​s​a​m​e​ ​n​a​m​e​.
+					 */
+					duplicate: string
+					/**
+					 * K​e​e​p​ ​a​t​ ​l​e​a​s​t​ ​o​n​e​ ​s​t​a​t​e​.
+					 */
+					none: string
+				}
+				confirm: {
+					/**
+					 * T​a​s​k​s​ ​m​a​y​ ​b​e​ ​u​s​i​n​g​ ​t​h​e​s​e​ ​s​t​a​t​e​s
+					 */
+					title: string
+					/**
+					 * T​a​s​k​s​ ​k​e​e​p​ ​t​h​e​ ​s​t​a​t​e​ ​w​r​i​t​t​e​n​ ​i​n​ ​t​h​e​i​r​ ​f​i​l​e​.​ ​U​n​t​i​l​ ​y​o​u​ ​u​p​d​a​t​e​ ​t​h​e​m​,​ ​t​h​e​y​ ​f​a​i​l​ ​l​i​n​t​ ​a​n​d​ ​d​o​ ​n​o​t​ ​s​h​o​w​ ​i​n​ ​a​ ​b​o​a​r​d​ ​c​o​l​u​m​n​.​ ​R​u​n​n​i​n​g​ ​n​e​t​h​e​r​i​t​e​ ​l​i​n​t​ ​l​i​s​t​s​ ​t​h​e​m​.
+					 */
+					text: string
+					/**
+					 * {​f​r​o​m​}​ ​→​ ​{​t​o​}
+					 * @param {string} from
+					 * @param {string} to
+					 */
+					renamed: RequiredParams<'from' | 'to'>
+					/**
+					 * {​n​a​m​e​}​ ​(​r​e​m​o​v​e​d​)
+					 * @param {string} name
+					 */
+					removed: RequiredParams<'name'>
+					/**
+					 * {​c​o​u​n​t​}​ ​{​{​t​a​s​k​|​t​a​s​k​s​}​}
+					 * @param {number} count
+					 */
+					count: RequiredParams<'count'>
+					/**
+					 * C​o​u​n​t​i​n​g​…
+					 */
+					counting: string
+					/**
+					 * K​e​e​p​ ​e​d​i​t​i​n​g
+					 */
+					cancel: string
+					/**
+					 * S​a​v​e​ ​a​n​y​w​a​y
+					 */
+					confirm: string
+				}
+			}
 			inbox: {
 				/**
 				 * I​n​b​o​x
@@ -4401,6 +4522,118 @@ export type TranslationFunctions = {
 			 * Could not load the workspace settings
 			 */
 			loadError: () => LocalizedString
+			states: {
+				/**
+				 * Task states
+				 */
+				title: () => LocalizedString
+				/**
+				 * The columns of every board, in order. The category decides colour and what counts as done.
+				 */
+				subtitle: () => LocalizedString
+				/**
+				 * Name of state {position}
+				 */
+				name: (arg: { position: number }) => LocalizedString
+				/**
+				 * Category of {name}
+				 */
+				category: (arg: { name: string }) => LocalizedString
+				/**
+				 * Move {name} up
+				 */
+				moveUp: (arg: { name: string }) => LocalizedString
+				/**
+				 * Move {name} down
+				 */
+				moveDown: (arg: { name: string }) => LocalizedString
+				/**
+				 * Remove {name}
+				 */
+				remove: (arg: { name: string }) => LocalizedString
+				/**
+				 * Add a state
+				 */
+				add: () => LocalizedString
+				/**
+				 * new_state
+				 */
+				newName: () => LocalizedString
+				/**
+				 * Discard
+				 */
+				discard: () => LocalizedString
+				/**
+				 * Save states
+				 */
+				save: () => LocalizedString
+				categories: {
+					/**
+					 * To do
+					 */
+					todo: () => LocalizedString
+					/**
+					 * Active
+					 */
+					active: () => LocalizedString
+					/**
+					 * Blocked
+					 */
+					blocked: () => LocalizedString
+					/**
+					 * Done
+					 */
+					done: () => LocalizedString
+				}
+				problems: {
+					/**
+					 * Every state needs a name.
+					 */
+					empty: () => LocalizedString
+					/**
+					 * Two states have the same name.
+					 */
+					duplicate: () => LocalizedString
+					/**
+					 * Keep at least one state.
+					 */
+					none: () => LocalizedString
+				}
+				confirm: {
+					/**
+					 * Tasks may be using these states
+					 */
+					title: () => LocalizedString
+					/**
+					 * Tasks keep the state written in their file. Until you update them, they fail lint and do not show in a board column. Running netherite lint lists them.
+					 */
+					text: () => LocalizedString
+					/**
+					 * {from} → {to}
+					 */
+					renamed: (arg: { from: string, to: string }) => LocalizedString
+					/**
+					 * {name} (removed)
+					 */
+					removed: (arg: { name: string }) => LocalizedString
+					/**
+					 * {count} {{task|tasks}}
+					 */
+					count: (arg: { count: number }) => LocalizedString
+					/**
+					 * Counting…
+					 */
+					counting: () => LocalizedString
+					/**
+					 * Keep editing
+					 */
+					cancel: () => LocalizedString
+					/**
+					 * Save anyway
+					 */
+					confirm: () => LocalizedString
+				}
+			}
 			inbox: {
 				/**
 				 * Inbox

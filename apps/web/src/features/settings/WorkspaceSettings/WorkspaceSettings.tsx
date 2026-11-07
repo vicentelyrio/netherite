@@ -4,6 +4,7 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { ContextSettings } from './ContextSettings'
 import { FreshnessSettings } from './FreshnessSettings'
 import { InboxSettings } from './InboxSettings'
+import { StatesSettings } from './StatesSettings'
 import { useWorkspaceConfig } from './useWorkspaceConfig'
 import './WorkspaceSettings.css'
 
@@ -26,6 +27,7 @@ export function WorkspaceSettings() {
   return (
     <div className="ws">
       <p className="app-muted ws-note">{text.note()}</p>
+      <StatesSettings settings={settings} save={save} />
       <InboxSettings settings={settings} save={save} />
       <FreshnessSettings settings={settings} save={save} />
       <ContextSettings settings={settings} save={save} />

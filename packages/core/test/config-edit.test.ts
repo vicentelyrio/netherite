@@ -130,6 +130,18 @@ describe('what the app may write', () => {
     expect(plan.issues.map((i) => i.path)).toEqual(Object.keys(parsed).length ? [path] : [])
   })
 
+  test('refuses a state name used twice', () => {
+    const plan = planConfigEdits({
+      states: [
+        { name: 'a', category: 'todo' },
+        { name: 'b', category: 'todo' },
+        { name: 'a', category: 'done' },
+      ],
+    })
+    expect(plan.edits).toEqual([])
+    expect(plan.issues[0]?.path).toEqual(['states', '2', 'name'])
+  })
+
   test('allows the settings the page edits', () => {
     const plan = planConfigEdits({
       states: [{ name: 'a', category: 'todo' }],

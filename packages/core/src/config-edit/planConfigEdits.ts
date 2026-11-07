@@ -5,13 +5,14 @@ import type { ConfigEdit } from './spliceConfig'
 const Writable = {
   Value: 'value',
   Rules: 'rules',
+  States: 'states',
 } as const
 
 type WritableLeaf = (typeof Writable)[keyof typeof Writable]
 type WritableShape = WritableLeaf | { readonly [key: string]: WritableShape }
 
 export const writableConfig: WritableShape = {
-  states: Writable.Value,
+  states: Writable.States,
   freshness: { drifting: Writable.Value, stale: Writable.Value },
   context: { budget: Writable.Value, targets: Writable.Value },
   inbox: { rules: Writable.Rules },
@@ -49,10 +50,20 @@ const planRule = (path: ReadonlyArray<string>, rule: string, value: unknown): Co
   return { edits: [{ path: at, value }], issues: [] }
 }
 
+const planStates = (path: ReadonlyArray<string>, value: unknown): ConfigPlan => {
+  const list: ReadonlyArray<unknown> = Array.isArray(value) ? value : []
+  const names = list.map((state) => (isRecord(state) ? state.name : undefined))
+  const repeated = names.findIndex((name, i) => name !== undefined && names.indexOf(name) !== i)
+  return repeated < 0
+    ? { edits: [{ path, value }], issues: [] }
+    : refuse([...path, String(repeated), 'name'], `"${String(names[repeated])}" is used twice`)
+}
+
 const leafPlanners: Readonly<
   Record<WritableLeaf, (path: ReadonlyArray<string>, value: unknown) => ConfigPlan>
 > = {
   [Writable.Value]: (path, value) => ({ edits: [{ path, value }], issues: [] }),
+  [Writable.States]: planStates,
   [Writable.Rules]: (path, value) =>
     isRecord(value)
       ? merge(Object.entries(value).map(([rule, on]) => planRule(path, rule, on)))
