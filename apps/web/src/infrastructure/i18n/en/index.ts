@@ -280,6 +280,13 @@ const en = {
       tagsSearch: 'Focus the search',
       editorSave: 'Save',
     },
+    editor: {
+      title: 'Editor',
+      subtitle: 'Saved in this browser.',
+      vimMode: 'Vim mode',
+      vimModeHint:
+        'Edit Markdown with vim keys. :w saves, and Esc stays in the editor instead of closing a drawer.',
+    },
     shortcuts: {
       title: 'Keyboard shortcuts',
       subtitle: 'Saved in this browser. Screens only clash with themselves and with global keys.',

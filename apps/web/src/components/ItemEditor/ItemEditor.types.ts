@@ -20,4 +20,5 @@ export interface ItemEditorProps {
   readonly branch?: string | undefined
   readonly autosaveDelay?: number
   readonly saveKeys?: string | null
+  readonly vimMode?: boolean
 }

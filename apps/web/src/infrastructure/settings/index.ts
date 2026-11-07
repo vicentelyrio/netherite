@@ -6,8 +6,10 @@ export {
 } from './SettingsProvider'
 export {
   defaultSettings,
+  type EditorPreferences,
   parseSettings,
   type Settings,
   serializeSettings,
   storageKey,
 } from './settings'
+export { useEditorSettings } from './useEditorSettings'

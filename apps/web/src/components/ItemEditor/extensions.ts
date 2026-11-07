@@ -30,6 +30,8 @@ import { toCodeMirrorKey } from '@/infrastructure/shortcuts'
 import { type LinkTarget, linkOptions, openWikiLink } from './complete'
 import type { Problem } from './diagnostics'
 import { diffLines, type LineChanges, noChanges } from './diff'
+import { v } from './tokens'
+import { vimKeys } from './vim'
 
 export const setHead = StateEffect.define<string | null>()
 
@@ -233,8 +235,6 @@ export const wikiCompletion = (targets: () => ReadonlyArray<LinkTarget>): Extens
     ],
   })
 
-const v = (name: string) => `var(--nt-color-${name})`
-
 export const highlight = HighlightStyle.define([
   { tag: [t.propertyName, t.definition(t.propertyName)], color: v('syntax-key') },
   { tag: [t.string, t.special(t.string)], color: v('syntax-string') },
@@ -362,9 +362,16 @@ export interface EditorOptions {
   readonly onSave: () => void
   readonly targets: () => ReadonlyArray<LinkTarget>
   readonly saveKeys: string | null
+  readonly vimMode: boolean
 }
 
-export const editorExtensions = ({ onSave, targets, saveKeys }: EditorOptions): Extension[] => [
+export const editorExtensions = ({
+  onSave,
+  targets,
+  saveKeys,
+  vimMode,
+}: EditorOptions): Extension[] => [
+  ...(vimMode ? [vimKeys(onSave)] : []),
   headField,
   changesField,
   problemsField,

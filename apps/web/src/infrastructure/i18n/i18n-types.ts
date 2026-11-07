@@ -1038,6 +1038,24 @@ type RootTranslation = {
 			 */
 			editorSave: string
 		}
+		editor: {
+			/**
+			 * E​d​i​t​o​r
+			 */
+			title: string
+			/**
+			 * S​a​v​e​d​ ​i​n​ ​t​h​i​s​ ​b​r​o​w​s​e​r​.
+			 */
+			subtitle: string
+			/**
+			 * V​i​m​ ​m​o​d​e
+			 */
+			vimMode: string
+			/**
+			 * E​d​i​t​ ​M​a​r​k​d​o​w​n​ ​w​i​t​h​ ​v​i​m​ ​k​e​y​s​.​ ​:​w​ ​s​a​v​e​s​,​ ​a​n​d​ ​E​s​c​ ​s​t​a​y​s​ ​i​n​ ​t​h​e​ ​e​d​i​t​o​r​ ​i​n​s​t​e​a​d​ ​o​f​ ​c​l​o​s​i​n​g​ ​a​ ​d​r​a​w​e​r​.
+			 */
+			vimModeHint: string
+		}
 		shortcuts: {
 			/**
 			 * K​e​y​b​o​a​r​d​ ​s​h​o​r​t​c​u​t​s
@@ -4217,6 +4235,24 @@ export type TranslationFunctions = {
 			 * Save
 			 */
 			editorSave: () => LocalizedString
+		}
+		editor: {
+			/**
+			 * Editor
+			 */
+			title: () => LocalizedString
+			/**
+			 * Saved in this browser.
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Vim mode
+			 */
+			vimMode: () => LocalizedString
+			/**
+			 * Edit Markdown with vim keys. :w saves, and Esc stays in the editor instead of closing a drawer.
+			 */
+			vimModeHint: () => LocalizedString
 		}
 		shortcuts: {
 			/**

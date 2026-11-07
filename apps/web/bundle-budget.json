@@ -1,6 +1,6 @@
 {
   "effect": {
-    "bytes": 445923,
+    "bytes": 445967,
     "modules": [
       "Array.js",
       "BigDecimal.js",
@@ -122,5 +122,5 @@
       "socket/Socket.js"
     ]
   },
-  "gzipBytes": 603469
+  "gzipBytes": 661622
 }

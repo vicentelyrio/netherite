@@ -6,6 +6,7 @@ import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
 import { itemsQuery, keys, noticeFor, sourceQuery } from '@/infrastructure/query'
+import { useEditorSettings } from '@/infrastructure/settings'
 import { useResolvedShortcuts } from '@/infrastructure/shortcuts'
 
 export function SourceEditor({
@@ -24,6 +25,7 @@ export function SourceEditor({
   const notices = useNotices()
   const source = useQuery(sourceQuery(api, id))
   const saveKeys = useResolvedShortcuts()['editor.save'].keys
+  const { vimMode } = useEditorSettings()
   const items = useQuery(itemsQuery(api, { limit: 500 }))
   const targets = useMemo(
     () => (items.data?.items ?? []).map((i) => ({ id: i.id, title: i.title, type: i.type })),
@@ -38,6 +40,7 @@ export function SourceEditor({
       {...extra}
       source={source.data}
       saveKeys={saveKeys}
+      vimMode={vimMode}
       targets={targets}
       lint={async (text) =>
         (await api.call((c) => c.lintText.lintText({ payload: { id, text } }))).diagnostics
