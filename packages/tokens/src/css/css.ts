@@ -1,5 +1,5 @@
-import { color, edgeKinds, tint } from './color'
-import { edgeStyle, graphMetrics, nodeSpec } from './graph'
+import { color, edgeKinds, tint } from '../color'
+import { edgeStyle, graphMetrics, nodeSpec } from '../graph'
 import {
   fontFamily,
   fontSizeExtra,
@@ -17,8 +17,8 @@ import {
   stroke,
   textStyle,
   zIndex,
-} from './scale'
-import { statusGlyph } from './status'
+} from '../scale'
+import { statusGlyph } from '../status'
 
 export const prefix = '--nt-'
 

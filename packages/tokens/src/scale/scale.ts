@@ -34,6 +34,7 @@ export const textStyle = {
   },
   monoSm: { family: 'mono', size: 12, lineHeight: 16, weight: 400, letterSpacing: 0 },
 } as const satisfies Record<string, TextStyle>
+
 export type TextStyleName = keyof typeof textStyle
 
 export const fontSize = {
@@ -103,6 +104,7 @@ export const size = {
 export const stroke = { thin: 1, medium: 1.5, thick: 2, heavy: 3 } as const
 
 export const radius = { xs: 4, sm: 6, md: 10, lg: 14, full: 999 } as const
+
 export const radiusExtra = { xxs: 2, control: 7, tooltip: 8, group: 12 } as const
 
 export const layout = {

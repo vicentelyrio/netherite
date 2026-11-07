@@ -1,6 +1,6 @@
-import { color } from './color'
-import { hexToRgb } from './contrast'
-import { fontFamily, fontWeight, grid, radius, space, textStyle } from './scale'
+import { color } from '../color'
+import { hexToRgb } from '../contrast'
+import { fontFamily, fontWeight, grid, radius, space, textStyle } from '../scale'
 
 type Scale = readonly [
   string,

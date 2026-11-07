@@ -7,15 +7,19 @@ export const itemTypeNames = [
   'context',
   'runbook',
 ] as const
+
 export type ItemTypeName = (typeof itemTypeNames)[number]
 
 export const stateCategories = ['todo', 'active', 'blocked', 'done'] as const
+
 export type StateCategory = (typeof stateCategories)[number]
 
 export const adrStatuses = ['proposed', 'accepted', 'deprecated', 'superseded'] as const
+
 export type AdrStatus = (typeof adrStatuses)[number]
 
 export const freshnessStates = ['fresh', 'drifting', 'stale', 'unknown'] as const
+
 export type FreshnessState = (typeof freshnessStates)[number]
 
 export const edgeKinds = [
@@ -28,6 +32,7 @@ export const edgeKinds = [
   'related',
   'reference',
 ] as const
+
 export type EdgeKind = (typeof edgeKinds)[number]
 
 export const color = {

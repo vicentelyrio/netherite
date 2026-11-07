@@ -1,6 +1,7 @@
-import type { StateCategory } from './color'
+import type { StateCategory } from '../color'
 
 export const statusNames = ['backlog', 'progress', 'hold', 'done'] as const
+
 export type StatusName = (typeof statusNames)[number]
 
 export const statusOfCategory: Readonly<Record<StateCategory, StatusName>> = {
