@@ -1,9 +1,8 @@
-import { Switch } from '@netherite/ui'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useEditorSettings } from '@/infrastructure/settings'
 import { DurationSetting } from '../DurationSetting'
-import { SettingRow } from '../SettingRow'
 import { SettingsSection } from '../SettingsSection'
+import { SwitchSetting } from '../SwitchSetting'
 
 const autosavePresetsMs = [500, 1000, 2000, 5000]
 
@@ -20,13 +19,12 @@ export function EditorSettings() {
         value={autosaveDelayMs}
         onChange={setAutosaveDelayMs}
       />
-      <SettingRow label={text.vimMode()} hint={text.vimModeHint()}>
-        <Switch
-          aria-label={text.vimMode()}
-          checked={vimMode}
-          onChange={(event) => setVimMode(event.currentTarget.checked)}
-        />
-      </SettingRow>
+      <SwitchSetting
+        label={text.vimMode()}
+        hint={text.vimModeHint()}
+        checked={vimMode}
+        onChange={setVimMode}
+      />
     </SettingsSection>
   )
 }

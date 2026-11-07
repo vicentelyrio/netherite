@@ -5,6 +5,7 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { EditorSettings } from '../EditorSettings'
 import { GeneralSettings } from '../GeneralSettings'
 import { ShortcutSettings } from '../ShortcutSettings'
+import { WorkspaceSettings } from '../WorkspaceSettings'
 import { defaultSettingsTab, isSettingsTab, type SettingsTab, settingsTabs } from './tabs'
 import './SettingsTabs.css'
 
@@ -12,6 +13,7 @@ const panels: Readonly<Record<SettingsTab, ComponentType>> = {
   general: GeneralSettings,
   editor: EditorSettings,
   shortcuts: ShortcutSettings,
+  workspace: WorkspaceSettings,
 }
 
 export function SettingsTabs({ tab = defaultSettingsTab }: { readonly tab?: SettingsTab }) {

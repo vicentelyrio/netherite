@@ -1,0 +1,12 @@
+.ns-input {
+  width: var(--nt-size-120);
+  height: var(--nt-space-7-5);
+  padding: 0 var(--nt-space-2-5);
+  color: var(--nt-color-text-primary);
+  background: var(--nt-color-bg-stage);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
+  border-radius: var(--nt-radius-tooltip);
+  font-size: var(--nt-text-body-sm-size);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

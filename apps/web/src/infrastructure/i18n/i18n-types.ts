@@ -989,6 +989,142 @@ type RootTranslation = {
 			 * S​h​o​r​t​c​u​t​s
 			 */
 			shortcuts: string
+			/**
+			 * W​o​r​k​s​p​a​c​e
+			 */
+			workspace: string
+		}
+		workspace: {
+			/**
+			 * T​h​e​s​e​ ​s​e​t​t​i​n​g​s​ ​a​r​e​ ​s​h​a​r​e​d​ ​w​i​t​h​ ​e​v​e​r​y​o​n​e​ ​t​h​r​o​u​g​h​ ​g​i​t​.​ ​A​ ​c​h​a​n​g​e​ ​h​e​r​e​ ​i​s​ ​a​n​ ​u​n​c​o​m​m​i​t​t​e​d​ ​e​d​i​t​ ​t​o​ ​.​n​e​t​h​e​r​i​t​e​/​c​o​n​f​i​g​.​y​m​l​.
+			 */
+			note: string
+			/**
+			 * L​o​a​d​i​n​g​ ​t​h​e​ ​w​o​r​k​s​p​a​c​e​ ​s​e​t​t​i​n​g​s​…
+			 */
+			loading: string
+			/**
+			 * T​h​e​ ​w​o​r​k​s​p​a​c​e​ ​c​o​n​f​i​g​ ​h​a​s​ ​a​ ​p​r​o​b​l​e​m
+			 */
+			invalid: string
+			/**
+			 * F​i​x​ ​.​n​e​t​h​e​r​i​t​e​/​c​o​n​f​i​g​.​y​m​l​ ​b​y​ ​h​a​n​d​ ​a​n​d​ ​t​h​e​s​e​ ​s​e​t​t​i​n​g​s​ ​c​o​m​e​ ​b​a​c​k​.​ ​N​o​t​h​i​n​g​ ​h​e​r​e​ ​w​i​l​l​ ​o​v​e​r​w​r​i​t​e​ ​i​t​.
+			 */
+			invalidText: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​t​h​e​ ​w​o​r​k​s​p​a​c​e​ ​s​e​t​t​i​n​g​s
+			 */
+			loadError: string
+			inbox: {
+				/**
+				 * I​n​b​o​x
+				 */
+				title: string
+				/**
+				 * W​h​a​t​ ​t​h​e​ ​r​e​p​o​s​i​t​o​r​y​ ​m​a​y​ ​r​a​i​s​e​ ​i​n​ ​t​h​e​ ​I​n​b​o​x​.
+				 */
+				subtitle: string
+				hints: {
+					/**
+					 * A​ ​d​o​c​ ​w​h​o​s​e​ ​c​o​v​e​r​e​d​ ​f​i​l​e​s​ ​c​h​a​n​g​e​d​ ​s​i​n​c​e​ ​i​t​s​ ​l​a​s​t​ ​r​e​v​i​e​w​.
+					 */
+					'stale-doc': string
+					/**
+					 * A​ ​d​e​c​i​s​i​o​n​ ​s​t​i​l​l​ ​w​a​i​t​i​n​g​ ​t​o​ ​b​e​ ​a​c​c​e​p​t​e​d​.
+					 */
+					'proposed-adr': string
+					/**
+					 * A​n​ ​i​t​e​m​ ​w​i​t​h​ ​n​o​ ​l​i​n​k​s​ ​t​o​ ​o​r​ ​f​r​o​m​ ​i​t​.
+					 */
+					orphan: string
+					/**
+					 * A​ ​t​a​s​k​ ​p​a​s​t​ ​i​t​s​ ​d​u​e​ ​d​a​t​e​.
+					 */
+					'overdue-task': string
+					/**
+					 * A​ ​c​o​m​m​i​t​ ​t​h​a​t​ ​s​a​y​s​ ​i​t​ ​c​l​o​s​e​s​ ​a​ ​t​a​s​k​.
+					 */
+					'closing-commit': string
+					/**
+					 * A​ ​T​O​D​O​ ​a​d​d​e​d​ ​i​n​ ​a​ ​r​e​c​e​n​t​ ​c​o​m​m​i​t​.
+					 */
+					'new-todo': string
+					/**
+					 * T​a​g​s​ ​t​h​a​t​ ​l​o​o​k​ ​l​i​k​e​ ​t​h​e​ ​s​a​m​e​ ​t​a​g​.
+					 */
+					'similar-tag': string
+				}
+			}
+			freshness: {
+				/**
+				 * F​r​e​s​h​n​e​s​s
+				 */
+				title: string
+				/**
+				 * H​o​w​ ​f​a​r​ ​c​o​v​e​r​e​d​ ​f​i​l​e​s​ ​m​a​y​ ​m​o​v​e​ ​b​e​f​o​r​e​ ​a​ ​d​o​c​ ​n​e​e​d​s​ ​a​n​o​t​h​e​r​ ​l​o​o​k​.
+				 */
+				subtitle: string
+				/**
+				 * D​r​i​f​t​i​n​g​ ​a​f​t​e​r
+				 */
+				drifting: string
+				/**
+				 * C​o​m​m​i​t​s​ ​t​o​ ​c​o​v​e​r​e​d​ ​f​i​l​e​s​ ​s​i​n​c​e​ ​r​e​v​i​e​w​.​ ​C​a​n​n​o​t​ ​b​e​ ​m​o​r​e​ ​t​h​a​n​ ​S​t​a​l​e​ ​a​f​t​e​r​.
+				 */
+				driftingHint: string
+				/**
+				 * S​t​a​l​e​ ​a​f​t​e​r
+				 */
+				stale: string
+				/**
+				 * C​o​m​m​i​t​s​ ​t​o​ ​c​o​v​e​r​e​d​ ​f​i​l​e​s​ ​s​i​n​c​e​ ​r​e​v​i​e​w​.​ ​C​a​n​n​o​t​ ​b​e​ ​l​e​s​s​ ​t​h​a​n​ ​D​r​i​f​t​i​n​g​ ​a​f​t​e​r​.
+				 */
+				staleHint: string
+			}
+			context: {
+				/**
+				 * C​o​n​t​e​x​t
+				 */
+				title: string
+				/**
+				 * W​h​a​t​ ​a​g​e​n​t​s​ ​a​r​e​ ​g​i​v​e​n​.
+				 */
+				subtitle: string
+				/**
+				 * T​o​k​e​n​ ​b​u​d​g​e​t
+				 */
+				budget: string
+				/**
+				 * T​h​e​ ​m​o​s​t​ ​t​o​k​e​n​s​ ​o​f​ ​c​o​n​t​e​x​t​ ​i​n​ ​e​a​c​h​ ​s​y​n​c​e​d​ ​f​i​l​e​,​ ​e​s​t​i​m​a​t​e​d​.
+				 */
+				budgetHint: string
+				targets: {
+					/**
+					 * C​L​A​U​D​E​.​m​d
+					 */
+					claude: string
+					/**
+					 * S​y​n​c​ ​t​h​e​ ​c​o​n​t​e​x​t​ ​i​n​t​o​ ​C​L​A​U​D​E​.​m​d​.
+					 */
+					claudeHint: string
+					/**
+					 * A​G​E​N​T​S​.​m​d
+					 */
+					agents: string
+					/**
+					 * S​y​n​c​ ​t​h​e​ ​c​o​n​t​e​x​t​ ​i​n​t​o​ ​A​G​E​N​T​S​.​m​d​.
+					 */
+					agentsHint: string
+					/**
+					 * M​C​P
+					 */
+					mcp: string
+					/**
+					 * S​e​r​v​e​ ​t​h​e​ ​c​o​n​t​e​x​t​ ​o​v​e​r​ ​M​C​P​.
+					 */
+					mcpHint: string
+				}
+			}
 		}
 		duration: {
 			/**
@@ -4239,6 +4375,142 @@ export type TranslationFunctions = {
 			 * Shortcuts
 			 */
 			shortcuts: () => LocalizedString
+			/**
+			 * Workspace
+			 */
+			workspace: () => LocalizedString
+		}
+		workspace: {
+			/**
+			 * These settings are shared with everyone through git. A change here is an uncommitted edit to .netherite/config.yml.
+			 */
+			note: () => LocalizedString
+			/**
+			 * Loading the workspace settings…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * The workspace config has a problem
+			 */
+			invalid: () => LocalizedString
+			/**
+			 * Fix .netherite/config.yml by hand and these settings come back. Nothing here will overwrite it.
+			 */
+			invalidText: () => LocalizedString
+			/**
+			 * Could not load the workspace settings
+			 */
+			loadError: () => LocalizedString
+			inbox: {
+				/**
+				 * Inbox
+				 */
+				title: () => LocalizedString
+				/**
+				 * What the repository may raise in the Inbox.
+				 */
+				subtitle: () => LocalizedString
+				hints: {
+					/**
+					 * A doc whose covered files changed since its last review.
+					 */
+					'stale-doc': () => LocalizedString
+					/**
+					 * A decision still waiting to be accepted.
+					 */
+					'proposed-adr': () => LocalizedString
+					/**
+					 * An item with no links to or from it.
+					 */
+					orphan: () => LocalizedString
+					/**
+					 * A task past its due date.
+					 */
+					'overdue-task': () => LocalizedString
+					/**
+					 * A commit that says it closes a task.
+					 */
+					'closing-commit': () => LocalizedString
+					/**
+					 * A TODO added in a recent commit.
+					 */
+					'new-todo': () => LocalizedString
+					/**
+					 * Tags that look like the same tag.
+					 */
+					'similar-tag': () => LocalizedString
+				}
+			}
+			freshness: {
+				/**
+				 * Freshness
+				 */
+				title: () => LocalizedString
+				/**
+				 * How far covered files may move before a doc needs another look.
+				 */
+				subtitle: () => LocalizedString
+				/**
+				 * Drifting after
+				 */
+				drifting: () => LocalizedString
+				/**
+				 * Commits to covered files since review. Cannot be more than Stale after.
+				 */
+				driftingHint: () => LocalizedString
+				/**
+				 * Stale after
+				 */
+				stale: () => LocalizedString
+				/**
+				 * Commits to covered files since review. Cannot be less than Drifting after.
+				 */
+				staleHint: () => LocalizedString
+			}
+			context: {
+				/**
+				 * Context
+				 */
+				title: () => LocalizedString
+				/**
+				 * What agents are given.
+				 */
+				subtitle: () => LocalizedString
+				/**
+				 * Token budget
+				 */
+				budget: () => LocalizedString
+				/**
+				 * The most tokens of context in each synced file, estimated.
+				 */
+				budgetHint: () => LocalizedString
+				targets: {
+					/**
+					 * CLAUDE.md
+					 */
+					claude: () => LocalizedString
+					/**
+					 * Sync the context into CLAUDE.md.
+					 */
+					claudeHint: () => LocalizedString
+					/**
+					 * AGENTS.md
+					 */
+					agents: () => LocalizedString
+					/**
+					 * Sync the context into AGENTS.md.
+					 */
+					agentsHint: () => LocalizedString
+					/**
+					 * MCP
+					 */
+					mcp: () => LocalizedString
+					/**
+					 * Serve the context over MCP.
+					 */
+					mcpHint: () => LocalizedString
+				}
+			}
 		}
 		duration: {
 			/**

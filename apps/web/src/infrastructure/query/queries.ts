@@ -21,7 +21,15 @@ export const keys = {
   stats: ['stats'] as const,
   timeline: ['timeline'] as const,
   tags: ['tags'] as const,
+  config: ['config'] as const,
 }
+
+export const configQuery = (api: Api) =>
+  queryOptions({
+    queryKey: keys.config,
+    queryFn: () => api.call((c) => c.config.read()),
+    retry: false,
+  })
 
 export const healthQuery = (api: Api) =>
   queryOptions({ queryKey: keys.health, queryFn: () => api.call((c) => c.meta.health()) })

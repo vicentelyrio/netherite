@@ -1,4 +1,4 @@
-export const settingsTabs = ['general', 'editor', 'shortcuts'] as const
+export const settingsTabs = ['general', 'editor', 'shortcuts', 'workspace'] as const
 
 export type SettingsTab = (typeof settingsTabs)[number]
 
