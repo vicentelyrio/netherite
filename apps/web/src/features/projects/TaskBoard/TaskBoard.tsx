@@ -57,7 +57,7 @@ export function TaskBoard({
       onEnd={() => setDragging(undefined)}
       onDrop={onDrop}
     >
-      <div className="board">
+      <div className="board" data-bleed>
         {board.columns.map((column) => (
           <BoardColumn
             key={column.name}
@@ -74,7 +74,7 @@ export function TaskBoard({
       <DragOverlay dropAnimation={null}>
         {dragging && (
           <div className="board-overlay">
-            <Card>
+            <Card className="board-overlay-card">
               <TaskCardBody
                 card={dragging}
                 projectId={board.id}

@@ -11,7 +11,6 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { FreshnessCell } from '@/components'
 import { ago } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
-import '../shared.css'
 import './KnowledgeRow.css'
 
 export function KnowledgeRow({

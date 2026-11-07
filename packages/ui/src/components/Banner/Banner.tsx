@@ -4,9 +4,20 @@ import type { BannerProps } from './Banner.types'
 import { BannerClose } from './BannerClose'
 import { bannerRole } from './bannerRole'
 
-export function Banner({ variant = 'info', title, children, actions, onClose }: BannerProps) {
+export function Banner({
+  variant = 'info',
+  title,
+  children,
+  actions,
+  onClose,
+  className,
+}: BannerProps) {
   return (
-    <div className="nt-banner" data-variant={variant} role={bannerRole(variant)}>
+    <div
+      className={className ? `nt-banner ${className}` : 'nt-banner'}
+      data-variant={variant}
+      role={bannerRole(variant)}
+    >
       <Icon
         name={bannerIcons[variant]}
         size={bannerIconSize}

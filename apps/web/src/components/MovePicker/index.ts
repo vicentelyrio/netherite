@@ -1,1 +1,2 @@
-export { type MoveGroup, type MoveOption, MovePicker, type MovePickerProps } from './MovePicker'
+export { MovePicker } from './MovePicker'
+export type { MoveGroup, MoveOption, MovePickerProps } from './MovePicker.types'

@@ -1,0 +1,11 @@
+.doc-cover-row {
+  display: flex;
+  align-items: center;
+  gap: var(--nt-space-2-5);
+  height: var(--nt-size-26);
+}
+
+.doc-cover-row .doc-cover-path {
+  flex: 1;
+  color: var(--nt-color-text-primary);
+}

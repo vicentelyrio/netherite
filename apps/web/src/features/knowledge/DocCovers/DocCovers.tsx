@@ -6,6 +6,8 @@ import { TitleForm } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useWrite } from '@/infrastructure/query'
+import { PanelSection } from '../PanelSection'
+import './DocCovers.css'
 
 export function DocCovers({
   item,
@@ -39,13 +41,16 @@ export function DocCovers({
     else save.mutate([...covers, path], { onSuccess: () => setAdding(false) })
   }
   return (
-    <section className="kf-section">
-      <h2 className="kf-h">
-        <Icon name="folder_code" size={15} /> {text.covers({ count: covers.length })}
-      </h2>
+    <PanelSection
+      title={
+        <>
+          <Icon name="folder_code" size={15} /> {text.covers({ count: covers.length })}
+        </>
+      }
+    >
       {covers.map((path) => (
-        <div key={path} className="kn-file-row">
-          <span className="kn-mono">{path}</span>
+        <div key={path} className="doc-cover-row">
+          <span className="kn-mono doc-cover-path">{path}</span>
           <ActionIcon
             icon="close"
             label={text.uncover({ path })}
@@ -70,6 +75,6 @@ export function DocCovers({
           {text.addCover()}
         </Button>
       )}
-    </section>
+    </PanelSection>
   )
 }

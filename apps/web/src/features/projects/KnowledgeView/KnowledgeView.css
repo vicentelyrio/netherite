@@ -101,6 +101,6 @@
   flex-direction: column;
   gap: var(--nt-space-4);
 }
-.pkv-wrap > .filter-tabs {
+.pkv-wrap > .pkv-filter {
   align-self: flex-start;
 }

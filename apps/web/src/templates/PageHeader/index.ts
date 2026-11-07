@@ -1,1 +1,2 @@
-export { PageHeader, type PageHeaderProps, PageToolbar } from './PageHeader'
+export { PageHeader, type PageHeaderProps } from './PageHeader'
+export { PageToolbar } from './PageToolbar'

@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
 import { describe, expect, test } from 'vitest'
-import { AdrDiamond } from './AdrMark'
+import { AdrDiamond } from './index'
 
 describe('AdrDiamond', () => {
   test('is hollow only when asked', () => {

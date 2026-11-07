@@ -1,6 +1,5 @@
 import { Icon } from '@netherite/ui'
 import type { ReactNode } from 'react'
-import '../shared.css'
 import './StaleWarning.css'
 
 export function StaleWarning({

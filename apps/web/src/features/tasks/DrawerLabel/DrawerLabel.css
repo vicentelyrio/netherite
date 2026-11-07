@@ -1,0 +1,4 @@
+.drawer-cell-label {
+  font-size: var(--nt-text-micro-size);
+  color: var(--nt-color-text-line-number);
+}

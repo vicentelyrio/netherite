@@ -1,7 +1,6 @@
 import { type ItemTypeName, TypeBadge } from '@netherite/ui'
-import { Link } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
-import '../shared.css'
+import { InboxRowLink, InboxRowTitle } from '../InboxRow'
 
 export function InboxItemRow({
   id,
@@ -17,13 +16,13 @@ export function InboxItemRow({
   readonly meta?: ReactNode
 }) {
   return (
-    <Link to="/items/$id" params={{ id }} className="ib-row">
+    <InboxRowLink id={id}>
       {type && <TypeBadge type={type as ItemTypeName} />}
       <code className="kn-id">{id}</code>
-      <span className="ib-title">{title}</span>
+      <InboxRowTitle>{title}</InboxRowTitle>
       {note && <span className="app-muted">{note}</span>}
       <span className="kn-spacer" />
       {meta}
-    </Link>
+    </InboxRowLink>
   )
 }

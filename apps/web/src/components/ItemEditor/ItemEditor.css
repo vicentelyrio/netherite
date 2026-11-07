@@ -16,7 +16,7 @@
 }
 
 .ed-code {
-  flex: 0 0 52%;
+  flex: var(--ed-code-flex, 0 0 52%);
   min-width: 0;
   background: var(--nt-color-bg-card);
   border-inline-end: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
@@ -26,7 +26,7 @@
   flex: 1;
   min-width: 0;
   padding: var(--nt-space-8) var(--nt-space-9);
-  overflow-y: auto;
+  overflow: var(--ed-rendered-overflow, visible auto);
 }
 
 .ed[data-mode="text"] .ed-rendered {
@@ -43,11 +43,6 @@
   color: var(--nt-color-text-secondary);
   background: var(--nt-color-bg-sunken);
   border-top: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
-}
-
-.ed-status .nt-button {
-  height: var(--nt-space-6);
-  font-size: var(--nt-text-micro-size);
 }
 
 .ed-count {
@@ -126,7 +121,7 @@
   border-top: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
 }
 
-.ed[data-variant="drawer"] .ed-status .nt-segmented {
+.ed[data-variant="drawer"] .ed-status .ed-mode {
   --sc-padding: var(--nt-space-0-5);
   min-height: 0;
   height: var(--nt-size-26);
@@ -136,8 +131,8 @@
   border-radius: var(--nt-radius-sm);
 }
 
-.ed[data-variant="drawer"] .ed-status .nt-segmented label,
-.ed[data-variant="drawer"] .ed-status .nt-segmented [data-active] {
+.ed[data-variant="drawer"] .ed-status .ed-mode label,
+.ed[data-variant="drawer"] .ed-status .ed-mode [data-active] {
   min-height: 0;
   height: var(--nt-space-5-5);
   padding: 0 var(--nt-space-2-5);
@@ -145,11 +140,7 @@
   font-size: var(--nt-text-micro-size);
 }
 
-.ed[data-variant="drawer"] .ed-status .nt-segmented-indicator {
+.ed[data-variant="drawer"] .ed-status .ed-mode-indicator {
   border-radius: var(--nt-radius-xs);
   background: var(--nt-color-accent-subtle);
-}
-
-.ed[data-variant="drawer"] .ed-status .nt-button {
-  height: var(--nt-space-6);
 }

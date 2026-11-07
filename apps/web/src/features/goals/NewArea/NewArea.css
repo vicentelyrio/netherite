@@ -8,7 +8,7 @@
   gap: var(--nt-space-2);
 }
 
-.goals-area-form .text-field {
+.goals-area-form .goals-area-field {
   flex: none;
   box-sizing: border-box;
   height: var(--nt-space-7-5);

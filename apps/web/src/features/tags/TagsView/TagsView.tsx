@@ -1,4 +1,5 @@
-import { NoTags, TagsList } from '../TagsList'
+import { NoTags } from '../NoTags'
+import { TagsList } from '../TagsList'
 import { TagsMap } from '../TagsMap'
 import { useTags } from '../TagsProvider'
 

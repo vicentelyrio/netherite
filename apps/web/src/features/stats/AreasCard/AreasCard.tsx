@@ -65,6 +65,7 @@ export function AreasCard() {
                 name={f.kind === 'achieved' ? 'check_circle' : 'pause_circle'}
                 size="inline"
                 filled={f.kind === 'achieved'}
+                className="ar-foot-icon"
               />
               <span className="ar-foot-title">{f.title}</span>
               <span className="ar-foot-note">

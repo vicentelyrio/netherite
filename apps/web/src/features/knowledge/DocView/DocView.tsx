@@ -14,6 +14,7 @@ import {
 import { DocHeader } from '../DocHeader'
 import { DocMain } from '../DocMain'
 import { DocPanel } from '../DocPanel'
+import { DocSheet } from '../DocSheet'
 import { fillSelection } from './fill'
 import './DocView.css'
 
@@ -62,41 +63,38 @@ export function DocView({
       })) ?? []
 
   return (
-    <div className="kf-frame" data-hash={item.hash}>
-      <div className="kf-backdrop" />
-      <article className="kf-sheet" aria-label={item.title} data-hash={item.hash}>
-        <DocHeader item={item} stale={stale} changedLines={changedLines} review={review} />
-        <div className="kf-body">
-          <SourceEditor
-            id={item.id}
-            variant="drawer"
-            preview={
-              <div className="kf-split">
-                <DocMain item={item} data={view.data} stale={stale} steps={steps} review={review} />
-                <DocPanel
-                  item={item}
-                  data={view.data}
-                  preview={preview.data}
-                  stale={stale}
-                  status={{ pending: setStatus.isPending, set: (s) => setStatus.mutate(s) }}
-                />
-              </div>
-            }
-            mode={mode}
-            onModeChange={(m) => setMode(m as 'split' | 'text')}
-            onStats={(stats) => setChangedLines(stats.changedLines)}
-            {...(fill
-              ? {
-                  onReady: (editor) => {
-                    editor.dispatch({ selection: fillSelection(editor.state.doc.toString()) })
-                    editor.focus()
-                  },
-                }
-              : {})}
-            branch={health.data?.branch}
-          />
-        </div>
-      </article>
-    </div>
+    <DocSheet label={item.title} hash={item.hash}>
+      <DocHeader item={item} stale={stale} changedLines={changedLines} review={review} />
+      <div className="kf-body">
+        <SourceEditor
+          id={item.id}
+          variant="drawer"
+          preview={
+            <div className="kf-split">
+              <DocMain item={item} data={view.data} stale={stale} steps={steps} review={review} />
+              <DocPanel
+                item={item}
+                data={view.data}
+                preview={preview.data}
+                stale={stale}
+                status={{ pending: setStatus.isPending, set: (s) => setStatus.mutate(s) }}
+              />
+            </div>
+          }
+          mode={mode}
+          onModeChange={(m) => setMode(m as 'split' | 'text')}
+          onStats={(stats) => setChangedLines(stats.changedLines)}
+          {...(fill
+            ? {
+                onReady: (editor) => {
+                  editor.dispatch({ selection: fillSelection(editor.state.doc.toString()) })
+                  editor.focus()
+                },
+              }
+            : {})}
+          branch={health.data?.branch}
+        />
+      </div>
+    </DocSheet>
   )
 }

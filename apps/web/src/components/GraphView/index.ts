@@ -1,2 +1,3 @@
-export { GraphView, type GraphViewProps } from './GraphView'
+export { GraphView } from './GraphView'
+export type { GraphViewProps } from './GraphView.types'
 export { graphTarget } from './target'

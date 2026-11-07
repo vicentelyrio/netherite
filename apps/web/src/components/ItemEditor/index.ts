@@ -1,1 +1,3 @@
-export { bodyOf, ItemEditor, type ItemEditorProps } from './ItemEditor'
+export { bodyOf } from './bodyOf'
+export { ItemEditor } from './ItemEditor'
+export type { EditorMode, ItemEditorProps } from './ItemEditor.types'

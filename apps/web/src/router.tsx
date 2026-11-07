@@ -17,6 +17,7 @@ import { InboxPage } from './pages/inbox'
 import { ItemPage } from './pages/item'
 import { KnowledgePage } from './pages/knowledge'
 import { ProjectPage, ProjectsEntryPage } from './pages/projects'
+import { SettingsPage } from './pages/settings'
 import { ShellPage } from './pages/shell'
 import { StatsPage } from './pages/stats'
 import { TagsPage } from './pages/tags'
@@ -144,6 +145,11 @@ const item = createRoute({
   },
 })
 
+const settings = createRoute({
+  getParentRoute: () => root,
+  path: '/settings',
+  component: SettingsPage,
+})
 const preview = createRoute({ getParentRoute: () => root, path: '/dev/ui', component: UiPreview })
 
 const routeTree = root.addChildren([
@@ -161,6 +167,7 @@ const routeTree = root.addChildren([
   timeline,
   graph,
   item,
+  settings,
   preview,
 ])
 

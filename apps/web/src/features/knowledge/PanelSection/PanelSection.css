@@ -1,0 +1,18 @@
+.kf-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nt-space-1);
+}
+
+.kf-h {
+  font-size: var(--nt-text-micro-size);
+  line-height: var(--nt-text-micro-line-height);
+  font-weight: var(--nt-font-weight-semibold);
+  color: var(--nt-color-text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0 0 var(--nt-space-1);
+  display: flex;
+  align-items: center;
+  gap: var(--nt-space-1-5);
+}

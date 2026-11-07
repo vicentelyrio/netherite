@@ -8,4 +8,5 @@ export interface BannerProps {
   readonly children?: ReactNode
   readonly actions?: ReactNode
   readonly onClose?: () => void
+  readonly className?: string
 }

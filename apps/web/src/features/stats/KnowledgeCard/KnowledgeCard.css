@@ -31,7 +31,7 @@
   border: var(--nt-stroke-medium) solid var(--nt-color-status-warning);
   box-sizing: border-box;
 }
-.kn-legend .nt-icon {
+.kn-legend .kn-legend-icon {
   color: var(--nt-color-status-warning);
 }
 .kn-swatch {
@@ -57,10 +57,13 @@
 .kn-legend strong {
   color: var(--nt-color-text-primary);
 }
-.kn-h {
+.st-kn-h {
   margin: var(--nt-space-5) 0 0;
   font-size: var(--nt-text-caption-size);
+  line-height: var(--nt-text-micro-line-height);
   font-weight: var(--nt-font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--nt-color-text-muted);
 }
 
@@ -90,11 +93,20 @@
   color: var(--nt-color-text-muted);
 }
 
-.kn-open {
+.st-kn-open {
+  display: flex;
+  align-items: center;
+  gap: var(--nt-space-1);
+  height: var(--nt-space-6-5);
+  padding: 0 var(--nt-space-2-5);
+  border-radius: var(--nt-radius-sm);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-overlay);
   font-size: var(--nt-text-caption-size);
   font-weight: var(--nt-font-weight-medium);
+  color: var(--nt-color-text-primary);
+  text-decoration: none;
 }
-.kn-pills {
+.st-kn-pills {
   display: flex;
   flex-wrap: wrap;
   gap: var(--nt-space-1-5);
@@ -102,26 +114,34 @@
   padding: 0;
   list-style: none;
 }
-.kn-pill {
+.st-kn-pill {
   display: flex;
   align-items: center;
+  gap: var(--nt-space-1-5);
   height: var(--nt-space-5-5);
   padding: 0 var(--nt-space-2-5);
   border-radius: var(--nt-radius-full);
   background: color-mix(in srgb, var(--nt-color-text-muted) 16%, transparent);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-overlay);
   color: var(--nt-color-text-secondary);
+  font: inherit;
   font-size: var(--nt-text-micro-size);
   font-weight: var(--nt-font-weight-semibold);
+  cursor: pointer;
 }
-.kn-pill[data-status="proposed"] {
+.st-kn-pill[data-status="proposed"] {
   background: color-mix(in srgb, var(--nt-color-accent-fg) 14%, transparent);
   color: var(--nt-color-accent-fg);
 }
-.kn-pill[data-status="accepted"] {
+.st-kn-pill[data-status="accepted"] {
   background: color-mix(in srgb, var(--nt-color-status-success) 14%, transparent);
   color: var(--nt-color-status-success);
 }
-.kn-pill[data-status="deprecated"] {
+.st-kn-pill[data-status="deprecated"] {
   background: color-mix(in srgb, var(--nt-color-status-danger) 14%, transparent);
   color: var(--nt-color-status-danger);
+}
+
+.st-kn-open:hover {
+  border-color: var(--nt-color-accent-solid);
 }

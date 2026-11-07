@@ -20,7 +20,7 @@
   color: var(--nt-color-text-muted);
 }
 
-.project-graph .gv-legend--row {
+.project-graph .project-graph-legend {
   left: var(--nt-space-4);
   right: calc(var(--nt-space-4) + var(--nt-space-7));
   bottom: var(--nt-space-8);
@@ -31,7 +31,7 @@
   color: var(--nt-color-text-primary);
 }
 
-.project-graph .gv {
+.project-graph .project-graph-view {
   flex: 1;
   height: auto;
   min-height: 0;

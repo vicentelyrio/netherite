@@ -1,5 +1,4 @@
 import { Tooltip } from '@mantine/core'
-import { formatShortcut } from '../../shortcuts'
 import { Icon } from '../Icon'
 import { Kbd } from '../Kbd'
 import type { RailItem } from './Rail.types'
@@ -8,15 +7,13 @@ import { RailBadge } from './RailBadge'
 export function RailButton({
   item,
   current,
-  mac,
   onSelect,
 }: {
   readonly item: RailItem
   readonly current: boolean
-  readonly mac: boolean | undefined
   readonly onSelect: (id: string) => void
 }) {
-  const hint = item.shortcut === undefined ? undefined : formatShortcut(item.shortcut, mac)
+  const { hint } = item
   return (
     <div className="nt-rail-slot">
       <Tooltip

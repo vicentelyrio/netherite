@@ -1,8 +1,8 @@
 import type { ItemDetail } from '@netherite/api'
 import { Link } from '@tanstack/react-router'
 import { useI18nContext } from '@/infrastructure/i18n'
+import { DrawerHeading, DrawerSection } from '../DrawerSection'
 import './TaskRelated.css'
-import '../shared.css'
 
 export function TaskRelated({ task }: { readonly task: ItemDetail }) {
   const { LL } = useI18nContext()
@@ -11,8 +11,8 @@ export function TaskRelated({ task }: { readonly task: ItemDetail }) {
     ...task.backlinks.filter((l) => l.kind !== 'belongs_to'),
   ].filter((l) => l.id !== undefined)
   return (
-    <section className="drawer-section" aria-label={LL.tasks.related.title()}>
-      <h3 className="drawer-h">{LL.tasks.related.title()}</h3>
+    <DrawerSection label={LL.tasks.related.title()}>
+      <DrawerHeading>{LL.tasks.related.title()}</DrawerHeading>
       <ul className="app-link-list">
         {related.map((l) => (
           <li key={`${l.kind}:${l.path}`}>
@@ -24,6 +24,6 @@ export function TaskRelated({ task }: { readonly task: ItemDetail }) {
         ))}
         {related.length === 0 && <li className="drawer-empty">{LL.tasks.related.none()}</li>}
       </ul>
-    </section>
+    </DrawerSection>
   )
 }

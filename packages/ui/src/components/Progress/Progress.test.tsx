@@ -24,9 +24,4 @@ describe('Progress', () => {
     expect(screen.getByLabelText('Project: 5 of 12 done')).toBeInTheDocument()
     expect(screen.getByText('5/12')).toBeInTheDocument()
   })
-
-  test('the ring shows a percentage by default', () => {
-    renderUi(<ProgressRing done={3} total={8} />)
-    expect(screen.getByRole('img', { name: /3 of 8 done/ })).toHaveTextContent('38%')
-  })
 })

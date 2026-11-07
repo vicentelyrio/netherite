@@ -1,8 +1,3 @@
-.goal-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--nt-space-2-5);
-}
 .goal-card-top {
   display: flex;
   align-items: center;
@@ -10,23 +5,11 @@
   gap: var(--nt-space-2);
   margin-bottom: calc(var(--nt-space-1) * -1);
 }
-.goal-card-title {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--nt-space-2);
-  font-size: var(--nt-text-heading-size);
-  line-height: var(--nt-text-body-line-height);
-  font-weight: var(--nt-font-weight-semibold);
-}
+
 .goal-achieved {
   color: var(--nt-color-status-success);
   font-weight: var(--nt-font-weight-semibold);
   font-size: var(--nt-text-micro-size);
-}
-.goal-overline {
-  font-size: var(--nt-text-micro-size);
-  font-weight: var(--nt-font-weight-medium);
-  color: var(--nt-color-accent-fg);
 }
 
 .goal-horizon {
@@ -38,25 +21,4 @@
   font-weight: var(--nt-font-weight-medium);
   color: var(--nt-color-text-muted);
   white-space: nowrap;
-}
-.goal-draggable {
-  touch-action: none;
-  user-select: none;
-}
-.goal-draggable[data-dragging] {
-  opacity: 0.5;
-}
-.goal-overlay {
-  opacity: 0.7;
-  transform: rotate(2.5deg);
-  cursor: grabbing;
-}
-.goal-overlay .nt-card {
-  background: var(--nt-color-bg-active-line);
-  border-color: var(--nt-color-accent-fg);
-  box-shadow:
-    0 var(--nt-space-4-5) var(--nt-space-8)
-    color-mix(in srgb, var(--nt-color-base-black) 45%, transparent),
-    0 var(--nt-stroke-thick) var(--nt-space-1-5)
-    color-mix(in srgb, var(--nt-color-base-black) 30%, transparent);
 }

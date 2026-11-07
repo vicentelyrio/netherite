@@ -1,0 +1,25 @@
+.kn-file-row {
+  display: flex;
+  align-items: center;
+  gap: var(--nt-space-2-5);
+  height: var(--nt-size-26);
+}
+
+.kn-file-row .kn-file-path {
+  flex: 1;
+  color: var(--nt-color-text-primary);
+}
+
+.kn-bar-mini {
+  width: 60px;
+  height: var(--nt-space-1);
+  border-radius: var(--nt-radius-xxs);
+  background: var(--nt-color-bg-track);
+  overflow: hidden;
+}
+
+.kn-bar-mini span {
+  display: block;
+  height: 100%;
+  background: var(--nt-color-status-warning);
+}

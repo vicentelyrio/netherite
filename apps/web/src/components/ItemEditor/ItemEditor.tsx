@@ -1,42 +1,17 @@
 import { EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
-import { Banner, Button, Icon, SegmentedControl } from '@netherite/ui'
-import {
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { Markdown } from '@/components/Markdown'
 import { useI18nContext } from '@/infrastructure/i18n'
-import type { LinkTarget } from './complete'
-import { counts, type Problem, placeProblems, type ServerDiagnostic } from './diagnostics'
+import { bodyOf } from './bodyOf'
+import { counts, type Problem, placeProblems } from './diagnostics'
 import { hasChanges } from './diff'
+import { EditorConflict } from './EditorConflict'
+import { EditorStatus } from './EditorStatus'
 import { changesField, editorExtensions, setHead, setProblems } from './extensions'
-import { isDirty, reduce, startSession, type Version } from './session'
+import type { EditorMode, ItemEditorProps } from './ItemEditor.types'
+import { isDirty, reduce, startSession } from './session'
 import './ItemEditor.css'
-
-export type EditorMode = 'split' | 'text'
-
-export interface ItemEditorProps {
-  readonly source: Version & { readonly head: string | null }
-  readonly onSave: (text: string, baseHash: string) => Promise<Version>
-  readonly lint: (text: string) => Promise<ReadonlyArray<ServerDiagnostic>>
-  readonly targets: ReadonlyArray<LinkTarget>
-  readonly mode?: EditorMode
-  readonly onModeChange?: (mode: EditorMode) => void
-  readonly onReady?: (view: EditorView) => void
-  readonly variant?: 'page' | 'drawer'
-  readonly preview?: ReactNode
-  readonly onStats?: (stats: { readonly changedLines: number }) => void
-  readonly branch?: string | undefined
-  readonly autosaveDelay?: number
-}
-
-export const bodyOf = (text: string) => text.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, '')
 
 const lintDelay = 400
 
@@ -53,6 +28,7 @@ export function ItemEditor({
   onStats,
   branch,
   autosaveDelay = 1000,
+  saveKeys = 'mod+s',
 }: ItemEditorProps) {
   const { LL } = useI18nContext()
   const host = useRef<HTMLDivElement>(null)
@@ -120,6 +96,7 @@ export function ItemEditor({
       ...editorExtensions({
         onSave: () => void saveRef.current(),
         targets: () => latest.current.targets,
+        saveKeys,
       }),
       EditorView.updateListener.of((update) => {
         if (update.docChanged) {
@@ -137,7 +114,7 @@ export function ItemEditor({
         setChangedLines(lines.added.size + lines.modified.size + lines.deleted.size)
       }),
     ],
-    [runLint],
+    [runLint, saveKeys],
   )
 
   useEffect(() => {
@@ -196,76 +173,26 @@ export function ItemEditor({
       aria-label={LL.components.editor.label()}
     >
       {session.conflict !== undefined && (
-        <div className="ed-conflict">
-          <Banner
-            variant="danger"
-            title={LL.components.editor.conflictTitle()}
-            actions={
-              <>
-                <Button onClick={() => dispatch({ type: 'reload' })}>
-                  {LL.components.editor.reload()}
-                </Button>
-                <Button onClick={() => dispatch({ type: 'keep-mine' })}>
-                  {LL.components.editor.keepMine()}
-                </Button>
-              </>
-            }
-          >
-            {LL.components.editor.conflictText()}
-          </Banner>
-        </div>
+        <EditorConflict
+          onReload={() => dispatch({ type: 'reload' })}
+          onKeepMine={() => dispatch({ type: 'keep-mine' })}
+        />
       )}
       <div className="ed-panes">
         {mode === 'split' && <div className="ed-code" ref={host} data-testid="editor" />}
         <div className="ed-rendered">{preview ?? <Markdown source={bodyOf(session.buffer)} />}</div>
       </div>
-      <footer className="ed-status">
-        <span
-          className="ed-count"
-          data-kind="error"
-          title={LL.components.editor.errors({ count: errors })}
-        >
-          <Icon name="error" size={15} />
-          {errors}
-        </span>
-        <span
-          className="ed-count"
-          data-kind="warning"
-          data-on={warnings > 0 || undefined}
-          title={LL.components.editor.warnings({ count: warnings })}
-        >
-          <Icon name="warning" size={15} filled={warnings > 0} />
-          {warnings}
-        </span>
-        <span className="ed-divider" aria-hidden="true" />
-        <span className="ed-position">
-          {LL.components.editor.position({ line: position.line, column: position.column })}
-        </span>
-        <span className="app-muted">{LL.components.editor.language()}</span>
-        {changed && <span className="ed-changed">{LL.components.editor.changed()}</span>}
-        <span className="ed-spacer" />
-        {branch !== undefined && (
-          <span className="ed-branch">
-            <Icon name="commit" size={15} /> {branch}
-          </span>
-        )}
-        <span className="ed-save" data-state={saving ? 'saving' : dirty ? 'unsaved' : 'saved'}>
-          {saving
-            ? LL.components.editor.saving()
-            : dirty
-              ? LL.components.editor.unsaved()
-              : LL.components.editor.saved()}
-        </span>
-        <SegmentedControl
-          value={mode}
-          onChange={(value) => (onModeChange ?? setLocalMode)(value as EditorMode)}
-          data={[
-            { value: 'split', label: LL.components.editor.code() },
-            { value: 'text', label: LL.components.editor.text() },
-          ]}
-          aria-label={LL.components.editor.view()}
-        />
-      </footer>
+      <EditorStatus
+        errors={errors}
+        warnings={warnings}
+        position={position}
+        changed={changed}
+        branch={branch}
+        saving={saving}
+        dirty={dirty}
+        mode={mode}
+        onMode={onModeChange ?? setLocalMode}
+      />
     </section>
   )
 }

@@ -5,7 +5,7 @@
   max-width: 1160px;
 }
 
-.ib-group .group-card-head {
+.ib-group .ib-group-head {
   height: var(--nt-space-7-5);
 }
 

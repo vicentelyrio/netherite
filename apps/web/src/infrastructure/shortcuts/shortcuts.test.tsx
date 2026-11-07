@@ -1,11 +1,26 @@
 import { NetheriteProvider } from '@netherite/ui'
-import { fireEvent, render, renderHook, screen } from '@testing-library/react'
+import { act, fireEvent, render, renderHook, screen } from '@testing-library/react'
 import type { ReactNode } from 'react'
 import { describe, expect, test, vi } from 'vitest'
 import { SettingsProvider, type SettingsStorage, storageKey, useSettings } from '../settings'
 import { actionIds } from './actions'
-import { useActionShortcuts, useResolvedShortcuts } from './hooks'
-import { conflicts, isValidShortcut, resolveAll, resolveShortcut } from './shortcuts'
+import {
+  comboFromEvent,
+  conflicts,
+  conflictsWith,
+  formatShortcut,
+  isAllowedShortcut,
+  isBrowserReserved,
+  isValidShortcut,
+  matchesShortcut,
+  parseShortcut,
+  resolveAll,
+  resolveShortcut,
+  toCodeMirrorKey,
+  useActionShortcuts,
+  useResolvedShortcuts,
+  useShortcutSettings,
+} from './index'
 
 const memory = (initial?: string): SettingsStorage & { saved: () => string | null } => {
   let value = initial ?? null
@@ -114,5 +129,114 @@ describe('useActionShortcuts', () => {
     expect(run).not.toHaveBeenCalled()
     fireEvent.keyDown(window, { key: 'y', ctrlKey: true })
     expect(run).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('collisions', () => {
+  test('actions in different screens may share keys; a global one clashes with everything', () => {
+    expect(conflicts({ 'tags.search': 'e' })).toEqual([])
+    expect(conflicts({ 'go.tags': 'e' })).toEqual([['go.tags', 'inbox.archive']])
+    expect(conflictsWith('tags.search', 'e')).toEqual([])
+    expect(conflictsWith('inbox.next', 'e')).toEqual(['inbox.archive'])
+    expect(conflictsWith('go.tags', 'mod+alt+p')).toEqual(['go.projects'])
+  })
+
+  test('an action never clashes with itself, or with one that was cleared', () => {
+    expect(conflictsWith('go.tags', 'mod+t')).toEqual([])
+    expect(conflictsWith('go.tags', 'mod+g', { 'go.goals': null })).toEqual([])
+  })
+})
+
+describe('keys', () => {
+  test('a cleared action has no keys, and no aliases either', () => {
+    expect(resolveShortcut('go.projects', { 'go.projects': null })).toEqual({
+      keys: null,
+      aliases: [],
+    })
+  })
+
+  test('Option on a Mac changes the character, and the shortcut still matches', () => {
+    const event = {
+      key: 'π',
+      code: 'KeyP',
+      metaKey: true,
+      ctrlKey: false,
+      shiftKey: false,
+      altKey: true,
+    }
+    expect(matchesShortcut(event, parseShortcut('mod+alt+p'), true)).toBe(true)
+    expect(comboFromEvent(event, true)).toBe('mod+alt+p')
+  })
+
+  test('a symbol matches whether or not the layout needs Shift for it', () => {
+    const slash = { key: '/', metaKey: false, ctrlKey: false, altKey: false }
+    expect(matchesShortcut({ ...slash, shiftKey: true }, parseShortcut('/'), false)).toBe(true)
+    expect(matchesShortcut({ ...slash, shiftKey: false }, parseShortcut('/'), false)).toBe(true)
+  })
+
+  test('recording ignores modifiers alone, and names keys the way shortcuts spell them', () => {
+    const base = { code: '', metaKey: false, ctrlKey: false, shiftKey: false, altKey: false }
+    expect(comboFromEvent({ ...base, key: 'Shift', shiftKey: true }, false)).toBeUndefined()
+    expect(comboFromEvent({ ...base, key: 'K', ctrlKey: true, shiftKey: true }, false)).toBe(
+      'mod+shift+k',
+    )
+    expect(comboFromEvent({ ...base, key: ' ', ctrlKey: true }, false)).toBe('mod+space')
+    expect(comboFromEvent({ ...base, key: '?', shiftKey: true }, false)).toBe('?')
+    expect(formatShortcut('mod+space', false)).toBe('Ctrl+Space')
+  })
+
+  test('keys a browser keeps are flagged, and bare keys that drive the page are refused', () => {
+    expect(isBrowserReserved('mod+t')).toBe(true)
+    expect(isBrowserReserved('mod+k')).toBe(false)
+    expect(isAllowedShortcut('enter')).toBe(false)
+    expect(isAllowedShortcut('mod+enter')).toBe(true)
+  })
+
+  test('shortcuts translate to the notation of the editor', () => {
+    expect(toCodeMirrorKey('mod+s')).toBe('Mod-s')
+    expect(toCodeMirrorKey('mod+alt+shift+s')).toBe('Mod-Alt-Shift-s')
+  })
+})
+
+describe('managing shortcuts', () => {
+  const setup = (initial?: string) => {
+    const storage = memory(initial)
+    const view = renderHook(
+      () => ({ manage: useShortcutSettings(), keys: useResolvedShortcuts() }),
+      { wrapper: wrap(storage) },
+    )
+    return { storage, view }
+  }
+
+  test('binding, clearing and resetting are saved', () => {
+    const { storage, view } = setup()
+    act(() => view.result.current.manage.bind('go.tags', 'mod+shift+y'))
+    expect(view.result.current.keys['go.tags'].keys).toBe('mod+shift+y')
+    expect(view.result.current.manage.isCustom('go.tags')).toBe(true)
+    act(() => view.result.current.manage.clear('go.tags'))
+    expect(view.result.current.keys['go.tags'].keys).toBeNull()
+    expect(JSON.parse(storage.saved() ?? '{}').shortcuts['go.tags']).toBeNull()
+    act(() => view.result.current.manage.reset('go.tags'))
+    expect(view.result.current.keys['go.tags'].keys).toBe('mod+t')
+    expect(view.result.current.manage.isCustom('go.tags')).toBe(false)
+  })
+
+  test('choosing the default keys again brings its aliases back', () => {
+    const { view } = setup(JSON.stringify({ shortcuts: { 'go.tags': 'mod+y' } }))
+    act(() => view.result.current.manage.bind('go.tags', 'mod+t'))
+    expect(view.result.current.keys['go.tags'].aliases).toEqual(['mod+alt+t'])
+  })
+
+  test('replacing takes the keys and clears the action that had them', () => {
+    const { view } = setup()
+    act(() => view.result.current.manage.replace('go.tags', 'mod+g', ['go.goals']))
+    expect(view.result.current.keys['go.tags'].keys).toBe('mod+g')
+    expect(view.result.current.keys['go.goals'].keys).toBeNull()
+    expect(conflicts(view.result.current.manage.overrides)).toEqual([])
+  })
+
+  test('a cleared action survives being read back from storage', () => {
+    const { view } = setup(JSON.stringify({ shortcuts: { 'go.tags': null } }))
+    expect(view.result.current.keys['go.tags'].keys).toBeNull()
   })
 })

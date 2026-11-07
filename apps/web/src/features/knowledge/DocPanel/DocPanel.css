@@ -92,14 +92,14 @@
 .kf-switch label[data-on] {
   font-weight: var(--nt-font-weight-semibold);
 }
-.kf-switch label[data-status="proposed"] .nt-icon {
+.kf-switch label[data-status="proposed"] .kf-switch-icon {
   color: var(--nt-color-accent-fg);
 }
-.kf-switch label[data-status="accepted"] .nt-icon,
-.kf-switch label[data-status="active"] .nt-icon {
+.kf-switch label[data-status="accepted"] .kf-switch-icon,
+.kf-switch label[data-status="active"] .kf-switch-icon {
   color: var(--nt-color-status-success);
 }
-.kf-switch label[data-status="deprecated"] .nt-icon {
+.kf-switch label[data-status="deprecated"] .kf-switch-icon {
   color: var(--nt-color-status-danger);
 }
 .kf-switch label[data-status="proposed"][data-on] {

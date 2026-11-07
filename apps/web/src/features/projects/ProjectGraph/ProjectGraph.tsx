@@ -24,6 +24,8 @@ export function ProjectGraph({ board }: { readonly board: Board }) {
       </Link>
       {query.data ? (
         <GraphView
+          className="project-graph-view"
+          legendClassName="project-graph-legend"
           data={query.data}
           variant="embedded"
           legend="row"

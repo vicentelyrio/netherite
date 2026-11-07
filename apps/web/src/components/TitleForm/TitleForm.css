@@ -5,14 +5,14 @@
   align-items: center;
 }
 
-.title-form .text-field,
+.title-form .title-form-field,
 .title-form button {
   box-sizing: border-box;
   height: var(--nt-space-7-5);
   min-height: var(--nt-space-7-5);
   margin: 0;
 }
-.title-form .text-field {
+.title-form .title-form-field {
   flex: 1;
   min-width: 0;
 }

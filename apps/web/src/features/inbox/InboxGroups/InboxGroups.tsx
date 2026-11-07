@@ -1,10 +1,10 @@
 import { EmptyState } from '@netherite/ui'
 import { GroupCard } from '@/components'
 import { ago } from '@/infrastructure/datetime'
+import { useI18nContext } from '@/infrastructure/i18n'
 import { InboxItemRow } from '../InboxItemRow'
 import { useInboxState } from '../InboxProvider'
-import '../shared.css'
-import { useI18nContext } from '@/infrastructure/i18n'
+import { InboxRow, InboxRowTitle } from '../InboxRow'
 import './InboxGroups.css'
 
 export function InboxGroups() {
@@ -23,23 +23,25 @@ export function InboxGroups() {
     <div className="ib-groups">
       <GroupCard
         className="ib-group"
+        headClassName="ib-group-head"
         title={LL.inbox.groups.lint()}
         icon="error"
         count={inbox.errors.length}
       >
         {inbox.errors.map((d) => (
-          <div key={`${d.path}:${d.line}:${d.rule}`} className="ib-row">
+          <InboxRow key={`${d.path}:${d.line}:${d.rule}`}>
             <code className="kn-mono">
               {d.path}:{d.line}
             </code>
-            <span className="ib-title">{d.message}</span>
+            <InboxRowTitle>{d.message}</InboxRowTitle>
             <span className="kn-spacer" />
             <span className="app-muted">{d.rule}</span>
-          </div>
+          </InboxRow>
         ))}
       </GroupCard>
       <GroupCard
         className="ib-group"
+        headClassName="ib-group-head"
         title={LL.inbox.groups.blocked()}
         icon="pause_circle"
         count={inbox.blocked.length}
@@ -56,6 +58,7 @@ export function InboxGroups() {
       </GroupCard>
       <GroupCard
         className="ib-group"
+        headClassName="ib-group-head"
         title={LL.inbox.groups.activity()}
         icon="smart_toy"
         count={inbox.activity.length}
@@ -72,6 +75,7 @@ export function InboxGroups() {
       </GroupCard>
       <GroupCard
         className="ib-group"
+        headClassName="ib-group-head"
         title={LL.inbox.groups.changes()}
         icon="difference"
         count={inbox.changes.length}
@@ -86,11 +90,11 @@ export function InboxGroups() {
               meta={<span className="ib-chip">{c.change}</span>}
             />
           ) : (
-            <div key={c.path} className="ib-row">
+            <InboxRow key={c.path}>
               <code className="kn-mono">{c.path}</code>
               <span className="kn-spacer" />
               <span className="ib-chip">{c.change}</span>
-            </div>
+            </InboxRow>
           ),
         )}
       </GroupCard>

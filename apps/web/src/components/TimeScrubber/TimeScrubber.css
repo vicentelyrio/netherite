@@ -1,4 +1,4 @@
-.nt-scrubber {
+.scrubber {
   display: flex;
   align-items: center;
   gap: var(--nt-space-3);
@@ -11,8 +11,8 @@
   border: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
   border-radius: var(--nt-radius-md);
 }
-.nt-scrubber-play,
-.nt-scrubber-today {
+.scrubber-play,
+.scrubber-today {
   flex: none;
   display: inline-flex;
   align-items: center;
@@ -26,38 +26,38 @@
   font-size: var(--nt-text-caption-size);
   cursor: pointer;
 }
-.nt-scrubber-play {
+.scrubber-play {
   width: var(--nt-space-6-5);
   border-radius: 50%;
 }
-.nt-scrubber-today {
+.scrubber-today {
   padding-inline: var(--nt-space-2-5);
 }
-.nt-scrubber-today:disabled {
+.scrubber-today:disabled {
   opacity: 0.4;
   cursor: default;
 }
-.nt-scrubber-track {
+.scrubber-track {
   position: relative;
   flex: 1;
   min-width: 0;
   height: var(--nt-space-7-5);
 }
-.nt-scrubber-bars {
+.scrubber-bars {
   position: absolute;
   inset: 0 0 var(--nt-space-3);
 }
-.nt-scrubber-bar {
+.scrubber-bar {
   position: absolute;
   bottom: 0;
   max-width: var(--nt-space-3-5);
   background: var(--nt-color-border-divider);
   border-radius: var(--nt-radius-xxs);
 }
-.nt-scrubber-bar[data-past] {
+.scrubber-bar[data-past] {
   background: var(--nt-color-graph-edge-warm);
 }
-.nt-scrubber-range {
+.scrubber-range {
   position: absolute;
   inset: auto 0 0;
   width: 100%;
@@ -66,7 +66,7 @@
   accent-color: var(--nt-color-text-primary);
   cursor: pointer;
 }
-.nt-scrubber-date {
+.scrubber-date {
   flex: none;
   min-width: 92px;
   text-align: right;

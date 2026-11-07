@@ -9,6 +9,7 @@ export interface TitleFormProps {
   readonly onEmpty?: () => void
   readonly pending?: boolean
   readonly className?: string
+  readonly fieldClassName?: string
 }
 
 export function TitleForm({
@@ -18,6 +19,7 @@ export function TitleForm({
   onEmpty = onCancel,
   pending = false,
   className,
+  fieldClassName,
 }: TitleFormProps) {
   const [title, setTitle] = useState('')
   const accept = () => {
@@ -41,6 +43,7 @@ export function TitleForm({
       onBlur={blur}
     >
       <TextField
+        className={fieldClassName ? `title-form-field ${fieldClassName}` : 'title-form-field'}
         label={label}
         placeholder={label}
         value={title}

@@ -1,6 +1,5 @@
 import { Icon } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
-import '../shared.css'
 import { useI18nContext } from '@/infrastructure/i18n'
 import './SupersededBanner.css'
 

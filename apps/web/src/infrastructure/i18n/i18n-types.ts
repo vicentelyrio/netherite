@@ -967,6 +967,168 @@ type RootTranslation = {
 			}
 		}
 	}
+	settings: {
+		/**
+		 * S​e​t​t​i​n​g​s
+		 */
+		title: string
+		actions: {
+			/**
+			 * S​e​a​r​c​h
+			 */
+			searchOpen: string
+			/**
+			 * G​o​ ​t​o​ ​I​n​b​o​x
+			 */
+			goInbox: string
+			/**
+			 * G​o​ ​t​o​ ​G​o​a​l​s
+			 */
+			goGoals: string
+			/**
+			 * G​o​ ​t​o​ ​P​r​o​j​e​c​t​s
+			 */
+			goProjects: string
+			/**
+			 * G​o​ ​t​o​ ​K​n​o​w​l​e​d​g​e
+			 */
+			goKnowledge: string
+			/**
+			 * G​o​ ​t​o​ ​S​t​a​t​s
+			 */
+			goStats: string
+			/**
+			 * G​o​ ​t​o​ ​T​a​g​s
+			 */
+			goTags: string
+			/**
+			 * G​o​ ​t​o​ ​T​i​m​e​l​i​n​e
+			 */
+			goTimeline: string
+			/**
+			 * G​o​ ​t​o​ ​G​r​a​p​h
+			 */
+			goGraph: string
+			/**
+			 * G​o​ ​t​o​ ​S​e​t​t​i​n​g​s
+			 */
+			goSettings: string
+			/**
+			 * N​e​x​t​ ​i​t​e​m
+			 */
+			inboxNext: string
+			/**
+			 * P​r​e​v​i​o​u​s​ ​i​t​e​m
+			 */
+			inboxPrevious: string
+			/**
+			 * A​r​c​h​i​v​e
+			 */
+			inboxArchive: string
+			/**
+			 * S​n​o​o​z​e
+			 */
+			inboxSnooze: string
+			/**
+			 * F​o​c​u​s​ ​t​h​e​ ​s​e​a​r​c​h
+			 */
+			tagsSearch: string
+			/**
+			 * S​a​v​e
+			 */
+			editorSave: string
+		}
+		shortcuts: {
+			/**
+			 * K​e​y​b​o​a​r​d​ ​s​h​o​r​t​c​u​t​s
+			 */
+			title: string
+			/**
+			 * S​a​v​e​d​ ​i​n​ ​t​h​i​s​ ​b​r​o​w​s​e​r​.​ ​S​c​r​e​e​n​s​ ​o​n​l​y​ ​c​l​a​s​h​ ​w​i​t​h​ ​t​h​e​m​s​e​l​v​e​s​ ​a​n​d​ ​w​i​t​h​ ​g​l​o​b​a​l​ ​k​e​y​s​.
+			 */
+			subtitle: string
+			groups: {
+				/**
+				 * G​l​o​b​a​l
+				 */
+				navigation: string
+				/**
+				 * I​n​b​o​x
+				 */
+				inbox: string
+				/**
+				 * T​a​g​s
+				 */
+				tags: string
+				/**
+				 * E​d​i​t​o​r
+				 */
+				editor: string
+			}
+			/**
+			 * C​h​a​n​g​e
+			 */
+			change: string
+			/**
+			 * C​h​a​n​g​e​ ​t​h​e​ ​s​h​o​r​t​c​u​t​ ​f​o​r​ ​{​a​c​t​i​o​n​}
+			 * @param {unknown} action
+			 */
+			changeLabel: RequiredParams<'action'>
+			/**
+			 * C​l​e​a​r
+			 */
+			clear: string
+			/**
+			 * C​l​e​a​r​ ​t​h​e​ ​s​h​o​r​t​c​u​t​ ​f​o​r​ ​{​a​c​t​i​o​n​}
+			 * @param {unknown} action
+			 */
+			clearLabel: RequiredParams<'action'>
+			/**
+			 * R​e​s​e​t
+			 */
+			reset: string
+			/**
+			 * R​e​s​e​t​ ​t​h​e​ ​s​h​o​r​t​c​u​t​ ​f​o​r​ ​{​a​c​t​i​o​n​}
+			 * @param {unknown} action
+			 */
+			resetLabel: RequiredParams<'action'>
+			/**
+			 * R​e​s​e​t​ ​a​l​l
+			 */
+			resetAll: string
+			/**
+			 * C​a​n​c​e​l
+			 */
+			cancel: string
+			/**
+			 * N​o​t​ ​s​e​t
+			 */
+			unbound: string
+			/**
+			 * P​r​e​s​s​ ​t​h​e​ ​k​e​y​s​,​ ​o​r​ ​E​s​c​ ​t​o​ ​c​a​n​c​e​l
+			 */
+			press: string
+			/**
+			 * {​k​e​y​s​}​ ​n​e​e​d​s​ ​a​ ​m​o​d​i​f​i​e​r​.​ ​T​r​y​ ​a​g​a​i​n​,​ ​o​r​ ​E​s​c​ ​t​o​ ​c​a​n​c​e​l
+			 * @param {unknown} keys
+			 */
+			notAllowed: RequiredParams<'keys'>
+			/**
+			 * {​k​e​y​s​}​ ​i​s​ ​a​l​r​e​a​d​y​ ​u​s​e​d​ ​b​y​ ​{​a​c​t​i​o​n​s​}​.
+			 * @param {unknown} actions
+			 * @param {unknown} keys
+			 */
+			inUse: RequiredParams<'actions' | 'keys'>
+			/**
+			 * U​s​e​ ​i​t​ ​h​e​r​e​ ​i​n​s​t​e​a​d
+			 */
+			replace: string
+			/**
+			 * B​r​o​w​s​e​r​s​ ​k​e​e​p​ ​t​h​e​s​e​ ​k​e​y​s​ ​f​o​r​ ​t​h​e​m​s​e​l​v​e​s​,​ ​s​o​ ​t​h​i​s​ ​m​a​y​ ​n​o​t​ ​w​o​r​k​ ​i​n​ ​a​ ​b​r​o​w​s​e​r​ ​t​a​b​.
+			 */
+			reserved: string
+		}
+	}
 	navigation: {
 		/**
 		 * S​e​a​r​c​h
@@ -1004,6 +1166,10 @@ type RootTranslation = {
 		 * T​i​m​e​l​i​n​e
 		 */
 		timeline: string
+		/**
+		 * S​e​t​t​i​n​g​s
+		 */
+		settings: string
 		/**
 		 * T​h​e​ ​c​o​n​f​i​g​ ​f​i​l​e​ ​i​s​ ​n​o​t​ ​v​a​l​i​d
 		 */
@@ -3971,6 +4137,162 @@ export type TranslationFunctions = {
 			}
 		}
 	}
+	settings: {
+		/**
+		 * Settings
+		 */
+		title: () => LocalizedString
+		actions: {
+			/**
+			 * Search
+			 */
+			searchOpen: () => LocalizedString
+			/**
+			 * Go to Inbox
+			 */
+			goInbox: () => LocalizedString
+			/**
+			 * Go to Goals
+			 */
+			goGoals: () => LocalizedString
+			/**
+			 * Go to Projects
+			 */
+			goProjects: () => LocalizedString
+			/**
+			 * Go to Knowledge
+			 */
+			goKnowledge: () => LocalizedString
+			/**
+			 * Go to Stats
+			 */
+			goStats: () => LocalizedString
+			/**
+			 * Go to Tags
+			 */
+			goTags: () => LocalizedString
+			/**
+			 * Go to Timeline
+			 */
+			goTimeline: () => LocalizedString
+			/**
+			 * Go to Graph
+			 */
+			goGraph: () => LocalizedString
+			/**
+			 * Go to Settings
+			 */
+			goSettings: () => LocalizedString
+			/**
+			 * Next item
+			 */
+			inboxNext: () => LocalizedString
+			/**
+			 * Previous item
+			 */
+			inboxPrevious: () => LocalizedString
+			/**
+			 * Archive
+			 */
+			inboxArchive: () => LocalizedString
+			/**
+			 * Snooze
+			 */
+			inboxSnooze: () => LocalizedString
+			/**
+			 * Focus the search
+			 */
+			tagsSearch: () => LocalizedString
+			/**
+			 * Save
+			 */
+			editorSave: () => LocalizedString
+		}
+		shortcuts: {
+			/**
+			 * Keyboard shortcuts
+			 */
+			title: () => LocalizedString
+			/**
+			 * Saved in this browser. Screens only clash with themselves and with global keys.
+			 */
+			subtitle: () => LocalizedString
+			groups: {
+				/**
+				 * Global
+				 */
+				navigation: () => LocalizedString
+				/**
+				 * Inbox
+				 */
+				inbox: () => LocalizedString
+				/**
+				 * Tags
+				 */
+				tags: () => LocalizedString
+				/**
+				 * Editor
+				 */
+				editor: () => LocalizedString
+			}
+			/**
+			 * Change
+			 */
+			change: () => LocalizedString
+			/**
+			 * Change the shortcut for {action}
+			 */
+			changeLabel: (arg: { action: unknown }) => LocalizedString
+			/**
+			 * Clear
+			 */
+			clear: () => LocalizedString
+			/**
+			 * Clear the shortcut for {action}
+			 */
+			clearLabel: (arg: { action: unknown }) => LocalizedString
+			/**
+			 * Reset
+			 */
+			reset: () => LocalizedString
+			/**
+			 * Reset the shortcut for {action}
+			 */
+			resetLabel: (arg: { action: unknown }) => LocalizedString
+			/**
+			 * Reset all
+			 */
+			resetAll: () => LocalizedString
+			/**
+			 * Cancel
+			 */
+			cancel: () => LocalizedString
+			/**
+			 * Not set
+			 */
+			unbound: () => LocalizedString
+			/**
+			 * Press the keys, or Esc to cancel
+			 */
+			press: () => LocalizedString
+			/**
+			 * {keys} needs a modifier. Try again, or Esc to cancel
+			 */
+			notAllowed: (arg: { keys: unknown }) => LocalizedString
+			/**
+			 * {keys} is already used by {actions}.
+			 */
+			inUse: (arg: { actions: unknown, keys: unknown }) => LocalizedString
+			/**
+			 * Use it here instead
+			 */
+			replace: () => LocalizedString
+			/**
+			 * Browsers keep these keys for themselves, so this may not work in a browser tab.
+			 */
+			reserved: () => LocalizedString
+		}
+	}
 	navigation: {
 		/**
 		 * Search
@@ -4008,6 +4330,10 @@ export type TranslationFunctions = {
 		 * Timeline
 		 */
 		timeline: () => LocalizedString
+		/**
+		 * Settings
+		 */
+		settings: () => LocalizedString
 		/**
 		 * The config file is not valid
 		 */

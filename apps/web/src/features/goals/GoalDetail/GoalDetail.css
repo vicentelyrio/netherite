@@ -19,7 +19,7 @@
 .goal-title {
   margin: 0;
 }
-.editable-input.goal-title {
+.goal-title-input.goal-title {
   flex: 1;
   height: calc(var(--nt-text-display-line-height) + var(--nt-space-2));
 }

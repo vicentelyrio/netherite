@@ -122,7 +122,7 @@ describe('the structure', () => {
     const loose = readdirSync(src).filter((name) => statSync(join(src, name)).isFile())
     expect(loose.sort()).toEqual(['index.ts', 'styles.css'])
     const folders = readdirSync(src).filter((name) => statSync(join(src, name)).isDirectory())
-    expect(folders.sort()).toEqual(['components', 'shortcuts', 'theme'])
+    expect(folders.sort()).toEqual(['components', 'theme'])
   })
 
   test('every component is a folder with an entry, and only folders live in components', () => {

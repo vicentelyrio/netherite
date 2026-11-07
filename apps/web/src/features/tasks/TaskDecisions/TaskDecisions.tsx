@@ -2,8 +2,8 @@ import type { ItemDetail, ItemSummary } from '@netherite/api'
 import { Button, Icon, Menu } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
 import { useI18nContext } from '@/infrastructure/i18n'
+import { DrawerLabel } from '../DrawerLabel'
 import './TaskDecisions.css'
-import '../shared.css'
 
 export function TaskDecisions({
   decisions,
@@ -17,7 +17,7 @@ export function TaskDecisions({
   const { LL } = useI18nContext()
   return (
     <section className="drawer-row" aria-label={LL.tasks.decisions.title()}>
-      <span className="drawer-cell-label">{LL.tasks.decisions.title()}</span>
+      <DrawerLabel>{LL.tasks.decisions.title()}</DrawerLabel>
       <div className="drawer-decisions">
         {decisions.map((d) => (
           <Link key={d.id} to="/items/$id" params={{ id: d.id as string }} className="drawer-adr">

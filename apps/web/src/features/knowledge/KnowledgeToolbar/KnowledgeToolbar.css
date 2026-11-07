@@ -11,14 +11,14 @@
   display: flex;
   align-items: center;
   gap: var(--nt-space-1-5);
-  height: var(--nt-size-34);
-  padding: 0 var(--nt-space-3) 0 var(--nt-space-2-5);
+  height: var(--nt-space-5-5);
+  padding: 0 var(--nt-space-2-5);
   border-radius: var(--nt-radius-full);
-  background: transparent;
+  background: color-mix(in srgb, var(--nt-color-text-muted) 16%, transparent);
   border: var(--nt-stroke-thin) solid var(--nt-color-border-overlay);
   color: var(--nt-color-text-secondary);
   font: inherit;
-  font-size: var(--nt-text-caption-size);
+  font-size: var(--nt-text-micro-size);
   font-weight: var(--nt-font-weight-semibold);
   cursor: pointer;
 }
@@ -31,10 +31,6 @@
 .kn-pill[aria-pressed="true"] {
   background: var(--nt-color-accent-subtle);
   border-color: var(--nt-color-accent-solid);
-}
-
-.kn-pill--stale {
-  color: var(--nt-color-status-warning);
 }
 
 .kn-pill--stale span {

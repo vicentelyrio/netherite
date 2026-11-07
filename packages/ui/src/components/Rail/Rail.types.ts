@@ -4,8 +4,7 @@ export interface RailItem {
   readonly id: string
   readonly label: string
   readonly icon: string
-  readonly shortcut?: string
-  readonly aliases?: ReadonlyArray<string>
+  readonly hint?: string
   readonly badge?: number
   readonly group?: string
 }
@@ -16,7 +15,5 @@ export interface RailProps {
   readonly onSelect: (id: string) => void
   readonly brand?: ReactNode
   readonly footer?: ReactNode
-  readonly shortcuts?: boolean
-  readonly mac?: boolean
   readonly label?: string
 }

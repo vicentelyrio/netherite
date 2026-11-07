@@ -3,8 +3,15 @@ import { useNavigate, useRouterState } from '@tanstack/react-router'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useHealth, useInbox, waitingCount } from '@/infrastructure/query'
-import { useResolvedShortcuts } from '@/infrastructure/shortcuts'
+import {
+  type ActionId,
+  formatShortcut,
+  useActionShortcuts,
+  useResolvedShortcuts,
+} from '@/infrastructure/shortcuts'
 import { actionOf, activeFor, railItems } from '../rail'
+
+const avatarSize = 32
 
 export function AppRail({ onSearch }: { readonly onSearch: () => void }) {
   const { LL } = useI18nContext()
@@ -14,7 +21,18 @@ export function AppRail({ onSearch }: { readonly onSearch: () => void }) {
   const health = useHealth(api)
   const inbox = useInbox(api)
   const waiting = inbox.data ? waitingCount(inbox.data) : 0
-  const keys = useResolvedShortcuts()
+  const resolved = useResolvedShortcuts()
+
+  const select = (id: string) => {
+    if (id === 'search') return onSearch()
+    const to = railItems.find((i) => i.id === id)?.to
+    if (to !== undefined) void navigate({ to })
+  }
+  useActionShortcuts(
+    Object.fromEntries(railItems.map((i) => [actionOf(i.id), () => select(i.id)])) as Partial<
+      Record<ActionId, () => void>
+    >,
+  )
 
   const labels: Record<string, string> = {
     search: LL.navigation.search(),
@@ -26,23 +44,17 @@ export function AppRail({ onSearch }: { readonly onSearch: () => void }) {
     tags: LL.navigation.tags(),
     timeline: LL.navigation.timeline(),
     graph: LL.navigation.graph(),
+    settings: LL.navigation.settings(),
   }
   const items: RailItem[] = railItems.map(({ to: _to, ...item }) => {
-    const { keys: shortcut, aliases } = keys[actionOf(item.id)]
-    const withKeys = {
+    const { keys } = resolved[actionOf(item.id)]
+    return {
       ...item,
       label: labels[item.id] ?? item.id,
-      shortcut,
-      ...(aliases.length > 0 ? { aliases } : {}),
+      ...(keys === null ? {} : { hint: formatShortcut(keys) }),
+      ...(item.id === 'inbox' ? { badge: waiting } : {}),
     }
-    return item.id === 'inbox' ? { ...withKeys, badge: waiting } : withKeys
   })
-
-  const select = (id: string) => {
-    if (id === 'search') return onSearch()
-    const to = railItems.find((i) => i.id === id)?.to
-    if (to !== undefined) void navigate({ to })
-  }
 
   return (
     <Rail
@@ -50,7 +62,9 @@ export function AppRail({ onSearch }: { readonly onSearch: () => void }) {
       active={activeFor(pathname)}
       onSelect={select}
       footer={
-        health.data?.user ? <Avatar name={health.data.user} size={32} color="warning" /> : null
+        health.data?.user ? (
+          <Avatar name={health.data.user} size={avatarSize} color="warning" />
+        ) : null
       }
     />
   )

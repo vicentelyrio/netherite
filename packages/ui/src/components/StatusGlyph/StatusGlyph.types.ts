@@ -10,4 +10,5 @@ export interface StatusGlyphProps {
   readonly label?: string
   readonly dimDone?: boolean
   readonly color?: string
+  readonly className?: string
 }

@@ -1,0 +1,69 @@
+.kf-head {
+  height: var(--nt-space-9);
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--nt-space-3);
+  padding: 0 var(--nt-space-3) 0 var(--nt-space-6);
+  border-bottom: var(--nt-stroke-thin) solid var(--nt-color-border-divider);
+  background: var(--nt-color-bg-card-hover);
+  color: var(--nt-color-text-muted);
+}
+
+.kf-path {
+  display: flex;
+  align-items: center;
+  gap: var(--nt-space-2);
+  font-family: var(--nt-font-mono, monospace);
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-secondary);
+}
+
+.kf-path {
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.kf-path > * {
+  flex: none;
+}
+
+.kf-path strong {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--nt-color-text-primary);
+  font-weight: var(--nt-font-weight-medium);
+}
+
+.kf-path a {
+  color: var(--nt-color-accent-fg);
+  text-decoration: none;
+}
+
+.kf-path a:hover {
+  text-decoration: underline;
+}
+
+.kf-spacer {
+  flex: 1;
+}
+
+.kf-close {
+  width: var(--nt-space-7);
+  height: var(--nt-space-7);
+  border: 0;
+  border-radius: var(--nt-radius-sm);
+  background: transparent;
+  color: var(--nt-color-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kf-close:hover {
+  background: var(--nt-color-border-divider);
+  color: var(--nt-color-text-primary);
+}

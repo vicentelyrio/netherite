@@ -7,6 +7,7 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { AdrBody } from '../AdrBody'
 import { AdrLifecycle } from '../AdrLifecycle'
 import { ContextCard } from '../ContextCard'
+import { DocColumn } from '../DocColumn'
 import { StaleWarning } from '../StaleWarning'
 import { SupersededBanner } from '../SupersededBanner'
 import './DocMain.css'
@@ -35,7 +36,7 @@ export function DocMain({
   const fresh = item.freshness
   const newer = item.backlinks.find((l) => l.kind === 'supersedes' && l.id !== undefined)
   return (
-    <div className="kf-main">
+    <DocColumn>
       {stale && type !== 'adr' && fresh !== null && (
         <StaleWarning
           title={LL.knowledge.doc.main.staleTitle({ count: fresh.commits })}
@@ -87,6 +88,6 @@ export function DocMain({
       {type === 'context' && data?.context && <ContextCard item={item} context={data.context} />}
       {!/^\s*#\s/.test(item.body) && <h1 className="kf-title">{item.title}</h1>}
       {type === 'adr' ? <AdrBody source={item.body} /> : <Markdown source={item.body} />}
-    </div>
+    </DocColumn>
   )
 }

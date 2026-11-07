@@ -13,7 +13,3 @@
 .app-item--editing {
   max-width: none;
 }
-
-.app-item--editing .ed {
-  margin-inline: calc(-1 * var(--nt-layout-page-inset));
-}

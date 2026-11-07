@@ -61,7 +61,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: var(--nt-space-3-5);
+  margin-top: var(--hm-foot-margin-top, var(--nt-space-3-5));
+  padding-top: var(--hm-foot-padding-top, 0);
   font-size: var(--nt-text-micro-size);
   color: var(--nt-color-text-muted);
 }

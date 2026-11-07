@@ -11,11 +11,12 @@ export function StatusGlyph({
   label,
   dimDone,
   color,
+  className,
 }: StatusGlyphProps) {
   const hue = color ?? `var(--nt-color-type-${type})`
   return (
     <span
-      className="nt-status-glyph"
+      className={className ? `nt-status-glyph ${className}` : 'nt-status-glyph'}
       data-status={status}
       data-type={type}
       style={statusGlyphStyle({ status, color: hue, progress, size, dimDone })}

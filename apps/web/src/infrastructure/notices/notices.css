@@ -9,7 +9,7 @@
   width: min(var(--nt-size-420), calc(100vw - var(--nt-layout-rail-width) - var(--nt-space-4) * 2));
 }
 
-.app-notices .nt-banner {
+.app-notices .app-notice {
   background-color: var(--nt-color-bg-canvas);
   border: 0;
   box-shadow: var(--nt-shadow-popover);

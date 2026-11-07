@@ -43,6 +43,8 @@ export function AreaColumn({
           <EditableText
             as="h2"
             className="goals-area-title"
+            rootClassName="goals-area-editable"
+            inputClassName="goals-area-input"
             value={area}
             draft={isUnassigned ? '' : undefined}
             onSave={(to) => rename.mutate(to)}

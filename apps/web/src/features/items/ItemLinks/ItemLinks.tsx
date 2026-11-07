@@ -1,42 +1,7 @@
-import { Link } from '@tanstack/react-router'
 import { useI18nContext } from '@/infrastructure/i18n'
+import type { LinkInfo } from './ItemLinks.types'
+import { LinkList } from './LinkList'
 import './ItemLinks.css'
-
-interface LinkInfo {
-  readonly kind: string
-  readonly id?: string | undefined
-  readonly title?: string | undefined
-  readonly path: string
-}
-
-function LinkList({
-  title,
-  links,
-}: {
-  readonly title: string
-  readonly links: ReadonlyArray<LinkInfo>
-}) {
-  if (links.length === 0) return null
-  return (
-    <section>
-      <h2 className="nt-overline">{title}</h2>
-      <ul className="app-link-list">
-        {links.map((link) => (
-          <li key={`${link.kind}:${link.path}`}>
-            <span className="app-muted">{link.kind.replace('_', ' ')}</span>{' '}
-            {link.id ? (
-              <Link to="/items/$id" params={{ id: link.id }}>
-                {link.id} {link.title}
-              </Link>
-            ) : (
-              <code>{link.path}</code>
-            )}
-          </li>
-        ))}
-      </ul>
-    </section>
-  )
-}
 
 export function ItemLinks({
   links,

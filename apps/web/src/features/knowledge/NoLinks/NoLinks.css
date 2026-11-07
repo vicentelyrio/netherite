@@ -1,0 +1,11 @@
+.kn-none {
+  display: flex;
+  align-items: center;
+  gap: var(--nt-space-2);
+  height: var(--nt-space-7-5);
+  padding: 0 var(--nt-space-3);
+  border: var(--nt-stroke-thin) dashed var(--nt-color-border-overlay);
+  border-radius: var(--nt-radius-tooltip);
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-muted);
+}

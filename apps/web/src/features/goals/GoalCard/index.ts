@@ -1,1 +1,2 @@
-export { GoalCard, GoalCardBody } from './GoalCard'
+export { GoalCard } from './GoalCard'
+export { GoalCardBody } from './GoalCardBody'

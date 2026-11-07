@@ -4,7 +4,9 @@
   border-radius: var(--nt-radius-lg);
   padding: var(--nt-space-5) var(--nt-space-6);
   margin-bottom: var(--nt-space-4);
-  max-width: 1000px;
+  display: var(--st-card-display, block);
+  flex-direction: var(--st-card-direction, row);
+  max-width: var(--st-card-max-width, 1000px);
 }
 
 .st-card-head {

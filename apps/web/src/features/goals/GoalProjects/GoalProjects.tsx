@@ -1,11 +1,12 @@
 import { DragOverlay } from '@dnd-kit/core'
 import type { ProjectRow } from '@netherite/api'
-import { Card, Icon } from '@netherite/ui'
+import { Icon } from '@netherite/ui'
 import { useState } from 'react'
 import { placeIn, ReorderContext, TitleForm } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useWrite } from '@/infrastructure/query'
+import { DragPreview } from '../CardParts'
 import { ProjectCard, ProjectCardBody } from '../ProjectCard'
 import './GoalProjects.css'
 
@@ -62,11 +63,9 @@ export function GoalProjects({
         ))}
         <DragOverlay dropAnimation={null}>
           {dragging && (
-            <div className="goal-overlay">
-              <Card>
-                <ProjectCardBody project={dragging} />
-              </Card>
-            </div>
+            <DragPreview>
+              <ProjectCardBody project={dragging} />
+            </DragPreview>
           )}
         </DragOverlay>
       </ReorderContext>

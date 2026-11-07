@@ -25,7 +25,7 @@
   line-height: var(--nt-space-6-5);
   font-weight: var(--nt-font-weight-semibold);
 }
-.td-name .nt-icon {
+.td-name .td-name-icon {
   color: var(--nt-color-accent-fg);
 }
 .td-meta {

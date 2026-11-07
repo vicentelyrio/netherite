@@ -4,7 +4,6 @@ import type { RailItem, RailProps } from './Rail.types'
 import { RailButton } from './RailButton'
 import { runsOf } from './runsOf'
 import { useRailKeyboard } from './useRailKeyboard'
-import { useRailShortcuts } from './useRailShortcuts'
 
 export function Rail({
   items,
@@ -12,22 +11,13 @@ export function Rail({
   onSelect,
   brand,
   footer,
-  shortcuts = true,
-  mac,
   label = defaultRailLabel,
 }: RailProps) {
   const listRef = useRef<HTMLDivElement>(null)
-  useRailShortcuts(items, onSelect, shortcuts, mac)
   const onKeyDown = useRailKeyboard(listRef)
 
   const render = (item: RailItem) => (
-    <RailButton
-      key={item.id}
-      item={item}
-      current={item.id === active}
-      mac={mac}
-      onSelect={onSelect}
-    />
+    <RailButton key={item.id} item={item} current={item.id === active} onSelect={onSelect} />
   )
 
   const runs = runsOf(items)

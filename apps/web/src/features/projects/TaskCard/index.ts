@@ -1,1 +1,2 @@
-export { TaskCard, TaskCardBody } from './TaskCard'
+export { TaskCard } from './TaskCard'
+export { TaskCardBody } from './TaskCardBody'

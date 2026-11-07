@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: var(--nt-space-3);
 }
-.move-picker .text-field {
+.move-picker .move-picker-field {
   flex: none;
   box-sizing: border-box;
   width: 100%;
@@ -49,7 +49,7 @@
   min-width: 0;
   font-weight: var(--nt-font-weight-semibold);
 }
-.move-picker-title .app-muted {
+.move-picker-title .move-picker-note {
   flex: none;
   font-size: var(--nt-text-micro-size);
 }

@@ -1,0 +1,17 @@
+.goals-new {
+  height: var(--nt-space-8-5);
+  width: 100%;
+  background: transparent;
+  color: var(--nt-color-text-secondary);
+  border: var(--nt-stroke-thin) dashed var(--nt-color-border-overlay);
+  border-radius: var(--nt-radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nt-space-1-5);
+}
+.goals-new:hover {
+  border-color: var(--nt-color-accent-solid);
+  color: var(--nt-color-text-primary);
+}

@@ -1,4 +1,4 @@
-.adr-body .md blockquote {
+.adr-body .adr-md blockquote {
   margin: var(--nt-space-3) 0 var(--nt-space-5);
   padding: var(--nt-space-3-5) var(--nt-space-5);
   color: inherit;
@@ -6,7 +6,7 @@
   border: var(--nt-stroke-thin) solid color-mix(in srgb, var(--nt-color-accent-fg) 28%, transparent);
   border-radius: var(--nt-radius-md);
 }
-.adr-body .md blockquote > :last-child {
+.adr-body .adr-md blockquote > :last-child {
   margin-bottom: 0;
 }
 .adr-columns {
@@ -41,7 +41,7 @@
   flex-direction: column;
   gap: var(--nt-space-2);
 }
-.adr-col .md p {
+.adr-col .adr-md p {
   margin: 0;
 }
 @media (max-width: 900px) {

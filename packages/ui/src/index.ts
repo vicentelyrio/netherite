@@ -28,6 +28,7 @@ export { FreshnessLabel, type FreshnessLabelProps } from './components/Freshness
 export { Grid } from './components/Grid'
 export { Group } from './components/Group'
 export { Icon, type IconProps, type IconSize } from './components/Icon'
+export { Kbd } from './components/Kbd'
 export { Menu } from './components/Menu'
 export { Modal } from './components/Modal'
 export { NetheriteProvider, type NetheriteProviderProps } from './components/NetheriteProvider'
@@ -53,13 +54,4 @@ export { Tooltip } from './components/Tooltip'
 export { TypeBadge, type TypeBadgeProps, typeLabels } from './components/TypeBadge'
 export { glyphStyle, TypeGlyph, type TypeGlyphProps } from './components/TypeGlyph'
 export { UiPreview } from './components/UiPreview'
-export {
-  type Combo,
-  formatShortcut,
-  isMacPlatform,
-  matchesShortcut,
-  parseShortcut,
-  type ShortcutOptions,
-  useShortcuts,
-} from './shortcuts'
 export { classNames, theme } from './theme'

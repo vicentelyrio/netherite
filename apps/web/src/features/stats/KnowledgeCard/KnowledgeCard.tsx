@@ -23,7 +23,7 @@ export function KnowledgeCard() {
     <ChartCard
       title={LL.stats.knowledge.title()}
       aside={
-        <Link to="/knowledge" className="kn-open">
+        <Link to="/knowledge" className="st-kn-open">
           {LL.stats.knowledge.open()}
         </Link>
       }
@@ -44,7 +44,7 @@ export function KnowledgeCard() {
         {order.map((k) => (
           <li key={k}>
             {k === 'stale' ? (
-              <Icon name="warning" size={13} filled />
+              <Icon name="warning" size={13} filled className="kn-legend-icon" />
             ) : (
               <span className="kn-swatch" data-kind={k} />
             )}
@@ -52,18 +52,18 @@ export function KnowledgeCard() {
           </li>
         ))}
       </ul>
-      <h3 className="kn-h">{LL.stats.knowledge.decisions()}</h3>
+      <h3 className="st-kn-h">{LL.stats.knowledge.decisions()}</h3>
       {decisions.length === 0 && <p className="app-muted">{LL.stats.knowledge.noDecisions()}</p>}
-      <ul className="kn-pills">
+      <ul className="st-kn-pills">
         {decisions.map(([status, count]) => (
-          <li key={status} className="kn-pill" data-status={status}>
+          <li key={status} className="st-kn-pill" data-status={status}>
             {count} {status}
           </li>
         ))}
       </ul>
       {data.knowledge.undocumented.length > 0 && (
         <>
-          <h3 className="kn-h">{LL.stats.knowledge.undocumented()}</h3>
+          <h3 className="st-kn-h">{LL.stats.knowledge.undocumented()}</h3>
           <ul className="kn-code">
             {data.knowledge.undocumented.map((u) => (
               <li key={u.path}>

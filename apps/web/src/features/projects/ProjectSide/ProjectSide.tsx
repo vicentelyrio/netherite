@@ -57,6 +57,7 @@ export function ProjectSide({
         )}
       </Breadcrumbs>
       <EditableText
+        inputClassName="project-title-input"
         as="h1"
         className="app-title project-title"
         value={board.title}

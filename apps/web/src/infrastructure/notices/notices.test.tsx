@@ -1,7 +1,7 @@
 import { NetheriteProvider } from '@netherite/ui'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-import { type Notice, NoticeProvider, useNotices } from './notices'
+import { type Notice, NoticeProvider, useNotices } from './index'
 
 const Raise = ({ notice }: { readonly notice: Omit<Notice, 'id'> }) => {
   const { notify } = useNotices()

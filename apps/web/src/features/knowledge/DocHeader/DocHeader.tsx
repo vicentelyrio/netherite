@@ -1,8 +1,9 @@
 import type { ItemDetail } from '@netherite/api'
-import { Button, Icon, type ItemTypeName, TypeBadge } from '@netherite/ui'
+import { Button, type ItemTypeName, TypeBadge } from '@netherite/ui'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { formatDate, now } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
+import { DocBar, DocBarSpacer } from '../DocBar'
 import type { ReviewAction } from '../DocMain'
 import './DocHeader.css'
 
@@ -25,15 +26,18 @@ export function DocHeader({
   const reviewedAt = (item.frontmatter as { reviewed_at?: unknown }).reviewed_at
   const reviewed = typeof reviewedAt === 'string' ? reviewedAt : undefined
   return (
-    <header className="kf-head">
-      <Icon name="stacks" size={16} />
-      <nav className="kf-path" aria-label={LL.knowledge.doc.header.path()}>
-        <Link to="/knowledge">{LL.knowledge.doc.header.knowledge()}</Link> ›{' '}
-        <Link to="/knowledge" search={{ q: `/${folder}/` }}>
-          {folder}
-        </Link>{' '}
-        › <strong title={file}>{file}</strong>
-      </nav>
+    <DocBar
+      path={
+        <>
+          <Link to="/knowledge">{LL.knowledge.doc.header.knowledge()}</Link> ›{' '}
+          <Link to="/knowledge" search={{ q: `/${folder}/` }}>
+            {folder}
+          </Link>{' '}
+          › <strong title={file}>{file}</strong>
+        </>
+      }
+      onClose={() => void navigate({ to: '/knowledge' })}
+    >
       <TypeBadge type={type} />
       {changedLines > 0 && (
         <span className="kf-lines">
@@ -41,7 +45,7 @@ export function DocHeader({
         </span>
       )}
       <code className="app-id kf-id">{item.id}</code>
-      <span className="kf-spacer" />
+      <DocBarSpacer />
       {!stale && (type === 'doc' || type === 'runbook' || type === 'context') && (
         <Button
           size="sm"
@@ -56,15 +60,6 @@ export function DocHeader({
             : LL.knowledge.doc.header.reviewedAt({ date: formatDate(reviewed) })}
         </Button>
       )}
-      <button
-        type="button"
-        className="kf-close"
-        aria-label={LL.knowledge.doc.header.close()}
-        title={LL.knowledge.doc.header.closeTitle()}
-        onClick={() => void navigate({ to: '/knowledge' })}
-      >
-        <Icon name="close" size={20} />
-      </button>
-    </header>
+    </DocBar>
   )
 }

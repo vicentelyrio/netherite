@@ -10,9 +10,6 @@
 .sb-bottom {
   grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr) minmax(0, 1fr);
 }
-.sb .st-card {
-  max-width: none;
-}
 @media (max-width: 1499px) {
   .sb-bottom {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -28,11 +25,13 @@
   }
 }
 
-.sb-bottom .st-card {
-  display: flex;
-  flex-direction: column;
+.sb {
+  --st-card-max-width: none;
 }
-.sb-bottom .hm-foot {
-  margin-top: auto;
-  padding-top: var(--nt-space-3-5);
+
+.sb-bottom {
+  --st-card-display: flex;
+  --st-card-direction: column;
+  --hm-foot-margin-top: auto;
+  --hm-foot-padding-top: var(--nt-space-3-5);
 }

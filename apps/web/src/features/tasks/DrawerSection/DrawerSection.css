@@ -1,0 +1,11 @@
+.drawer-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nt-space-2);
+}
+
+.drawer-h {
+  font-size: var(--nt-text-heading-size);
+  font-weight: var(--nt-font-weight-semibold);
+  margin: 0;
+}

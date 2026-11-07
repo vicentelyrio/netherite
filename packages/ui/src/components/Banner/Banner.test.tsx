@@ -3,10 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, test, vi } from 'vitest'
 import { renderUi } from '../../../test/helpers'
 import { Button } from '../Button'
-import { EmptyState } from '../EmptyState'
 import { Banner } from './index'
 
-describe('Banner and EmptyState', () => {
+describe('Banner', () => {
   test('problems interrupt screen readers; other messages wait', () => {
     renderUi(
       <>
@@ -37,20 +36,5 @@ describe('Banner and EmptyState', () => {
   test('has no close button unless it can close', () => {
     renderUi(<Banner title="x" />)
     expect(screen.queryByRole('button', { name: 'Dismiss' })).toBeNull()
-  })
-
-  test('an empty state says what is missing and offers a way forward', async () => {
-    const onClick = vi.fn()
-    renderUi(
-      <EmptyState
-        title="No knowledge yet"
-        description="Add a doc."
-        actions={<Button onClick={onClick}>New doc</Button>}
-      />,
-    )
-    expect(screen.getByRole('heading', { name: 'No knowledge yet' })).toBeInTheDocument()
-    expect(screen.getByText('Add a doc.')).toBeInTheDocument()
-    await userEvent.click(screen.getByRole('button', { name: 'New doc' }))
-    expect(onClick).toHaveBeenCalled()
   })
 })

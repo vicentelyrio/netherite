@@ -1,10 +1,9 @@
-import { Icon } from '@netherite/ui'
 import { type FocusEvent, type KeyboardEvent, useState } from 'react'
 import { TextField } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useWrite } from '@/infrastructure/query'
-import '../NewGoal/NewGoal.css'
+import { NewItemButton } from '../NewItemButton'
 import './NewArea.css'
 
 export function NewArea({ areas }: { readonly areas: ReadonlyArray<string> }) {
@@ -46,9 +45,9 @@ export function NewArea({ areas }: { readonly areas: ReadonlyArray<string> }) {
   }
   if (!adding) {
     return (
-      <button type="button" className="goals-new goals-new-area" onClick={() => setAdding(true)}>
-        <Icon name="add" /> {LL.goals.newArea()}
-      </button>
+      <NewItemButton className="goals-new-area" onClick={() => setAdding(true)}>
+        {LL.goals.newArea()}
+      </NewItemButton>
     )
   }
   return (
@@ -59,6 +58,7 @@ export function NewArea({ areas }: { readonly areas: ReadonlyArray<string> }) {
       aria-label={LL.goals.newArea()}
     >
       <TextField
+        className="goals-area-field"
         label={LL.goals.areaName()}
         placeholder={LL.goals.areaName()}
         value={area}
@@ -68,6 +68,7 @@ export function NewArea({ areas }: { readonly areas: ReadonlyArray<string> }) {
       />
       {clash && <span className="app-muted">{LL.goals.areaExists()}</span>}
       <TextField
+        className="goals-area-field"
         label={LL.goals.firstGoal()}
         placeholder={LL.goals.firstGoal()}
         value={title}

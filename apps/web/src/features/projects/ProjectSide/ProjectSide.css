@@ -2,7 +2,7 @@
   margin: 0;
 }
 
-.editable-input.project-title {
+.project-title-input.project-title {
   margin-bottom: var(--nt-space-3);
   height: calc(var(--nt-text-display-line-height) + var(--nt-space-2));
 }

@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import { describe, expect, test, vi } from 'vitest'
@@ -6,22 +6,22 @@ import { renderUi } from '../../../test/helpers'
 import { Rail, type RailItem } from './index'
 
 const items: RailItem[] = [
-  { id: 'search', label: 'Search', icon: 'search', shortcut: 'mod+k' },
-  { id: 'inbox', label: 'Inbox', icon: 'inbox', shortcut: 'mod+i', badge: 3, group: 'work' },
-  { id: 'graph', label: 'Graph', icon: 'hub', shortcut: 'mod+shift+g', group: 'work' },
+  { id: 'search', label: 'Search', icon: 'search', hint: '⌘K' },
+  { id: 'inbox', label: 'Inbox', icon: 'inbox', hint: '⌘I', badge: 3, group: 'work' },
+  { id: 'graph', label: 'Graph', icon: 'hub', hint: '⇧⌘G', group: 'work' },
   { id: 'settings', label: 'Settings', icon: 'settings', group: 'work' },
 ]
 
 describe('Rail', () => {
   test('is a labelled navigation with one button per item', () => {
-    renderUi(<Rail items={items} active="inbox" onSelect={() => {}} mac />)
+    renderUi(<Rail items={items} active="inbox" onSelect={() => {}} />)
     const nav = screen.getByRole('navigation', { name: 'Main' })
     expect(nav).toBeInTheDocument()
     expect(screen.getAllByRole('button')).toHaveLength(4)
   })
 
   test('marks the active item for assistive tech and for the styles', () => {
-    renderUi(<Rail items={items} active="graph" onSelect={() => {}} mac />)
+    renderUi(<Rail items={items} active="graph" onSelect={() => {}} />)
     const active = screen.getByRole('button', { name: 'Graph' })
     expect(active).toHaveAttribute('aria-current', 'page')
     expect(active).toHaveAttribute('data-active', 'true')
@@ -30,44 +30,19 @@ describe('Rail', () => {
 
   test('selects an item on click', async () => {
     const onSelect = vi.fn()
-    renderUi(<Rail items={items} active="inbox" onSelect={onSelect} mac />)
+    renderUi(<Rail items={items} active="inbox" onSelect={onSelect} />)
     await userEvent.click(screen.getByRole('button', { name: 'Graph' }))
     expect(onSelect).toHaveBeenCalledWith('graph')
-  })
-
-  test('shortcuts select items from anywhere, including ones with shift', () => {
-    const onSelect = vi.fn()
-    renderUi(<Rail items={items} active="inbox" onSelect={onSelect} mac />)
-    fireEvent.keyDown(window, { key: 'k', metaKey: true })
-    fireEvent.keyDown(window, { key: 'g', metaKey: true, shiftKey: true })
-    fireEvent.keyDown(window, { key: 'i', metaKey: true })
-    expect(onSelect.mock.calls).toEqual([['search'], ['graph'], ['inbox']])
-  })
-
-  test('on other platforms the shortcut is Control', () => {
-    const onSelect = vi.fn()
-    renderUi(<Rail items={items} active="inbox" onSelect={onSelect} mac={false} />)
-    fireEvent.keyDown(window, { key: 'k', metaKey: true })
-    expect(onSelect).not.toHaveBeenCalled()
-    fireEvent.keyDown(window, { key: 'k', ctrlKey: true })
-    expect(onSelect).toHaveBeenCalledWith('search')
-  })
-
-  test('shortcuts can be turned off, and then only clicks select', () => {
-    const onSelect = vi.fn()
-    renderUi(<Rail items={items} active="inbox" onSelect={onSelect} shortcuts={false} mac />)
-    fireEvent.keyDown(window, { key: 'k', metaKey: true })
-    expect(onSelect).not.toHaveBeenCalled()
   })
 
   test('works as a controlled component', async () => {
     function Controlled() {
       const [active, setActive] = useState('search')
-      return <Rail items={items} active={active} onSelect={setActive} mac />
+      return <Rail items={items} active={active} onSelect={setActive} />
     }
     renderUi(<Controlled />)
     expect(screen.getByRole('button', { name: 'Search' })).toHaveAttribute('aria-current', 'page')
-    fireEvent.keyDown(window, { key: 'g', metaKey: true, shiftKey: true })
+    await userEvent.click(screen.getByRole('button', { name: 'Graph' }))
     expect(await screen.findByRole('button', { name: 'Graph' })).toHaveAttribute(
       'aria-current',
       'page',
@@ -75,8 +50,8 @@ describe('Rail', () => {
     expect(screen.getByRole('button', { name: 'Search' })).not.toHaveAttribute('aria-current')
   })
 
-  test('says which shortcut each item has, in the platform’s notation', () => {
-    renderUi(<Rail items={items} active="inbox" onSelect={() => {}} mac />)
+  test('says which keys each item has', () => {
+    renderUi(<Rail items={items} active="inbox" onSelect={() => {}} />)
     expect(screen.getByRole('button', { name: 'Search' })).toHaveAttribute(
       'aria-keyshortcuts',
       '⌘K',
@@ -91,7 +66,7 @@ describe('Rail', () => {
   })
 
   test('shows the label and shortcut in a tooltip', async () => {
-    renderUi(<Rail items={items} active="inbox" onSelect={() => {}} mac />)
+    renderUi(<Rail items={items} active="inbox" onSelect={() => {}} />)
     await userEvent.hover(screen.getByRole('button', { name: 'Graph' }))
     const tip = await screen.findByRole('tooltip')
     expect(tip).toHaveTextContent('Graph')
@@ -108,7 +83,6 @@ describe('Rail', () => {
         ]}
         active="a"
         onSelect={() => {}}
-        mac
       />,
     )
     expect(screen.getByRole('button', { name: 'Inbox, 3 waiting' })).toBeInTheDocument()
@@ -118,7 +92,7 @@ describe('Rail', () => {
   })
 
   test('the arrow keys, Home and End move between items, wrapping round', async () => {
-    renderUi(<Rail items={items} active="search" onSelect={() => {}} mac />)
+    renderUi(<Rail items={items} active="search" onSelect={() => {}} />)
     const names = () => (document.activeElement as HTMLElement).getAttribute('aria-label')
     screen.getByRole('button', { name: 'Search' }).focus()
     await userEvent.keyboard('{ArrowDown}')
@@ -134,7 +108,7 @@ describe('Rail', () => {
   })
 
   test('items that share a group sit on one ground, and an item with no group stands alone', () => {
-    const { container } = renderUi(<Rail items={items} active="search" onSelect={() => {}} mac />)
+    const { container } = renderUi(<Rail items={items} active="search" onSelect={() => {}} />)
     const groups = container.querySelectorAll('.nt-rail-group')
     expect(groups).toHaveLength(1)
     expect(
@@ -155,7 +129,6 @@ describe('Rail', () => {
         ]}
         active="a"
         onSelect={() => {}}
-        mac
       />,
     )
     const groups = [...container.querySelectorAll('.nt-rail-group')]
@@ -164,38 +137,9 @@ describe('Rail', () => {
 
   test('shows the mark at the top and whatever goes at the foot', () => {
     const { container } = renderUi(
-      <Rail items={items} active="search" onSelect={() => {}} footer={<span>VL</span>} mac />,
+      <Rail items={items} active="search" onSelect={() => {}} footer={<span>VL</span>} />,
     )
     expect(container.querySelector('.nt-rail-brand')).toHaveTextContent('N')
     expect(container.querySelector('.nt-rail-footer')).toHaveTextContent('VL')
-  })
-})
-
-describe('Rail aliases', () => {
-  test('extra keys select the same item, and the tooltip shows only the main one', () => {
-    const onSelect = vi.fn()
-    renderUi(
-      <Rail
-        items={[
-          {
-            id: 'knowledge',
-            label: 'Knowledge',
-            icon: 'stacks',
-            shortcut: 'mod+l',
-            aliases: ['mod+alt+l'],
-          },
-        ]}
-        active="x"
-        onSelect={onSelect}
-        mac
-      />,
-    )
-    fireEvent.keyDown(window, { key: 'l', metaKey: true })
-    fireEvent.keyDown(window, { key: 'l', metaKey: true, altKey: true })
-    expect(onSelect.mock.calls).toEqual([['knowledge'], ['knowledge']])
-    expect(screen.getByRole('button', { name: 'Knowledge' })).toHaveAttribute(
-      'aria-keyshortcuts',
-      '⌘L',
-    )
   })
 })

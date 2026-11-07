@@ -1,5 +1,5 @@
 import { DragOverlay } from '@dnd-kit/core'
-import { Banner, Card, EmptyState } from '@netherite/ui'
+import { Banner, EmptyState } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { CardColumn, ReorderContext } from '@/components'
@@ -7,6 +7,7 @@ import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { goalsQuery, useWrite } from '@/infrastructure/query'
 import { AreaColumn } from '../AreaColumn'
+import { DragPreview } from '../CardParts'
 import { GoalCardBody } from '../GoalCard'
 import { NewArea } from '../NewArea'
 import { NewGoal } from '../NewGoal'
@@ -77,11 +78,9 @@ export function GoalAreas({ only }: { readonly only?: string }) {
       )}
       <DragOverlay dropAnimation={null}>
         {dragging && (
-          <div className="goal-overlay">
-            <Card>
-              <GoalCardBody goal={dragging} />
-            </Card>
-          </div>
+          <DragPreview>
+            <GoalCardBody goal={dragging} />
+          </DragPreview>
         )}
       </DragOverlay>
     </ReorderContext>

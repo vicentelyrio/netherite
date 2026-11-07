@@ -1,114 +1,40 @@
-import { Button, Icon } from '@netherite/ui'
+import { Button } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import { SelectField } from '@/components'
-import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
-import { useNotices } from '@/infrastructure/notices'
-import { useWrite } from '@/infrastructure/query'
 import { DuplicatesBanner } from '../DuplicatesBanner'
 import { RenameForm } from '../RenameForm'
 import { grepFor, groupsOf, keyOf, recentIds } from '../rules'
 import { useTags } from '../TagsProvider'
+import { TagChip } from './TagChip'
+import { TagHeading } from './TagHeading'
+import { TagMerge } from './TagMerge'
+import { TagOverview } from './TagOverview'
+import { TagUsage } from './TagUsage'
 import './TagDetail.css'
-
-const usedKinds = [
-  { key: 'goals', color: '#8f91f2' },
-  { key: 'projects', color: '#3ba474' },
-  { key: 'tasks', color: '#d9a646' },
-  { key: 'docs', color: '#8fc3f2' },
-] as const
 
 export function TagDetail() {
   const { LL } = useI18nContext()
-  const api = useApi()
-  const notices = useNotices()
   const { all, selected, select, duplicates } = useTags()
   const [merging, setMerging] = useState(false)
   const [renaming, setRenaming] = useState(false)
-  const [into, setInto] = useState('')
-  const merge = useWrite(api, (a, input: { field: 'tags' | 'labels'; from: string; to: string }) =>
-    a.call((c) => c.tags.rename({ payload: input })),
-  )
-  if (selected === undefined) {
-    const top = [...all]
-      .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name))
-      .slice(0, 8)
-    const peak = Math.max(1, ...top.map((t) => t.total))
-    const clusters = [
-      ...all.reduce(
-        (m, t) => m.set(t.cluster, (m.get(t.cluster) ?? 0) + 1),
-        new Map<string, number>(),
-      ),
-    ]
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-      .slice(0, 8)
-    const tagged = new Set(all.flatMap((t) => t.ids)).size
-    return (
-      <section className="td" aria-label={LL.tags.detail.title()}>
-        <header className="td-head">
-          <div>
-            <h2 className="td-name">
-              <Icon name="sell" size={20} />
-              {LL.tags.overview.title()}
-            </h2>
-            <span className="td-meta">
-              {LL.tags.overview.summary({
-                tags: all.filter((t) => t.field === 'tags').length,
-                labels: all.filter((t) => t.field === 'labels').length,
-                items: tagged,
-              })}
-            </span>
-          </div>
-        </header>
-        <h3 className="td-h">{LL.tags.overview.mostUsed()}</h3>
-        <div className="td-chips">
-          {top.map((t) => (
-            <button
-              key={keyOf(t)}
-              type="button"
-              className="td-chip"
-              onClick={() => select(keyOf(t))}
-            >
-              <span className="td-chip-name">{t.name}</span>
-              <span className="td-chip-bar" aria-hidden="true">
-                <span style={{ width: `${(t.total / peak) * 100}%` }} />
-              </span>
-              <span className="td-chip-n">{LL.tags.detail.count({ count: t.total })}</span>
-            </button>
-          ))}
-        </div>
-        <h3 className="td-h">{LL.tags.overview.clusters()}</h3>
-        <ul className="td-clusters">
-          {clusters.map(([name, count]) => (
-            <li key={name}>
-              <span>{name}</span>
-              <span className="app-muted">{count}</span>
-            </li>
-          ))}
-        </ul>
-        <p className="td-hint">{LL.tags.detail.pick()}</p>
-      </section>
-    )
-  }
-  const g = groupsOf(selected.byType)
+  if (selected === undefined) return <TagOverview />
   const pair = duplicates.find(
     (d) => keyOf(d.a) === keyOf(selected) || keyOf(d.b) === keyOf(selected),
   )
   const others = all.filter((t) => t.field === selected.field && t.name !== selected.name)
+  const oftenPeak = Math.max(1, ...selected.often.map((x) => x.count))
   return (
     <section className="td" aria-label={LL.tags.detail.title()}>
-      <header className="td-head">
-        <div>
-          <h2 className="td-name">
-            <Icon name="sell" size={20} />
-            {selected.name}
-          </h2>
-          <span className="td-meta">
+      <TagHeading
+        title={selected.name}
+        meta={
+          <>
             {LL.tags.detail.count({ count: selected.total })} ·{' '}
             {selected.field === 'tags' ? LL.tags.tag() : LL.tags.label()} · {selected.cluster}
-          </span>
-        </div>
+          </>
+        }
+      >
         <div className="td-actions">
           <Button size="sm" onClick={() => setRenaming(!renaming)}>
             {LL.tags.rename()}
@@ -119,64 +45,24 @@ export function TagDetail() {
             </Button>
           )}
         </div>
-      </header>
+      </TagHeading>
       {renaming && <RenameForm tag={selected} tags={all} onDone={() => setRenaming(false)} />}
       {pair !== undefined && <DuplicatesBanner pair={pair} />}
 
-      <h3 className="td-h">{LL.tags.detail.usedIn()}</h3>
-      <div className="td-bar" aria-hidden="true">
-        {usedKinds.map((k) =>
-          g[k.key] === 0 ? null : (
-            <span
-              key={k.key}
-              style={{
-                width: `${(g[k.key] / Math.max(1, selected.total)) * 100}%`,
-                background: k.color,
-              }}
-            />
-          ),
-        )}
-      </div>
-      <ul className="td-used">
-        <li style={{ opacity: g.goals ? 1 : 0.45 }}>
-          <i style={{ background: usedKinds[0]?.color }} />
-          {LL.tags.detail.goals({ count: g.goals })}
-        </li>
-        <li style={{ opacity: g.projects ? 1 : 0.45 }}>
-          <i style={{ background: usedKinds[1]?.color }} />
-          {LL.tags.detail.projects({ count: g.projects })}
-        </li>
-        <li style={{ opacity: g.tasks ? 1 : 0.45 }}>
-          <i style={{ background: usedKinds[2]?.color }} />
-          {LL.tags.detail.tasks({ count: g.tasks })}
-        </li>
-        <li style={{ opacity: g.docs ? 1 : 0.45 }}>
-          <i style={{ background: usedKinds[3]?.color }} />
-          {LL.tags.detail.docs({ count: g.docs })}
-        </li>
-      </ul>
+      <TagUsage groups={groupsOf(selected.byType)} total={selected.total} />
 
       {selected.often.length > 0 && (
         <>
           <h3 className="td-h">{LL.tags.detail.often()}</h3>
           <div className="td-chips">
             {selected.often.map((o) => (
-              <button
+              <TagChip
                 key={keyOf(o)}
-                type="button"
-                className="td-chip"
+                name={o.name}
+                share={o.count / oftenPeak}
+                note={LL.tags.detail.shared({ count: o.count })}
                 onClick={() => select(keyOf(o))}
-              >
-                <span className="td-chip-name">{o.name}</span>
-                <span className="td-chip-bar" aria-hidden="true">
-                  <span
-                    style={{
-                      width: `${(o.count / Math.max(1, ...selected.often.map((x) => x.count))) * 100}%`,
-                    }}
-                  />
-                </span>
-                <span className="td-chip-n">{LL.tags.detail.shared({ count: o.count })}</span>
-              </button>
+              />
             ))}
           </div>
         </>
@@ -196,40 +82,7 @@ export function TagDetail() {
       <h3 className="td-h">{LL.tags.detail.grep()}</h3>
       <code className="td-grep">{grepFor(selected)}</code>
 
-      {merging && others.length > 0 && (
-        <div className="td-merge">
-          <SelectField
-            label={LL.tags.detail.mergeInto()}
-            value={into}
-            options={others.map((t) => t.name)}
-            onChange={setInto}
-            anyLabel={LL.tags.detail.choose()}
-          />
-          <Button
-            size="sm"
-            disabled={into === ''}
-            loading={merge.isPending}
-            onClick={() =>
-              merge.mutate(
-                { field: selected.field, from: selected.name, to: into },
-                {
-                  onSuccess: (r) => {
-                    notices.notify({
-                      variant: 'success',
-                      title: LL.tags.renamed({ name: into }),
-                      text: LL.tags.changedIn({ count: r.renamed }),
-                    })
-                    setInto('')
-                    select(`${selected.field}:${into}`)
-                  },
-                },
-              )
-            }
-          >
-            {LL.tags.merge()}
-          </Button>
-        </div>
-      )}
+      {merging && others.length > 0 && <TagMerge tag={selected} others={others} />}
     </section>
   )
 }

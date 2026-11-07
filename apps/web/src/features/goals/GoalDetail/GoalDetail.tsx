@@ -73,6 +73,7 @@ export function GoalDetail({ id }: { readonly id: string }) {
       </div>
       <header className="goal-head">
         <EditableText
+          inputClassName="goal-title-input"
           as="h1"
           className="app-title goal-title"
           value={goal.title}
