@@ -19,6 +19,8 @@
 
 .drawer-checklist input[type="checkbox"] {
   appearance: none;
+  flex: none;
+  margin: var(--nt-space-0-5) 0 0;
   width: var(--nt-space-4-5);
   height: var(--nt-space-4-5);
   border: var(--nt-stroke-medium) solid var(--nt-color-border-strong);
@@ -56,10 +58,9 @@
 
 .drawer-checklist li label {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--nt-space-3);
-  height: var(--nt-space-7);
-  padding: 0 var(--nt-space-2);
+  padding: calc((var(--nt-space-7) - var(--nt-text-body-line-height)) / 2) var(--nt-space-2);
   border-radius: var(--nt-radius-sm);
   font-size: var(--nt-text-body-size);
   line-height: var(--nt-text-body-line-height);

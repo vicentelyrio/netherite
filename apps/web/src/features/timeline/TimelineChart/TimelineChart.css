@@ -254,7 +254,10 @@
 .tl-activity-bar {
   position: absolute;
   bottom: var(--nt-space-1);
+  box-sizing: border-box;
+  border-inline: var(--nt-stroke-thin) solid transparent;
   background: var(--nt-color-graph-edge);
+  background-clip: padding-box;
   border-radius: var(--nt-radius-xxs);
 }
 @media (max-width: 1279px) {

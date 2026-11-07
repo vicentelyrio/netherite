@@ -1,4 +1,4 @@
-import type { WeekCount } from '../history'
+import type { DayCount, WeekCount } from '../history'
 import type { NodeStatus } from '../views'
 
 export interface TimelineHold {
@@ -53,6 +53,7 @@ export interface Timeline {
   readonly tasks: ReadonlyArray<TimelineTask>
   readonly decisions: ReadonlyArray<TimelineDecision>
   readonly activity: ReadonlyArray<WeekCount>
+  readonly activityByDay: ReadonlyArray<DayCount>
   readonly approximate: boolean
 }
 

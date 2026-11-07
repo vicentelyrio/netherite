@@ -2338,9 +2338,19 @@ type RootTranslation = {
 		 */
 		openFor: RequiredParams<'days'>
 		/**
-		 * C​o​m​m​i​t​s​ ​p​e​r​ ​w​e​e​k
+		 * I​t​e​m​ ​c​h​a​n​g​e​s​ ​p​e​r​ ​d​a​y
 		 */
-		activity: string
+		activityPerDay: string
+		/**
+		 * I​t​e​m​ ​c​h​a​n​g​e​s​ ​p​e​r​ ​w​e​e​k
+		 */
+		activityPerWeek: string
+		/**
+		 * {​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}​ ​c​h​a​n​g​i​n​g​ ​i​t​e​m​s​ ​·​ ​{​d​a​y​}
+		 * @param {number} count
+		 * @param {unknown} day
+		 */
+		activityBar: RequiredParams<'count' | 'day'>
 	}
 	editor: {
 		/**
@@ -5431,9 +5441,17 @@ export type TranslationFunctions = {
 		 */
 		openFor: (arg: { days: number }) => LocalizedString
 		/**
-		 * Commits per week
+		 * Item changes per day
 		 */
-		activity: () => LocalizedString
+		activityPerDay: () => LocalizedString
+		/**
+		 * Item changes per week
+		 */
+		activityPerWeek: () => LocalizedString
+		/**
+		 * {count} {{commit|commits}} changing items · {day}
+		 */
+		activityBar: (arg: { count: number, day: unknown }) => LocalizedString
 	}
 	editor: {
 		/**

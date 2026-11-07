@@ -24,6 +24,7 @@ const timeline = {
   tasks: [{ ...base, id: 'TASK-1', title: 'T', status: 'done', project: 'PRJ-1' }],
   decisions: [{ id: 'ADR-1', title: 'A', status: 'accepted' }],
   activity: [],
+  activityByDay: [],
   approximate: false,
 } as unknown as Timeline
 
