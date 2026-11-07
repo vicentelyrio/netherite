@@ -1,6 +1,6 @@
 import { ItemType, ProgressStatus, StateCategoryName } from '@netherite/schema'
 import { graphAsOf } from '../asof'
-import { commitsByWeek, type History } from '../history'
+import { commitsByDay, commitsByWeek, type History } from '../history'
 import { type Lifecycle, lifecycles, type Span } from '../lifecycle'
 import type { Repo } from '../ops/repo'
 import { fieldsOf } from '../views'
@@ -167,6 +167,7 @@ export const timelineOf = (
     tasks: all.tasks.filter(span),
     decisions: all.decisions.filter((d) => within(d.proposed, d.ended ?? d.accepted)),
     activity: commitsByWeek(history, { from, to }),
+    activityByDay: commitsByDay(history, { from, to }),
     approximate: history.partial,
   }
 }

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { commitsByWeek, timelineOf } from '../src/index'
+import { commitsByDay, commitsByWeek, timelineOf } from '../src/index'
 import { world } from './ops-helpers'
 import { files, history, now } from './progression-fixture'
 
@@ -70,5 +70,28 @@ describe('timeline', () => {
     expect(weeks.at(-1)).toEqual({ week: '2026-02-02', count: 1 })
     expect(weeks.reduce((n, x) => n + x.count, 0)).toBe(5)
     expect(weeks).toHaveLength(6)
+  })
+})
+
+describe('commitsByDay', () => {
+  const history = {
+    log: [
+      { hash: 'a', date: '2026-11-07T10:00:00Z' },
+      { hash: 'b', date: '2026-11-04T10:00:00Z' },
+      { hash: 'c', date: '2026-11-04T18:00:00Z' },
+    ],
+  } as never
+
+  test('counts each day that has commits, oldest first', () => {
+    expect(commitsByDay(history)).toEqual([
+      { day: '2026-11-04', count: 2 },
+      { day: '2026-11-07', count: 1 },
+    ])
+  })
+
+  test('keeps to the range it is given', () => {
+    expect(commitsByDay(history, { from: '2026-11-05', to: '2026-11-30' })).toEqual([
+      { day: '2026-11-07', count: 1 },
+    ])
   })
 })

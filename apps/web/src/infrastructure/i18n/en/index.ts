@@ -622,7 +622,9 @@ const en = {
     milestone: 'Milestone: {name}',
     days: '{days:number}d',
     openFor: 'open {days:number}d',
-    activity: 'Commits per week',
+    activityPerDay: 'Item changes per day',
+    activityPerWeek: 'Item changes per week',
+    activityBar: '{count:number} {{commit|commits}} changing items · {day}',
   },
   editor: { loadError: 'Could not load the source', loading: 'Loading the source…' },
   goals: {

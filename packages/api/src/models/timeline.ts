@@ -38,6 +38,7 @@ export const Timeline = Schema.Struct({
     }),
   ),
   activity: Schema.Array(Schema.Struct({ week: S, count: N })),
+  activityByDay: Schema.Array(Schema.Struct({ day: S, count: N })),
   approximate: Schema.Boolean,
 })
 

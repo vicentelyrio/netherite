@@ -1,3 +1,4 @@
+export { commitsByDay, type DayCount } from './dailyCounts'
 export type {
   Author,
   AuthorSummary,

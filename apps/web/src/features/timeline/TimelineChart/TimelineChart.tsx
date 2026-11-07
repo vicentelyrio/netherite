@@ -1,8 +1,9 @@
 import { EmptyState } from '@netherite/ui'
-import { addDays, formatDay } from '@/infrastructure/datetime'
+import { formatDay } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
-import { pointOf, rowsOf, spanOf, ticksOf, unitOf } from '../layout'
+import { pointOf, rowsOf, ticksOf, unitOf } from '../layout'
 import { useTimeline } from '../TimelineProvider'
+import { TimelineActivity } from './TimelineActivity'
 import { TimelineRow } from './TimelineRow'
 import './TimelineChart.css'
 
@@ -25,7 +26,6 @@ export function TimelineChart() {
   const ticks = ticksOf(zoom, from, to)
   const unit = unitOf(zoom, from, to)
   const today = pointOf(data.today, from, to)
-  const peak = Math.max(1, ...data.activity.map((w) => w.count))
   return (
     <section className="tl" aria-label={LL.timeline.title()}>
       <div className="tl-axis">
@@ -81,26 +81,7 @@ export function TimelineChart() {
           />
         ))}
       </div>
-      <div className="tl-row tl-activity" data-kind="activity">
-        <div className="tl-label">{LL.timeline.activity()}</div>
-        <div className="tl-track">
-          {data.activity.map((w) => {
-            const span = spanOf(w.week, addDays(w.week, 7), from, to)
-            return span === undefined ? null : (
-              <span
-                key={w.week}
-                className="tl-activity-bar"
-                style={{
-                  left: `${span.left}%`,
-                  width: `${span.width}%`,
-                  height: `${Math.max(w.count === 0 ? 0 : 10, (w.count / peak) * 100)}%`,
-                }}
-                title={LL.graph.scrubber.commits({ count: w.count })}
-              />
-            )
-          })}
-        </div>
-      </div>
+      <TimelineActivity unit={unit} />
     </section>
   )
 }

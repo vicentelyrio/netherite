@@ -6,7 +6,8 @@ title: Close the design differences left after the comparison
 created: 2026-11-03T23:14:37Z
 created_by: "@vicentelyrio"
 project: PRJ-00012
-state: backlog
+state: done
+position: 72.5
 ---
 
 # Close the design differences left after the comparison
@@ -17,7 +18,7 @@ state: backlog
 - [x] Project board: the Knowledge view's "Linked to" text ("Explains 2 tasks"), which needs the kind of link in the knowledge list; the filter chips and the column header (icon, name, count) are done
 - [x] Goals overview: the area description line (a summary of its goals, projects and progress, since an area has no text of its own); breadcrumb with the area on the board and goal pages
 - [x] Tags: decide whether the All / Tags / Labels tabs stay, since the design has none: they stay, because tags and labels are different fields and renaming one must not touch the other
-- [ ] Compare Search and Goal detail by eye against the design frames, and Graph and the token sheets
+- [x] Compare Search and Goal detail by eye against the design frames, and Graph and the token sheets
 - [x] Check every screen at 1280 and 1440: no screen scrolls sideways at either width (measured in headless Chrome); not compared with the design frames
 
 Source: the findings in TASK-00078.
