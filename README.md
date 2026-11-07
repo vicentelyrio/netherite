@@ -26,7 +26,7 @@ netherite/
 
 ## Quick start
 
-You need Node 24 or newer and a git repository.
+Runs on Node 24 or newer (tested on 24 and 26), in a git repository.
 
 ```sh
 cd my-repo

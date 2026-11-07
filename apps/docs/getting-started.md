@@ -1,6 +1,6 @@
 # Getting started
 
-You need Node 24 or newer and a git repository (an empty one is fine).
+Runs on Node 24 or newer (tested on 24 and 26), in a git repository (an empty one is fine).
 
 ## 1. Set up the repository
 

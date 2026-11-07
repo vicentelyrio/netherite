@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { readdirSync, readFileSync, statSync } from 'node:fs'
-import { join, relative } from 'node:path'
+import { join, relative, sep } from 'node:path'
 import { stylesheet, variables } from '@netherite/tokens'
 import { describe, expect, test } from 'vitest'
 import { classNames } from '../src/index'
@@ -11,7 +11,7 @@ const src = join(root, 'src')
 const walk = (dir: string): string[] =>
   readdirSync(dir).flatMap((name) => {
     const path = join(dir, name)
-    return statSync(path).isDirectory() ? walk(path) : [path]
+    return statSync(path).isDirectory() ? walk(path) : [path.split(sep).join('/')]
   })
 
 const read = (path: string) => readFileSync(path, 'utf8')

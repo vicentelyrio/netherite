@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { readdirSync, readFileSync, statSync } from 'node:fs'
-import { dirname, join, relative } from 'node:path'
+import { dirname, join, relative, sep } from 'node:path'
 import { describe, expect, test } from 'vitest'
 
 const src = join(import.meta.dirname, '../src')
@@ -8,7 +8,7 @@ const src = join(import.meta.dirname, '../src')
 const walk = (dir: string): string[] =>
   readdirSync(dir).flatMap((name) => {
     const path = join(dir, name)
-    return statSync(path).isDirectory() ? walk(path) : [path]
+    return statSync(path).isDirectory() ? walk(path) : [path.split(sep).join('/')]
   })
 
 const read = (path: string) => readFileSync(path, 'utf8')
@@ -85,7 +85,7 @@ describe('the structure of the app', () => {
   test('every folder of components has its entry point', () => {
     const folders = new Set(
       components
-        .filter((f) => relative(src, f).split('/')[0] === 'components')
+        .filter((f) => relative(src, f).split(sep)[0] === 'components')
         .map((f) => dirname(f)),
     )
     for (const folder of folders) expect(readdirSync(folder), folder).toContain('index.ts')

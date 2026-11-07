@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { readdirSync, readFileSync, statSync } from 'node:fs'
-import { join, relative } from 'node:path'
+import { join, relative, sep } from 'node:path'
 import { describe, expect, test } from 'vitest'
 
 const packages = join(import.meta.dirname, '../..')
@@ -15,7 +15,7 @@ const walk = (dir: string): string[] =>
 const sources = names.flatMap((name) =>
   walk(join(packages, name, 'src')).filter((f) => f.endsWith('.ts') && !f.endsWith('.d.ts')),
 )
-const shown = (file: string) => relative(packages, file)
+const shown = (file: string) => relative(packages, file).split(sep).join('/')
 const maxLines = 200
 const entryPoints = new Set(['index.ts', 'bin.ts'])
 const stillTooLong = new Set([
