@@ -1,5 +1,6 @@
 import { content } from './areas/content'
 import { context } from './areas/context'
+import { display } from './areas/display'
 import { editor } from './areas/editor'
 import { freshness } from './areas/freshness'
 import { git } from './areas/git'
@@ -17,6 +18,7 @@ import type { DefaultsOf, SettingArea, SettingDefinition } from './settings.type
 const areas = {
   content,
   context,
+  display,
   editor,
   freshness,
   git,

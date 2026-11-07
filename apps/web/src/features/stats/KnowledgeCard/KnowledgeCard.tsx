@@ -1,7 +1,7 @@
 import { Icon } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
 import { ChartCard } from '@/components'
-import { useI18nContext } from '@/infrastructure/i18n'
+import { adrStatusLabel, useI18nContext } from '@/infrastructure/i18n'
 import { useStats } from '../StatsProvider'
 import './KnowledgeCard.css'
 
@@ -57,7 +57,7 @@ export function KnowledgeCard() {
       <ul className="st-kn-pills">
         {decisions.map(([status, count]) => (
           <li key={status} className="st-kn-pill" data-status={status}>
-            {count} {status}
+            {count} {adrStatusLabel(LL, status)}
           </li>
         ))}
       </ul>

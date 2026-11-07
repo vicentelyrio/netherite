@@ -1,12 +1,16 @@
 export type {
   AdrStatus,
+  ColorScheme,
   EdgeKind,
   ItemTypeName,
   StateCategory,
   StatusName,
+  Theme,
 } from '@netherite/tokens'
 export {
-  color as designColor,
+  colorVar as designColor,
+  defaultTheme,
+  defaultThemeId,
   edgeStyle,
   graphMetrics,
   itemTypeNames,
@@ -14,6 +18,8 @@ export {
   statusGlyph,
   statusNames,
   statusOfCategory,
+  themeById,
+  themes,
 } from '@netherite/tokens'
 export { ActionIcon, type ActionIconProps } from './components/ActionIcon'
 export { Avatar, type AvatarProps, avatarColorOf, initialsOf } from './components/Avatar'
@@ -53,5 +59,11 @@ export { Tabs } from './components/Tabs'
 export { Tooltip } from './components/Tooltip'
 export { TypeBadge, type TypeBadgeProps, typeLabels } from './components/TypeBadge'
 export { glyphStyle, TypeGlyph, type TypeGlyphProps } from './components/TypeGlyph'
+export {
+  defaultUiLabels,
+  type UiLabels,
+  UiLabelsProvider,
+  useUiLabels,
+} from './components/UiLabels'
 export { UiPreview } from './components/UiPreview'
 export { classNames, theme } from './theme'

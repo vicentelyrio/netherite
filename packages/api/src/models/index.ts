@@ -1,5 +1,11 @@
 export { Board, BoardCard } from './board'
 export { Author, EdgeKindName, ItemTypeName, RelationKind, relationKinds } from './common'
+export {
+  WorkspaceConfig,
+  WorkspaceConfigPayload,
+  WorkspaceConfigResult,
+  WorkspaceSettings,
+} from './config'
 export { GoalDetail, GoalList, GoalRow, ProjectList, ProjectRow } from './goals'
 export { Graph, GraphEdge, GraphNode, GraphQuery, NodeStatus } from './graph'
 export { DecisionLog, DecisionQuery, ItemHistory, Stats, StatsQuery, Transition } from './history'

@@ -1,10 +1,10 @@
-import { SettingsHeading, ShortcutSettings } from '@/features/settings'
+import { SettingsHeading, type SettingsTab, SettingsTabs } from '@/features/settings'
 import { PageTemplate } from '@/templates'
 
-export function SettingsPage() {
+export function SettingsPage({ tab }: { readonly tab?: SettingsTab | undefined }) {
   return (
     <PageTemplate header={<SettingsHeading />}>
-      <ShortcutSettings />
+      <SettingsTabs {...(tab ? { tab } : {})} />
     </PageTemplate>
   )
 }

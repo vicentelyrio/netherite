@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { CommitCard } from '../CommitCard'
 import { useDecisions } from '../DecisionProvider'
+import { noProject } from '../lanes'
 import './DecisionLanes.css'
 
 export function DecisionLanes() {
@@ -64,10 +65,14 @@ export function DecisionLanes() {
       style={{ ['--lanes' as string]: lanes.length === 1 ? 2 : lanes.length }}
     >
       {lanes.map((lane) => (
-        <section key={lane.project} className="dl-lane" aria-label={lane.project}>
+        <section
+          key={lane.project}
+          className="dl-lane"
+          aria-label={lane.project === noProject ? LL.decisions.noProject() : lane.project}
+        >
           <h2 className="dl-lane-head">
             <span className="dl-lane-dot" />
-            {lane.title}
+            {lane.project === noProject ? LL.decisions.noProject() : lane.title}
             <span className="app-muted">
               {LL.decisions.adrs({ count: lane.adrs })}
               {lane.chains > 0 ? ` · ${LL.decisions.chains({ count: lane.chains })}` : ''}

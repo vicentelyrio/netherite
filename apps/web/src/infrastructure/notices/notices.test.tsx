@@ -1,6 +1,7 @@
 import { NetheriteProvider } from '@netherite/ui'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+import { SettingsProvider, type SettingsStorage } from '../settings'
 import { type Notice, NoticeProvider, useNotices } from './index'
 
 const Raise = ({ notice }: { readonly notice: Omit<Notice, 'id'> }) => {
@@ -12,12 +13,18 @@ const Raise = ({ notice }: { readonly notice: Omit<Notice, 'id'> }) => {
   )
 }
 
-const raise = (notice: Omit<Notice, 'id'>) => {
+const raise = (notice: Omit<Notice, 'id'>, stored?: { readonly lifetimeMs: number }) => {
+  const storage: SettingsStorage = {
+    getItem: () => (stored === undefined ? null : JSON.stringify({ notices: stored })),
+    setItem: () => {},
+  }
   render(
     <NetheriteProvider env="test">
-      <NoticeProvider>
-        <Raise notice={notice} />
-      </NoticeProvider>
+      <SettingsProvider storage={storage}>
+        <NoticeProvider>
+          <Raise notice={notice} />
+        </NoticeProvider>
+      </SettingsProvider>
     </NetheriteProvider>,
   )
   fireEvent.click(screen.getByRole('button', { name: 'raise' }))
@@ -44,6 +51,36 @@ describe('notices', () => {
   test('a notice with an action stays longer, so it can be used', () => {
     raise({ variant: 'info', title: 'Archived', actions: [{ label: 'Undo', run: vi.fn() }] })
     wait(9_999)
+    expect(screen.getByRole('button', { name: 'Undo' })).toBeInTheDocument()
+    wait(1)
+    expect(screen.queryByText('Archived')).toBeNull()
+  })
+
+  test('the chosen duration decides when a notice leaves', () => {
+    raise({ variant: 'success', title: 'Saved' }, { lifetimeMs: 3000 })
+    wait(2_999)
+    expect(screen.getByText('Saved')).toBeInTheDocument()
+    wait(1)
+    expect(screen.queryByText('Saved')).toBeNull()
+  })
+
+  test('a short duration does not rush a notice with an action', () => {
+    raise(
+      { variant: 'info', title: 'Archived', actions: [{ label: 'Undo', run: vi.fn() }] },
+      { lifetimeMs: 3000 },
+    )
+    wait(9_999)
+    expect(screen.getByRole('button', { name: 'Undo' })).toBeInTheDocument()
+    wait(1)
+    expect(screen.queryByText('Archived')).toBeNull()
+  })
+
+  test('a long duration keeps a notice with an action as long', () => {
+    raise(
+      { variant: 'info', title: 'Archived', actions: [{ label: 'Undo', run: vi.fn() }] },
+      { lifetimeMs: 20_000 },
+    )
+    wait(19_999)
     expect(screen.getByRole('button', { name: 'Undo' })).toBeInTheDocument()
     wait(1)
     expect(screen.queryByText('Archived')).toBeNull()

@@ -368,6 +368,23 @@ describe('configuration', () => {
     expect(w.repo.workspace.config.id_padding).toBe(5)
   })
 
+  test('fixing a broken config is reported, even back to the same values', async () => {
+    const { w, fake, session } = await watching()
+    const events = await session((watcher, list) =>
+      Effect.gen(function* () {
+        const before = w.read(config) as string
+        w.write(config, 'version: 1\nid_padding: 0\n')
+        fake.emit(config)
+        yield* watcher.flush
+        w.write(config, before)
+        fake.emit(config)
+        yield* watcher.flush
+        return list
+      }),
+    )
+    expect(events.map((e) => e._tag)).toEqual(['ConfigInvalid', 'ConfigChanged'])
+  })
+
   test('a deleted config is reported too', async () => {
     const { w, fake, session } = await watching()
     const events = await session((watcher, list) =>

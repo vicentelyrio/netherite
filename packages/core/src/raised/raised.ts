@@ -1,4 +1,4 @@
-import { AdrStatus, FreshnessState, ItemType } from '@netherite/schema'
+import { AdrStatus, type Config, FreshnessState, ItemType } from '@netherite/schema'
 import type { Freshness } from '../freshness'
 import type { Repo } from '../ops/repo'
 import { tagMap } from '../tag-map'
@@ -48,8 +48,8 @@ export interface RaisedInput {
   readonly now?: string
 }
 
-export const enabledRules = (repo: Repo): ReadonlySet<RaisedRule> => {
-  const inbox = (repo.workspace.config as Record<string, unknown>).inbox
+export const enabledRulesOf = (config: Config): ReadonlySet<RaisedRule> => {
+  const inbox = (config as Record<string, unknown>).inbox
   const rules =
     typeof inbox === 'object' && inbox !== null ? (inbox as { rules?: unknown }).rules : undefined
   const off = new Set<string>()
@@ -57,6 +57,9 @@ export const enabledRules = (repo: Repo): ReadonlySet<RaisedRule> => {
     for (const [name, value] of Object.entries(rules)) if (value === false) off.add(name)
   return new Set(raisedRules.filter((r) => !off.has(r)))
 }
+
+export const enabledRules = (repo: Repo): ReadonlySet<RaisedRule> =>
+  enabledRulesOf(repo.workspace.config)
 
 const closing = /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\b[^\n]*?\b(TASK-\d+)/gi
 

@@ -58,20 +58,30 @@ export const watchRepo = (repo: Repo, options: WatchOptions = {}) =>
       return notHidden(inside) && !inReservedFolder(inside)
     }
 
+    let configBroken = false
+
     const reloadConfig = Effect.gen(function* () {
       const file = repo.workspace.configPath
       const text = yield* Effect.result(fs.readFileString(file))
       if (text._tag === 'Failure') {
+        configBroken = true
         return yield* publish({
           _tag: 'ConfigInvalid',
           error: new ConfigReadError({ path: file, cause: text.failure }),
         })
       }
       const parsed = yield* Effect.result(parseConfig(text.success, file))
-      if (parsed._tag === 'Failure')
+      if (parsed._tag === 'Failure') {
+        configBroken = true
         return yield* publish({ _tag: 'ConfigInvalid', error: parsed.failure })
+      }
+      const wasBroken = configBroken
+      configBroken = false
       const current = repo.workspace.config
-      if (JSON.stringify(parsed.success) === JSON.stringify(current)) return
+      if (JSON.stringify(parsed.success) === JSON.stringify(current)) {
+        if (wasBroken) yield* publish({ _tag: 'ConfigChanged', requiresRestart: false })
+        return
+      }
       if (parsed.success.content !== current.content) {
         return yield* publish({ _tag: 'ConfigChanged', requiresRestart: true })
       }

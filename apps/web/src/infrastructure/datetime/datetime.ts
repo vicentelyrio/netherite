@@ -1,8 +1,20 @@
 import dayjs, { type Dayjs } from 'dayjs'
+import 'dayjs/locale/es'
+import 'dayjs/locale/pt-br'
 import utc from 'dayjs/plugin/utc'
 import { now } from './clock'
 
 dayjs.extend(utc)
+
+const dayjsLocales: Readonly<Record<string, string>> = { en: 'en', es: 'es', 'pt-BR': 'pt-br' }
+
+let intlLocale = 'en'
+
+export const setDateLocale = (locale: string) => {
+  const known = Object.hasOwn(dayjsLocales, locale)
+  intlLocale = known ? locale : 'en'
+  dayjs.locale(known ? dayjsLocales[locale] : 'en')
+}
 
 export type DateInput = string | number | Date | Dayjs | undefined | null
 
@@ -38,16 +50,23 @@ export const daysBetween = (from: DateInput, to: DateInput = now()): number | un
   return a && b ? b.diff(a, 'day') : undefined
 }
 
+const relative = (count: number, unit: Intl.RelativeTimeFormatUnit) =>
+  new Intl.RelativeTimeFormat(intlLocale, { style: 'narrow' }).format(-count, unit)
+
 export const ago = (value: DateInput, at: DateInput = now()): string => {
   const days = daysBetween(value, at)
   if (days === undefined) return '—'
   const past = Math.max(0, days)
-  if (past < 1) return 'today'
-  if (past < 14) return `${past}d ago`
-  if (past < 60) return `${Math.floor(past / 7)}w ago`
-  if (past < 365) return `${Math.floor(past / 30)}mo ago`
-  return `${Math.floor(past / 365)}y ago`
+  if (past < 1) return new Intl.RelativeTimeFormat(intlLocale, { numeric: 'auto' }).format(0, 'day')
+  if (past < 14) return relative(past, 'day')
+  if (past < 60) return relative(Math.floor(past / 7), 'week')
+  if (past < 365) return relative(Math.floor(past / 30), 'month')
+  return relative(Math.floor(past / 365), 'year')
 }
+
+export const monthName = (month: number) => dayjs().date(1).month(month).format('MMM')
+
+export const weekdayName = (weekday: number) => dayjs().day(weekday).format('ddd')
 
 export const utcDay = (day: string): Dayjs => dayjs.utc(day)
 

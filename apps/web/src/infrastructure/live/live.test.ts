@@ -35,11 +35,11 @@ describe('what each event makes stale', () => {
     ).toEqual(['lint', 'inbox'])
   })
 
-  test('a config change refreshes everything; ready, ping and config errors refresh nothing', () => {
+  test('a config change refreshes everything; a broken config refreshes the config; ready and ping refresh nothing', () => {
     expect(invalidationsFor({ type: 'config', requiresRestart: false })).toEqual([[]])
     expect(invalidationsFor({ type: 'ready', version: '1' })).toEqual([])
     expect(invalidationsFor({ type: 'ping' })).toEqual([])
-    expect(invalidationsFor({ type: 'config-invalid', message: 'x' })).toEqual([])
+    expect(invalidationsFor({ type: 'config-invalid', message: 'x' })).toEqual([['config']])
   })
 })
 

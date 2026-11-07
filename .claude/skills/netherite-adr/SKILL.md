@@ -16,7 +16,7 @@ field messages, fix the input and call again.
 
 1. `search` for an existing ADR on the topic. If one exists and still holds, link to it instead of writing a new one.
 2. `create` with `type: adr`, a title that states the decision, `fields.status` (`proposed` until a person accepts it), `fields.date` and `fields.deciders` (@handles).
-3. Put the text in `body` with three sections: **Context** (the forces, briefly), **Decision** (what was chosen, in the active voice), **Consequences** (what gets easier, what gets harder; start each bullet with `\+` or `\-`). If you can run commands, `netherite templates adr` prints this workspace's template; follow its sections.
+3. Put the text in `body` with three sections: **Context** (the forces, briefly), **Decision** (what was chosen, in the active voice, with the whole section in a blockquote, each line starting with `>`),**Consequences** (what gets easier, what gets harder; start each bullet with `\+` or `\-`). If you can run commands, `netherite templates adr` prints this workspace's template; follow its sections.
 4. `link` the new ADR to what it affects: the project (`fields.project`), and each task or project that follows from it.
 5. `lint` the new item and fix what it reports.
 

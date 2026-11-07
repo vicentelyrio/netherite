@@ -1,6 +1,7 @@
 ---
 layout: home
-title: Netherite
+title: Netherite Docs
+titleTemplate: false
 hero:
   name: Netherite
   text: A typed, linked knowledge base in Markdown and git

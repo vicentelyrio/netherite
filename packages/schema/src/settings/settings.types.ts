@@ -16,6 +16,7 @@ export type SettingSource = (typeof SettingSource)[keyof typeof SettingSource]
 export const SettingKind = {
   Integer: 'integer',
   Text: 'text',
+  Boolean: 'boolean',
   List: 'list',
   Map: 'map',
 } as const

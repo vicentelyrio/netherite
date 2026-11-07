@@ -7,6 +7,8 @@ export type BaseLocale = 'en'
 
 export type Locales =
 	| 'en'
+	| 'es'
+	| 'pt-BR'
 
 export type Translation = RootTranslation
 
@@ -40,6 +42,146 @@ type RootTranslation = {
 			 * T​h​a​t​ ​p​a​g​e​ ​d​o​e​s​ ​n​o​t​ ​e​x​i​s​t​.
 			 */
 			text: string
+		}
+		/**
+		 * D​i​s​m​i​s​s
+		 */
+		dismiss: string
+		/**
+		 * {​l​a​b​e​l​}​,​ ​{​c​o​u​n​t​}​ ​w​a​i​t​i​n​g
+		 * @param {number} count
+		 * @param {string} label
+		 */
+		waiting: RequiredParams<'count' | 'label'>
+		/**
+		 * P​r​o​g​r​e​s​s
+		 */
+		progress: string
+		/**
+		 * {​l​a​b​e​l​}​:​ ​{​d​o​n​e​}​ ​o​f​ ​{​t​o​t​a​l​}​ ​d​o​n​e
+		 * @param {number} done
+		 * @param {string} label
+		 * @param {number} total
+		 */
+		progressOf: RequiredParams<'done' | 'label' | 'total'>
+		/**
+		 * {​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}
+		 * @param {number} count
+		 */
+		commits: RequiredParams<'count'>
+		/**
+		 * {​c​o​u​n​t​}​+​ ​c​o​m​m​i​t​s
+		 * @param {number} count
+		 */
+		commitsAtLeast: RequiredParams<'count'>
+		/**
+		 * {​c​o​m​m​i​t​s​}​ ​t​o​ ​c​o​v​e​r​e​d​ ​f​i​l​e​s​ ​s​i​n​c​e​ ​{​s​i​n​c​e​}
+		 * @param {string} commits
+		 * @param {string} since
+		 */
+		coveredSince: RequiredParams<'commits' | 'since'>
+		types: {
+			/**
+			 * G​o​a​l
+			 */
+			goal: string
+			/**
+			 * P​r​o​j​e​c​t
+			 */
+			project: string
+			/**
+			 * T​a​s​k
+			 */
+			task: string
+			/**
+			 * A​D​R
+			 */
+			adr: string
+			/**
+			 * D​o​c
+			 */
+			doc: string
+			/**
+			 * C​o​n​t​e​x​t
+			 */
+			context: string
+			/**
+			 * R​u​n​b​o​o​k
+			 */
+			runbook: string
+		}
+		typeCount: {
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​g​o​a​l​|​g​o​a​l​s​}​}
+			 * @param {number} count
+			 */
+			goal: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​p​r​o​j​e​c​t​|​p​r​o​j​e​c​t​s​}​}
+			 * @param {number} count
+			 */
+			project: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​t​a​s​k​|​t​a​s​k​s​}​}
+			 * @param {number} count
+			 */
+			task: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​A​D​R​|​A​D​R​s​}​}
+			 * @param {number} count
+			 */
+			adr: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​d​o​c​|​d​o​c​s​}​}
+			 * @param {number} count
+			 */
+			doc: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​c​o​n​t​e​x​t​ ​i​t​e​m​|​c​o​n​t​e​x​t​ ​i​t​e​m​s​}​}
+			 * @param {number} count
+			 */
+			context: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​r​u​n​b​o​o​k​|​r​u​n​b​o​o​k​s​}​}
+			 * @param {number} count
+			 */
+			runbook: RequiredParams<'count'>
+		}
+		freshness: {
+			/**
+			 * F​r​e​s​h
+			 */
+			fresh: string
+			/**
+			 * D​r​i​f​t​i​n​g
+			 */
+			drifting: string
+			/**
+			 * S​t​a​l​e
+			 */
+			stale: string
+			/**
+			 * N​o​t​ ​t​r​a​c​k​e​d
+			 */
+			unknown: string
+		}
+		adrStatus: {
+			/**
+			 * P​r​o​p​o​s​e​d
+			 */
+			proposed: string
+			/**
+			 * A​c​c​e​p​t​e​d
+			 */
+			accepted: string
+			/**
+			 * D​e​p​r​e​c​a​t​e​d
+			 */
+			deprecated: string
+			/**
+			 * S​u​p​e​r​s​e​d​e​d
+			 */
+			superseded: string
 		}
 	}
 	components: {
@@ -972,6 +1114,323 @@ type RootTranslation = {
 		 * S​e​t​t​i​n​g​s
 		 */
 		title: string
+		tabs: {
+			/**
+			 * S​e​t​t​i​n​g​s​ ​s​e​c​t​i​o​n​s
+			 */
+			label: string
+			/**
+			 * G​e​n​e​r​a​l
+			 */
+			general: string
+			/**
+			 * E​d​i​t​o​r
+			 */
+			editor: string
+			/**
+			 * S​h​o​r​t​c​u​t​s
+			 */
+			shortcuts: string
+			/**
+			 * W​o​r​k​s​p​a​c​e
+			 */
+			workspace: string
+		}
+		workspace: {
+			/**
+			 * T​h​e​s​e​ ​s​e​t​t​i​n​g​s​ ​a​r​e​ ​s​h​a​r​e​d​ ​w​i​t​h​ ​e​v​e​r​y​o​n​e​ ​t​h​r​o​u​g​h​ ​g​i​t​.​ ​A​ ​c​h​a​n​g​e​ ​h​e​r​e​ ​i​s​ ​a​n​ ​u​n​c​o​m​m​i​t​t​e​d​ ​e​d​i​t​ ​t​o​ ​.​n​e​t​h​e​r​i​t​e​/​c​o​n​f​i​g​.​y​m​l​.
+			 */
+			note: string
+			/**
+			 * L​o​a​d​i​n​g​ ​t​h​e​ ​w​o​r​k​s​p​a​c​e​ ​s​e​t​t​i​n​g​s​…
+			 */
+			loading: string
+			/**
+			 * T​h​e​ ​w​o​r​k​s​p​a​c​e​ ​c​o​n​f​i​g​ ​h​a​s​ ​a​ ​p​r​o​b​l​e​m
+			 */
+			invalid: string
+			/**
+			 * F​i​x​ ​.​n​e​t​h​e​r​i​t​e​/​c​o​n​f​i​g​.​y​m​l​ ​b​y​ ​h​a​n​d​ ​a​n​d​ ​t​h​e​s​e​ ​s​e​t​t​i​n​g​s​ ​c​o​m​e​ ​b​a​c​k​.​ ​N​o​t​h​i​n​g​ ​h​e​r​e​ ​w​i​l​l​ ​o​v​e​r​w​r​i​t​e​ ​i​t​.
+			 */
+			invalidText: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​l​o​a​d​ ​t​h​e​ ​w​o​r​k​s​p​a​c​e​ ​s​e​t​t​i​n​g​s
+			 */
+			loadError: string
+			states: {
+				/**
+				 * T​a​s​k​ ​s​t​a​t​e​s
+				 */
+				title: string
+				/**
+				 * T​h​e​ ​c​o​l​u​m​n​s​ ​o​f​ ​e​v​e​r​y​ ​b​o​a​r​d​,​ ​i​n​ ​o​r​d​e​r​.​ ​T​h​e​ ​c​a​t​e​g​o​r​y​ ​d​e​c​i​d​e​s​ ​c​o​l​o​u​r​ ​a​n​d​ ​w​h​a​t​ ​c​o​u​n​t​s​ ​a​s​ ​d​o​n​e​.
+				 */
+				subtitle: string
+				/**
+				 * N​a​m​e​ ​o​f​ ​s​t​a​t​e​ ​{​p​o​s​i​t​i​o​n​}
+				 * @param {number} position
+				 */
+				name: RequiredParams<'position'>
+				/**
+				 * C​a​t​e​g​o​r​y​ ​o​f​ ​{​n​a​m​e​}
+				 * @param {string} name
+				 */
+				category: RequiredParams<'name'>
+				/**
+				 * M​o​v​e​ ​{​n​a​m​e​}​ ​u​p
+				 * @param {string} name
+				 */
+				moveUp: RequiredParams<'name'>
+				/**
+				 * M​o​v​e​ ​{​n​a​m​e​}​ ​d​o​w​n
+				 * @param {string} name
+				 */
+				moveDown: RequiredParams<'name'>
+				/**
+				 * R​e​m​o​v​e​ ​{​n​a​m​e​}
+				 * @param {string} name
+				 */
+				remove: RequiredParams<'name'>
+				/**
+				 * A​d​d​ ​a​ ​s​t​a​t​e
+				 */
+				add: string
+				/**
+				 * n​e​w​_​s​t​a​t​e
+				 */
+				newName: string
+				/**
+				 * D​i​s​c​a​r​d
+				 */
+				discard: string
+				/**
+				 * S​a​v​e​ ​s​t​a​t​e​s
+				 */
+				save: string
+				categories: {
+					/**
+					 * T​o​ ​d​o
+					 */
+					todo: string
+					/**
+					 * A​c​t​i​v​e
+					 */
+					active: string
+					/**
+					 * B​l​o​c​k​e​d
+					 */
+					blocked: string
+					/**
+					 * D​o​n​e
+					 */
+					done: string
+				}
+				problems: {
+					/**
+					 * E​v​e​r​y​ ​s​t​a​t​e​ ​n​e​e​d​s​ ​a​ ​n​a​m​e​.
+					 */
+					empty: string
+					/**
+					 * T​w​o​ ​s​t​a​t​e​s​ ​h​a​v​e​ ​t​h​e​ ​s​a​m​e​ ​n​a​m​e​.
+					 */
+					duplicate: string
+					/**
+					 * K​e​e​p​ ​a​t​ ​l​e​a​s​t​ ​o​n​e​ ​s​t​a​t​e​.
+					 */
+					none: string
+				}
+				confirm: {
+					/**
+					 * T​a​s​k​s​ ​m​a​y​ ​b​e​ ​u​s​i​n​g​ ​t​h​e​s​e​ ​s​t​a​t​e​s
+					 */
+					title: string
+					/**
+					 * T​a​s​k​s​ ​k​e​e​p​ ​t​h​e​ ​s​t​a​t​e​ ​w​r​i​t​t​e​n​ ​i​n​ ​t​h​e​i​r​ ​f​i​l​e​.​ ​U​n​t​i​l​ ​y​o​u​ ​u​p​d​a​t​e​ ​t​h​e​m​,​ ​t​h​e​y​ ​f​a​i​l​ ​l​i​n​t​ ​a​n​d​ ​d​o​ ​n​o​t​ ​s​h​o​w​ ​i​n​ ​a​ ​b​o​a​r​d​ ​c​o​l​u​m​n​.​ ​R​u​n​n​i​n​g​ ​n​e​t​h​e​r​i​t​e​ ​l​i​n​t​ ​l​i​s​t​s​ ​t​h​e​m​.
+					 */
+					text: string
+					/**
+					 * {​f​r​o​m​}​ ​→​ ​{​t​o​}
+					 * @param {string} from
+					 * @param {string} to
+					 */
+					renamed: RequiredParams<'from' | 'to'>
+					/**
+					 * {​n​a​m​e​}​ ​(​r​e​m​o​v​e​d​)
+					 * @param {string} name
+					 */
+					removed: RequiredParams<'name'>
+					/**
+					 * {​c​o​u​n​t​}​ ​{​{​t​a​s​k​|​t​a​s​k​s​}​}
+					 * @param {number} count
+					 */
+					count: RequiredParams<'count'>
+					/**
+					 * C​o​u​n​t​i​n​g​…
+					 */
+					counting: string
+					/**
+					 * K​e​e​p​ ​e​d​i​t​i​n​g
+					 */
+					cancel: string
+					/**
+					 * S​a​v​e​ ​a​n​y​w​a​y
+					 */
+					confirm: string
+				}
+			}
+			inbox: {
+				/**
+				 * I​n​b​o​x
+				 */
+				title: string
+				/**
+				 * W​h​a​t​ ​t​h​e​ ​r​e​p​o​s​i​t​o​r​y​ ​m​a​y​ ​r​a​i​s​e​ ​i​n​ ​t​h​e​ ​I​n​b​o​x​.
+				 */
+				subtitle: string
+				hints: {
+					/**
+					 * A​ ​d​o​c​ ​w​h​o​s​e​ ​c​o​v​e​r​e​d​ ​f​i​l​e​s​ ​c​h​a​n​g​e​d​ ​s​i​n​c​e​ ​i​t​s​ ​l​a​s​t​ ​r​e​v​i​e​w​.
+					 */
+					'stale-doc': string
+					/**
+					 * A​ ​d​e​c​i​s​i​o​n​ ​s​t​i​l​l​ ​w​a​i​t​i​n​g​ ​t​o​ ​b​e​ ​a​c​c​e​p​t​e​d​.
+					 */
+					'proposed-adr': string
+					/**
+					 * A​n​ ​i​t​e​m​ ​w​i​t​h​ ​n​o​ ​l​i​n​k​s​ ​t​o​ ​o​r​ ​f​r​o​m​ ​i​t​.
+					 */
+					orphan: string
+					/**
+					 * A​ ​t​a​s​k​ ​p​a​s​t​ ​i​t​s​ ​d​u​e​ ​d​a​t​e​.
+					 */
+					'overdue-task': string
+					/**
+					 * A​ ​c​o​m​m​i​t​ ​t​h​a​t​ ​s​a​y​s​ ​i​t​ ​c​l​o​s​e​s​ ​a​ ​t​a​s​k​.
+					 */
+					'closing-commit': string
+					/**
+					 * A​ ​T​O​D​O​ ​a​d​d​e​d​ ​i​n​ ​a​ ​r​e​c​e​n​t​ ​c​o​m​m​i​t​.
+					 */
+					'new-todo': string
+					/**
+					 * T​a​g​s​ ​t​h​a​t​ ​l​o​o​k​ ​l​i​k​e​ ​t​h​e​ ​s​a​m​e​ ​t​a​g​.
+					 */
+					'similar-tag': string
+				}
+			}
+			freshness: {
+				/**
+				 * F​r​e​s​h​n​e​s​s
+				 */
+				title: string
+				/**
+				 * H​o​w​ ​f​a​r​ ​c​o​v​e​r​e​d​ ​f​i​l​e​s​ ​m​a​y​ ​m​o​v​e​ ​b​e​f​o​r​e​ ​a​ ​d​o​c​ ​n​e​e​d​s​ ​a​n​o​t​h​e​r​ ​l​o​o​k​.
+				 */
+				subtitle: string
+				/**
+				 * D​r​i​f​t​i​n​g​ ​a​f​t​e​r
+				 */
+				drifting: string
+				/**
+				 * C​o​m​m​i​t​s​ ​t​o​ ​c​o​v​e​r​e​d​ ​f​i​l​e​s​ ​s​i​n​c​e​ ​r​e​v​i​e​w​.​ ​C​a​n​n​o​t​ ​b​e​ ​m​o​r​e​ ​t​h​a​n​ ​S​t​a​l​e​ ​a​f​t​e​r​.
+				 */
+				driftingHint: string
+				/**
+				 * S​t​a​l​e​ ​a​f​t​e​r
+				 */
+				stale: string
+				/**
+				 * C​o​m​m​i​t​s​ ​t​o​ ​c​o​v​e​r​e​d​ ​f​i​l​e​s​ ​s​i​n​c​e​ ​r​e​v​i​e​w​.​ ​C​a​n​n​o​t​ ​b​e​ ​l​e​s​s​ ​t​h​a​n​ ​D​r​i​f​t​i​n​g​ ​a​f​t​e​r​.
+				 */
+				staleHint: string
+			}
+			context: {
+				/**
+				 * C​o​n​t​e​x​t
+				 */
+				title: string
+				/**
+				 * W​h​a​t​ ​a​g​e​n​t​s​ ​a​r​e​ ​g​i​v​e​n​.
+				 */
+				subtitle: string
+				/**
+				 * T​o​k​e​n​ ​b​u​d​g​e​t
+				 */
+				budget: string
+				/**
+				 * T​h​e​ ​m​o​s​t​ ​t​o​k​e​n​s​ ​o​f​ ​c​o​n​t​e​x​t​ ​i​n​ ​e​a​c​h​ ​s​y​n​c​e​d​ ​f​i​l​e​,​ ​e​s​t​i​m​a​t​e​d​.
+				 */
+				budgetHint: string
+				targets: {
+					/**
+					 * C​L​A​U​D​E​.​m​d
+					 */
+					claude: string
+					/**
+					 * S​y​n​c​ ​t​h​e​ ​c​o​n​t​e​x​t​ ​i​n​t​o​ ​C​L​A​U​D​E​.​m​d​.
+					 */
+					claudeHint: string
+					/**
+					 * A​G​E​N​T​S​.​m​d
+					 */
+					agents: string
+					/**
+					 * S​y​n​c​ ​t​h​e​ ​c​o​n​t​e​x​t​ ​i​n​t​o​ ​A​G​E​N​T​S​.​m​d​.
+					 */
+					agentsHint: string
+					/**
+					 * M​C​P
+					 */
+					mcp: string
+					/**
+					 * S​e​r​v​e​ ​t​h​e​ ​c​o​n​t​e​x​t​ ​o​v​e​r​ ​M​C​P​.
+					 */
+					mcpHint: string
+				}
+			}
+		}
+		duration: {
+			/**
+			 * {​s​e​c​o​n​d​s​}​ ​s
+			 * @param {number} seconds
+			 */
+			seconds: RequiredParams<'seconds'>
+		}
+		general: {
+			/**
+			 * G​e​n​e​r​a​l
+			 */
+			title: string
+			/**
+			 * S​a​v​e​d​ ​i​n​ ​t​h​i​s​ ​b​r​o​w​s​e​r​.
+			 */
+			subtitle: string
+			/**
+			 * L​a​n​g​u​a​g​e
+			 */
+			language: string
+			/**
+			 * T​h​e​ ​l​a​n​g​u​a​g​e​ ​o​f​ ​t​h​e​ ​a​p​p​.​ ​Y​o​u​r​ ​f​i​l​e​s​,​ ​t​h​e​ ​C​L​I​ ​a​n​d​ ​s​e​r​v​e​r​ ​m​e​s​s​a​g​e​s​ ​s​t​a​y​ ​a​s​ ​t​h​e​y​ ​a​r​e​.
+			 */
+			languageHint: string
+			/**
+			 * T​h​e​m​e
+			 */
+			theme: string
+			/**
+			 * T​h​e​ ​c​o​l​o​u​r​s​ ​o​f​ ​t​h​e​ ​a​p​p​,​ ​s​a​v​e​d​ ​i​n​ ​t​h​i​s​ ​b​r​o​w​s​e​r​.
+			 */
+			themeHint: string
+			/**
+			 * N​o​t​i​c​e​ ​d​u​r​a​t​i​o​n
+			 */
+			noticeDuration: string
+			/**
+			 * H​o​w​ ​l​o​n​g​ ​a​ ​n​o​t​i​c​e​ ​s​t​a​y​s​ ​o​n​ ​s​c​r​e​e​n​.​ ​A​ ​n​o​t​i​c​e​ ​w​i​t​h​ ​a​n​ ​a​c​t​i​o​n​ ​s​t​a​y​s​ ​a​t​ ​l​e​a​s​t​ ​{​s​e​c​o​n​d​s​}​ ​s​e​c​o​n​d​s​.
+			 * @param {number} seconds
+			 */
+			noticeDurationHint: RequiredParams<'seconds'>
+		}
 		actions: {
 			/**
 			 * S​e​a​r​c​h
@@ -1037,6 +1496,32 @@ type RootTranslation = {
 			 * S​a​v​e
 			 */
 			editorSave: string
+		}
+		editor: {
+			/**
+			 * E​d​i​t​o​r
+			 */
+			title: string
+			/**
+			 * S​a​v​e​d​ ​i​n​ ​t​h​i​s​ ​b​r​o​w​s​e​r​.
+			 */
+			subtitle: string
+			/**
+			 * A​u​t​o​s​a​v​e​ ​d​e​l​a​y
+			 */
+			autosaveDelay: string
+			/**
+			 * H​o​w​ ​l​o​n​g​ ​t​o​ ​w​a​i​t​ ​a​f​t​e​r​ ​y​o​u​ ​s​t​o​p​ ​t​y​p​i​n​g​ ​b​e​f​o​r​e​ ​s​a​v​i​n​g​.​ ​A​ ​f​i​l​e​ ​w​i​t​h​ ​e​r​r​o​r​s​ ​i​s​ ​n​o​t​ ​s​a​v​e​d​.
+			 */
+			autosaveDelayHint: string
+			/**
+			 * V​i​m​ ​m​o​d​e
+			 */
+			vimMode: string
+			/**
+			 * E​d​i​t​ ​M​a​r​k​d​o​w​n​ ​w​i​t​h​ ​v​i​m​ ​k​e​y​s​.​ ​:​w​ ​s​a​v​e​s​,​ ​a​n​d​ ​E​s​c​ ​s​t​a​y​s​ ​i​n​ ​t​h​e​ ​e​d​i​t​o​r​ ​i​n​s​t​e​a​d​ ​o​f​ ​c​l​o​s​i​n​g​ ​a​ ​d​r​a​w​e​r​.
+			 */
+			vimModeHint: string
 		}
 		shortcuts: {
 			/**
@@ -1130,6 +1615,10 @@ type RootTranslation = {
 		}
 	}
 	navigation: {
+		/**
+		 * M​a​i​n
+		 */
+		main: string
 		/**
 		 * S​e​a​r​c​h
 		 */
@@ -1491,6 +1980,10 @@ type RootTranslation = {
 			 * G​r​o​u​p​s
 			 */
 			clusters: string
+			/**
+			 * O​t​h​e​r
+			 */
+			other: string
 		}
 		legend: {
 			/**
@@ -2297,6 +2790,10 @@ type RootTranslation = {
 			 */
 			decision: string
 		}
+		/**
+		 * e​n​d​e​d
+		 */
+		ended: string
 		/**
 		 * S​h​o​w​ ​t​a​s​k​s
 		 */
@@ -3260,6 +3757,130 @@ export type TranslationFunctions = {
 			 */
 			text: () => LocalizedString
 		}
+		/**
+		 * Dismiss
+		 */
+		dismiss: () => LocalizedString
+		/**
+		 * {label}, {count} waiting
+		 */
+		waiting: (arg: { count: number, label: string }) => LocalizedString
+		/**
+		 * Progress
+		 */
+		progress: () => LocalizedString
+		/**
+		 * {label}: {done} of {total} done
+		 */
+		progressOf: (arg: { done: number, label: string, total: number }) => LocalizedString
+		/**
+		 * {count} {{commit|commits}}
+		 */
+		commits: (arg: { count: number }) => LocalizedString
+		/**
+		 * {count}+ commits
+		 */
+		commitsAtLeast: (arg: { count: number }) => LocalizedString
+		/**
+		 * {commits} to covered files since {since}
+		 */
+		coveredSince: (arg: { commits: string, since: string }) => LocalizedString
+		types: {
+			/**
+			 * Goal
+			 */
+			goal: () => LocalizedString
+			/**
+			 * Project
+			 */
+			project: () => LocalizedString
+			/**
+			 * Task
+			 */
+			task: () => LocalizedString
+			/**
+			 * ADR
+			 */
+			adr: () => LocalizedString
+			/**
+			 * Doc
+			 */
+			doc: () => LocalizedString
+			/**
+			 * Context
+			 */
+			context: () => LocalizedString
+			/**
+			 * Runbook
+			 */
+			runbook: () => LocalizedString
+		}
+		typeCount: {
+			/**
+			 * {count} {{goal|goals}}
+			 */
+			goal: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{project|projects}}
+			 */
+			project: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{task|tasks}}
+			 */
+			task: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{ADR|ADRs}}
+			 */
+			adr: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{doc|docs}}
+			 */
+			doc: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{context item|context items}}
+			 */
+			context: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{runbook|runbooks}}
+			 */
+			runbook: (arg: { count: number }) => LocalizedString
+		}
+		freshness: {
+			/**
+			 * Fresh
+			 */
+			fresh: () => LocalizedString
+			/**
+			 * Drifting
+			 */
+			drifting: () => LocalizedString
+			/**
+			 * Stale
+			 */
+			stale: () => LocalizedString
+			/**
+			 * Not tracked
+			 */
+			unknown: () => LocalizedString
+		}
+		adrStatus: {
+			/**
+			 * Proposed
+			 */
+			proposed: () => LocalizedString
+			/**
+			 * Accepted
+			 */
+			accepted: () => LocalizedString
+			/**
+			 * Deprecated
+			 */
+			deprecated: () => LocalizedString
+			/**
+			 * Superseded
+			 */
+			superseded: () => LocalizedString
+		}
 	}
 	components: {
 		/**
@@ -4152,6 +4773,312 @@ export type TranslationFunctions = {
 		 * Settings
 		 */
 		title: () => LocalizedString
+		tabs: {
+			/**
+			 * Settings sections
+			 */
+			label: () => LocalizedString
+			/**
+			 * General
+			 */
+			general: () => LocalizedString
+			/**
+			 * Editor
+			 */
+			editor: () => LocalizedString
+			/**
+			 * Shortcuts
+			 */
+			shortcuts: () => LocalizedString
+			/**
+			 * Workspace
+			 */
+			workspace: () => LocalizedString
+		}
+		workspace: {
+			/**
+			 * These settings are shared with everyone through git. A change here is an uncommitted edit to .netherite/config.yml.
+			 */
+			note: () => LocalizedString
+			/**
+			 * Loading the workspace settings…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * The workspace config has a problem
+			 */
+			invalid: () => LocalizedString
+			/**
+			 * Fix .netherite/config.yml by hand and these settings come back. Nothing here will overwrite it.
+			 */
+			invalidText: () => LocalizedString
+			/**
+			 * Could not load the workspace settings
+			 */
+			loadError: () => LocalizedString
+			states: {
+				/**
+				 * Task states
+				 */
+				title: () => LocalizedString
+				/**
+				 * The columns of every board, in order. The category decides colour and what counts as done.
+				 */
+				subtitle: () => LocalizedString
+				/**
+				 * Name of state {position}
+				 */
+				name: (arg: { position: number }) => LocalizedString
+				/**
+				 * Category of {name}
+				 */
+				category: (arg: { name: string }) => LocalizedString
+				/**
+				 * Move {name} up
+				 */
+				moveUp: (arg: { name: string }) => LocalizedString
+				/**
+				 * Move {name} down
+				 */
+				moveDown: (arg: { name: string }) => LocalizedString
+				/**
+				 * Remove {name}
+				 */
+				remove: (arg: { name: string }) => LocalizedString
+				/**
+				 * Add a state
+				 */
+				add: () => LocalizedString
+				/**
+				 * new_state
+				 */
+				newName: () => LocalizedString
+				/**
+				 * Discard
+				 */
+				discard: () => LocalizedString
+				/**
+				 * Save states
+				 */
+				save: () => LocalizedString
+				categories: {
+					/**
+					 * To do
+					 */
+					todo: () => LocalizedString
+					/**
+					 * Active
+					 */
+					active: () => LocalizedString
+					/**
+					 * Blocked
+					 */
+					blocked: () => LocalizedString
+					/**
+					 * Done
+					 */
+					done: () => LocalizedString
+				}
+				problems: {
+					/**
+					 * Every state needs a name.
+					 */
+					empty: () => LocalizedString
+					/**
+					 * Two states have the same name.
+					 */
+					duplicate: () => LocalizedString
+					/**
+					 * Keep at least one state.
+					 */
+					none: () => LocalizedString
+				}
+				confirm: {
+					/**
+					 * Tasks may be using these states
+					 */
+					title: () => LocalizedString
+					/**
+					 * Tasks keep the state written in their file. Until you update them, they fail lint and do not show in a board column. Running netherite lint lists them.
+					 */
+					text: () => LocalizedString
+					/**
+					 * {from} → {to}
+					 */
+					renamed: (arg: { from: string, to: string }) => LocalizedString
+					/**
+					 * {name} (removed)
+					 */
+					removed: (arg: { name: string }) => LocalizedString
+					/**
+					 * {count} {{task|tasks}}
+					 */
+					count: (arg: { count: number }) => LocalizedString
+					/**
+					 * Counting…
+					 */
+					counting: () => LocalizedString
+					/**
+					 * Keep editing
+					 */
+					cancel: () => LocalizedString
+					/**
+					 * Save anyway
+					 */
+					confirm: () => LocalizedString
+				}
+			}
+			inbox: {
+				/**
+				 * Inbox
+				 */
+				title: () => LocalizedString
+				/**
+				 * What the repository may raise in the Inbox.
+				 */
+				subtitle: () => LocalizedString
+				hints: {
+					/**
+					 * A doc whose covered files changed since its last review.
+					 */
+					'stale-doc': () => LocalizedString
+					/**
+					 * A decision still waiting to be accepted.
+					 */
+					'proposed-adr': () => LocalizedString
+					/**
+					 * An item with no links to or from it.
+					 */
+					orphan: () => LocalizedString
+					/**
+					 * A task past its due date.
+					 */
+					'overdue-task': () => LocalizedString
+					/**
+					 * A commit that says it closes a task.
+					 */
+					'closing-commit': () => LocalizedString
+					/**
+					 * A TODO added in a recent commit.
+					 */
+					'new-todo': () => LocalizedString
+					/**
+					 * Tags that look like the same tag.
+					 */
+					'similar-tag': () => LocalizedString
+				}
+			}
+			freshness: {
+				/**
+				 * Freshness
+				 */
+				title: () => LocalizedString
+				/**
+				 * How far covered files may move before a doc needs another look.
+				 */
+				subtitle: () => LocalizedString
+				/**
+				 * Drifting after
+				 */
+				drifting: () => LocalizedString
+				/**
+				 * Commits to covered files since review. Cannot be more than Stale after.
+				 */
+				driftingHint: () => LocalizedString
+				/**
+				 * Stale after
+				 */
+				stale: () => LocalizedString
+				/**
+				 * Commits to covered files since review. Cannot be less than Drifting after.
+				 */
+				staleHint: () => LocalizedString
+			}
+			context: {
+				/**
+				 * Context
+				 */
+				title: () => LocalizedString
+				/**
+				 * What agents are given.
+				 */
+				subtitle: () => LocalizedString
+				/**
+				 * Token budget
+				 */
+				budget: () => LocalizedString
+				/**
+				 * The most tokens of context in each synced file, estimated.
+				 */
+				budgetHint: () => LocalizedString
+				targets: {
+					/**
+					 * CLAUDE.md
+					 */
+					claude: () => LocalizedString
+					/**
+					 * Sync the context into CLAUDE.md.
+					 */
+					claudeHint: () => LocalizedString
+					/**
+					 * AGENTS.md
+					 */
+					agents: () => LocalizedString
+					/**
+					 * Sync the context into AGENTS.md.
+					 */
+					agentsHint: () => LocalizedString
+					/**
+					 * MCP
+					 */
+					mcp: () => LocalizedString
+					/**
+					 * Serve the context over MCP.
+					 */
+					mcpHint: () => LocalizedString
+				}
+			}
+		}
+		duration: {
+			/**
+			 * {seconds} s
+			 */
+			seconds: (arg: { seconds: number }) => LocalizedString
+		}
+		general: {
+			/**
+			 * General
+			 */
+			title: () => LocalizedString
+			/**
+			 * Saved in this browser.
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Language
+			 */
+			language: () => LocalizedString
+			/**
+			 * The language of the app. Your files, the CLI and server messages stay as they are.
+			 */
+			languageHint: () => LocalizedString
+			/**
+			 * Theme
+			 */
+			theme: () => LocalizedString
+			/**
+			 * The colours of the app, saved in this browser.
+			 */
+			themeHint: () => LocalizedString
+			/**
+			 * Notice duration
+			 */
+			noticeDuration: () => LocalizedString
+			/**
+			 * How long a notice stays on screen. A notice with an action stays at least {seconds} seconds.
+			 */
+			noticeDurationHint: (arg: { seconds: number }) => LocalizedString
+		}
 		actions: {
 			/**
 			 * Search
@@ -4217,6 +5144,32 @@ export type TranslationFunctions = {
 			 * Save
 			 */
 			editorSave: () => LocalizedString
+		}
+		editor: {
+			/**
+			 * Editor
+			 */
+			title: () => LocalizedString
+			/**
+			 * Saved in this browser.
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Autosave delay
+			 */
+			autosaveDelay: () => LocalizedString
+			/**
+			 * How long to wait after you stop typing before saving. A file with errors is not saved.
+			 */
+			autosaveDelayHint: () => LocalizedString
+			/**
+			 * Vim mode
+			 */
+			vimMode: () => LocalizedString
+			/**
+			 * Edit Markdown with vim keys. :w saves, and Esc stays in the editor instead of closing a drawer.
+			 */
+			vimModeHint: () => LocalizedString
 		}
 		shortcuts: {
 			/**
@@ -4304,6 +5257,10 @@ export type TranslationFunctions = {
 		}
 	}
 	navigation: {
+		/**
+		 * Main
+		 */
+		main: () => LocalizedString
 		/**
 		 * Search
 		 */
@@ -4645,6 +5602,10 @@ export type TranslationFunctions = {
 			 * Groups
 			 */
 			clusters: () => LocalizedString
+			/**
+			 * Other
+			 */
+			other: () => LocalizedString
 		}
 		legend: {
 			/**
@@ -5404,6 +6365,10 @@ export type TranslationFunctions = {
 			 */
 			decision: () => LocalizedString
 		}
+		/**
+		 * ended
+		 */
+		ended: () => LocalizedString
 		/**
 		 * Show tasks
 		 */

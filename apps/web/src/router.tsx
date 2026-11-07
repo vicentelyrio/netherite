@@ -9,6 +9,7 @@ import {
   redirect,
 } from '@tanstack/react-router'
 import { DocDraft, type KnowledgeType, knowledgeTypes } from '@/features/knowledge'
+import { isSettingsTab, type SettingsTab } from '@/features/settings'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { DecisionsPage } from './pages/decisions'
 import { GoalPage, GoalsPage } from './pages/goals'
@@ -148,7 +149,13 @@ const item = createRoute({
 const settings = createRoute({
   getParentRoute: () => root,
   path: '/settings',
-  component: SettingsPage,
+  validateSearch: (search: Record<string, unknown>): { tab?: SettingsTab | undefined } => ({
+    tab: isSettingsTab(search.tab) ? search.tab : undefined,
+  }),
+  component: function SettingsRoute() {
+    const { tab } = settings.useSearch()
+    return <SettingsPage tab={tab} />
+  },
 })
 const preview = createRoute({ getParentRoute: () => root, path: '/dev/ui', component: UiPreview })
 

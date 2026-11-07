@@ -64,7 +64,7 @@ Use the `netherite-plan` skill, as `netherite-migrate` does: reuse the migration
 _Reconstructed from history; it was not recorded when it was made._ What the evidence says about the situation before the change.
 
 ## Decision
-What was chosen, as the evidence shows it.
+> What was chosen, as the evidence shows it.
 
 ## Consequences
 - \+ A consequence that you can see in the repository now.

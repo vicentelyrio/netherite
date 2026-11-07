@@ -1,0 +1,16 @@
+.ws {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nt-space-8);
+}
+
+.ws-note {
+  margin: 0;
+}
+
+.ws-problem {
+  margin: var(--nt-space-2) 0 0;
+  font-family: var(--nt-font-mono);
+  font-size: var(--nt-text-caption-size);
+  white-space: pre-wrap;
+}

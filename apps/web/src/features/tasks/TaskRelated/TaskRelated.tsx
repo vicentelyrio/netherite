@@ -1,6 +1,6 @@
 import type { ItemDetail } from '@netherite/api'
 import { Link } from '@tanstack/react-router'
-import { useI18nContext } from '@/infrastructure/i18n'
+import { linkKindLabel, useI18nContext } from '@/infrastructure/i18n'
 import { DrawerHeading, DrawerSection } from '../DrawerSection'
 import './TaskRelated.css'
 
@@ -16,7 +16,7 @@ export function TaskRelated({ task }: { readonly task: ItemDetail }) {
       <ul className="app-link-list">
         {related.map((l) => (
           <li key={`${l.kind}:${l.path}`}>
-            <span className="app-muted">{l.kind.replace('_', ' ')}</span>{' '}
+            <span className="app-muted">{linkKindLabel(LL, l.kind)}</span>{' '}
             <Link to="/items/$id" params={{ id: l.id as string }}>
               {l.id} {l.title}
             </Link>

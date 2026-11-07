@@ -28,6 +28,8 @@ export const invalidationsFor = (event: ServerEvent): ReadonlyArray<ReadonlyArra
       return [keys.lint, keys.inbox]
     case 'config':
       return [[]]
+    case 'config-invalid':
+      return [keys.config]
     default:
       return []
   }

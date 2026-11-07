@@ -9,4 +9,3 @@ export const bannerIcons: Record<BannerVariant, string> = {
 
 export const bannerIconSize = 20
 export const closeIcon = 'close'
-export const dismissLabel = 'Dismiss'

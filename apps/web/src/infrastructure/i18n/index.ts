@@ -1,3 +1,5 @@
 export { baseLocale, I18nProvider } from './I18nProvider'
 export { useI18nContext } from './i18n-react'
 export type { Locales, TranslationFunctions } from './i18n-types'
+export { languages, resolveLocale } from './languages'
+export { adrStatusLabel, clusterLabel, linkKindLabel } from './wordsFor'

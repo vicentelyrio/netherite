@@ -27,6 +27,7 @@ const structured =
 
 export const integer = primitive<number>(SettingKind.Integer)
 export const text = primitive<string>(SettingKind.Text)
+export const boolean = primitive<boolean>(SettingKind.Boolean)
 export const list = structured<ReadonlyArray<unknown>>(SettingKind.List)
 export const map = structured<Readonly<Record<string, unknown>>>(SettingKind.Map)
 

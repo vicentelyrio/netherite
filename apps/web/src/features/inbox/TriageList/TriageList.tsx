@@ -1,4 +1,5 @@
 import { EmptyState, Icon } from '@netherite/ui'
+import { useNavigate } from '@tanstack/react-router'
 import { ago } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useInboxState } from '../InboxProvider'
@@ -7,6 +8,7 @@ import './TriageList.css'
 
 export function TriageList() {
   const { LL } = useI18nContext()
+  const navigate = useNavigate()
   const { shown, selected, select, snoozed, tab } = useInboxState()
   if (shown.length === 0) {
     return (
@@ -47,6 +49,10 @@ export function TriageList() {
                         style={{ '--tri-tone': look.tone } as React.CSSProperties}
                         aria-current={selected?.key === r.key || undefined}
                         onClick={() => select(r.key)}
+                        onDoubleClick={() =>
+                          r.id !== undefined &&
+                          void navigate({ to: '/items/$id', params: { id: r.id } })
+                        }
                       >
                         <span className="tri-icon" aria-hidden="true">
                           <Icon name={look.icon} size={18} filled={r.rule === 'stale-doc'} />

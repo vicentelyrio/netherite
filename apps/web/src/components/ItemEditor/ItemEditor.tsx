@@ -30,6 +30,8 @@ export function ItemEditor({
   branch,
   autosaveDelay = autosaveDelayMs,
   saveKeys = 'mod+s',
+  vimMode = false,
+  dark = true,
 }: ItemEditorProps) {
   const { LL } = useI18nContext()
   const host = useRef<HTMLDivElement>(null)
@@ -98,6 +100,8 @@ export function ItemEditor({
         onSave: () => void saveRef.current(),
         targets: () => latest.current.targets,
         saveKeys,
+        vimMode,
+        dark,
       }),
       EditorView.updateListener.of((update) => {
         if (update.docChanged) {
@@ -115,7 +119,7 @@ export function ItemEditor({
         setChangedLines(lines.added.size + lines.modified.size + lines.deleted.size)
       }),
     ],
-    [runLint, saveKeys],
+    [runLint, saveKeys, vimMode, dark],
   )
 
   useEffect(() => {

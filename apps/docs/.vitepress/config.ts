@@ -1,13 +1,16 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: 'Netherite',
+  title: 'Netherite Docs',
   description:
     'A typed, linked knowledge base in Markdown and git: a CLI, an MCP server for agents, and a local app.',
   base: '/netherite/',
   cleanUrls: true,
   appearance: 'dark',
-  head: [['meta', { name: 'theme-color', content: '#23253a' }]],
+  head: [
+    ['meta', { name: 'theme-color', content: '#23253a' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/netherite/favicon.svg' }],
+  ],
   themeConfig: {
     nav: [
       { text: 'Getting started', link: '/getting-started' },

@@ -1,2 +1,2 @@
 export { SettingsHeading } from './SettingsHeading'
-export { ShortcutSettings } from './ShortcutSettings'
+export { isSettingsTab, type SettingsTab, SettingsTabs } from './SettingsTabs'

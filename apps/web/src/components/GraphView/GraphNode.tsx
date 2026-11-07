@@ -88,7 +88,7 @@ export function GraphNode({
             stroke={color}
             strokeWidth={2}
             className="gv-glow"
-            style={{ filter: `drop-shadow(0 0 8px ${color}99)` }}
+            style={{ filter: `drop-shadow(0 0 8px color-mix(in srgb, ${color} 60%, transparent))` }}
           />
           <circle
             cx={p.x}

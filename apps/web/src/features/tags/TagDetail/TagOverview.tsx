@@ -1,4 +1,4 @@
-import { useI18nContext } from '@/infrastructure/i18n'
+import { clusterLabel, useI18nContext } from '@/infrastructure/i18n'
 import { keyOf } from '../rules'
 import { useTags } from '../TagsProvider'
 import { TagChip } from './TagChip'
@@ -47,7 +47,7 @@ export function TagOverview() {
       <ul className="td-clusters">
         {clusters.map(([name, count]) => (
           <li key={name}>
-            <span>{name}</span>
+            <span>{clusterLabel(LL, name)}</span>
             <span className="app-muted">{count}</span>
           </li>
         ))}
