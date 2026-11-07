@@ -6,7 +6,7 @@ test('a shortcut can be rebound, works straight away and survives a reload', asy
   page,
   workspace,
 }) => {
-  await page.goto(`${workspace.url}/settings`)
+  await page.goto(`${workspace.url}/settings?tab=shortcuts`)
   await page.getByRole('button', { name: change('Go to Goals') }).click()
   await expect(page.getByRole('status').filter({ hasText: 'Press the keys' })).toBeVisible()
   await page.keyboard.press('ControlOrMeta+Shift+y')
@@ -14,7 +14,7 @@ test('a shortcut can be rebound, works straight away and survives a reload', asy
   await page.keyboard.press('ControlOrMeta+Shift+y')
   await expect(page).toHaveURL(/\/goals$/)
 
-  await page.goto(`${workspace.url}/settings`)
+  await page.goto(`${workspace.url}/settings?tab=shortcuts`)
   await expect(
     page.getByRole('button', { name: 'Reset the shortcut for Go to Goals' }),
   ).toBeVisible()
@@ -26,7 +26,7 @@ test('keys already in use need a decision, and taking them clears the other acti
   page,
   workspace,
 }) => {
-  await page.goto(`${workspace.url}/settings`)
+  await page.goto(`${workspace.url}/settings?tab=shortcuts`)
   await page.getByRole('button', { name: change('Go to Tags') }).click()
   await page.keyboard.press('ControlOrMeta+k')
 
@@ -46,21 +46,21 @@ test('Escape cancels recording without changing anything or leaving the keys to 
   page,
   workspace,
 }) => {
-  await page.goto(`${workspace.url}/settings`)
+  await page.goto(`${workspace.url}/settings?tab=shortcuts`)
   await page.getByRole('button', { name: change('Go to Goals') }).click()
   await page.keyboard.press('Escape')
   await expect(page.getByRole('status').filter({ hasText: 'Press the keys' })).toBeHidden()
   await expect(
     page.getByRole('button', { name: 'Reset the shortcut for Go to Goals' }),
   ).toBeHidden()
-  await expect(page).toHaveURL(/\/settings$/)
+  await expect(page).toHaveURL(/\/settings\?tab=shortcuts$/)
 })
 
 test('a screen shows the keys chosen for it, and hides the ones cleared', async ({
   page,
   workspace,
 }) => {
-  await page.goto(`${workspace.url}/settings`)
+  await page.goto(`${workspace.url}/settings?tab=shortcuts`)
   await page.getByRole('button', { name: change('Archive') }).click()
   await page.keyboard.press('x')
   await page.getByRole('button', { name: 'Clear the shortcut for Snooze' }).click()
@@ -75,5 +75,5 @@ test('the rail reaches the settings page', async ({ page, workspace }) => {
   await page.goto(`${workspace.url}/goals`)
   await page.getByRole('button', { name: 'Settings' }).click()
   await expect(page).toHaveURL(/\/settings$/)
-  await expect(page.getByRole('heading', { name: 'Keyboard shortcuts' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible()
 })

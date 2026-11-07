@@ -262,6 +262,7 @@ const en = {
   },
   settings: {
     title: 'Settings',
+    tabs: { label: 'Settings sections', editor: 'Editor', shortcuts: 'Shortcuts' },
     actions: {
       searchOpen: 'Search',
       goInbox: 'Go to Inbox',

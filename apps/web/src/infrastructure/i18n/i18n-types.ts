@@ -972,6 +972,20 @@ type RootTranslation = {
 		 * S​e​t​t​i​n​g​s
 		 */
 		title: string
+		tabs: {
+			/**
+			 * S​e​t​t​i​n​g​s​ ​s​e​c​t​i​o​n​s
+			 */
+			label: string
+			/**
+			 * E​d​i​t​o​r
+			 */
+			editor: string
+			/**
+			 * S​h​o​r​t​c​u​t​s
+			 */
+			shortcuts: string
+		}
 		actions: {
 			/**
 			 * S​e​a​r​c​h
@@ -4170,6 +4184,20 @@ export type TranslationFunctions = {
 		 * Settings
 		 */
 		title: () => LocalizedString
+		tabs: {
+			/**
+			 * Settings sections
+			 */
+			label: () => LocalizedString
+			/**
+			 * Editor
+			 */
+			editor: () => LocalizedString
+			/**
+			 * Shortcuts
+			 */
+			shortcuts: () => LocalizedString
+		}
 		actions: {
 			/**
 			 * Search
