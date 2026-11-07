@@ -1,5 +1,6 @@
 export {
   enabledRules,
+  enabledRulesOf,
   type Raised,
   type RaisedInput,
   type RaisedRule,

@@ -20,6 +20,7 @@ const operation = (method: string, path: string) => doc.paths[path]?.[method]
 describe('the API definition', () => {
   test('has the groups and paths the app needs, all under /api', () => {
     expect(Object.keys(NetheriteApi.groups).sort()).toEqual([
+      'config',
       'events',
       'goals',
       'graph',
@@ -39,6 +40,7 @@ describe('the API definition', () => {
     expect(Object.keys(doc.paths).every((p) => p.startsWith('/api/'))).toBe(true)
     expect(Object.keys(doc.paths).sort()).toEqual(
       [
+        '/api/config',
         '/api/events',
         '/api/goals',
         '/api/goals/rename-area',

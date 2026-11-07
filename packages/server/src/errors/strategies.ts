@@ -18,6 +18,14 @@ export const errorStrategies: Readonly<Record<string, ErrorStrategy>> = {
         message: i.message,
       })),
     }),
+  ConfigInvalid: (e) =>
+    new Invalid({
+      message: e.message,
+      issues: (e.issues as ReadonlyArray<Issue>).map((i) => ({
+        path: [...i.path],
+        message: i.message,
+      })),
+    }),
   EditError: (e) => new Invalid({ message: e.message, issues: [{ path: [], message: e.message }] }),
   ConflictError: (e) =>
     new Conflict({

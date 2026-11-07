@@ -1,4 +1,5 @@
 import { HttpApi } from 'effect/http-api'
+import { ConfigGroup } from './config'
 import { EventsGroup } from './events'
 import { GoalsGroup } from './goals'
 import { GraphGroup } from './graph'
@@ -31,5 +32,6 @@ export class NetheriteApi extends HttpApi.make('netherite')
     TimelineGroup,
     EventsGroup,
     MetaGroup,
+    ConfigGroup,
   )
   .prefix('/api') {}

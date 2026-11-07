@@ -23,8 +23,8 @@ The forces at play: what is the situation, what is being asked, what limits the 
 ## Decision
 
 > What was chosen, in the active voice: "We use X for Y."
-
-- A bullet for each part of the decision.
+>
+> - A bullet for each part of the decision.
 
 ## Consequences
 

@@ -4,6 +4,11 @@
 default, and unknown keys are kept. `netherite init` writes it with the defaults as comments.
 Changes are picked up by a running server; moving `content` needs a restart.
 
+The app can change `states`, `freshness`, `context` and `inbox.rules`. It edits only the lines for
+those values, keeps your comments and unknown keys, refuses an edit if the file changed since it was
+read, and never commits: a change shows up as an uncommitted edit to this file. Every other key is
+changed by hand.
+
 ```yaml
 version: 1
 content: netherite

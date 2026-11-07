@@ -1,3 +1,4 @@
+export { ConfigGroup } from './config'
 export { EventsGroup } from './events'
 export { GoalsGroup } from './goals'
 export { GraphGroup } from './graph'

@@ -2,6 +2,7 @@ import { NetheriteApi } from '@netherite/api'
 import { Layer } from 'effect'
 import { HttpApiBuilder } from 'effect/http-api'
 import type { ServerState } from '../state'
+import { config } from './config'
 import { events } from './events'
 import { goals } from './goals'
 import { graph } from './graph'
@@ -34,6 +35,7 @@ export const handlersLayer = (state: ServerState) =>
     timeline(state),
     events(state),
     meta(state),
+    config(state),
   )
 
 export const apiLayer = (state: ServerState) =>

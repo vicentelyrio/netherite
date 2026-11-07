@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { cleanWorkspaceFiles } from '@netherite/testing'
@@ -1188,6 +1189,200 @@ describe('linting text that is not saved', () => {
         )
         expect(noToken.status).toBe(401)
       }),
+    )
+  })
+})
+
+describe('the workspace config', () => {
+  const configPath = '.netherite/config.yml'
+  const commented = `# our rules
+version: 1
+freshness:
+  stale: 7 # generous
+custom: [ kept,  as-is ]
+`
+  const files = (dir: string) => ({
+    ...cleanWorkspaceFiles(dir),
+    [join(dir, configPath)]: commented,
+  })
+
+  test('reads the settings the page edits, with every Inbox rule named', async () => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const { hash, settings } = yield* s.client.config.read()
+          expect(hash).toMatch(/^[0-9a-f]{64}$/)
+          expect(settings.freshness).toEqual({ drifting: 1, stale: 7 })
+          expect(settings.context.budget).toBe(8000)
+          expect(settings.states.map((state) => state.name)).toContain('backlog')
+          expect(settings.inbox.rules.orphan).toBe(true)
+        }),
+      { files },
+    )
+  })
+
+  test('a write keeps comments and unknown keys, and applies without a restart', async () => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const { hash } = yield* s.client.config.read()
+          const result = yield* s.client.config.update({
+            payload: {
+              baseHash: hash,
+              set: { freshness: { stale: 3 }, inbox: { rules: { orphan: false } } },
+            },
+          })
+          expect(result.unchanged).toBe(false)
+          expect(result.requiresRestart).toBe(false)
+          expect(result.settings.freshness.stale).toBe(3)
+          expect(result.settings.inbox.rules.orphan).toBe(false)
+          expect(read(s.dir, configPath)).toBe(
+            `# our rules
+version: 1
+freshness:
+  stale: 3 # generous
+custom: [ kept,  as-is ]
+inbox:
+  rules:
+    orphan: false
+`,
+          )
+          expect(s.state.repo.workspace.config.freshness.stale).toBe(3)
+          expect((yield* s.client.config.read()).hash).toBe(result.hash)
+        }),
+      { files },
+    )
+  })
+
+  test('tells the app the config changed', async () => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const events = yield* PubSub.subscribe(s.state.events)
+          const { hash } = yield* s.client.config.read()
+          yield* s.client.config.update({
+            payload: { baseHash: hash, set: { freshness: { stale: 2 } } },
+          })
+          expect(yield* PubSub.take(events)).toEqual({ type: 'config', requiresRestart: false })
+        }).pipe(Effect.scoped),
+      { files },
+    )
+  })
+
+  test('a value already set writes nothing and tells nobody', async () => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const { hash } = yield* s.client.config.read()
+          const result = yield* s.client.config.update({
+            payload: { baseHash: hash, set: { freshness: { stale: 7 } } },
+          })
+          expect(result.unchanged).toBe(true)
+          expect(result.hash).toBe(hash)
+          expect(read(s.dir, configPath)).toBe(commented)
+        }),
+      { files },
+    )
+  })
+
+  test.each([
+    [{ content: 'elsewhere' }, ['content']],
+    [{ version: 2 }, ['version']],
+    [{ id_padding: 3 }, ['id_padding']],
+  ])('refuses %j and changes nothing', async (set, path) => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const { hash } = yield* s.client.config.read()
+          const error = yield* failure(s.client.config.update({ payload: { baseHash: hash, set } }))
+          expect(error._tag).toBe('Invalid')
+          expect(error.issues[0].path).toEqual(path)
+          expect(read(s.dir, configPath)).toBe(commented)
+        }),
+      { files },
+    )
+  })
+
+  test.each([
+    [{ freshness: { stale: 0 } }],
+    [{ context: { targets: ['nobody'] } }],
+    [{ states: [] }],
+    [{ states: [{ name: 'x', category: 'nope' }] }],
+  ])('refuses the invalid value %j and changes nothing', async (set) => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const { hash } = yield* s.client.config.read()
+          const error = yield* failure(s.client.config.update({ payload: { baseHash: hash, set } }))
+          expect(error._tag).toBe('Invalid')
+          expect(read(s.dir, configPath)).toBe(commented)
+          expect(s.state.repo.workspace.config.freshness.stale).toBe(7)
+        }),
+      { files },
+    )
+  })
+
+  test('a write based on an old hash is a conflict', async () => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const { hash } = yield* s.client.config.read()
+          const edited = `${commented}# edited by hand\n`
+          writeFileSync(join(s.dir, configPath), edited)
+          const error = yield* failure(
+            s.client.config.update({
+              payload: { baseHash: hash, set: { freshness: { stale: 2 } } },
+            }),
+          )
+          expect(error._tag).toBe('Conflict')
+          expect(read(s.dir, configPath)).toBe(edited)
+        }),
+      { files },
+    )
+  })
+
+  test('a request without the session token cannot write', async () => {
+    await withServer(
+      (s) =>
+        Effect.promise(async () => {
+          const response = await raw(s.url, '/api/config', {
+            method: 'PATCH',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ baseHash: 'x', set: { freshness: { stale: 2 } } }),
+          })
+          expect(response.status).toBe(401)
+          expect(read(s.dir, configPath)).toBe(commented)
+        }),
+      { files },
+    )
+  })
+
+  test('a broken file is reported on read and is not overwritten', async () => {
+    await withServer(
+      (s) =>
+        Effect.gen(function* () {
+          const { hash } = yield* s.client.config.read()
+          const broken = 'version: 1\nfreshness: { stale: 0 }\n'
+          writeFileSync(join(s.dir, configPath), broken)
+          const reading = yield* failure(s.client.config.read())
+          expect(reading._tag).toBe('Invalid')
+          expect(reading.issues[0].path).toEqual(['freshness', 'stale'])
+          const writing = yield* failure(
+            s.client.config.update({
+              payload: { baseHash: hash, set: { freshness: { stale: 2 } } },
+            }),
+          )
+          expect(writing._tag).toBe('Conflict')
+          const current = createHash('sha256').update(broken).digest('hex')
+          const rewriting = yield* failure(
+            s.client.config.update({
+              payload: { baseHash: current, set: { freshness: { stale: 2 } } },
+            }),
+          )
+          expect(rewriting._tag).toBe('Invalid')
+          expect(read(s.dir, configPath)).toBe(broken)
+        }),
+      { files },
     )
   })
 })

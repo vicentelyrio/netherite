@@ -45,6 +45,14 @@ export {
   suggestCovers,
 } from './cochange'
 export {
+  planConfigEdits,
+  readWorkspaceConfig,
+  updateWorkspaceConfig,
+  type WorkspaceConfigUpdate,
+  type WorkspaceConfigView,
+  type WorkspaceSettings,
+} from './config-edit'
+export {
   buildContext,
   type ContextBundle,
   type ContextItem,
