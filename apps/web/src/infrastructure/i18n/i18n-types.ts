@@ -1414,6 +1414,14 @@ type RootTranslation = {
 			 */
 			languageHint: string
 			/**
+			 * T​h​e​m​e
+			 */
+			theme: string
+			/**
+			 * T​h​e​ ​c​o​l​o​u​r​s​ ​o​f​ ​t​h​e​ ​a​p​p​,​ ​s​a​v​e​d​ ​i​n​ ​t​h​i​s​ ​b​r​o​w​s​e​r​.
+			 */
+			themeHint: string
+			/**
 			 * N​o​t​i​c​e​ ​d​u​r​a​t​i​o​n
 			 */
 			noticeDuration: string
@@ -5054,6 +5062,14 @@ export type TranslationFunctions = {
 			 * The language of the app. Your files, the CLI and server messages stay as they are.
 			 */
 			languageHint: () => LocalizedString
+			/**
+			 * Theme
+			 */
+			theme: () => LocalizedString
+			/**
+			 * The colours of the app, saved in this browser.
+			 */
+			themeHint: () => LocalizedString
 			/**
 			 * Notice duration
 			 */

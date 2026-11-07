@@ -1,11 +1,10 @@
-import { NetheriteProvider } from '@netherite/ui'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { type RouterHistory, RouterProvider } from '@tanstack/react-router'
 import { useMemo } from 'react'
 import { ApiProvider, createApi } from '@/infrastructure/api'
 import type { AppConfig } from '@/infrastructure/config'
 import { NoticeProvider } from '@/infrastructure/notices'
-import { LocalizedProvider, SettingsProvider } from '@/infrastructure/settings'
+import { LocalizedProvider, SettingsProvider, ThemedProvider } from '@/infrastructure/settings'
 import { createAppRouter } from './router'
 
 export interface AppProps {
@@ -25,8 +24,8 @@ export function App({ config, history, env }: AppProps) {
   )
   const router = useMemo(() => createAppRouter(history), [history])
   return (
-    <NetheriteProvider {...(env === undefined ? {} : { env })}>
-      <SettingsProvider>
+    <SettingsProvider>
+      <ThemedProvider env={env}>
         <LocalizedProvider>
           <ApiProvider value={api}>
             <QueryClientProvider client={client}>
@@ -36,7 +35,7 @@ export function App({ config, history, env }: AppProps) {
             </QueryClientProvider>
           </ApiProvider>
         </LocalizedProvider>
-      </SettingsProvider>
-    </NetheriteProvider>
+      </ThemedProvider>
+    </SettingsProvider>
   )
 }

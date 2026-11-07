@@ -21,4 +21,5 @@ export interface ItemEditorProps {
   readonly autosaveDelay?: number
   readonly saveKeys?: string | null
   readonly vimMode?: boolean
+  readonly dark?: boolean
 }

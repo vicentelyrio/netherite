@@ -1,12 +1,16 @@
 export type {
   AdrStatus,
+  ColorScheme,
   EdgeKind,
   ItemTypeName,
   StateCategory,
   StatusName,
+  Theme,
 } from '@netherite/tokens'
 export {
-  color as designColor,
+  colorVar as designColor,
+  defaultTheme,
+  defaultThemeId,
   edgeStyle,
   graphMetrics,
   itemTypeNames,
@@ -14,6 +18,8 @@ export {
   statusGlyph,
   statusNames,
   statusOfCategory,
+  themeById,
+  themes,
 } from '@netherite/tokens'
 export { ActionIcon, type ActionIconProps } from './components/ActionIcon'
 export { Avatar, type AvatarProps, avatarColorOf, initialsOf } from './components/Avatar'

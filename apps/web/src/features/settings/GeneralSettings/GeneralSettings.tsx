@@ -5,6 +5,7 @@ import { useLanguage, useNoticeSettings } from '@/infrastructure/settings'
 import { DurationSetting } from '../DurationSetting'
 import { SettingRow } from '../SettingRow'
 import { SettingsSection } from '../SettingsSection'
+import { ThemeSetting } from '../ThemeSetting'
 
 const noticePresetsMs = [3000, 5000, 10_000, 20_000]
 const millisecondsPerSecond = 1000
@@ -24,6 +25,7 @@ export function GeneralSettings() {
           data={languages.map(({ id, name }) => ({ value: id, label: name }))}
         />
       </SettingRow>
+      <ThemeSetting />
       <DurationSetting
         label={text.noticeDuration()}
         hint={text.noticeDurationHint({

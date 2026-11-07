@@ -38,6 +38,7 @@ describe('the editor settings', () => {
       editor: { vimMode: true, autosaveDelayMs: 1000 },
       notices: { lifetimeMs: 5000 },
       language: null,
+      theme: null,
     })
   })
 

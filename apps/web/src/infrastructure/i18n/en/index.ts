@@ -381,6 +381,8 @@ const en = {
       language: 'Language',
       languageHint:
         'The language of the app. Your files, the CLI and server messages stay as they are.',
+      theme: 'Theme',
+      themeHint: 'The colours of the app, saved in this browser.',
       noticeDuration: 'Notice duration',
       noticeDurationHint:
         'How long a notice stays on screen. A notice with an action stays at least {seconds:number} seconds.',

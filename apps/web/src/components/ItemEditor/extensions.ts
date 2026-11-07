@@ -265,104 +265,102 @@ export const highlight = HighlightStyle.define([
   { tag: [t.content], color: v('syntax-text') },
 ])
 
-const theme = EditorView.theme(
-  {
-    '&': {
-      color: v('syntax-text'),
-      backgroundColor: v('bg-card'),
-      height: '100%',
-      fontSize: 'var(--nt-text-mono-size)',
-    },
-    '.cm-scroller': {
-      fontFamily: 'var(--nt-font-mono)',
-      lineHeight: 'var(--nt-text-mono-line-height)',
-      overflow: 'auto',
-    },
-    '.cm-content': { padding: '14px 0', caretColor: v('accent-fg-hover') },
-    '.cm-line': { padding: '0 24px 0 24px' },
-    '&.cm-focused': { outline: 'none' },
-    '.cm-cursor, .cm-dropCursor': { borderLeftColor: v('accent-fg-hover'), borderLeftWidth: '2px' },
-    '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': {
-      backgroundColor: v('accent-subtle'),
-    },
-    '.cm-activeLine': { backgroundColor: v('bg-active-line') },
-    '.cm-gutters': { backgroundColor: v('bg-card'), color: v('text-line-number'), border: 'none' },
-    '.cm-gutters .cm-gutterElement': { fontVariantNumeric: 'tabular-nums' },
-    '.cm-lineNumbers .cm-gutterElement': {
-      padding: '0 0 0 0',
-      minWidth: '24px',
-      textAlign: 'right',
-    },
-    '.cm-activeLineGutter': { backgroundColor: v('bg-active-line'), color: v('text-primary') },
-    '.cm-diff-gutter': { width: '3px', marginLeft: '12px' },
-    '.cm-diff-mark': { width: '3px', height: '100%' },
-    '.cm-diff-added': { backgroundColor: v('diff-added') },
-    '.cm-diff-modified': { backgroundColor: v('diff-modified') },
-    '.cm-diff-deleted': {
-      width: '0',
-      height: '0',
-      marginTop: 'calc(100% - 5px)',
-      borderTop: '5px solid transparent',
-      borderBottom: '5px solid transparent',
-      borderLeft: `6px solid ${v('diff-deleted')}`,
-      backgroundColor: 'transparent',
-    },
-    '.cm-lint-gutter': { width: '22px' },
-    '.cm-lint-spacer': { display: 'block', width: '22px', height: '1px' },
-    '.cm-lint-mark': {
-      display: 'flex',
-      width: '22px',
-      height: '100%',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: '14px',
-    },
-    '.cm-lint-warning': { color: v('diff-lint') },
-    '.cm-lint-error': { color: v('status-danger') },
-    '.cm-problem': {
-      textDecoration: 'underline wavy',
-      textDecorationThickness: '1px',
-      textUnderlineOffset: '4px',
-    },
-    '.cm-problem-warning': { textDecorationColor: v('status-warning') },
-    '.cm-problem-error': { textDecorationColor: v('status-danger') },
-    '.cm-hint': {
-      marginLeft: '28px',
-      fontFamily: 'var(--nt-font-sans)',
-      fontSize: 'var(--nt-text-caption-size)',
-      color: v('status-warning-text'),
-      fontStyle: 'italic',
-    },
-    '.cm-wikilink': { color: v('accent-fg'), borderBottom: `1px dotted ${v('accent-fg')}` },
-    '.cm-date': { color: v('syntax-date') },
-    '.cm-mention': { color: v('syntax-mention') },
-    '.cm-check': { color: v('syntax-punct') },
-    '.cm-tooltip': {
-      backgroundColor: v('bg-overlay'),
-      border: `1px solid ${v('border-overlay')}`,
-      borderRadius: 'var(--nt-radius-sm)',
-      boxShadow: 'var(--nt-shadow-popover)',
-    },
-    '.cm-tooltip-autocomplete ul li': {
-      padding: '4px 10px',
-      fontFamily: 'var(--nt-font-sans)',
-      fontSize: 'var(--nt-text-caption-size)',
-    },
-    '.cm-tooltip-autocomplete ul li[aria-selected]': {
-      backgroundColor: v('accent-subtle'),
-      color: v('text-primary'),
-    },
-    '.cm-completionDetail': { marginLeft: '10px', color: v('text-muted'), fontStyle: 'normal' },
-    '.cm-completionLabel': { fontFamily: 'var(--nt-font-mono)' },
+const themeSpec = {
+  '&': {
+    color: v('syntax-text'),
+    backgroundColor: v('bg-card'),
+    height: '100%',
+    fontSize: 'var(--nt-text-mono-size)',
   },
-  { dark: true },
-)
+  '.cm-scroller': {
+    fontFamily: 'var(--nt-font-mono)',
+    lineHeight: 'var(--nt-text-mono-line-height)',
+    overflow: 'auto',
+  },
+  '.cm-content': { padding: '14px 0', caretColor: v('accent-fg-hover') },
+  '.cm-line': { padding: '0 24px 0 24px' },
+  '&.cm-focused': { outline: 'none' },
+  '.cm-cursor, .cm-dropCursor': { borderLeftColor: v('accent-fg-hover'), borderLeftWidth: '2px' },
+  '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': {
+    backgroundColor: v('accent-subtle'),
+  },
+  '.cm-activeLine': { backgroundColor: v('bg-active-line') },
+  '.cm-gutters': { backgroundColor: v('bg-card'), color: v('text-line-number'), border: 'none' },
+  '.cm-gutters .cm-gutterElement': { fontVariantNumeric: 'tabular-nums' },
+  '.cm-lineNumbers .cm-gutterElement': {
+    padding: '0 0 0 0',
+    minWidth: '24px',
+    textAlign: 'right',
+  },
+  '.cm-activeLineGutter': { backgroundColor: v('bg-active-line'), color: v('text-primary') },
+  '.cm-diff-gutter': { width: '3px', marginLeft: '12px' },
+  '.cm-diff-mark': { width: '3px', height: '100%' },
+  '.cm-diff-added': { backgroundColor: v('diff-added') },
+  '.cm-diff-modified': { backgroundColor: v('diff-modified') },
+  '.cm-diff-deleted': {
+    width: '0',
+    height: '0',
+    marginTop: 'calc(100% - 5px)',
+    borderTop: '5px solid transparent',
+    borderBottom: '5px solid transparent',
+    borderLeft: `6px solid ${v('diff-deleted')}`,
+    backgroundColor: 'transparent',
+  },
+  '.cm-lint-gutter': { width: '22px' },
+  '.cm-lint-spacer': { display: 'block', width: '22px', height: '1px' },
+  '.cm-lint-mark': {
+    display: 'flex',
+    width: '22px',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '14px',
+  },
+  '.cm-lint-warning': { color: v('diff-lint') },
+  '.cm-lint-error': { color: v('status-danger') },
+  '.cm-problem': {
+    textDecoration: 'underline wavy',
+    textDecorationThickness: '1px',
+    textUnderlineOffset: '4px',
+  },
+  '.cm-problem-warning': { textDecorationColor: v('status-warning') },
+  '.cm-problem-error': { textDecorationColor: v('status-danger') },
+  '.cm-hint': {
+    marginLeft: '28px',
+    fontFamily: 'var(--nt-font-sans)',
+    fontSize: 'var(--nt-text-caption-size)',
+    color: v('status-warning-text'),
+    fontStyle: 'italic',
+  },
+  '.cm-wikilink': { color: v('accent-fg'), borderBottom: `1px dotted ${v('accent-fg')}` },
+  '.cm-date': { color: v('syntax-date') },
+  '.cm-mention': { color: v('syntax-mention') },
+  '.cm-check': { color: v('syntax-punct') },
+  '.cm-tooltip': {
+    backgroundColor: v('bg-overlay'),
+    border: `1px solid ${v('border-overlay')}`,
+    borderRadius: 'var(--nt-radius-sm)',
+    boxShadow: 'var(--nt-shadow-popover)',
+  },
+  '.cm-tooltip-autocomplete ul li': {
+    padding: '4px 10px',
+    fontFamily: 'var(--nt-font-sans)',
+    fontSize: 'var(--nt-text-caption-size)',
+  },
+  '.cm-tooltip-autocomplete ul li[aria-selected]': {
+    backgroundColor: v('accent-subtle'),
+    color: v('text-primary'),
+  },
+  '.cm-completionDetail': { marginLeft: '10px', color: v('text-muted'), fontStyle: 'normal' },
+  '.cm-completionLabel': { fontFamily: 'var(--nt-font-mono)' },
+}
 
 export interface EditorOptions {
   readonly onSave: () => void
   readonly targets: () => ReadonlyArray<LinkTarget>
   readonly saveKeys: string | null
   readonly vimMode: boolean
+  readonly dark: boolean
 }
 
 export const editorExtensions = ({
@@ -370,6 +368,7 @@ export const editorExtensions = ({
   targets,
   saveKeys,
   vimMode,
+  dark,
 }: EditorOptions): Extension[] => [
   ...(vimMode ? [vimKeys(onSave)] : []),
   headField,
@@ -408,5 +407,5 @@ export const editorExtensions = ({
     ...historyKeymap,
     ...defaultKeymap,
   ]),
-  theme,
+  EditorView.theme(themeSpec, { dark }),
 ]

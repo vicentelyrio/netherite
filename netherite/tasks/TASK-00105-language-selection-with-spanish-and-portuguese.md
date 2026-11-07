@@ -6,7 +6,8 @@ title: Language selection with Spanish and Portuguese
 created: 2026-11-07T16:07:11Z
 created_by: "@vicentelyrio"
 project: PRJ-00008
-state: doing
+state: done
+position: 45
 decisions: [ADR-00031]
 depends_on: [TASK-00101]
 ---

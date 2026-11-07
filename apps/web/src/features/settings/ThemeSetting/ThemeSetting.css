@@ -1,0 +1,39 @@
+.th-list {
+  flex-basis: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--nt-space-2);
+}
+
+.th-option {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nt-space-1-5);
+  padding: var(--nt-space-2);
+  font-size: var(--nt-text-caption-size);
+  color: var(--nt-color-text-primary);
+  background: var(--nt-color-bg-stage);
+  border: var(--nt-stroke-thin) solid var(--nt-color-border-subtle);
+  border-radius: var(--nt-radius-sm);
+  cursor: pointer;
+}
+
+.th-option:hover {
+  border-color: var(--nt-color-border-strong);
+}
+
+.th-option:focus-within,
+.th-option[data-active] {
+  border-color: var(--nt-color-accent-fg);
+}
+
+.th-swatches {
+  display: flex;
+  height: var(--nt-space-4);
+  overflow: hidden;
+  border-radius: var(--nt-radius-xs);
+}
+
+.th-swatch {
+  flex: 1;
+}

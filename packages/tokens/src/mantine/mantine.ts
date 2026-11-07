@@ -26,7 +26,7 @@ export const mix = (a: string, b: string, t: number) => {
 
 export const baseShade = 6
 
-export const scaleOf = (base: string): Scale => [
+export const scaleOf = (base: string, deep: string = color.bg.overlay): Scale => [
   mix(base, '#ffffff', 0.82),
   mix(base, '#ffffff', 0.68),
   mix(base, '#ffffff', 0.5),
@@ -34,9 +34,9 @@ export const scaleOf = (base: string): Scale => [
   mix(base, '#ffffff', 0.16),
   mix(base, '#ffffff', 0.07),
   base,
-  mix(base, color.bg.overlay, 0.22),
-  mix(base, color.bg.overlay, 0.42),
-  mix(base, color.bg.overlay, 0.62),
+  mix(base, deep, 0.22),
+  mix(base, deep, 0.42),
+  mix(base, deep, 0.62),
 ]
 
 const colors = {

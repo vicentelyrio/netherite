@@ -387,6 +387,8 @@ const ptBR = {
       subtitle: 'Salvo neste navegador.',
       language: 'Idioma',
       languageHint: 'O idioma do app. Seus arquivos, a CLI e as mensagens do servidor não mudam.',
+      theme: 'Tema',
+      themeHint: 'As cores do app, salvas neste navegador.',
       noticeDuration: 'Duração dos avisos',
       noticeDurationHint:
         'Quanto tempo um aviso fica na tela. Um aviso com uma ação fica pelo menos {seconds} segundos.',

@@ -14,7 +14,7 @@ export {
   tint,
 } from './color'
 export { contrast, hexToRgb } from './contrast'
-export { libraryVariables, prefix, stylesheet, variables } from './css'
+export { libraryVariables, prefix, stylesheet, themeVariables, variables } from './css'
 export {
   badgeGlyph,
   type EdgeStyle,
@@ -49,3 +49,16 @@ export {
   zIndex,
 } from './scale'
 export { type StatusName, statusGlyph, statusNames, statusOfCategory } from './status'
+export {
+  type ColorScheme,
+  type ColorSet,
+  colorsFrom,
+  colorVar,
+  defaultTheme,
+  defaultThemeId,
+  type Theme,
+  type ThemeSeed,
+  type ThemeSource,
+  themeById,
+  themes,
+} from './themes'

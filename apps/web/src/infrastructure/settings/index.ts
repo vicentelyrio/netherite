@@ -14,6 +14,8 @@ export {
   serializeSettings,
   storageKey,
 } from './settings'
+export { ThemedProvider } from './ThemedProvider'
 export { useEditorSettings } from './useEditorSettings'
 export { useLanguage } from './useLanguage'
 export { useNoticeSettings } from './useNoticeSettings'
+export { useTheme } from './useTheme'

@@ -1,4 +1,5 @@
 import { settingCatalog, settingDefaults } from '@netherite/schema'
+import { themeById } from '@netherite/ui'
 import type { Locales } from '../i18n'
 import { isLocale } from '../i18n/i18n-util'
 import { type ActionId, isActionId } from '../shortcuts/actions'
@@ -17,6 +18,7 @@ export interface Settings {
   readonly editor: EditorPreferences
   readonly notices: NoticePreferences
   readonly language: Locales | null
+  readonly theme: string | null
 }
 
 export const defaultSettings: Settings = {
@@ -27,6 +29,7 @@ export const defaultSettings: Settings = {
   },
   notices: { lifetimeMs: settingDefaults.notices.lifetimeMs },
   language: null,
+  theme: null,
 }
 
 export const storageKey = 'netherite.settings'
@@ -89,6 +92,9 @@ const parseNotices = (stored: unknown): NoticePreferences => {
 const parseLanguage = (stored: unknown): Locales | null =>
   typeof stored === 'string' && isLocale(stored) ? stored : null
 
+const parseTheme = (stored: unknown) =>
+  typeof stored === 'string' && themeById(stored) !== undefined ? stored : null
+
 export const parseSettings = (raw: string | null | undefined): Settings => {
   if (!raw) return defaultSettings
   let value: unknown
@@ -102,12 +108,14 @@ export const parseSettings = (raw: string | null | undefined): Settings => {
     editor?: unknown
     notices?: unknown
     language?: unknown
+    theme?: unknown
   } | null
   return {
     shortcuts: parseShortcuts(stored?.shortcuts),
     editor: parseEditor(stored?.editor),
     notices: parseNotices(stored?.notices),
     language: parseLanguage(stored?.language),
+    theme: parseTheme(stored?.theme),
   }
 }
 

@@ -1,5 +1,6 @@
 import { color, edgeKinds, tint } from '../color'
 import { edgeStyle, graphMetrics, nodeSpec } from '../graph'
+import { scaleOf } from '../mantine'
 import {
   fontFamily,
   fontSizeExtra,
@@ -19,14 +20,10 @@ import {
   zIndex,
 } from '../scale'
 import { statusGlyph } from '../status'
+import { defaultThemeId, type Theme, themes } from '../themes'
+import { kebab, prefix } from './names'
 
-export const prefix = '--nt-'
-
-const kebab = (text: string) =>
-  text
-    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-    .replace(/[._]/g, '-')
-    .toLowerCase()
+export { prefix }
 
 const px = (n: number) => (n === 0 ? '0' : `${n}px`)
 
@@ -128,10 +125,53 @@ export const libraryVariables = (): Record<string, string> => ({
   '--mantine-focus-ring-color': `var(${prefix}color-accent-fg)`,
 })
 
+const edgeColorOf = (theme: Theme, kind: (typeof edgeKinds)[number]) => {
+  const key = (Object.keys(color.graph) as Array<keyof typeof color.graph>).find(
+    (name) => color.graph[name] === edgeStyle[kind].color,
+  )
+  return key === undefined ? theme.colors.accent.fg : theme.colors.graph[key]
+}
+
+const libraryScales = (theme: Theme) => {
+  const { colors } = theme
+  const bases: Readonly<Record<string, string>> = {
+    lavender: colors.accent.solid,
+    success: colors.status.success,
+    warning: colors.status.warning,
+    danger: colors.status.danger,
+    ...colors.type,
+  }
+  return Object.entries(bases).flatMap(([name, base]) =>
+    scaleOf(base, colors.bg.overlay).map((shade, step): [string, string] => [
+      `--mantine-color-${name}-${step}`,
+      shade,
+    ]),
+  )
+}
+
+export const themeVariables = (theme: Theme): Record<string, string> => ({
+  ...named('color', theme.colors),
+  ...Object.fromEntries(
+    edgeKinds.map((kind) => [`${prefix}edge-${kebab(kind)}-color`, edgeColorOf(theme, kind)]),
+  ),
+  [`${prefix}status-hold`]: theme.colors.text.faint,
+  ...libraryVariables(),
+  ...Object.fromEntries(libraryScales(theme)),
+})
+
+const themeBlock = (theme: Theme) => {
+  const lines = [
+    `color-scheme: ${theme.scheme};`,
+    ...Object.entries(themeVariables(theme)).map(([k, v]) => `${k}: ${v};`),
+  ]
+  return `:root[data-theme="${theme.id}"][data-mantine-color-scheme] {\n${lines.map((l) => `  ${l}`).join('\n')}\n}\n`
+}
+
 export const stylesheet = () => {
   const lines = [
     'color-scheme: dark;',
     ...Object.entries({ ...variables(), ...libraryVariables() }).map(([k, v]) => `${k}: ${v};`),
   ]
-  return `/* Generated from @netherite/tokens. Do not edit. */\n:root {\n${lines.map((l) => `  ${l}`).join('\n')}\n}\n`
+  const others = themes.filter((theme) => theme.id !== defaultThemeId).map(themeBlock)
+  return `/* Generated from @netherite/tokens. Do not edit. */\n:root {\n${lines.map((l) => `  ${l}`).join('\n')}\n}\n${others.join('')}`
 }

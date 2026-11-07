@@ -98,3 +98,7 @@ body,
   font-size: var(--nt-text-body-sm-size);
   color: var(--nt-color-text-secondary);
 }
+
+a {
+  color: var(--nt-color-accent-fg);
+}

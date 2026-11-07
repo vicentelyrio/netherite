@@ -383,6 +383,8 @@ const es = {
       language: 'Idioma',
       languageHint:
         'El idioma de la app. Tus archivos, la CLI y los mensajes del servidor no cambian.',
+      theme: 'Tema',
+      themeHint: 'Los colores de la app, guardados en este navegador.',
       noticeDuration: 'Duración de los avisos',
       noticeDurationHint:
         'Cuánto tiempo sigue un aviso en pantalla. Un aviso con una acción dura al menos {seconds} segundos.',

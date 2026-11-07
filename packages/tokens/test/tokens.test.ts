@@ -423,13 +423,15 @@ describe('CSS variables', () => {
     }
   })
 
-  test('the stylesheet is one :root block, dark, each variable declared once', () => {
+  test('the stylesheet starts with one dark :root block, and each block declares a variable once', () => {
     const css = stylesheet()
     expect(css.match(/:root \{/g)).toHaveLength(1)
     expect(css).toContain('color-scheme: dark;')
-    expect(css).not.toContain('data-mantine-color-scheme')
-    const names = [...css.matchAll(/^\s+(--[a-z0-9-]+):/gm)].map((m) => m[1])
-    expect(new Set(names).size).toBe(names.length)
+    expect(css.slice(0, css.indexOf('}'))).not.toContain('data-mantine-color-scheme')
+    for (const block of css.split(/^}$/m)) {
+      const names = [...block.matchAll(/^\s+(--[a-z0-9-]+):/gm)].map((m) => m[1])
+      expect(new Set(names).size).toBe(names.length)
+    }
   })
 
   test.skipIf(!existsSync(new URL('../dist/tokens.css', import.meta.url)))(
