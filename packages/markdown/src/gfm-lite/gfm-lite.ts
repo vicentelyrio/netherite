@@ -7,7 +7,6 @@ import { gfmFootnote } from 'micromark-extension-gfm-footnote'
 import { gfmStrikethrough } from 'micromark-extension-gfm-strikethrough'
 import { gfmTable } from 'micromark-extension-gfm-table'
 import { gfmTaskListItem } from 'micromark-extension-gfm-task-list-item'
-import type {} from 'remark-parse'
 import type { Plugin } from 'unified'
 
 export const remarkGfmLite: Plugin<[], Root> = function () {
