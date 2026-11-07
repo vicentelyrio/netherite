@@ -7,80 +7,18 @@ import {
   GitTimeout,
   InvalidGitArgument,
   NotARepository,
-} from './errors'
-import type { GitIdentity } from './identity'
+} from '../errors'
 import {
   type CommitInfo,
   type CommitPatch,
-  type GitStatus,
   logFormat,
   parseLog,
   parsePatchLog,
   parseStatus,
-} from './parse'
-import { assertReadOnly } from './readonly'
-
-export interface GitOptions {
-  readonly timeoutMs?: number
-  readonly cacheSize?: number
-  readonly executable?: string
-}
-
-export interface LogOptions {
-  readonly paths?: ReadonlyArray<string>
-  readonly since?: string
-  readonly after?: string
-  readonly limit?: number
-  readonly files?: 'none' | 'names' | 'numstat'
-}
-
-export interface PatchLogOptions {
-  readonly paths: ReadonlyArray<string>
-  readonly after?: string
-  readonly limit?: number
-  readonly context?: number
-}
-
-export interface StatusOptions {
-  readonly untracked?: 'all' | 'normal' | 'no'
-}
-
-export interface GitRepository {
-  readonly root: string
-  readonly gitDir: string
-  readonly shallow: boolean
-  readonly head: Effect.Effect<string | undefined, GitError>
-  readonly status: (options?: StatusOptions) => Effect.Effect<GitStatus, GitError>
-  readonly log: (options?: LogOptions) => Effect.Effect<ReadonlyArray<CommitInfo>, GitError>
-  readonly patchLog: (
-    options: PatchLogOptions,
-  ) => Effect.Effect<ReadonlyArray<CommitPatch>, GitError>
-  readonly readCommits: (
-    hashes: ReadonlyArray<string>,
-    options?: { readonly files?: 'none' | 'names' | 'numstat' },
-  ) => Effect.Effect<ReadonlyArray<CommitInfo>, GitError>
-  readonly firstCommit: (path: string) => Effect.Effect<CommitInfo | undefined, GitError>
-  readonly fileAt: (path: string, rev?: string) => Effect.Effect<string | undefined, GitError>
-  readonly identity: Effect.Effect<GitIdentity, GitError>
-  readonly shallowBoundary: Effect.Effect<ReadonlyArray<string>>
-  readonly invalidate: () => void
-}
-
-export type GitAvailability =
-  | { readonly available: true; readonly git: GitRepository }
-  | {
-      readonly available: false
-      readonly reason: 'git-not-installed' | 'not-a-repository'
-      readonly message: string
-    }
-
-const refPattern = /^[A-Za-z0-9._/@^~-]+$/
-const datePattern = /^\d{4}-\d{2}-\d{2}([T ]\d{2}:\d{2}(:\d{2})?(Z|[+-]\d{2}:?\d{2})?)?$/
-
-const checkRef = (name: string, value: string) =>
-  refPattern.test(value) && !value.startsWith('-') && !value.includes('..')
-    ? Effect.void
-    : Effect.fail(new InvalidGitArgument({ name, value }))
+} from '../parse'
+import { assertReadOnly } from '../readonly'
+import type { GitOptions, GitRepository, Output } from './git.types'
+import { checkRef, datePattern } from './refs'
 
 const env = {
   GIT_OPTIONAL_LOCKS: '0',
@@ -91,12 +29,6 @@ const env = {
   GIT_WORK_TREE: undefined,
   GIT_INDEX_FILE: undefined,
 } as const
-
-interface Output {
-  readonly stdout: string
-  readonly stderr: string
-  readonly code: number
-}
 
 export const openGit = (dir: string, options: GitOptions = {}) =>
   Effect.gen(function* () {
@@ -354,22 +286,3 @@ export const openGit = (dir: string, options: GitOptions = {}) =>
     }
     return repository
   })
-
-export const detectGit = (dir: string, options: GitOptions = {}) =>
-  openGit(dir, options).pipe(
-    Effect.map((git): GitAvailability => ({ available: true, git })),
-    Effect.catchTags({
-      GitNotInstalled: (error) =>
-        Effect.succeed<GitAvailability>({
-          available: false,
-          reason: 'git-not-installed',
-          message: error.message,
-        }),
-      NotARepository: (error) =>
-        Effect.succeed<GitAvailability>({
-          available: false,
-          reason: 'not-a-repository',
-          message: error.message,
-        }),
-    }),
-  )

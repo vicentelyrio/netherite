@@ -1,4 +1,4 @@
-import { ForbiddenGitCommand } from './errors'
+import { ForbiddenGitCommand } from '../errors'
 
 export const readOnlySubcommands = [
   'status',
