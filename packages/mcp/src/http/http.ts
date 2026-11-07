@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js'
 import type { Repo } from '@netherite/core'
 import { Effect } from 'effect'
-import { createMcpServer, type McpOptions } from './server'
+import { createMcpServer, type McpOptions } from '../server'
 
 export interface McpHttp {
   readonly handle: (request: Request) => Promise<Response>

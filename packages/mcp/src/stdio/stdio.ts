@@ -1,7 +1,7 @@
 import type { Readable, Writable } from 'node:stream'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { Effect } from 'effect'
-import type { McpHandle } from './server'
+import type { McpHandle } from '../server'
 
 export interface StdioOptions {
   readonly input?: Readable
