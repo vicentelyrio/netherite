@@ -1,6 +1,6 @@
 # Getting started
 
-This takes about ten minutes. You need Node 24 or newer and a git repository (an empty one is fine).
+You need Node 24 or newer and a git repository (an empty one is fine).
 
 ## 1. Set up the repository
 
