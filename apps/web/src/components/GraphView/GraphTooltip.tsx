@@ -1,4 +1,4 @@
-import { designColor, type ItemTypeName, typeLabels } from '@netherite/ui'
+import { designColor, type ItemTypeName } from '@netherite/ui'
 import { formatDay } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { tooltip } from './GraphView.constants'
@@ -33,7 +33,7 @@ export function GraphTooltip({
     >
       <div className="gv-tooltip-kind">
         <span style={{ background: designColor.type[node.type as ItemTypeName] }} />
-        {typeLabels[node.type as ItemTypeName]}
+        {LL.common.types[node.type as ItemTypeName]()}
         {parentTitle === undefined ? '' : LL.components.graph.tooltipIn({ parent: parentTitle })}
       </div>
       <div className="gv-tooltip-title">

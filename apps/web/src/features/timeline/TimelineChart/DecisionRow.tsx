@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { formatDay } from '@/infrastructure/datetime'
-import { useI18nContext } from '@/infrastructure/i18n'
+import { adrStatusLabel, useI18nContext } from '@/infrastructure/i18n'
 import { daysBetween, pointOf, spanOf, type TimelineDecision } from '../layout'
 import { hue, hueStyle, labelStyle, pointStyle, spanStyle } from './TimelineChart.styles'
 
@@ -21,6 +21,8 @@ export function DecisionRow({
   const line = start === undefined ? undefined : spanOf(start, end, from, to)
   const open = d.accepted === undefined && d.ended === undefined && start !== undefined
   const todayAt = pointOf(today, from, to)
+  const markerLabel = (kind: string) =>
+    kind === 'ended' ? LL.timeline.ended() : adrStatusLabel(LL, kind)
   return (
     <div className="tl-row" data-kind="decision">
       <div className="tl-label">
@@ -29,7 +31,7 @@ export function DecisionRow({
         <Link to="/items/$id" params={{ id: d.id }} className="tl-title">
           {d.title}
         </Link>
-        <span className="tl-sub">{d.status}</span>
+        <span className="tl-sub">{adrStatusLabel(LL, d.status)}</span>
       </div>
       <div className="tl-track" style={hueStyle('adr')}>
         {line !== undefined && (
@@ -57,8 +59,8 @@ export function DecisionRow({
               className="tl-marker"
               data-kind={kind}
               style={pointStyle(at)}
-              title={`${kind} ${formatDay(day as string)}`}
-              aria-label={`${d.id} ${kind}`}
+              title={`${markerLabel(kind as string)} ${formatDay(day as string)}`}
+              aria-label={`${d.id} ${markerLabel(kind as string)}`}
             />
           )
         })}

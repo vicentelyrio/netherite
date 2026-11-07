@@ -1,11 +1,5 @@
 import type { KnowledgeRow } from '@netherite/api'
-import {
-  type AdrStatus,
-  AdrStatusPill,
-  type ItemTypeName,
-  TypeBadge,
-  typeLabels,
-} from '@netherite/ui'
+import { type AdrStatus, AdrStatusPill, type ItemTypeName, TypeBadge } from '@netherite/ui'
 import { Link } from '@tanstack/react-router'
 import { FreshnessCell } from '@/components'
 import { ago } from '@/infrastructure/datetime'
@@ -20,9 +14,8 @@ export function KnowledgeViewRow({
 }) {
   const { LL } = useI18nContext()
   const others = row.projects.filter((p) => p !== project)
-  const explained = Object.entries(row.explains).map(
-    ([type, count]) =>
-      `${count} ${typeLabels[type as ItemTypeName].toLowerCase()}${count === 1 ? '' : 's'}`,
+  const explained = Object.entries(row.explains).map(([type, count]) =>
+    LL.common.typeCount[type as ItemTypeName]({ count }),
   )
   const linkedTo = [
     ...(explained.length === 0 ? [] : [LL.projects.explains({ what: explained.join(', ') })]),

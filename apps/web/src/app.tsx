@@ -4,9 +4,8 @@ import { type RouterHistory, RouterProvider } from '@tanstack/react-router'
 import { useMemo } from 'react'
 import { ApiProvider, createApi } from '@/infrastructure/api'
 import type { AppConfig } from '@/infrastructure/config'
-import { I18nProvider } from '@/infrastructure/i18n'
 import { NoticeProvider } from '@/infrastructure/notices'
-import { SettingsProvider } from '@/infrastructure/settings'
+import { LocalizedProvider, SettingsProvider } from '@/infrastructure/settings'
 import { createAppRouter } from './router'
 
 export interface AppProps {
@@ -27,17 +26,17 @@ export function App({ config, history, env }: AppProps) {
   const router = useMemo(() => createAppRouter(history), [history])
   return (
     <NetheriteProvider {...(env === undefined ? {} : { env })}>
-      <I18nProvider>
-        <ApiProvider value={api}>
-          <QueryClientProvider client={client}>
-            <SettingsProvider>
+      <SettingsProvider>
+        <LocalizedProvider>
+          <ApiProvider value={api}>
+            <QueryClientProvider client={client}>
               <NoticeProvider>
                 <RouterProvider router={router} />
               </NoticeProvider>
-            </SettingsProvider>
-          </QueryClientProvider>
-        </ApiProvider>
-      </I18nProvider>
+            </QueryClientProvider>
+          </ApiProvider>
+        </LocalizedProvider>
+      </SettingsProvider>
     </NetheriteProvider>
   )
 }

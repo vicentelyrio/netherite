@@ -1,5 +1,5 @@
 import { EmptyState } from '@netherite/ui'
-import { formatDay } from '@/infrastructure/datetime'
+import { formatDay, monthName } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { pointOf, rowsOf, ticksOf, unitOf } from '../layout'
 import { useTimeline } from '../TimelineProvider'
@@ -86,6 +86,5 @@ export function TimelineChart() {
   )
 }
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const formatMonth = (day: string, major: boolean) =>
-  major ? day.slice(0, 4) : (MONTHS[Number(day.slice(5, 7)) - 1] as string)
+  major ? day.slice(0, 4) : monthName(Number(day.slice(5, 7)) - 1)

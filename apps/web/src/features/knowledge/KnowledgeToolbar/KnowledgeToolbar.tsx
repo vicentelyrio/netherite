@@ -1,6 +1,6 @@
 import { Icon } from '@netherite/ui'
 import { FilterTabs, SearchField, SelectField } from '@/components'
-import { useI18nContext } from '@/infrastructure/i18n'
+import { adrStatusLabel, useI18nContext } from '@/infrastructure/i18n'
 import type { SortKey } from '../filters'
 import { useKnowledgeIndex } from '../KnowledgeProvider'
 import './KnowledgeToolbar.css'
@@ -42,6 +42,7 @@ export function KnowledgeToolbar() {
         label={LL.knowledge.toolbar.status()}
         value={filters.status}
         options={adrStatuses}
+        labelOf={(status) => adrStatusLabel(LL, status)}
         onChange={(status) => set({ status })}
       />
       <SelectField

@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { linkKindLabel, useI18nContext } from '@/infrastructure/i18n'
 import type { LinkInfo } from './ItemLinks.types'
 
 export function LinkList({
@@ -8,6 +9,7 @@ export function LinkList({
   readonly title: string
   readonly links: ReadonlyArray<LinkInfo>
 }) {
+  const { LL } = useI18nContext()
   if (links.length === 0) return null
   return (
     <section>
@@ -15,7 +17,7 @@ export function LinkList({
       <ul className="app-link-list">
         {links.map((link) => (
           <li key={`${link.kind}:${link.path}`}>
-            <span className="app-muted">{link.kind.replace('_', ' ')}</span>{' '}
+            <span className="app-muted">{linkKindLabel(LL, link.kind)}</span>{' '}
             {link.id ? (
               <Link to="/items/$id" params={{ id: link.id }}>
                 {link.id} {link.title}

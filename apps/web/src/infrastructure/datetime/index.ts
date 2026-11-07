@@ -12,7 +12,10 @@ export {
   formatWeekStart,
   formatYear,
   isoDay,
+  monthName,
   nowIso,
   parse,
+  setDateLocale,
   utcDay,
+  weekdayName,
 } from './datetime'

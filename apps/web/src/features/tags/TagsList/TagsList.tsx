@@ -1,5 +1,5 @@
 import { GroupCard } from '@/components'
-import { useI18nContext } from '@/infrastructure/i18n'
+import { clusterLabel, useI18nContext } from '@/infrastructure/i18n'
 import { groupsOf, keyOf, shareOf } from '../rules'
 import { useTags } from '../TagsProvider'
 import './TagsList.css'
@@ -46,7 +46,7 @@ export function TagsList() {
                 </span>
               ))}
             </span>
-            <span className="tg-cluster">{tag.cluster}</span>
+            <span className="tg-cluster">{clusterLabel(LL, tag.cluster)}</span>
           </button>
         )
       })}

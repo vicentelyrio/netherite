@@ -1,3 +1,4 @@
+export { LocalizedProvider } from './LocalizedProvider'
 export {
   type SettingsContextValue,
   SettingsProvider,
@@ -14,4 +15,5 @@ export {
   storageKey,
 } from './settings'
 export { useEditorSettings } from './useEditorSettings'
+export { useLanguage } from './useLanguage'
 export { useNoticeSettings } from './useNoticeSettings'

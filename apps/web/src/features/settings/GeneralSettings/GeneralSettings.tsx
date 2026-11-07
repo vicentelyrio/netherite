@@ -1,7 +1,9 @@
 import { settingDefaults } from '@netherite/schema'
-import { useI18nContext } from '@/infrastructure/i18n'
-import { useNoticeSettings } from '@/infrastructure/settings'
+import { SegmentedControl } from '@netherite/ui'
+import { type Locales, languages, useI18nContext } from '@/infrastructure/i18n'
+import { useLanguage, useNoticeSettings } from '@/infrastructure/settings'
 import { DurationSetting } from '../DurationSetting'
+import { SettingRow } from '../SettingRow'
 import { SettingsSection } from '../SettingsSection'
 
 const noticePresetsMs = [3000, 5000, 10_000, 20_000]
@@ -11,8 +13,17 @@ export function GeneralSettings() {
   const { LL } = useI18nContext()
   const text = LL.settings.general
   const { lifetimeMs, setLifetimeMs } = useNoticeSettings()
+  const { language, setLanguage } = useLanguage()
   return (
     <SettingsSection title={text.title()} subtitle={text.subtitle()}>
+      <SettingRow label={text.language()} hint={text.languageHint()}>
+        <SegmentedControl
+          aria-label={text.language()}
+          value={language}
+          onChange={(next) => setLanguage(next as Locales)}
+          data={languages.map(({ id, name }) => ({ value: id, label: name }))}
+        />
+      </SettingRow>
       <DurationSetting
         label={text.noticeDuration()}
         hint={text.noticeDurationHint({

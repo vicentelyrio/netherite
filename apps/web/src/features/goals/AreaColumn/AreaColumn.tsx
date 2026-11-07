@@ -36,8 +36,9 @@ export function AreaColumn({
   const rename = useWrite(api, (a, to: string) =>
     a.call((c) => c.goals.renameArea({ payload: { from: isUnassigned ? '' : area, to } })),
   )
+  const shownArea = isUnassigned ? LL.stats.areas.noArea() : area
   return (
-    <CardColumn label={area} rootRef={list.setNodeRef} over={target}>
+    <CardColumn label={shownArea} rootRef={list.setNodeRef} over={target}>
       <header className="goals-area-head">
         <div className="goals-area-name">
           <EditableText
@@ -45,7 +46,7 @@ export function AreaColumn({
             className="goals-area-title"
             rootClassName="goals-area-editable"
             inputClassName="goals-area-input"
-            value={area}
+            value={shownArea}
             draft={isUnassigned ? '' : undefined}
             onSave={(to) => rename.mutate(to)}
           />
@@ -78,7 +79,7 @@ export function AreaColumn({
             <Icon name="delete" size="inline" />
           </button>
         )}
-        <ProgressRing done={done} total={total} size={58} label={area} />
+        <ProgressRing done={done} total={total} size={58} label={shownArea} />
       </header>
       {goals.map((goal) => (
         <GoalCard key={goal.id} goal={goal} />

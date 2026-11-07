@@ -7,6 +7,8 @@ export type BaseLocale = 'en'
 
 export type Locales =
 	| 'en'
+	| 'es'
+	| 'pt-BR'
 
 export type Translation = RootTranslation
 
@@ -40,6 +42,146 @@ type RootTranslation = {
 			 * T​h​a​t​ ​p​a​g​e​ ​d​o​e​s​ ​n​o​t​ ​e​x​i​s​t​.
 			 */
 			text: string
+		}
+		/**
+		 * D​i​s​m​i​s​s
+		 */
+		dismiss: string
+		/**
+		 * {​l​a​b​e​l​}​,​ ​{​c​o​u​n​t​}​ ​w​a​i​t​i​n​g
+		 * @param {number} count
+		 * @param {string} label
+		 */
+		waiting: RequiredParams<'count' | 'label'>
+		/**
+		 * P​r​o​g​r​e​s​s
+		 */
+		progress: string
+		/**
+		 * {​l​a​b​e​l​}​:​ ​{​d​o​n​e​}​ ​o​f​ ​{​t​o​t​a​l​}​ ​d​o​n​e
+		 * @param {number} done
+		 * @param {string} label
+		 * @param {number} total
+		 */
+		progressOf: RequiredParams<'done' | 'label' | 'total'>
+		/**
+		 * {​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}
+		 * @param {number} count
+		 */
+		commits: RequiredParams<'count'>
+		/**
+		 * {​c​o​u​n​t​}​+​ ​c​o​m​m​i​t​s
+		 * @param {number} count
+		 */
+		commitsAtLeast: RequiredParams<'count'>
+		/**
+		 * {​c​o​m​m​i​t​s​}​ ​t​o​ ​c​o​v​e​r​e​d​ ​f​i​l​e​s​ ​s​i​n​c​e​ ​{​s​i​n​c​e​}
+		 * @param {string} commits
+		 * @param {string} since
+		 */
+		coveredSince: RequiredParams<'commits' | 'since'>
+		types: {
+			/**
+			 * G​o​a​l
+			 */
+			goal: string
+			/**
+			 * P​r​o​j​e​c​t
+			 */
+			project: string
+			/**
+			 * T​a​s​k
+			 */
+			task: string
+			/**
+			 * A​D​R
+			 */
+			adr: string
+			/**
+			 * D​o​c
+			 */
+			doc: string
+			/**
+			 * C​o​n​t​e​x​t
+			 */
+			context: string
+			/**
+			 * R​u​n​b​o​o​k
+			 */
+			runbook: string
+		}
+		typeCount: {
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​g​o​a​l​|​g​o​a​l​s​}​}
+			 * @param {number} count
+			 */
+			goal: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​p​r​o​j​e​c​t​|​p​r​o​j​e​c​t​s​}​}
+			 * @param {number} count
+			 */
+			project: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​t​a​s​k​|​t​a​s​k​s​}​}
+			 * @param {number} count
+			 */
+			task: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​A​D​R​|​A​D​R​s​}​}
+			 * @param {number} count
+			 */
+			adr: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​d​o​c​|​d​o​c​s​}​}
+			 * @param {number} count
+			 */
+			doc: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​c​o​n​t​e​x​t​ ​i​t​e​m​|​c​o​n​t​e​x​t​ ​i​t​e​m​s​}​}
+			 * @param {number} count
+			 */
+			context: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​{​{​r​u​n​b​o​o​k​|​r​u​n​b​o​o​k​s​}​}
+			 * @param {number} count
+			 */
+			runbook: RequiredParams<'count'>
+		}
+		freshness: {
+			/**
+			 * F​r​e​s​h
+			 */
+			fresh: string
+			/**
+			 * D​r​i​f​t​i​n​g
+			 */
+			drifting: string
+			/**
+			 * S​t​a​l​e
+			 */
+			stale: string
+			/**
+			 * N​o​t​ ​t​r​a​c​k​e​d
+			 */
+			unknown: string
+		}
+		adrStatus: {
+			/**
+			 * P​r​o​p​o​s​e​d
+			 */
+			proposed: string
+			/**
+			 * A​c​c​e​p​t​e​d
+			 */
+			accepted: string
+			/**
+			 * D​e​p​r​e​c​a​t​e​d
+			 */
+			deprecated: string
+			/**
+			 * S​u​p​e​r​s​e​d​e​d
+			 */
+			superseded: string
 		}
 	}
 	components: {
@@ -1264,6 +1406,14 @@ type RootTranslation = {
 			 */
 			subtitle: string
 			/**
+			 * L​a​n​g​u​a​g​e
+			 */
+			language: string
+			/**
+			 * T​h​e​ ​l​a​n​g​u​a​g​e​ ​o​f​ ​t​h​e​ ​a​p​p​.​ ​Y​o​u​r​ ​f​i​l​e​s​,​ ​t​h​e​ ​C​L​I​ ​a​n​d​ ​s​e​r​v​e​r​ ​m​e​s​s​a​g​e​s​ ​s​t​a​y​ ​a​s​ ​t​h​e​y​ ​a​r​e​.
+			 */
+			languageHint: string
+			/**
 			 * N​o​t​i​c​e​ ​d​u​r​a​t​i​o​n
 			 */
 			noticeDuration: string
@@ -1457,6 +1607,10 @@ type RootTranslation = {
 		}
 	}
 	navigation: {
+		/**
+		 * M​a​i​n
+		 */
+		main: string
 		/**
 		 * S​e​a​r​c​h
 		 */
@@ -1818,6 +1972,10 @@ type RootTranslation = {
 			 * G​r​o​u​p​s
 			 */
 			clusters: string
+			/**
+			 * O​t​h​e​r
+			 */
+			other: string
 		}
 		legend: {
 			/**
@@ -2624,6 +2782,10 @@ type RootTranslation = {
 			 */
 			decision: string
 		}
+		/**
+		 * e​n​d​e​d
+		 */
+		ended: string
 		/**
 		 * S​h​o​w​ ​t​a​s​k​s
 		 */
@@ -3586,6 +3748,130 @@ export type TranslationFunctions = {
 			 * That page does not exist.
 			 */
 			text: () => LocalizedString
+		}
+		/**
+		 * Dismiss
+		 */
+		dismiss: () => LocalizedString
+		/**
+		 * {label}, {count} waiting
+		 */
+		waiting: (arg: { count: number, label: string }) => LocalizedString
+		/**
+		 * Progress
+		 */
+		progress: () => LocalizedString
+		/**
+		 * {label}: {done} of {total} done
+		 */
+		progressOf: (arg: { done: number, label: string, total: number }) => LocalizedString
+		/**
+		 * {count} {{commit|commits}}
+		 */
+		commits: (arg: { count: number }) => LocalizedString
+		/**
+		 * {count}+ commits
+		 */
+		commitsAtLeast: (arg: { count: number }) => LocalizedString
+		/**
+		 * {commits} to covered files since {since}
+		 */
+		coveredSince: (arg: { commits: string, since: string }) => LocalizedString
+		types: {
+			/**
+			 * Goal
+			 */
+			goal: () => LocalizedString
+			/**
+			 * Project
+			 */
+			project: () => LocalizedString
+			/**
+			 * Task
+			 */
+			task: () => LocalizedString
+			/**
+			 * ADR
+			 */
+			adr: () => LocalizedString
+			/**
+			 * Doc
+			 */
+			doc: () => LocalizedString
+			/**
+			 * Context
+			 */
+			context: () => LocalizedString
+			/**
+			 * Runbook
+			 */
+			runbook: () => LocalizedString
+		}
+		typeCount: {
+			/**
+			 * {count} {{goal|goals}}
+			 */
+			goal: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{project|projects}}
+			 */
+			project: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{task|tasks}}
+			 */
+			task: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{ADR|ADRs}}
+			 */
+			adr: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{doc|docs}}
+			 */
+			doc: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{context item|context items}}
+			 */
+			context: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} {{runbook|runbooks}}
+			 */
+			runbook: (arg: { count: number }) => LocalizedString
+		}
+		freshness: {
+			/**
+			 * Fresh
+			 */
+			fresh: () => LocalizedString
+			/**
+			 * Drifting
+			 */
+			drifting: () => LocalizedString
+			/**
+			 * Stale
+			 */
+			stale: () => LocalizedString
+			/**
+			 * Not tracked
+			 */
+			unknown: () => LocalizedString
+		}
+		adrStatus: {
+			/**
+			 * Proposed
+			 */
+			proposed: () => LocalizedString
+			/**
+			 * Accepted
+			 */
+			accepted: () => LocalizedString
+			/**
+			 * Deprecated
+			 */
+			deprecated: () => LocalizedString
+			/**
+			 * Superseded
+			 */
+			superseded: () => LocalizedString
 		}
 	}
 	components: {
@@ -4761,6 +5047,14 @@ export type TranslationFunctions = {
 			 */
 			subtitle: () => LocalizedString
 			/**
+			 * Language
+			 */
+			language: () => LocalizedString
+			/**
+			 * The language of the app. Your files, the CLI and server messages stay as they are.
+			 */
+			languageHint: () => LocalizedString
+			/**
 			 * Notice duration
 			 */
 			noticeDuration: () => LocalizedString
@@ -4947,6 +5241,10 @@ export type TranslationFunctions = {
 		}
 	}
 	navigation: {
+		/**
+		 * Main
+		 */
+		main: () => LocalizedString
 		/**
 		 * Search
 		 */
@@ -5288,6 +5586,10 @@ export type TranslationFunctions = {
 			 * Groups
 			 */
 			clusters: () => LocalizedString
+			/**
+			 * Other
+			 */
+			other: () => LocalizedString
 		}
 		legend: {
 			/**
@@ -6047,6 +6349,10 @@ export type TranslationFunctions = {
 			 */
 			decision: () => LocalizedString
 		}
+		/**
+		 * ended
+		 */
+		ended: () => LocalizedString
 		/**
 		 * Show tasks
 		 */

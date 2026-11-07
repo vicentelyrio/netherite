@@ -53,5 +53,11 @@ export { Tabs } from './components/Tabs'
 export { Tooltip } from './components/Tooltip'
 export { TypeBadge, type TypeBadgeProps, typeLabels } from './components/TypeBadge'
 export { glyphStyle, TypeGlyph, type TypeGlyphProps } from './components/TypeGlyph'
+export {
+  defaultUiLabels,
+  type UiLabels,
+  UiLabelsProvider,
+  useUiLabels,
+} from './components/UiLabels'
 export { UiPreview } from './components/UiPreview'
 export { classNames, theme } from './theme'

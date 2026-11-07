@@ -13,6 +13,38 @@ const en = {
     rename: 'Rename {name}',
     serveHint: 'Check that `netherite serve` is still running.',
     notFound: { title: 'Nothing here', text: 'That page does not exist.' },
+    dismiss: 'Dismiss',
+    waiting: '{label:string}, {count:number} waiting',
+    progress: 'Progress',
+    progressOf: '{label:string}: {done:number} of {total:number} done',
+    commits: '{count:number} {{commit|commits}}',
+    commitsAtLeast: '{count:number}+ commits',
+    coveredSince: '{commits:string} to covered files since {since:string}',
+    types: {
+      goal: 'Goal',
+      project: 'Project',
+      task: 'Task',
+      adr: 'ADR',
+      doc: 'Doc',
+      context: 'Context',
+      runbook: 'Runbook',
+    },
+    typeCount: {
+      goal: '{count:number} {{goal|goals}}',
+      project: '{count:number} {{project|projects}}',
+      task: '{count:number} {{task|tasks}}',
+      adr: '{count:number} {{ADR|ADRs}}',
+      doc: '{count:number} {{doc|docs}}',
+      context: '{count:number} {{context item|context items}}',
+      runbook: '{count:number} {{runbook|runbooks}}',
+    },
+    freshness: { fresh: 'Fresh', drifting: 'Drifting', stale: 'Stale', unknown: 'Not tracked' },
+    adrStatus: {
+      proposed: 'Proposed',
+      accepted: 'Accepted',
+      deprecated: 'Deprecated',
+      superseded: 'Superseded',
+    },
   },
   components: {
     breadcrumb: 'Breadcrumb',
@@ -346,6 +378,9 @@ const en = {
     general: {
       title: 'General',
       subtitle: 'Saved in this browser.',
+      language: 'Language',
+      languageHint:
+        'The language of the app. Your files, the CLI and server messages stay as they are.',
       noticeDuration: 'Notice duration',
       noticeDurationHint:
         'How long a notice stays on screen. A notice with an action stays at least {seconds:number} seconds.',
@@ -399,6 +434,7 @@ const en = {
     },
   },
   navigation: {
+    main: 'Main',
     search: 'Search',
     inbox: 'Inbox',
     goals: 'Goals',
@@ -494,6 +530,7 @@ const en = {
       summary: '{tags:number} tags · {labels:number} labels · {items:number} items',
       mostUsed: 'Most used',
       clusters: 'Groups',
+      other: 'Other',
     },
     legend: {
       label: 'How to read the map',
@@ -711,6 +748,7 @@ const en = {
       overdue: 'Overdue',
       decision: 'Proposed → accepted',
     },
+    ended: 'ended',
     showTasks: 'Show tasks',
     hideTasks: 'Hide tasks',
     overdue: 'Overdue',

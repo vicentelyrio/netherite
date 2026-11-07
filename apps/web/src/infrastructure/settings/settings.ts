@@ -1,4 +1,6 @@
 import { settingCatalog, settingDefaults } from '@netherite/schema'
+import type { Locales } from '../i18n'
+import { isLocale } from '../i18n/i18n-util'
 import { type ActionId, isActionId } from '../shortcuts/actions'
 
 export interface EditorPreferences {
@@ -14,6 +16,7 @@ export interface Settings {
   readonly shortcuts: Readonly<Partial<Record<ActionId, string | null>>>
   readonly editor: EditorPreferences
   readonly notices: NoticePreferences
+  readonly language: Locales | null
 }
 
 export const defaultSettings: Settings = {
@@ -23,6 +26,7 @@ export const defaultSettings: Settings = {
     autosaveDelayMs: settingDefaults.editor.autosaveDelayMs,
   },
   notices: { lifetimeMs: settingDefaults.notices.lifetimeMs },
+  language: null,
 }
 
 export const storageKey = 'netherite.settings'
@@ -82,6 +86,9 @@ const parseNotices = (stored: unknown): NoticePreferences => {
   }
 }
 
+const parseLanguage = (stored: unknown): Locales | null =>
+  typeof stored === 'string' && isLocale(stored) ? stored : null
+
 export const parseSettings = (raw: string | null | undefined): Settings => {
   if (!raw) return defaultSettings
   let value: unknown
@@ -90,11 +97,17 @@ export const parseSettings = (raw: string | null | undefined): Settings => {
   } catch {
     return defaultSettings
   }
-  const stored = value as { shortcuts?: unknown; editor?: unknown; notices?: unknown } | null
+  const stored = value as {
+    shortcuts?: unknown
+    editor?: unknown
+    notices?: unknown
+    language?: unknown
+  } | null
   return {
     shortcuts: parseShortcuts(stored?.shortcuts),
     editor: parseEditor(stored?.editor),
     notices: parseNotices(stored?.notices),
+    language: parseLanguage(stored?.language),
   }
 }
 

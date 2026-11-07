@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useI18nContext } from '@/infrastructure/i18n'
+import { clusterLabel, useI18nContext } from '@/infrastructure/i18n'
 import { layoutMap } from '../mapLayout'
 import { keyOf } from '../rules'
 import { useTags } from '../TagsProvider'
@@ -100,7 +100,7 @@ export function TagsMap() {
         })}
         {layout.clusters.map((c) => (
           <text key={c.name} x={c.x} y={c.y} className="tm-cluster" textAnchor="middle">
-            {c.name}
+            {clusterLabel(LL, c.name)}
           </text>
         ))}
         {shown.map((tag) => {

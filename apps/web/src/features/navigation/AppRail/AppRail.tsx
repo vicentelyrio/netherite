@@ -58,6 +58,7 @@ export function AppRail({ onSearch }: { readonly onSearch: () => void }) {
 
   return (
     <Rail
+      label={LL.navigation.main()}
       items={items}
       active={activeFor(pathname)}
       onSelect={select}

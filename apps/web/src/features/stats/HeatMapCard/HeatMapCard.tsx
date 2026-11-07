@@ -1,21 +1,20 @@
 import { useLayoutEffect, useRef } from 'react'
 import { ChartCard } from '@/components'
-import { formatDate, formatDay } from '@/infrastructure/datetime'
+import { formatDate, formatDay, monthName, weekdayName } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { heatDays, heatLevel, heatSummary } from '../numbers'
 import { useStats } from '../StatsProvider'
 import './HeatMapCard.css'
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const WEEKDAYS = [
-  ['mon', 'Mon'],
-  ['tue', ''],
-  ['wed', 'Wed'],
-  ['thu', ''],
-  ['fri', 'Fri'],
-  ['sat', ''],
-  ['sun', ''],
-] as const
+const weekRows = [
+  { key: 'mon', labelled: 1 },
+  { key: 'tue' },
+  { key: 'wed', labelled: 3 },
+  { key: 'thu' },
+  { key: 'fri', labelled: 5 },
+  { key: 'sat' },
+  { key: 'sun' },
+] as const satisfies ReadonlyArray<{ readonly key: string; readonly labelled?: number }>
 
 export function HeatMapCard() {
   const { LL } = useI18nContext()
@@ -36,7 +35,7 @@ export function HeatMapCard() {
     if (monday === undefined) break
     const month = Number(monday.slice(5, 7)) - 1
     if (month !== last && (Number(monday.slice(8, 10)) <= 7 || week === 0)) {
-      months.push({ label: MONTHS[month] as string, week })
+      months.push({ label: monthName(month), week })
       last = month
     }
   }
@@ -56,8 +55,8 @@ export function HeatMapCard() {
         </div>
         <div className="hm-body">
           <div className="hm-weekdays" aria-hidden="true">
-            {WEEKDAYS.map(([key, label]) => (
-              <span key={key}>{label}</span>
+            {weekRows.map((row) => (
+              <span key={row.key}>{'labelled' in row ? weekdayName(row.labelled) : ''}</span>
             ))}
           </div>
           <div className="hm" role="img" aria-label={LL.stats.heat.label({ count: total, weeks })}>

@@ -37,6 +37,7 @@ describe('the editor settings', () => {
       shortcuts: { 'go.tags': 'mod+y' },
       editor: { vimMode: true, autosaveDelayMs: 1000 },
       notices: { lifetimeMs: 5000 },
+      language: null,
     })
   })
 

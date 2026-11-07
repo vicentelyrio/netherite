@@ -11,9 +11,12 @@ import {
   formatWeekStart,
   formatYear,
   isoDay,
+  monthName,
   nowIso,
   resetClock,
   setClock,
+  setDateLocale,
+  weekdayName,
 } from '.'
 
 beforeEach(() => setClock('2026-11-02T12:00:00'))
@@ -91,5 +94,41 @@ describe('calendar days', () => {
       '2026-03-02',
     ])
     expect(eachDay('2026-03-02', '2026-03-01')).toEqual([])
+  })
+})
+
+describe('the language of dates', () => {
+  afterEach(() => setDateLocale('en'))
+
+  test.each([
+    ['es', '3 feb 2026'],
+    ['pt-BR', '3 fev 2026'],
+    ['en', '3 Feb 2026'],
+  ])('%s writes %s', (locale, written) => {
+    setDateLocale(locale)
+    expect(formatDate('2026-02-03T09:30:00').toLowerCase()).toBe(written.toLowerCase())
+  })
+
+  test('an unknown language falls back to English', () => {
+    setDateLocale('xx')
+    expect(formatDate('2026-02-03T09:30:00')).toBe('3 Feb 2026')
+  })
+
+  test.each([
+    ['es', 'hoy', 'hace 2 d'],
+    ['pt-BR', 'hoje', 'há 2 dias'],
+  ])('%s says how long ago', (locale, today, days) => {
+    setDateLocale(locale)
+    expect(ago('2026-11-02T08:00:00')).toBe(today)
+    expect(ago('2026-10-31T12:00:00').replace(/\s/g, ' ')).toBe(days)
+  })
+
+  test('month and weekday names follow the language', () => {
+    setDateLocale('es')
+    expect(monthName(0).toLowerCase()).toContain('ene')
+    expect(weekdayName(1).toLowerCase()).toContain('lun')
+    setDateLocale('pt-BR')
+    expect(monthName(1).toLowerCase()).toContain('fev')
+    expect(weekdayName(1).toLowerCase()).toContain('seg')
   })
 })
