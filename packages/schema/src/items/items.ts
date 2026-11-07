@@ -1,6 +1,6 @@
 import { Schema } from 'effect'
-import type { Config } from './config'
-import { DesignLink, Glob, IsoDate, IsoDateTime, Strings, Text } from './fields'
+import type { Config } from '../config'
+import { DesignLink, Glob, IsoDate, IsoDateTime, Strings, Text } from '../fields'
 import {
   AdrId,
   ContextId,
@@ -12,7 +12,7 @@ import {
   ProjectId,
   RunbookId,
   TaskId,
-} from './ids'
+} from '../ids'
 
 const ids = <S extends Schema.Constraint>(schema: S) => Schema.Array(schema)
 
@@ -93,7 +93,9 @@ const knowledge = <const T extends 'doc' | 'runbook' | 'context', I extends Sche
 })
 
 const Doc = open(Schema.Struct(knowledge('doc', DocId)))
+
 const Runbook = open(Schema.Struct(knowledge('runbook', RunbookId)))
+
 const Context = open(
   Schema.Struct({
     ...knowledge('context', ContextId),

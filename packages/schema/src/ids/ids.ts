@@ -1,4 +1,6 @@
 import { Schema } from 'effect'
+import type { ItemType } from '../enums/ItemType'
+import { settingDefaults } from '../settings/catalog'
 
 export const prefixes = {
   goal: 'GOAL',
@@ -8,40 +10,53 @@ export const prefixes = {
   doc: 'DOC',
   context: 'CTX',
   runbook: 'RUN',
-} as const
+} as const satisfies Record<ItemType, string>
 
-export type ItemType = keyof typeof prefixes
 export type Prefix = (typeof prefixes)[ItemType]
 
 export const itemTypes = Object.keys(prefixes) as [ItemType, ...ItemType[]]
 
-export const defaultIdPadding = 5
+export const defaultIdPadding = settingDefaults.content.idPadding
 
 const idString = (prefix: Prefix) =>
   Schema.String.check(Schema.isPattern(new RegExp(`^${prefix}-\\d+$`, 'u')))
 
 export const GoalId = idString('GOAL').pipe(Schema.brand('GoalId'))
+
 export const ProjectId = idString('PRJ').pipe(Schema.brand('ProjectId'))
+
 export const TaskId = idString('TASK').pipe(Schema.brand('TaskId'))
+
 export const AdrId = idString('ADR').pipe(Schema.brand('AdrId'))
+
 export const DocId = idString('DOC').pipe(Schema.brand('DocId'))
+
 export const ContextId = idString('CTX').pipe(Schema.brand('ContextId'))
+
 export const RunbookId = idString('RUN').pipe(Schema.brand('RunbookId'))
 
 export type GoalId = typeof GoalId.Type
+
 export type ProjectId = typeof ProjectId.Type
+
 export type TaskId = typeof TaskId.Type
+
 export type AdrId = typeof AdrId.Type
+
 export type DocId = typeof DocId.Type
+
 export type ContextId = typeof ContextId.Type
+
 export type RunbookId = typeof RunbookId.Type
 
 export const ItemId = Schema.Union([GoalId, ProjectId, TaskId, AdrId, DocId, ContextId, RunbookId])
+
 export type ItemId = typeof ItemId.Type
 
 export const Handle = Schema.String.check(Schema.isPattern(/^@[A-Za-z0-9][A-Za-z0-9_.-]*$/u)).pipe(
   Schema.brand('Handle'),
 )
+
 export type Handle = typeof Handle.Type
 
 const idPattern = new RegExp(`^(${Object.values(prefixes).join('|')})-(\\d+)$`, 'u')

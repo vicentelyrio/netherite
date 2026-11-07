@@ -1,6 +1,6 @@
 import { Schema } from 'effect'
-import { type ItemType, itemTypes } from './ids'
-import type { ItemSchemas } from './items'
+import { type ItemType, itemTypes } from '../ids'
+import type { ItemSchemas } from '../items'
 
 export const itemJsonSchemas = (schemas: ItemSchemas) =>
   Object.fromEntries(

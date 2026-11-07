@@ -3,10 +3,12 @@ import { Config } from './config'
 import { makeItemSchemas } from './items'
 
 export { Config, StateCategory, TaskState } from './config'
+export * from './enums'
 export * from './fields'
 export * from './ids'
 export { type ItemSchemas, makeItemSchemas } from './items'
 export { configJsonSchema, itemJsonSchemas, knownFields } from './json-schema'
+export * from './settings'
 export {
   checkItem,
   type FieldIssue,
