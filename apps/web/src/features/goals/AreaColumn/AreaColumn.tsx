@@ -17,6 +17,7 @@ export function AreaColumn({
   total,
   isUnassigned,
   dragging,
+  first,
 }: {
   readonly area: string
   readonly goals: ReadonlyArray<GoalRow>
@@ -24,6 +25,7 @@ export function AreaColumn({
   readonly total: number
   readonly isUnassigned: boolean
   readonly dragging: GoalRow | undefined
+  readonly first: boolean
 }) {
   const { LL } = useI18nContext()
   const list = useReorderList(area)
@@ -87,7 +89,7 @@ export function AreaColumn({
       {target && list.blank && (
         <div className="goal-drop">{LL.projects.dropTo({ name: area })}</div>
       )}
-      <NewGoal area={isUnassigned ? undefined : area} />
+      <NewGoal area={isUnassigned ? undefined : area} shortcut={first} />
     </CardColumn>
   )
 }

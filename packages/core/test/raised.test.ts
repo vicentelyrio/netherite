@@ -26,6 +26,7 @@ const stale: Freshness = {
   state: 'stale',
   commits: 12,
   uncommitted: false,
+  uncommittedFiles: [],
   baseline: { source: 'last-commit', date: '2026-01-05T00:00:00Z', hash: 'a'.repeat(40) },
   atLeast: false,
   covers: ['src/**'],

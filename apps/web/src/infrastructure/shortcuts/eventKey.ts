@@ -11,4 +11,4 @@ export const eventKey = ({ key, code, altKey }: KeyLike) => {
   return spelled[lower] ?? lower
 }
 
-export const isSymbolKey = (key: string) => /^[^a-z0-9]$/.test(key)
+export const isSymbolKey = (key: string) => key === 'plus' || /^[^a-z0-9]$/.test(key)

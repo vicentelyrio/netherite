@@ -13,7 +13,9 @@ import {
   isBrowserReserved,
   isValidShortcut,
   matchesShortcut,
+  normalise,
   parseShortcut,
+  refusalFor,
   resolveAll,
   resolveShortcut,
   toCodeMirrorKey,
@@ -43,11 +45,8 @@ const wrap =
 
 describe('resolving shortcuts', () => {
   test('defaults apply, with the aliases of the defaults', () => {
-    expect(resolveShortcut('go.projects')).toEqual({
-      keys: 'mod+p',
-      aliases: ['mod+alt+p'],
-    })
-    expect(resolveShortcut('go.inbox').aliases).toEqual([])
+    expect(resolveShortcut('go.projects')).toEqual({ keys: 'g p', aliases: [] })
+    expect(resolveShortcut('section.next')).toEqual({ keys: '.', aliases: ['f6'] })
   })
 
   test('a valid choice replaces the default and its aliases; an invalid one is ignored', () => {
@@ -55,7 +54,7 @@ describe('resolving shortcuts', () => {
       keys: 'mod+shift+p',
       aliases: [],
     })
-    expect(resolveShortcut('go.inbox', { 'go.inbox': 'hyper+x' }).keys).toBe('mod+i')
+    expect(resolveShortcut('go.inbox', { 'go.inbox': 'hyper+x' }).keys).toBe('g i')
     expect(isValidShortcut('mod+k')).toBe(true)
     expect(isValidShortcut('')).toBe(false)
   })
@@ -66,8 +65,8 @@ describe('resolving shortcuts', () => {
   })
 
   test('two actions on the same keys are reported, including through an alias', () => {
-    expect(conflicts({ 'go.tags': 'mod+g' })).toEqual([['go.goals', 'go.tags']])
-    expect(conflicts({ 'go.tags': 'mod+alt+p' })).toEqual([['go.projects', 'go.tags']])
+    expect(conflicts({ 'go.tags': 'g g' })).toEqual([['go.goals', 'go.tags']])
+    expect(conflicts({ 'go.tags': 'f6' })).toEqual([['go.tags', 'section.next']])
   })
 })
 
@@ -125,7 +124,8 @@ describe('useActionShortcuts', () => {
     const storage = memory(JSON.stringify({ shortcuts: { 'go.tags': 'mod+y' } }))
     render(<Probe run={run} />, { wrapper: wrap(storage) })
     expect(screen.getByText('ready')).toBeTruthy()
-    fireEvent.keyDown(window, { key: 't', ctrlKey: true })
+    fireEvent.keyDown(window, { key: 'g' })
+    fireEvent.keyDown(window, { key: 't' })
     expect(run).not.toHaveBeenCalled()
     fireEvent.keyDown(window, { key: 'y', ctrlKey: true })
     expect(run).toHaveBeenCalledTimes(1)
@@ -136,20 +136,22 @@ describe('collisions', () => {
   test('actions in different screens may share keys; a global one clashes with everything', () => {
     expect(conflicts({ 'tags.search': 'e' })).toEqual([])
     expect(conflicts({ 'go.tags': 'e' })).toEqual([['go.tags', 'inbox.archive']])
+    expect(conflicts({ 'inbox.next': 'g' })).not.toEqual([])
     expect(conflictsWith('tags.search', 'e')).toEqual([])
     expect(conflictsWith('inbox.next', 'e')).toEqual(['inbox.archive'])
-    expect(conflictsWith('go.tags', 'mod+alt+p')).toEqual(['go.projects'])
+    expect(conflictsWith('go.tags', 'g p')).toEqual(['go.projects'])
+    expect(conflictsWith('tags.search', 'g')).toContain('go.inbox')
   })
 
   test('an action never clashes with itself, or with one that was cleared', () => {
-    expect(conflictsWith('go.tags', 'mod+t')).toEqual([])
-    expect(conflictsWith('go.tags', 'mod+g', { 'go.goals': null })).toEqual([])
+    expect(conflictsWith('go.tags', 'g t')).toEqual([])
+    expect(conflictsWith('go.tags', 'g g', { 'go.goals': null })).toEqual([])
   })
 })
 
 describe('keys', () => {
   test('a cleared action has no keys, and no aliases either', () => {
-    expect(resolveShortcut('go.projects', { 'go.projects': null })).toEqual({
+    expect(resolveShortcut('section.next', { 'section.next': null })).toEqual({
       keys: null,
       aliases: [],
     })
@@ -198,6 +200,45 @@ describe('keys', () => {
   })
 })
 
+describe('the rules for keys', () => {
+  const allowed = new Set(['mod+k', 'mod+s'])
+
+  test('defaults use mod only for search and save, and none belongs to the browser', () => {
+    const keys = actionIds.flatMap((id) => {
+      const { keys, aliases } = resolveShortcut(id)
+      return keys === null ? [...aliases] : [keys, ...aliases]
+    })
+    expect(keys.filter((k) => k.includes('mod+') && !allowed.has(k))).toEqual([])
+    expect(keys.filter(isBrowserReserved)).toEqual([])
+  })
+
+  test('the recorder refuses browser keys and the keys every page shares', () => {
+    for (const keys of ['mod+l', 'mod+p', 'mod+d', 'mod+y', 'mod+r', 'mod+f', 'mod+[', 'mod+]']) {
+      expect(refusalFor('go.tags', keys)).toBe('browser')
+    }
+    expect(refusalFor('go.tags', 'mod+3')).toBe('browser')
+    for (const keys of ['.', ',', ';', '?']) expect(refusalFor('go.tags', keys)).toBe('shared')
+    expect(refusalFor('go.tags', 'enter')).toBe('modifier')
+    expect(refusalFor('go.tags', 'mod+shift+y')).toBeUndefined()
+  })
+
+  test('an action may go back to its own shared key', () => {
+    expect(refusalFor('section.next', '.')).toBeUndefined()
+  })
+
+  test('the editor takes one key combination only', () => {
+    expect(refusalFor('editor.save', 'g s')).toBe('singleStep')
+    expect(resolveShortcut('editor.save', { 'editor.save': 'g s' }).keys).toBe('mod+s')
+  })
+
+  test('two-step keys are valid, three are not, and they read in order', () => {
+    expect(isValidShortcut('g p')).toBe(true)
+    expect(isValidShortcut('g p x')).toBe(false)
+    expect(formatShortcut('g p', true)).toBe('G P')
+    expect(normalise('G  P')).toBe('g p')
+  })
+})
+
 describe('managing shortcuts', () => {
   const setup = (initial?: string) => {
     const storage = memory(initial)
@@ -217,20 +258,20 @@ describe('managing shortcuts', () => {
     expect(view.result.current.keys['go.tags'].keys).toBeNull()
     expect(JSON.parse(storage.saved() ?? '{}').shortcuts['go.tags']).toBeNull()
     act(() => view.result.current.manage.reset('go.tags'))
-    expect(view.result.current.keys['go.tags'].keys).toBe('mod+t')
+    expect(view.result.current.keys['go.tags'].keys).toBe('g t')
     expect(view.result.current.manage.isCustom('go.tags')).toBe(false)
   })
 
   test('choosing the default keys again brings its aliases back', () => {
-    const { view } = setup(JSON.stringify({ shortcuts: { 'go.tags': 'mod+y' } }))
-    act(() => view.result.current.manage.bind('go.tags', 'mod+t'))
-    expect(view.result.current.keys['go.tags'].aliases).toEqual(['mod+alt+t'])
+    const { view } = setup(JSON.stringify({ shortcuts: { 'section.next': 'mod+y' } }))
+    act(() => view.result.current.manage.bind('section.next', '.'))
+    expect(view.result.current.keys['section.next'].aliases).toEqual(['f6'])
   })
 
   test('replacing takes the keys and clears the action that had them', () => {
     const { view } = setup()
-    act(() => view.result.current.manage.replace('go.tags', 'mod+g', ['go.goals']))
-    expect(view.result.current.keys['go.tags'].keys).toBe('mod+g')
+    act(() => view.result.current.manage.replace('go.tags', 'g g', ['go.goals']))
+    expect(view.result.current.keys['go.tags'].keys).toBe('g g')
     expect(view.result.current.keys['go.goals'].keys).toBeNull()
     expect(conflicts(view.result.current.manage.overrides)).toEqual([])
   })

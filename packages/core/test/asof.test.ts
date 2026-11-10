@@ -192,6 +192,7 @@ describe('graph as of a date', () => {
           state: 'stale',
           commits: 12,
           uncommitted: false,
+          uncommittedFiles: [],
           baseline: undefined,
           atLeast: false,
           covers: ['src'],

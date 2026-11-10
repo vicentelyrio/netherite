@@ -62,9 +62,14 @@ test('app shortcuts still work from normal mode', async ({ page, workspace }) =>
   await expect(page.getByRole('dialog', { name: 'Search' })).toBeVisible()
 })
 
-test('with vim mode off the drawer still closes on Esc', async ({ page, workspace }) => {
+test('with vim mode off Esc leaves the editor, then closes the drawer', async ({
+  page,
+  workspace,
+}) => {
   const drawer = await openTaskEditor(page, workspace.url)
   await expect(drawer.getByText(normal)).toBeHidden()
+  await page.keyboard.press('Escape')
+  await expect(drawer).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(drawer).toBeHidden()
 })

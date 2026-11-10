@@ -1,5 +1,6 @@
 import { Grid } from '@netherite/ui'
 import type { ReactNode } from 'react'
+import { SectionName, sectionProps } from '@/infrastructure/sections'
 import { PageFrame } from '../PageFrame'
 import { PageHeader, PageToolbar } from '../PageHeader'
 
@@ -23,10 +24,15 @@ export function SplitTemplate({ header, actions, toolbar, main, aside }: SplitTe
             <PageToolbar>{toolbar}</PageToolbar>
           </Grid.Col>
         )}
-        <Grid.Col span={{ base: 12, lg: 8 }} miw={0}>
+        <Grid.Col span={{ base: 12, lg: 8 }} miw={0} {...sectionProps(SectionName.Content)}>
           {main}
         </Grid.Col>
-        <Grid.Col span={{ base: 12, lg: 4 }} miw={0} component="aside">
+        <Grid.Col
+          span={{ base: 12, lg: 4 }}
+          miw={0}
+          component="aside"
+          {...sectionProps(SectionName.Side)}
+        >
           {aside}
         </Grid.Col>
       </Grid>

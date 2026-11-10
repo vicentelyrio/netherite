@@ -1,4 +1,4 @@
-import type { ActionId } from './actions'
+import type { ActionId, ShortcutScope } from './actions'
 
 export interface Combo {
   readonly mod: boolean
@@ -7,9 +7,13 @@ export interface Combo {
   readonly key: string
 }
 
+export type ShortcutLayer = 'app' | 'page' | 'overlay'
+
 export interface ShortcutOptions {
   readonly enabled?: boolean
   readonly mac?: boolean
+  readonly layer?: ShortcutLayer
+  readonly scope?: ShortcutScope
 }
 
 export interface ResolvedShortcut {

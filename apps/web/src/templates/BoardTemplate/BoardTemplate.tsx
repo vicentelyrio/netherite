@@ -1,4 +1,5 @@
 import { type ReactNode, useLayoutEffect, useRef, useState } from 'react'
+import { SectionName, sectionProps } from '@/infrastructure/sections'
 import './BoardTemplate.css'
 
 export interface BoardTemplateProps {
@@ -41,12 +42,15 @@ export function BoardTemplate({
   }, [inset])
   return (
     <div ref={frame} className="tpl-board">
-      <aside className="tpl-board-side">{side}</aside>
+      <aside className="tpl-board-side" {...sectionProps(SectionName.Side)}>
+        {side}
+      </aside>
       <div
         ref={areaRef}
         style={clear > 0 ? { paddingInlineStart: clear } : undefined}
         className={bleed ? 'tpl-board-main tpl-board-main--bleed' : 'tpl-board-main'}
         role={mainRole}
+        {...sectionProps(SectionName.Content)}
         {...(mainLabel ? { 'aria-label': mainLabel } : {})}
       >
         {main}

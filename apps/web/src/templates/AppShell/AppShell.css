@@ -16,3 +16,12 @@
   overflow-y: auto;
   container-type: size;
 }
+.tpl-app-rail {
+  display: contents;
+}
+[data-section]:focus-visible,
+[data-nav-item]:focus-visible {
+  outline: var(--nt-stroke-medium) solid var(--nt-color-accent-solid);
+  outline-offset: var(--nt-stroke-medium);
+  border-radius: var(--nt-radius-md);
+}

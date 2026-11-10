@@ -1,5 +1,5 @@
-import type { TranslationFunctions } from '@/infrastructure/i18n'
-import type { ActionId } from '@/infrastructure/shortcuts'
+import type { TranslationFunctions } from '../i18n'
+import type { ActionId } from './actions'
 
 const labelKey = (id: ActionId) =>
   id.replace(/\.(\w)/, (_, letter: string) =>

@@ -20,6 +20,7 @@ export function BoardColumn({
   selected,
   overline,
   dragging,
+  first,
 }: {
   readonly projectId: string
   readonly name: string
@@ -28,6 +29,7 @@ export function BoardColumn({
   readonly selected: string | undefined
   readonly overline?: string | undefined
   readonly dragging: BoardCard | undefined
+  readonly first: boolean
 }) {
   const { LL } = useI18nContext()
   const list = useReorderList(name)
@@ -63,7 +65,7 @@ export function BoardColumn({
         ))}
         {target && list.blank && <div className="board-drop">{LL.projects.dropTo({ name })}</div>}
       </div>
-      <NewTask projectId={projectId} state={name} />
+      <NewTask projectId={projectId} state={name} first={first} />
     </section>
   )
 }

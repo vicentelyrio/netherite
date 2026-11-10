@@ -1,3 +1,5 @@
+import { mkdirSync, writeFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
 import { expect, test } from './fixture'
 
 const task1 = 'netherite/tasks/TASK-00001-core.md'
@@ -56,6 +58,28 @@ test('the review button shows the date and writes today to reviewed_at', async (
     '-reviewed_at: 2026-01-01',
   )
   await expect(page.getByRole('button', { name: /^Reviewed at / })).toBeDisabled()
+})
+
+test('uncommitted edits to covered files are named, and marking reviewed clears them', async ({
+  page,
+  workspace,
+}) => {
+  const covered = 'src/core.ts'
+  mkdirSync(join(workspace.dir, dirname(covered)), { recursive: true })
+  writeFileSync(join(workspace.dir, covered), 'export const edited = true\n')
+  await page.goto(`${workspace.url}/projects/PRJ-00001?task=TASK-00001`)
+  await page.getByRole('dialog').getByRole('checkbox', { name: 'first' }).click()
+  await expect.poll(() => workspace.diff(task1)).toContain('+- [x] first')
+  await page.goto(`${workspace.url}/items/DOC-00001`)
+
+  const banner = page.getByText('Uncommitted changes to the files this doc covers')
+  await expect(banner).toBeVisible()
+  await page.getByRole('button', { name: 'Review changes' }).click()
+  await expect(page.getByRole('list', { name: 'Commits since review' })).toContainText(covered)
+
+  await page.getByRole('button', { name: 'Mark reviewed' }).click()
+  await expect(page.getByText('Overview marked reviewed')).toBeVisible()
+  await expect(banner).toBeHidden()
 })
 
 test('the include switch on a context item writes include_in_context', async ({

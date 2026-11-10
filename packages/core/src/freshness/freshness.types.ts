@@ -9,6 +9,7 @@ export interface Freshness {
   readonly state: FreshnessState
   readonly commits: number
   readonly uncommitted: boolean
+  readonly uncommittedFiles: ReadonlyArray<string>
   readonly baseline:
     | { readonly source: 'reviewed_at'; readonly date: string }
     | { readonly source: 'last-commit'; readonly date: string; readonly hash: string }

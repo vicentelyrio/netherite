@@ -50,7 +50,9 @@ test('tabs work by keyboard and name their panels', async ({ page, workspace }) 
 
 test('the settings shortcut reaches the page', async ({ page, workspace }) => {
   await page.goto(`${workspace.url}/goals`)
-  await page.keyboard.press('ControlOrMeta+,')
+  await expect(page.locator('main [data-section]').first()).toBeVisible()
+  await page.keyboard.press('g')
+  await page.keyboard.press('s')
   await expect(page).toHaveURL(/\/settings$/)
   await expect(page.getByRole('tab', { name: 'General' })).toBeVisible()
 })

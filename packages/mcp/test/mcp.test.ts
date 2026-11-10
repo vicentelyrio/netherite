@@ -761,6 +761,7 @@ describe('lint and context (more)', () => {
           expect(doc.freshness).toEqual({
             state: 'drifting',
             commits: 3,
+            uncommitted: false,
             since: '2026-01-10',
             atLeast: false,
           })
@@ -768,6 +769,7 @@ describe('lint and context (more)', () => {
           expect(runbook.freshness).toEqual({
             state: 'fresh',
             commits: 0,
+            uncommitted: false,
             since: '2026-01-15',
             atLeast: false,
           })

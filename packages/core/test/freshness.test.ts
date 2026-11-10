@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { NodeServices } from '@effect/platform-node'
@@ -391,6 +391,37 @@ describe('uncommitted changes', () => {
     )
   })
 
+  test('the changed files are named', async () => {
+    await withFixture(
+      async (repo) => {
+        const { freshness } = await measure(repo.root)
+        expect(freshness.get(docPath)?.uncommittedFiles).toEqual(['src/util.ts'])
+      },
+      basicHistory,
+      { 'src/util.ts': 'export const util = () => "dirty"\n' },
+    )
+  })
+
+  test('a review today covers what is uncommitted, and an older one does not', async () => {
+    await withFixture(
+      async (repo) => {
+        const file = join(repo.root, docPath)
+        const text = readFileSync(file, 'utf8')
+        const today = new Date().toISOString().slice(0, 10)
+        writeFileSync(file, text.replace(/reviewed_at: .*/, `reviewed_at: ${today}`))
+        const { freshness } = await measure(repo.root)
+        expect(freshness.get(docPath)).toMatchObject({
+          state: 'fresh',
+          commits: 0,
+          uncommitted: false,
+          uncommittedFiles: [],
+        })
+      },
+      basicHistory,
+      { 'src/util.ts': 'export const util = () => "dirty"\n' },
+    )
+  })
+
   test('so does a new untracked file', async () => {
     await withFixture(
       async (repo) => {
@@ -704,6 +735,7 @@ test('Freshness has no stray fields', async () => {
       'covers',
       'state',
       'uncommitted',
+      'uncommittedFiles',
     ])
   })
 })

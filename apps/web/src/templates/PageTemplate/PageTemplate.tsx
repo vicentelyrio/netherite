@@ -1,5 +1,6 @@
 import { Grid } from '@netherite/ui'
 import type { ReactNode } from 'react'
+import { SectionName, sectionProps } from '@/infrastructure/sections'
 import { PageFrame } from '../PageFrame'
 import { PageHeader, PageToolbar } from '../PageHeader'
 
@@ -22,7 +23,7 @@ export function PageTemplate({ header, actions, toolbar, children }: PageTemplat
             <PageToolbar>{toolbar}</PageToolbar>
           </Grid.Col>
         )}
-        <Grid.Col span={12} miw={0}>
+        <Grid.Col span={12} miw={0} {...sectionProps(SectionName.Content)}>
           {children}
         </Grid.Col>
       </Grid>

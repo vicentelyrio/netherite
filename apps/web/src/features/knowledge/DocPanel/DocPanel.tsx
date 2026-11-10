@@ -12,6 +12,7 @@ import { LinkRow } from '@/components'
 import { isoDay } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { CoChangedFile } from '../CoChangedFile'
+import { committedChanges } from '../committedChanges'
 import { DocCovers } from '../DocCovers'
 import { DocLinkAction, DocUnlink } from '../DocLinkAction'
 import { NoLinks } from '../NoLinks'
@@ -118,7 +119,9 @@ export function DocPanel({
         <PanelSection title={LL.knowledge.doc.panel.freshness()}>
           <span className="kf-stale-line">
             <Icon name="warning" size={15} filled />{' '}
-            {LL.knowledge.doc.panel.sinceReview({ count: fresh.commits })}
+            {committedChanges(fresh) === 0
+              ? LL.knowledge.doc.panel.uncommitted()
+              : LL.knowledge.doc.panel.sinceReview({ count: committedChanges(fresh) })}
           </span>
           {data.changes.commits.slice(0, 3).map((c) => (
             <div key={c.hash} className="kf-commit">

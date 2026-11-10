@@ -1,5 +1,6 @@
 import { Grid } from '@netherite/ui'
 import type { ReactNode } from 'react'
+import { SectionName, sectionProps } from '@/infrastructure/sections'
 import { PageFrame } from '../PageFrame'
 
 export interface CardGridTemplateProps {
@@ -12,9 +13,11 @@ export function CardGridTemplate({ header, children }: CardGridTemplateProps) {
     <PageFrame>
       <Grid>
         <Grid.Col span={12}>
-          <header>{header}</header>
+          <header {...sectionProps(SectionName.Header)}>{header}</header>
         </Grid.Col>
-        {children}
+        <Grid.Col span={12} miw={0} {...sectionProps(SectionName.Content)}>
+          <Grid>{children}</Grid>
+        </Grid.Col>
       </Grid>
     </PageFrame>
   )
