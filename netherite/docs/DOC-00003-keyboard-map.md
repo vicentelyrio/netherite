@@ -13,7 +13,7 @@ reviewed_at: 2026-11-10
 
 # Keyboard map
 
-The default keys of the web app, and the rules any new shortcut has to follow. It is the target for [[PRJ-00014]] and the reasoning is in the project's decision record. Until that project is done, the app still uses the older keys.
+The default keys of the web app, and the rules any new shortcut has to follow. The reasoning is in [[ADR-00033]], and the work was done in [[PRJ-00014]].
 
 ## How it works
 
@@ -54,18 +54,20 @@ Shared verbs, wherever a page has the action:
 
 | Keys | What it does |
 | --- | --- |
-| `n` | New item |
-| `/` | Filter or search the page |
+| `n` | New item: capture in the Inbox, task on the board, goal, knowledge item |
+| `/` | Filter or search: Knowledge and Tags |
 | `mod+s` | Save in the editor |
 
-Keys per page. These are to be confirmed against each screen when built.
+Keys per page:
 
 | Page | Keys |
 | --- | --- |
-| Inbox | `e` archive, `h` snooze |
-| Project board | `h` `l` change column, `shift+h` `shift+l` move the card, `m` move to another project |
+| Inbox | `j` `k` next and previous item, `e` archive, `h` snooze |
+| Project board | `j` `k` `h` `l` or arrows move between cards, `shift+h` `shift+l` move the card, `m` move to another project |
 | Task drawer | `t` switch between text and code |
-| Graph | `+` `-` zoom, `0` reset |
+| Graph | `+` or `=` zoom in, `-` zoom out, `0` fit the view |
+
+`Space` still picks up a focused card to drag it. `Enter` opens it.
 
 ## How to use it
 
@@ -75,3 +77,5 @@ Adding a shortcut:
 - Use a plain key or a two-step key. `mod` is allowed for `mod+k` and `mod+s` only.
 - Do not use `.`, `,`, `;`, `?` or `g` as the first key: those belong to the layers every page shares.
 - The same key can mean different things on different pages, but not in a page and in the global scope.
+- A handler can return `false` to leave the key to the next handler and the browser.
+- Mark a list row or card with `itemProps` so `j` and `k` stop on it.

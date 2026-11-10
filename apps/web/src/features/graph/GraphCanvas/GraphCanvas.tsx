@@ -46,6 +46,7 @@ export function GraphCanvas({ focus }: { readonly focus?: string | undefined }) 
       pad={150}
       padBottom={70}
       label={LL.graph.label()}
+      shortcuts
       glow={glow}
     />
   )

@@ -3,9 +3,11 @@ import { useNavigate, useRouterState } from '@tanstack/react-router'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useHealth, useInbox, waitingCount } from '@/infrastructure/query'
+import { focusContent, hasKeyboardFocus } from '@/infrastructure/sections'
 import {
   type ActionId,
   formatShortcut,
+  sidebarSelector,
   useActionShortcuts,
   useResolvedShortcuts,
 } from '@/infrastructure/shortcuts'
@@ -26,7 +28,10 @@ export function AppRail({ onSearch }: { readonly onSearch: () => void }) {
   const select = (id: string) => {
     if (id === 'search') return onSearch()
     const to = railItems.find((i) => i.id === id)?.to
-    if (to !== undefined) void navigate({ to })
+    if (to === undefined) return
+    const fromKeyboard =
+      document.activeElement?.closest(sidebarSelector) && hasKeyboardFocus(document.activeElement)
+    void navigate({ to }).then(() => fromKeyboard && focusContent())
   }
   useActionShortcuts(
     Object.fromEntries(railItems.map((i) => [actionOf(i.id), () => select(i.id)])) as Partial<

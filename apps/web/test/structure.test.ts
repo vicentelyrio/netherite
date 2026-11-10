@@ -27,6 +27,15 @@ const classesIn = (css: string) =>
   )
 
 describe('the structure of the app', () => {
+  test('every page template declares its sections', () => {
+    const templates = ['Page', 'Split', 'CardGrid', 'Columns', 'Canvas', 'Board', 'Drawer']
+    const without = templates.filter(
+      (name) =>
+        !read(join(src, `templates/${name}Template/${name}Template.tsx`)).includes('sectionProps('),
+    )
+    expect(without).toEqual([])
+  })
+
   test('no stylesheet is shared between components', () => {
     expect(cssFiles.filter((f) => f.endsWith('/shared.css')).map((f) => relative(src, f))).toEqual(
       [],

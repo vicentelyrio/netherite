@@ -1,13 +1,16 @@
 import { Drawer, Icon } from '@netherite/ui'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useApi } from '@/infrastructure/api'
 import { boardQuery, itemQuery, useHealth } from '@/infrastructure/query'
+import { focusItem, SectionName, sectionProps } from '@/infrastructure/sections'
+import { useActionShortcuts, useShortcutHint } from '@/infrastructure/shortcuts'
 import './TaskDrawer.css'
 import { SourceEditor } from '@/features/editor'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { TaskContent } from '../TaskContent'
+import { useDrawerEscape } from './useDrawerEscape'
 
 export function TaskDrawer({
   id,
@@ -30,6 +33,19 @@ export function TaskDrawer({
   const [mode, setMode] = useState<'text' | 'code'>(initial ?? 'text')
   const [changedLines, setChangedLines] = useState(0)
   const opened = id !== undefined
+  const toggleMode = () => setMode((m) => (m === 'code' ? 'text' : 'code'))
+  useActionShortcuts({ 'drawer.mode': toggleMode }, { enabled: opened })
+  useDrawerEscape(opened, onClose)
+  const modeHint = useShortcutHint('drawer.mode')
+  const lastOpened = useRef<string | undefined>(undefined)
+  useEffect(() => {
+    if (id !== undefined) {
+      lastOpened.current = id
+      return
+    }
+    if (lastOpened.current !== undefined) focusItem(lastOpened.current)
+    lastOpened.current = undefined
+  }, [id])
   useEffect(() => {
     if (!opened) return
     const outside = (e: PointerEvent) => {
@@ -59,6 +75,7 @@ export function TaskDrawer({
       lockScroll={false}
       trapFocus={false}
       closeOnClickOutside={false}
+      closeOnEscape={false}
       size={mode === 'code' ? 'min(1792px, calc(100vw - 128px))' : 912}
       classNames={{
         body: 'drawer-frame',
@@ -70,7 +87,11 @@ export function TaskDrawer({
       }}
       title={
         id === undefined ? undefined : (
-          <nav className="drawer-crumbs" aria-label={LL.tasks.drawer.path()}>
+          <nav
+            className="drawer-crumbs"
+            aria-label={LL.tasks.drawer.path()}
+            {...sectionProps(SectionName.Header)}
+          >
             <Icon name="description" />
             <Link to="/projects">{LL.tasks.drawer.projects()}</Link> ›{' '}
             <Link to="/projects/$id" params={{ id: projectId }}>
@@ -96,6 +117,7 @@ export function TaskDrawer({
           onModeChange={(m) => setMode(m === 'split' ? 'code' : 'text')}
           onStats={(stats) => setChangedLines(stats.changedLines)}
           branch={health.data?.branch}
+          {...(modeHint === undefined ? {} : { modeHint })}
         />
       )}
     </Drawer>

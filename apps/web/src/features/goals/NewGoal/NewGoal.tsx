@@ -4,19 +4,23 @@ import { TitleForm } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useWrite } from '@/infrastructure/query'
+import { useActionShortcuts } from '@/infrastructure/shortcuts'
 import { NewItemButton } from '../NewItemButton'
 import './NewGoal.css'
 
 export function NewGoal({
   area,
   compact = false,
+  shortcut = false,
 }: {
   readonly area: string | undefined
   readonly compact?: boolean
+  readonly shortcut?: boolean
 }) {
   const { LL } = useI18nContext()
   const api = useApi()
   const [adding, setAdding] = useState(false)
+  useActionShortcuts({ 'goals.new': () => setAdding(true) }, { enabled: shortcut && !adding })
   const create = useWrite(api, (a, title: string) =>
     a.call((c) =>
       c.items.create({

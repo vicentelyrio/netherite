@@ -3,10 +3,12 @@ import type { Board, BoardCard } from '@netherite/api'
 import { Card } from '@netherite/ui'
 import { useState } from 'react'
 import { type DropTarget, placeIn, ReorderContext } from '@/components'
+import { TaskMover, useMoveTask } from '@/features/tasks'
 import { useApi } from '@/infrastructure/api'
 import { useWrite } from '@/infrastructure/query'
 import { BoardColumn } from '../BoardColumn'
 import { TaskCardBody } from '../TaskCard'
+import { useBoardKeys } from './useBoardKeys'
 import './TaskBoard.css'
 
 export const moveFor = (
@@ -38,6 +40,9 @@ export function TaskBoard({
       await a.call((c) => c.items.update({ params: { id }, payload: { set: { position } } }))
     }
   })
+  const keys = useBoardKeys(board, (id, state) => move.mutate({ id, state }))
+  const mover = useMoveTask(keys.moving)
+  const movingTask = board.tasks.find((t) => t.id === keys.moving)
   const overline = board.goals[0]?.title.toLowerCase()
   const onDrop = (id: string, target: DropTarget) => {
     const change = moveFor(board.tasks, id, target.list)
@@ -58,10 +63,11 @@ export function TaskBoard({
       onDrop={onDrop}
     >
       <div className="board" data-bleed>
-        {board.columns.map((column) => (
+        {board.columns.map((column, index) => (
           <BoardColumn
             key={column.name}
             name={column.name}
+            first={index === 0}
             category={column.category}
             projectId={board.id}
             selected={selected}
@@ -85,6 +91,18 @@ export function TaskBoard({
           </div>
         )}
       </DragOverlay>
+      {movingTask !== undefined && (
+        <TaskMover
+          task={movingTask}
+          projectId={board.id}
+          opened
+          onClose={keys.stopMoving}
+          onPick={(project) => {
+            keys.stopMoving()
+            mover.pick(project)
+          }}
+        />
+      )}
     </ReorderContext>
   )
 }

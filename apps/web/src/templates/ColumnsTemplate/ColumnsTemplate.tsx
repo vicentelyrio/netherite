@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { SectionName, sectionProps } from '@/infrastructure/sections'
 import './ColumnsTemplate.css'
 
 export interface ColumnsTemplateProps {
@@ -9,8 +10,12 @@ export interface ColumnsTemplateProps {
 export function ColumnsTemplate({ header, children }: ColumnsTemplateProps) {
   return (
     <div className="tpl-columns">
-      <header className="tpl-columns-head">{header}</header>
-      <div className="tpl-columns-scroll">{children}</div>
+      <header className="tpl-columns-head" {...sectionProps(SectionName.Header)}>
+        {header}
+      </header>
+      <div className="tpl-columns-scroll" {...sectionProps(SectionName.Content)}>
+        {children}
+      </div>
     </div>
   )
 }

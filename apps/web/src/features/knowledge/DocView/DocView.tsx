@@ -3,6 +3,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { SourceEditor } from '@/features/editor'
 import { useApi } from '@/infrastructure/api'
+import { useI18nContext } from '@/infrastructure/i18n'
+import { useNotices } from '@/infrastructure/notices'
 import {
   itemHistoryQuery,
   keys,
@@ -27,6 +29,8 @@ export function DocView({
   readonly mode?: 'split'
   readonly fill?: boolean
 }) {
+  const { LL } = useI18nContext()
+  const notices = useNotices()
   const api = useApi()
   const client = useQueryClient()
   const health = useHealth(api)
@@ -43,7 +47,17 @@ export function DocView({
       a.call((c) => c.items.markReviewed({ params: { id: item.id }, payload: { baseHash: hash } })),
     { reload },
   )
-  const review = { pending: markReviewed.isPending, run: () => markReviewed.mutate(item.hash) }
+  const review = {
+    pending: markReviewed.isPending,
+    run: () =>
+      markReviewed.mutate(item.hash, {
+        onSuccess: () =>
+          void notices.notify({
+            variant: 'success',
+            title: LL.knowledge.doc.main.markedReviewed({ name: item.title }),
+          }),
+      }),
+  }
   const setStatus = useWrite(
     api,
     (a, state: string) =>

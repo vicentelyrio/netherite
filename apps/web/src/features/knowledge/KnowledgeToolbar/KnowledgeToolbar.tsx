@@ -1,6 +1,8 @@
 import { Icon } from '@netherite/ui'
+import { useRef } from 'react'
 import { FilterTabs, SearchField, SelectField } from '@/components'
 import { adrStatusLabel, useI18nContext } from '@/infrastructure/i18n'
+import { useActionShortcuts } from '@/infrastructure/shortcuts'
 import type { SortKey } from '../filters'
 import { useKnowledgeIndex } from '../KnowledgeProvider'
 import './KnowledgeToolbar.css'
@@ -14,6 +16,8 @@ const sorts: ReadonlyArray<SortKey> = ['date', 'id', 'title', 'freshness']
 export function KnowledgeToolbar() {
   const { LL } = useI18nContext()
   const { rows, filters, set, counts } = useKnowledgeIndex()
+  const filter = useRef<HTMLInputElement>(null)
+  useActionShortcuts({ 'knowledge.filter': () => filter.current?.focus() })
   if (rows.length === 0) return null
   const projects = [...new Set(rows.flatMap((r) => r.projects))].sort()
   const tags = [...new Set(rows.flatMap((r) => r.tags))].sort()
@@ -24,6 +28,7 @@ export function KnowledgeToolbar() {
   return (
     <div className="kn-bar">
       <SearchField
+        inputRef={filter}
         label={LL.knowledge.toolbar.filter()}
         value={filters.q}
         onChange={(q) => set({ q })}

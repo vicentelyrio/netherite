@@ -1,0 +1,23 @@
+.sheet-group + .sheet-group {
+  margin-top: var(--nt-space-4);
+}
+.sheet-title {
+  margin: 0 0 var(--nt-space-2);
+  font-size: var(--nt-text-body-sm-size);
+  font-weight: var(--nt-font-weight-semibold);
+}
+.sheet-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--nt-space-1-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sheet-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nt-space-3);
+  color: var(--nt-color-text-secondary);
+}

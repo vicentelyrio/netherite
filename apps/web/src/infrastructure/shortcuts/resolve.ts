@@ -1,6 +1,11 @@
 import { type ActionDefinition, type ActionId, actionIds, actions } from './actions'
-import { isValidShortcut } from './parseShortcut'
+import { isValidShortcut, stepsOf } from './parseShortcut'
 import type { ResolvedShortcut, ShortcutOverrides } from './shortcuts.types'
+
+const singleStepScope = 'editor'
+
+const usable = (id: ActionId, keys: string) =>
+  isValidShortcut(keys) && (actions[id].scope !== singleStepScope || stepsOf(keys).length === 1)
 
 export const resolveShortcut = (
   id: ActionId,
@@ -8,7 +13,7 @@ export const resolveShortcut = (
 ): ResolvedShortcut => {
   const own = overrides[id]
   if (own === null) return { keys: null, aliases: [] }
-  if (own !== undefined && isValidShortcut(own)) return { keys: own, aliases: [] }
+  if (own !== undefined && usable(id, own)) return { keys: own, aliases: [] }
   const base: ActionDefinition = actions[id]
   return { keys: base.keys, aliases: base.aliases ?? [] }
 }

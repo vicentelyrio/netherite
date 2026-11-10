@@ -14,6 +14,7 @@ export function EditorStatus({
   dirty,
   mode,
   onMode,
+  modeHint,
 }: {
   readonly errors: number
   readonly warnings: number
@@ -24,6 +25,7 @@ export function EditorStatus({
   readonly dirty: boolean
   readonly mode: EditorMode
   readonly onMode: (mode: EditorMode) => void
+  readonly modeHint?: string
 }) {
   const { LL } = useI18nContext()
   const text = LL.components.editor
@@ -59,6 +61,7 @@ export function EditorStatus({
       </span>
       <SegmentedControl
         classNames={{ root: 'ed-mode', indicator: 'ed-mode-indicator' }}
+        {...(modeHint === undefined ? {} : { title: modeHint })}
         value={mode}
         onChange={(value) => onMode(value as EditorMode)}
         data={[

@@ -68,30 +68,20 @@ describe('the shell', () => {
 
 describe('keyboard shortcuts', () => {
   test.each([
-    ['i', {}, 'Inbox'],
-    ['g', {}, 'Goals'],
-    ['l', {}, 'Knowledge'],
-    ['d', {}, 'Stats'],
-    ['t', {}, 'Tags'],
-    ['g', { shiftKey: true }, 'Graph'],
-  ])('Control-%s %j goes to %s', async (letter, extra, title) => {
+    ['i', 'Inbox'],
+    ['g', 'Goals'],
+    ['k', 'Knowledge'],
+    ['d', 'Stats'],
+    ['t', 'Tags'],
+    ['r', 'Graph'],
+  ])('g then %s goes to %s', async (letter, title) => {
     renderApp('/knowledge')
     await screen.findByRole('heading', { name: 'Knowledge' })
     await userEvent.click(railButton(/^Tags/))
     await screen.findByRole('heading', { name: 'Tags' })
-    key({ key: letter, ctrlKey: true, ...extra })
+    key({ key: 'g' })
+    key({ key: letter })
     expect(await screen.findByRole('heading', { name: title })).toBeInTheDocument()
-  })
-
-  test('the keys a browser keeps for itself (L, T, D, P) have Control-Alt twins that work', async () => {
-    renderApp('/goals')
-    await screen.findByRole('heading', { name: 'Goals' })
-    key({ key: 'l', ctrlKey: true, altKey: true })
-    expect(await screen.findByRole('heading', { name: 'Knowledge' })).toBeInTheDocument()
-    key({ key: 't', ctrlKey: true, altKey: true })
-    expect(await screen.findByRole('heading', { name: 'Tags' })).toBeInTheDocument()
-    key({ key: 'd', ctrlKey: true, altKey: true })
-    expect(await screen.findByRole('heading', { name: 'Stats' })).toBeInTheDocument()
   })
 
   test('Control-K opens search, and Escape closes it', async () => {
@@ -107,7 +97,7 @@ describe('keyboard shortcuts', () => {
     renderApp('/goals')
     await screen.findByRole('heading', { name: 'Goals' })
     await userEvent.hover(railButton(/^Inbox/))
-    expect(await screen.findByRole('tooltip')).toHaveTextContent(/Ctrl\+I|⌘I/)
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('G I')
   })
 })
 

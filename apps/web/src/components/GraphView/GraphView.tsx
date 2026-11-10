@@ -10,6 +10,7 @@ import {
 import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useI18nContext } from '@/infrastructure/i18n'
+import { useActionShortcuts } from '@/infrastructure/shortcuts'
 import { GraphArrows } from './GraphArrows'
 import { GraphControls } from './GraphControls'
 import { GraphEdge } from './GraphEdge'
@@ -53,6 +54,7 @@ export function GraphView({
   pad = padDefault,
   padBottom,
   zoomButtons,
+  shortcuts,
   glow,
   className,
   legendClassName,
@@ -138,6 +140,14 @@ export function GraphView({
       const ratio = k / v.k
       return { k, x: cx - (cx - v.x) * ratio, y: cy - (cy - v.y) * ratio }
     })
+  useActionShortcuts(
+    {
+      'graph.zoomIn': () => zoom(buttonFactor),
+      'graph.zoomOut': () => zoom(1 / buttonFactor),
+      'graph.reset': () => setView(doFit(visible)),
+    },
+    { enabled: shortcuts === true },
+  )
   useEffect(() => {
     const el = svg.current
     if (el === null) return

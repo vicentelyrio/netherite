@@ -1,34 +1,25 @@
 import { useEffect, useRef } from 'react'
-import { isEditable } from './isEditable'
+import { dispatcher, type ShortcutHandler } from './dispatcher'
 import { isMacPlatform } from './isMacPlatform'
-import { matchesShortcut } from './matchesShortcut'
-import { parseShortcut } from './parseShortcut'
 import type { ShortcutOptions } from './shortcuts.types'
 
 export function useShortcuts(
-  bindings: Readonly<Record<string, () => void>>,
+  bindings: Readonly<Record<string, ShortcutHandler>>,
   options: ShortcutOptions = {},
 ) {
   const latest = useRef(bindings)
   latest.current = bindings
   const enabled = options.enabled ?? true
+  const layer = options.layer ?? 'app'
+  const { mac, scope } = options
 
   useEffect(() => {
     if (!enabled) return
-    const mac = options.mac ?? isMacPlatform()
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.defaultPrevented || event.isComposing) return
-      for (const [shortcut, handler] of Object.entries(latest.current)) {
-        const combo = parseShortcut(shortcut)
-        if (!combo.mod && isEditable(event.target)) continue
-        if (matchesShortcut(event, combo, mac)) {
-          event.preventDefault()
-          handler()
-          return
-        }
-      }
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [enabled, options.mac])
+    return dispatcher.register({
+      layer,
+      ...(scope === undefined ? {} : { scope }),
+      mac: mac ?? isMacPlatform(),
+      bindings: () => latest.current,
+    })
+  }, [enabled, mac, layer, scope])
 }

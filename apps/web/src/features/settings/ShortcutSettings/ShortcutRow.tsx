@@ -2,20 +2,25 @@ import { Button, Kbd } from '@netherite/ui'
 import { useState } from 'react'
 import { useI18nContext } from '@/infrastructure/i18n'
 import {
+  type ActionDefinition,
   type ActionId,
+  actionLabel,
+  actions,
   conflictsWith,
   formatShortcut,
-  isAllowedShortcut,
   isBrowserReserved,
+  isSequenceLeader,
+  joinSteps,
+  type Refusal,
+  refusalFor,
   useResolvedShortcuts,
   useShortcutSettings,
 } from '@/infrastructure/shortcuts'
-import { actionLabel } from './actionLabel'
 import { useKeyRecorder } from './useKeyRecorder'
 
 type RowState =
   | { readonly kind: 'idle' }
-  | { readonly kind: 'recording'; readonly refused?: string }
+  | { readonly kind: 'recording'; readonly refused?: string; readonly first?: string }
   | { readonly kind: 'clash'; readonly keys: string; readonly others: ReadonlyArray<ActionId> }
 
 export function ShortcutRow({ id }: { readonly id: ActionId }) {
@@ -27,11 +32,29 @@ export function ShortcutRow({ id }: { readonly id: ActionId }) {
   const label = actionLabel(LL, id)
   const idle = () => setState({ kind: 'idle' })
 
+  const refusalText: Readonly<Record<Refusal, (keys: string) => string>> = {
+    modifier: (keys) => text.notAllowed({ keys }),
+    browser: (keys) => text.browserKeys({ keys }),
+    shared: (keys) => text.sharedKeys({ keys }),
+    singleStep: () => text.singleStep(),
+  }
+  const refuse = (refusal: Refusal, keys: string) =>
+    setState({ kind: 'recording', refused: refusalText[refusal](formatShortcut(keys)) })
+
   useKeyRecorder(
     state.kind === 'recording',
-    (pressed) => {
-      if (!isAllowedShortcut(pressed)) {
-        setState({ kind: 'recording', refused: formatShortcut(pressed) })
+    (key) => {
+      const first = state.kind === 'recording' ? state.first : undefined
+      if (first === undefined && isSequenceLeader(key)) {
+        const refusal = refusalFor(id, joinSteps(key, key))
+        if (refusal === 'singleStep') refuse(refusal, key)
+        else setState({ kind: 'recording', first: key })
+        return
+      }
+      const pressed = first === undefined ? key : joinSteps(first, key)
+      const refusal = refusalFor(id, pressed)
+      if (refusal !== undefined) {
+        refuse(refusal, pressed)
         return
       }
       const others = conflictsWith(id, pressed, manage.overrides)
@@ -45,6 +68,7 @@ export function ShortcutRow({ id }: { readonly id: ActionId }) {
     idle,
   )
 
+  const definition: ActionDefinition = actions[id]
   const reserved = keys !== null && aliases.length === 0 && isBrowserReserved(keys)
   return (
     <li className="sk-row" data-recording={state.kind === 'recording' || undefined}>
@@ -52,7 +76,10 @@ export function ShortcutRow({ id }: { readonly id: ActionId }) {
       <span className="sk-keys">
         {state.kind === 'recording' ? (
           <span className="sk-press" role="status">
-            {state.refused === undefined ? text.press() : text.notAllowed({ keys: state.refused })}
+            {state.refused ??
+              (state.first === undefined
+                ? text.press()
+                : text.pressSecond({ keys: formatShortcut(state.first) }))}
           </span>
         ) : keys === null ? (
           <span className="app-muted">{text.unbound()}</span>
@@ -65,7 +92,7 @@ export function ShortcutRow({ id }: { readonly id: ActionId }) {
           <Button size="sm" onClick={idle}>
             {text.cancel()}
           </Button>
-        ) : (
+        ) : definition.fixed ? null : (
           <>
             <Button
               size="sm"

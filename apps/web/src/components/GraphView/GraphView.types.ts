@@ -15,6 +15,7 @@ export interface GraphViewProps {
   readonly pad?: number
   readonly padBottom?: number
   readonly zoomButtons?: boolean
+  readonly shortcuts?: boolean
   readonly glow?: ReadonlySet<string> | undefined
   readonly className?: string
   readonly legendClassName?: string

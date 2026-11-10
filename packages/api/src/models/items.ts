@@ -47,6 +47,7 @@ export const Progress = Schema.Struct({ done: N, total: N })
 export const FreshnessView = Schema.Struct({
   state: Schema.Literals(['fresh', 'drifting', 'stale', 'unknown']),
   commits: N,
+  uncommitted: Schema.Boolean,
   since: Schema.NullOr(S),
   atLeast: Schema.Boolean,
 })

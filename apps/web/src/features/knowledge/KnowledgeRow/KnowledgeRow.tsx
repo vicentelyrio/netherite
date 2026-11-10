@@ -11,6 +11,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { FreshnessCell } from '@/components'
 import { ago } from '@/infrastructure/datetime'
 import { useI18nContext } from '@/infrastructure/i18n'
+import { itemProps } from '@/infrastructure/sections'
 import './KnowledgeRow.css'
 
 export function KnowledgeRow({
@@ -35,7 +36,12 @@ export function KnowledgeRow({
       data-selected={selected || undefined}
       onClick={onSelect}
       onDoubleClick={() => void navigate({ to: '/items/$id', params: { id: row.id } })}
-      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onSelect()}
+      {...itemProps(row.id)}
+      onKeyDown={(e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return
+        if (e.target === e.currentTarget) e.preventDefault()
+        onSelect()
+      }}
     >
       <TypeBadge type={row.type as ItemTypeName} />
       <div className="kn-title-cell">

@@ -46,7 +46,7 @@ export function GoalAreas({ only }: { readonly only?: string }) {
           icon="track_changes"
           title={LL.goals.empty.title()}
           description={LL.goals.empty.text()}
-          actions={<NewGoal area={undefined} compact />}
+          actions={<NewGoal area={undefined} compact shortcut />}
         />
       </div>
     )
@@ -61,8 +61,9 @@ export function GoalAreas({ only }: { readonly only?: string }) {
         if (change !== undefined) move.mutate(change)
       }}
     >
-      {groups.map(({ area, goals }) => (
+      {groups.map(({ area, goals }, index) => (
         <AreaColumn
+          first={index === 0}
           key={area}
           area={area}
           goals={goals}

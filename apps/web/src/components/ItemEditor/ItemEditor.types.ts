@@ -16,6 +16,7 @@ export interface ItemEditorProps {
   readonly onReady?: (view: EditorView) => void
   readonly variant?: 'page' | 'drawer'
   readonly preview?: ReactNode
+  readonly modeHint?: string
   readonly onStats?: (stats: { readonly changedLines: number }) => void
   readonly branch?: string | undefined
   readonly autosaveDelay?: number

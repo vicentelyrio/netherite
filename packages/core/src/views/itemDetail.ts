@@ -46,6 +46,7 @@ export const itemDetail = (
         ? {
             state: fresh.state,
             commits: fresh.commits,
+            uncommitted: fresh.uncommitted,
             since: fresh.baseline?.date ?? null,
             atLeast: fresh.atLeast,
           }

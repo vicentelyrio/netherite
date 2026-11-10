@@ -6,7 +6,7 @@ title: Page scopes and shared verbs
 created: 2026-11-10T11:01:25Z
 created_by: "@vicentelyrio"
 project: PRJ-00014
-state: backlog
+state: done
 decisions: [ADR-00033]
 depends_on: [TASK-00107]
 related: [DOC-00003]
@@ -18,10 +18,10 @@ The registry knows only inbox, tags and editor. Add the other pages, and make sh
 
 ## Checklist
 
-- [ ] The registry has scopes for the board, task drawer, goals, knowledge and graph
-- [ ] `n` starts a new item and `/` filters, on each page that has that action
-- [ ] The Settings shortcuts list shows the new groups
-- [ ] Labels for new actions exist in English, Spanish and Brazilian Portuguese
-- [ ] A page's keys only fire on that page
+- [x] The registry has scopes for the board, task drawer, goals, knowledge and graph
+- [x] `n` starts a new item and `/` filters, on each page that has that action
+- [x] The Settings shortcuts list shows the new groups
+- [x] Labels for new actions exist in English, Spanish and Brazilian Portuguese
+- [x] A page's keys only fire on that page
 
 ## Notes

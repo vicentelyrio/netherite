@@ -2,6 +2,7 @@ import {
   type Active,
   type CollisionDetection,
   DndContext,
+  KeyboardCode,
   KeyboardSensor,
   type Over,
   PointerSensor,
@@ -44,6 +45,12 @@ const targetOf = (active: Active, over: Over | null): DropTarget | undefined => 
 const same = (a: DropTarget | undefined, b: DropTarget | undefined) =>
   a?.list === b?.list && a?.item === b?.item && a?.edge === b?.edge
 
+const dragKeys = {
+  start: [KeyboardCode.Space],
+  cancel: [KeyboardCode.Esc],
+  end: [KeyboardCode.Space, KeyboardCode.Tab],
+}
+
 export function ReorderContext({
   children,
   onStart,
@@ -57,7 +64,7 @@ export function ReorderContext({
 }) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
-    useSensor(KeyboardSensor),
+    useSensor(KeyboardSensor, { keyboardCodes: dragKeys }),
   )
   const [target, setTarget] = useState<DropTarget | undefined>()
   const track = ({ active, over }: { active: Active; over: Over | null }) => {

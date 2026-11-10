@@ -3,6 +3,7 @@ import { Card } from '@netherite/ui'
 import { useNavigate } from '@tanstack/react-router'
 import type { MouseEvent } from 'react'
 import { useReorderItem } from '@/components'
+import { itemProps } from '@/infrastructure/sections'
 import { TaskCardBody } from './TaskCardBody'
 
 export function TaskCard({
@@ -38,6 +39,7 @@ export function TaskCard({
       data-drop={edge}
       data-category={category}
       data-selected={selected || undefined}
+      {...itemProps(card.id)}
       {...attributes}
       {...listeners}
     >

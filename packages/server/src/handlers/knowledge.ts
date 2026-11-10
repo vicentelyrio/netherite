@@ -101,6 +101,7 @@ const knowledgeView = (state: ServerState, item: ScannedItem) =>
             return {
               since: fresh.baseline?.date ?? null,
               covers: [...fresh.covers],
+              uncommitted: [...fresh.uncommittedFiles],
               commits: commits.map((c) => ({
                 hash: c.hash,
                 subject: c.subject,

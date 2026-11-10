@@ -1,5 +1,8 @@
 import type { Combo } from './shortcuts.types'
 
+const stepSeparator = ' '
+const maxSteps = 2
+
 export const parseShortcut = (shortcut: string): Combo => {
   const parts = shortcut
     .toLowerCase()
@@ -21,16 +24,25 @@ export const parseShortcut = (shortcut: string): Combo => {
   }
 }
 
+export const stepsOf = (shortcut: string) => shortcut.trim().split(/\s+/)
+
+export const parseSequence = (shortcut: string): ReadonlyArray<Combo> =>
+  stepsOf(shortcut).map(parseShortcut)
+
 export const isValidShortcut = (value: string): boolean => {
   try {
-    parseShortcut(value)
-    return true
+    return parseSequence(value).length <= maxSteps
   } catch {
     return false
   }
 }
 
-export const normalise = (shortcut: string) => {
-  const c = parseShortcut(shortcut)
+const normaliseStep = (step: string) => {
+  const c = parseShortcut(step)
   return `${c.mod ? 'mod+' : ''}${c.alt ? 'alt+' : ''}${c.shift ? 'shift+' : ''}${c.key}`
 }
+
+export const normalise = (shortcut: string) =>
+  stepsOf(shortcut).map(normaliseStep).join(stepSeparator)
+
+export const joinSteps = (first: string, second: string) => `${first}${stepSeparator}${second}`

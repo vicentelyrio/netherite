@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { SectionName, sectionProps } from '@/infrastructure/sections'
 import './DrawerTemplate.css'
 
 export interface DrawerTemplateProps {
@@ -11,12 +12,24 @@ export interface DrawerTemplateProps {
 export function DrawerTemplate({ header, pane, footer, children }: DrawerTemplateProps) {
   return (
     <div className="tpl-drawer">
-      <div className="tpl-drawer-header">{header}</div>
-      <div className="tpl-drawer-split">
-        {pane && <div className="tpl-drawer-pane">{pane}</div>}
-        <div className="tpl-drawer-body">{children}</div>
+      <div className="tpl-drawer-header" {...sectionProps(SectionName.Header)}>
+        {header}
       </div>
-      {footer && <div className="tpl-drawer-footer">{footer}</div>}
+      <div className="tpl-drawer-split">
+        {pane && (
+          <div className="tpl-drawer-pane" {...sectionProps(SectionName.Side)}>
+            {pane}
+          </div>
+        )}
+        <div className="tpl-drawer-body" {...sectionProps(SectionName.Content)}>
+          {children}
+        </div>
+      </div>
+      {footer && (
+        <div className="tpl-drawer-footer" {...sectionProps(SectionName.Footer)}>
+          {footer}
+        </div>
+      )}
     </div>
   )
 }

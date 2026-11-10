@@ -893,9 +893,18 @@ type RootTranslation = {
 				 */
 				commits: string
 				/**
-				 * O​n​l​y​ ​u​n​c​o​m​m​i​t​t​e​d​ ​c​h​a​n​g​e​s​.
+				 * U​n​c​o​m​m​i​t​t​e​d
 				 */
-				onlyUncommitted: string
+				uncommitted: string
+				/**
+				 * U​n​c​o​m​m​i​t​t​e​d​ ​c​h​a​n​g​e​s​ ​t​o​ ​t​h​e​ ​f​i​l​e​s​ ​t​h​i​s​ ​d​o​c​ ​c​o​v​e​r​s
+				 */
+				uncommittedTitle: string
+				/**
+				 * {​n​a​m​e​}​ ​m​a​r​k​e​d​ ​r​e​v​i​e​w​e​d
+				 * @param {unknown} name
+				 */
+				markedReviewed: RequiredParams<'name'>
 			}
 			/**
 			 * L​i​f​e​c​y​c​l​e
@@ -1005,10 +1014,14 @@ type RootTranslation = {
 				 */
 				freshness: string
 				/**
-				 * {​c​o​u​n​t​}​ ​c​o​m​m​i​t​s​ ​s​i​n​c​e​ ​r​e​v​i​e​w
+				 * {​c​o​u​n​t​}​ ​{​{​c​o​m​m​i​t​|​c​o​m​m​i​t​s​}​}​ ​s​i​n​c​e​ ​r​e​v​i​e​w
 				 * @param {number} count
 				 */
 				sinceReview: RequiredParams<'count'>
+				/**
+				 * U​n​c​o​m​m​i​t​t​e​d​ ​c​h​a​n​g​e​s
+				 */
+				uncommitted: string
 				/**
 				 * U​p​ ​t​o​ ​d​a​t​e​:​ ​n​o​ ​c​o​m​m​i​t​s​ ​s​i​n​c​e​ ​r​e​v​i​e​w
 				 */
@@ -1493,6 +1506,102 @@ type RootTranslation = {
 			 */
 			tagsSearch: string
 			/**
+			 * S​h​o​w​ ​t​h​e​ ​k​e​y​b​o​a​r​d​ ​s​h​o​r​t​c​u​t​s
+			 */
+			helpOpen: string
+			/**
+			 * N​e​x​t​ ​s​e​c​t​i​o​n
+			 */
+			sectionNext: string
+			/**
+			 * P​r​e​v​i​o​u​s​ ​s​e​c​t​i​o​n
+			 */
+			sectionPrevious: string
+			/**
+			 * J​u​m​p​ ​b​e​t​w​e​e​n​ ​t​h​e​ ​s​i​d​e​b​a​r​ ​a​n​d​ ​t​h​e​ ​p​a​g​e
+			 */
+			sectionSidebar: string
+			/**
+			 * N​e​x​t​ ​i​t​e​m​ ​i​n​ ​t​h​e​ ​s​e​c​t​i​o​n
+			 */
+			itemNext: string
+			/**
+			 * P​r​e​v​i​o​u​s​ ​i​t​e​m​ ​i​n​ ​t​h​e​ ​s​e​c​t​i​o​n
+			 */
+			itemPrevious: string
+			/**
+			 * O​p​e​n​ ​t​h​e​ ​i​t​e​m
+			 */
+			itemOpen: string
+			/**
+			 * G​o​ ​b​a​c​k​ ​o​n​e​ ​l​e​v​e​l
+			 */
+			itemBack: string
+			/**
+			 * C​a​p​t​u​r​e​ ​s​o​m​e​t​h​i​n​g​ ​n​e​w
+			 */
+			inboxCapture: string
+			/**
+			 * C​a​r​d​ ​b​e​l​o​w
+			 */
+			boardDown: string
+			/**
+			 * C​a​r​d​ ​a​b​o​v​e
+			 */
+			boardUp: string
+			/**
+			 * C​o​l​u​m​n​ ​t​o​ ​t​h​e​ ​l​e​f​t
+			 */
+			boardLeft: string
+			/**
+			 * C​o​l​u​m​n​ ​t​o​ ​t​h​e​ ​r​i​g​h​t
+			 */
+			boardRight: string
+			/**
+			 * M​o​v​e​ ​t​h​e​ ​c​a​r​d​ ​l​e​f​t
+			 */
+			boardMoveLeft: string
+			/**
+			 * M​o​v​e​ ​t​h​e​ ​c​a​r​d​ ​r​i​g​h​t
+			 */
+			boardMoveRight: string
+			/**
+			 * M​o​v​e​ ​t​h​e​ ​c​a​r​d​ ​t​o​ ​a​n​o​t​h​e​r​ ​p​r​o​j​e​c​t
+			 */
+			boardMove: string
+			/**
+			 * N​e​w​ ​t​a​s​k
+			 */
+			boardNew: string
+			/**
+			 * S​w​i​t​c​h​ ​b​e​t​w​e​e​n​ ​t​e​x​t​ ​a​n​d​ ​c​o​d​e
+			 */
+			drawerMode: string
+			/**
+			 * N​e​w​ ​g​o​a​l
+			 */
+			goalsNew: string
+			/**
+			 * N​e​w​ ​i​t​e​m
+			 */
+			knowledgeNew: string
+			/**
+			 * F​i​l​t​e​r
+			 */
+			knowledgeFilter: string
+			/**
+			 * Z​o​o​m​ ​i​n
+			 */
+			graphZoomIn: string
+			/**
+			 * Z​o​o​m​ ​o​u​t
+			 */
+			graphZoomOut: string
+			/**
+			 * F​i​t​ ​t​h​e​ ​v​i​e​w
+			 */
+			graphReset: string
+			/**
 			 * S​a​v​e
 			 */
 			editorSave: string
@@ -1538,13 +1647,37 @@ type RootTranslation = {
 				 */
 				navigation: string
 				/**
+				 * M​o​v​i​n​g​ ​a​r​o​u​n​d
+				 */
+				movement: string
+				/**
 				 * I​n​b​o​x
 				 */
 				inbox: string
 				/**
+				 * P​r​o​j​e​c​t​ ​b​o​a​r​d
+				 */
+				board: string
+				/**
+				 * T​a​s​k​ ​d​r​a​w​e​r
+				 */
+				drawer: string
+				/**
+				 * G​o​a​l​s
+				 */
+				goals: string
+				/**
+				 * K​n​o​w​l​e​d​g​e
+				 */
+				knowledge: string
+				/**
 				 * T​a​g​s
 				 */
 				tags: string
+				/**
+				 * G​r​a​p​h
+				 */
+				graph: string
 				/**
 				 * E​d​i​t​o​r
 				 */
@@ -1609,12 +1742,35 @@ type RootTranslation = {
 			 */
 			replace: string
 			/**
+			 * {​k​e​y​s​}​,​ ​n​o​w​ ​p​r​e​s​s​ ​t​h​e​ ​s​e​c​o​n​d​ ​k​e​y​,​ ​o​r​ ​E​s​c​ ​t​o​ ​c​a​n​c​e​l
+			 * @param {unknown} keys
+			 */
+			pressSecond: RequiredParams<'keys'>
+			/**
+			 * T​h​e​ ​b​r​o​w​s​e​r​ ​k​e​e​p​s​ ​{​k​e​y​s​}​.​ ​T​r​y​ ​a​g​a​i​n​,​ ​o​r​ ​E​s​c​ ​t​o​ ​c​a​n​c​e​l
+			 * @param {unknown} keys
+			 */
+			browserKeys: RequiredParams<'keys'>
+			/**
+			 * {​k​e​y​s​}​ ​m​o​v​e​s​ ​a​r​o​u​n​d​ ​o​n​ ​e​v​e​r​y​ ​p​a​g​e​.​ ​T​r​y​ ​a​g​a​i​n​,​ ​o​r​ ​E​s​c​ ​t​o​ ​c​a​n​c​e​l
+			 * @param {unknown} keys
+			 */
+			sharedKeys: RequiredParams<'keys'>
+			/**
+			 * T​h​e​ ​e​d​i​t​o​r​ ​n​e​e​d​s​ ​o​n​e​ ​k​e​y​ ​c​o​m​b​i​n​a​t​i​o​n​.​ ​T​r​y​ ​a​g​a​i​n​,​ ​o​r​ ​E​s​c​ ​t​o​ ​c​a​n​c​e​l
+			 */
+			singleStep: string
+			/**
 			 * B​r​o​w​s​e​r​s​ ​k​e​e​p​ ​t​h​e​s​e​ ​k​e​y​s​ ​f​o​r​ ​t​h​e​m​s​e​l​v​e​s​,​ ​s​o​ ​t​h​i​s​ ​m​a​y​ ​n​o​t​ ​w​o​r​k​ ​i​n​ ​a​ ​b​r​o​w​s​e​r​ ​t​a​b​.
 			 */
 			reserved: string
 		}
 	}
 	navigation: {
+		/**
+		 * N​e​x​t​ ​k​e​y
+		 */
+		nextKeys: string
 		/**
 		 * M​a​i​n
 		 */
@@ -4566,9 +4722,17 @@ export type TranslationFunctions = {
 				 */
 				commits: () => LocalizedString
 				/**
-				 * Only uncommitted changes.
+				 * Uncommitted
 				 */
-				onlyUncommitted: () => LocalizedString
+				uncommitted: () => LocalizedString
+				/**
+				 * Uncommitted changes to the files this doc covers
+				 */
+				uncommittedTitle: () => LocalizedString
+				/**
+				 * {name} marked reviewed
+				 */
+				markedReviewed: (arg: { name: unknown }) => LocalizedString
 			}
 			/**
 			 * Lifecycle
@@ -4674,9 +4838,13 @@ export type TranslationFunctions = {
 				 */
 				freshness: () => LocalizedString
 				/**
-				 * {count} commits since review
+				 * {count} {{commit|commits}} since review
 				 */
 				sinceReview: (arg: { count: number }) => LocalizedString
+				/**
+				 * Uncommitted changes
+				 */
+				uncommitted: () => LocalizedString
 				/**
 				 * Up to date: no commits since review
 				 */
@@ -5141,6 +5309,102 @@ export type TranslationFunctions = {
 			 */
 			tagsSearch: () => LocalizedString
 			/**
+			 * Show the keyboard shortcuts
+			 */
+			helpOpen: () => LocalizedString
+			/**
+			 * Next section
+			 */
+			sectionNext: () => LocalizedString
+			/**
+			 * Previous section
+			 */
+			sectionPrevious: () => LocalizedString
+			/**
+			 * Jump between the sidebar and the page
+			 */
+			sectionSidebar: () => LocalizedString
+			/**
+			 * Next item in the section
+			 */
+			itemNext: () => LocalizedString
+			/**
+			 * Previous item in the section
+			 */
+			itemPrevious: () => LocalizedString
+			/**
+			 * Open the item
+			 */
+			itemOpen: () => LocalizedString
+			/**
+			 * Go back one level
+			 */
+			itemBack: () => LocalizedString
+			/**
+			 * Capture something new
+			 */
+			inboxCapture: () => LocalizedString
+			/**
+			 * Card below
+			 */
+			boardDown: () => LocalizedString
+			/**
+			 * Card above
+			 */
+			boardUp: () => LocalizedString
+			/**
+			 * Column to the left
+			 */
+			boardLeft: () => LocalizedString
+			/**
+			 * Column to the right
+			 */
+			boardRight: () => LocalizedString
+			/**
+			 * Move the card left
+			 */
+			boardMoveLeft: () => LocalizedString
+			/**
+			 * Move the card right
+			 */
+			boardMoveRight: () => LocalizedString
+			/**
+			 * Move the card to another project
+			 */
+			boardMove: () => LocalizedString
+			/**
+			 * New task
+			 */
+			boardNew: () => LocalizedString
+			/**
+			 * Switch between text and code
+			 */
+			drawerMode: () => LocalizedString
+			/**
+			 * New goal
+			 */
+			goalsNew: () => LocalizedString
+			/**
+			 * New item
+			 */
+			knowledgeNew: () => LocalizedString
+			/**
+			 * Filter
+			 */
+			knowledgeFilter: () => LocalizedString
+			/**
+			 * Zoom in
+			 */
+			graphZoomIn: () => LocalizedString
+			/**
+			 * Zoom out
+			 */
+			graphZoomOut: () => LocalizedString
+			/**
+			 * Fit the view
+			 */
+			graphReset: () => LocalizedString
+			/**
 			 * Save
 			 */
 			editorSave: () => LocalizedString
@@ -5186,13 +5450,37 @@ export type TranslationFunctions = {
 				 */
 				navigation: () => LocalizedString
 				/**
+				 * Moving around
+				 */
+				movement: () => LocalizedString
+				/**
 				 * Inbox
 				 */
 				inbox: () => LocalizedString
 				/**
+				 * Project board
+				 */
+				board: () => LocalizedString
+				/**
+				 * Task drawer
+				 */
+				drawer: () => LocalizedString
+				/**
+				 * Goals
+				 */
+				goals: () => LocalizedString
+				/**
+				 * Knowledge
+				 */
+				knowledge: () => LocalizedString
+				/**
 				 * Tags
 				 */
 				tags: () => LocalizedString
+				/**
+				 * Graph
+				 */
+				graph: () => LocalizedString
 				/**
 				 * Editor
 				 */
@@ -5251,12 +5539,32 @@ export type TranslationFunctions = {
 			 */
 			replace: () => LocalizedString
 			/**
+			 * {keys}, now press the second key, or Esc to cancel
+			 */
+			pressSecond: (arg: { keys: unknown }) => LocalizedString
+			/**
+			 * The browser keeps {keys}. Try again, or Esc to cancel
+			 */
+			browserKeys: (arg: { keys: unknown }) => LocalizedString
+			/**
+			 * {keys} moves around on every page. Try again, or Esc to cancel
+			 */
+			sharedKeys: (arg: { keys: unknown }) => LocalizedString
+			/**
+			 * The editor needs one key combination. Try again, or Esc to cancel
+			 */
+			singleStep: () => LocalizedString
+			/**
 			 * Browsers keep these keys for themselves, so this may not work in a browser tab.
 			 */
 			reserved: () => LocalizedString
 		}
 	}
 	navigation: {
+		/**
+		 * Next key
+		 */
+		nextKeys: () => LocalizedString
 		/**
 		 * Main
 		 */

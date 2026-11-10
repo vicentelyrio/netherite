@@ -66,6 +66,7 @@ export const KnowledgeView = Schema.Struct({
     Schema.Struct({
       since: Schema.NullOr(S),
       commits: Schema.Array(CommitView),
+      uncommitted: Schema.Array(S),
       covers: Schema.Array(S),
     }),
   ),

@@ -1,13 +1,13 @@
 import type { ItemDetail } from '@netherite/api'
 import { ActionIcon } from '@netherite/ui'
-import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { DeleteAction, MovePicker } from '@/components'
+import { DeleteAction } from '@/components'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useNotices } from '@/infrastructure/notices'
-import { projectsQuery, useWrite } from '@/infrastructure/query'
+import { useWrite } from '@/infrastructure/query'
+import { TaskMover, useMoveTask } from '../TaskMover'
 import './TaskActions.css'
 
 export function TaskActions({
@@ -23,18 +23,10 @@ export function TaskActions({
   const navigate = useNavigate()
   const notices = useNotices()
   const [moving, setMoving] = useState(false)
-  const projects = useQuery({ ...projectsQuery(api), enabled: moving })
-  const move = useWrite(api, (a, to: string) =>
-    a.call((c) => c.items.update({ params: { id: task.id }, payload: { set: { project: to } } })),
-  )
+  const move = useMoveTask(task.id)
   const remove = useWrite(api, (a) =>
     a.call((c) => c.items.delete({ params: { id: task.id }, query: {} })),
   )
-  const groups = new Map<string, NonNullable<typeof projects.data>['projects'][number][]>()
-  for (const project of projects.data?.projects ?? []) {
-    const label = project.goals[0]?.title ?? LL.projects.goals()
-    groups.set(label, [...(groups.get(label) ?? []), project])
-  }
   return (
     <div className="task-actions">
       <ActionIcon
@@ -42,7 +34,7 @@ export function TaskActions({
         label={text.move()}
         variant="subtle"
         color="gray"
-        loading={move.isPending}
+        loading={move.pending}
         onClick={() => setMoving(true)}
       />
       <DeleteAction
@@ -58,25 +50,12 @@ export function TaskActions({
           })
         }
       />
-      <MovePicker
+      <TaskMover
+        task={task}
+        projectId={projectId}
         opened={moving}
-        title={text.moveTitle({ name: task.title })}
-        groups={[...groups].map(([label, rows]) => ({
-          label,
-          options: rows.map((p) => ({
-            id: p.id,
-            title: p.title,
-            progress: p.progress ?? { done: 0, total: 0 },
-            current: p.id === projectId,
-          })),
-        }))}
         onClose={() => setMoving(false)}
-        onPick={(to) =>
-          move.mutate(to, {
-            onSuccess: () =>
-              void navigate({ to: '/projects/$id', params: { id: to }, search: { task: task.id } }),
-          })
-        }
+        onPick={move.pick}
       />
     </div>
   )

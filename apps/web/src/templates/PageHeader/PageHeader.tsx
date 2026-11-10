@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { SectionName, sectionProps } from '@/infrastructure/sections'
 import './PageHeader.css'
 
 export interface PageHeaderProps {
@@ -8,7 +9,7 @@ export interface PageHeaderProps {
 
 export function PageHeader({ children, actions }: PageHeaderProps) {
   return (
-    <header className="tpl-page-header">
+    <header className="tpl-page-header" {...sectionProps(SectionName.Header)}>
       <div className="tpl-page-heading">{children}</div>
       {actions && <div className="tpl-page-actions">{actions}</div>}
     </header>

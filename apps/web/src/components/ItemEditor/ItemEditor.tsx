@@ -13,8 +13,11 @@ import { changesField, editorExtensions, setHead, setProblems } from './extensio
 import type { EditorMode, ItemEditorProps } from './ItemEditor.types'
 import { isDirty, reduce, startSession } from './session'
 import './ItemEditor.css'
+import { SectionName, sectionProps } from '@/infrastructure/sections'
 
 const { autosaveDelayMs, lintDelayMs: lintDelay } = settingDefaults.editor
+
+const drawerVariant = 'drawer'
 
 export function ItemEditor({
   source,
@@ -26,6 +29,7 @@ export function ItemEditor({
   onReady,
   variant = 'page',
   preview,
+  modeHint,
   onStats,
   branch,
   autosaveDelay = autosaveDelayMs,
@@ -184,8 +188,20 @@ export function ItemEditor({
         />
       )}
       <div className="ed-panes">
-        {mode === 'split' && <div className="ed-code" ref={host} data-testid="editor" />}
-        <div className="ed-rendered">{preview ?? <Markdown source={bodyOf(session.buffer)} />}</div>
+        {mode === 'split' && (
+          <div
+            className="ed-code"
+            ref={host}
+            data-testid="editor"
+            {...(variant === drawerVariant ? sectionProps(SectionName.Editor) : {})}
+          />
+        )}
+        <div
+          className="ed-rendered"
+          {...(variant === drawerVariant ? sectionProps(SectionName.Content) : {})}
+        >
+          {preview ?? <Markdown source={bodyOf(session.buffer)} />}
+        </div>
       </div>
       <EditorStatus
         errors={errors}
@@ -197,6 +213,7 @@ export function ItemEditor({
         dirty={dirty}
         mode={mode}
         onMode={onModeChange ?? setLocalMode}
+        {...(modeHint === undefined ? {} : { modeHint })}
       />
     </section>
   )

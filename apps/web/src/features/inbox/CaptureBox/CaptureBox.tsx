@@ -1,8 +1,9 @@
 import { Icon } from '@netherite/ui'
-import { type FormEvent, useState } from 'react'
+import { type FormEvent, useRef, useState } from 'react'
 import { useApi } from '@/infrastructure/api'
 import { useI18nContext } from '@/infrastructure/i18n'
 import { useWrite } from '@/infrastructure/query'
+import { useActionShortcuts } from '@/infrastructure/shortcuts'
 import { useInboxState } from '../InboxProvider'
 import './CaptureBox.css'
 
@@ -11,6 +12,8 @@ export function CaptureBox() {
   const api = useApi()
   const { setTab } = useInboxState()
   const [text, setText] = useState('')
+  const input = useRef<HTMLInputElement>(null)
+  useActionShortcuts({ 'inbox.capture': () => input.current?.focus() })
   const add = useWrite(api, (a, line: string) =>
     a.call((c) => c.inbox.capture({ payload: { text: line } })),
   )
@@ -29,6 +32,7 @@ export function CaptureBox() {
     <form className="cb" onSubmit={submit} aria-label={LL.inbox.capture.label()}>
       <Icon name="add" size={18} />
       <input
+        ref={input}
         className="cb-input"
         aria-label={LL.inbox.capture.label()}
         placeholder={LL.inbox.capture.placeholder()}

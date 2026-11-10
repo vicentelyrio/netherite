@@ -16,7 +16,7 @@ export function SourceEditor({
 }: { readonly id: string; readonly fallback?: ReactNode } & Partial<
   Pick<
     ItemEditorProps,
-    'variant' | 'preview' | 'mode' | 'onModeChange' | 'onStats' | 'branch' | 'onReady'
+    'variant' | 'preview' | 'mode' | 'onModeChange' | 'onStats' | 'branch' | 'onReady' | 'modeHint'
   >
 >) {
   const { LL } = useI18nContext()

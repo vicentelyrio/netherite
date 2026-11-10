@@ -7,6 +7,7 @@ import { useI18nContext } from '@/infrastructure/i18n'
 import { AdrBody } from '../AdrBody'
 import { AdrLifecycle } from '../AdrLifecycle'
 import { ContextCard } from '../ContextCard'
+import { committedChanges } from '../committedChanges'
 import { DocColumn } from '../DocColumn'
 import { StaleWarning } from '../StaleWarning'
 import { SupersededBanner } from '../SupersededBanner'
@@ -39,7 +40,11 @@ export function DocMain({
     <DocColumn>
       {stale && type !== 'adr' && fresh !== null && (
         <StaleWarning
-          title={LL.knowledge.doc.main.staleTitle({ count: fresh.commits })}
+          title={
+            committedChanges(fresh) === 0
+              ? LL.knowledge.doc.main.uncommittedTitle()
+              : LL.knowledge.doc.main.staleTitle({ count: committedChanges(fresh) })
+          }
           detail={LL.knowledge.doc.main.reviewed({
             date: fresh.since ?? LL.knowledge.doc.main.never(),
           })}
@@ -76,9 +81,12 @@ export function DocMain({
               </span>
             </li>
           ))}
-          {data.changes.commits.length === 0 && (
-            <li className="app-muted">{LL.knowledge.doc.main.onlyUncommitted()}</li>
-          )}
+          {data.changes.uncommitted.map((path) => (
+            <li key={path}>
+              <code>{path}</code>{' '}
+              <span className="app-muted">{LL.knowledge.doc.main.uncommitted()}</span>
+            </li>
+          ))}
         </ul>
       )}
       {type === 'adr' && item.status === 'superseded' && <SupersededBanner newer={newer} />}

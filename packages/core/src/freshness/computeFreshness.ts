@@ -1,6 +1,6 @@
 import type { CommitInfo, GitError } from '@netherite/git'
 import { AdrStatus, FreshnessState } from '@netherite/schema'
-import { Effect, type FileSystem, type Path } from 'effect'
+import { Clock, Effect, type FileSystem, type Path } from 'effect'
 import { pathMap } from '../gitpaths'
 import type { ScannedItem } from '../scanned-item'
 import { compileCovers } from './covers'
@@ -12,6 +12,8 @@ const dayBefore = (date: string) => {
   d.setUTCDate(d.getUTCDate() - 1)
   return d.toISOString().slice(0, 10)
 }
+
+const isoDay = (ms: number) => new Date(ms).toISOString().slice(0, 10)
 
 const asStrings = (value: unknown): string[] =>
   Array.isArray(value)
@@ -37,7 +39,13 @@ export const computeFreshness = (input: FreshnessInput) =>
     const untilMs = until === undefined ? undefined : Date.parse(until)
     const upTo = (date: string) => untilMs === undefined || Date.parse(date) <= untilMs
     const result = new Map<string, Freshness>()
-    const none = { commits: 0, uncommitted: false, baseline: undefined, atLeast: false }
+    const none = {
+      commits: 0,
+      uncommitted: false,
+      uncommittedFiles: [],
+      baseline: undefined,
+      atLeast: false,
+    }
 
     const candidates: Array<{ item: ScannedItem; covers: string[] }> = []
     for (const item of index.items()) {
@@ -118,6 +126,8 @@ export const computeFreshness = (input: FreshnessInput) =>
         return inside === undefined ? [] : [inside]
       })
 
+    const today = isoDay(yield* Clock.currentTimeMillis)
+
     for (const t of tracked) {
       const { item, covers, baseline } = t
       if (baseline === undefined) {
@@ -149,7 +159,11 @@ export const computeFreshness = (input: FreshnessInput) =>
         })
         if (touched) commits++
       }
-      const uncommitted = dirty.some((p) => p !== item.path && t.test(p))
+      const reviewedToday = baseline.source === 'reviewed_at' && baseline.date === today
+      const uncommittedFiles = reviewedToday
+        ? []
+        : dirty.filter((p) => p !== item.path && t.test(p))
+      const uncommitted = uncommittedFiles.length > 0
       if (uncommitted) commits++
 
       const atLeast = edge !== undefined && baseline.date < edge.committerDate.slice(0, 10)
@@ -159,13 +173,22 @@ export const computeFreshness = (input: FreshnessInput) =>
           state: 'unknown',
           commits,
           uncommitted,
+          uncommittedFiles,
           baseline,
           atLeast,
           covers,
           reason: 'shallow',
         })
       } else {
-        result.set(item.path, { state, commits, uncommitted, baseline, atLeast, covers })
+        result.set(item.path, {
+          state,
+          commits,
+          uncommitted,
+          uncommittedFiles,
+          baseline,
+          atLeast,
+          covers,
+        })
       }
     }
     return result as ReadonlyMap<string, Freshness>
