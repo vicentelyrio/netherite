@@ -11,6 +11,7 @@ export function GraphEdge({
   warm,
   filtered,
   targetRadius,
+  zoom,
 }: {
   readonly kind: string
   readonly a: Placed
@@ -19,6 +20,7 @@ export function GraphEdge({
   readonly warm: boolean
   readonly filtered: boolean
   readonly targetRadius: number
+  readonly zoom: number
 }) {
   const s = styleOf(kind)
   const typed = kind !== 'belongs_to' && kind !== 'reference'
@@ -26,7 +28,7 @@ export function GraphEdge({
   let y2 = b.y
   if (s.arrow) {
     const len = Math.hypot(b.x - a.x, b.y - a.y) || 1
-    const gap = targetRadius + graphMetrics.arrowGap
+    const gap = targetRadius + graphMetrics.arrowGap * zoom
     x2 = b.x - ((b.x - a.x) / len) * gap
     y2 = b.y - ((b.y - a.y) / len) * gap
   }

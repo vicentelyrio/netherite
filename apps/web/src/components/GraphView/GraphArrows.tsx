@@ -1,11 +1,12 @@
 import { designColor } from '@netherite/ui'
+import { arrowSize } from './GraphView.constants'
 
 const markers = [
   ['gv-arrow', designColor.graph.arrow],
   ['gv-arrow-hot', designColor.accent.edgeActive],
 ] as const
 
-export function GraphArrows() {
+export function GraphArrows({ zoom }: { readonly zoom: number }) {
   return (
     <defs>
       {markers.map(([id, fill]) => (
@@ -15,8 +16,8 @@ export function GraphArrows() {
           viewBox="0 0 10 10"
           refX="9"
           refY="5"
-          markerWidth="7"
-          markerHeight="7"
+          markerWidth={arrowSize * zoom}
+          markerHeight={arrowSize * zoom}
           markerUnits="userSpaceOnUse"
           orient="auto"
         >
