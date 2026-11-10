@@ -1,5 +1,12 @@
 # @vicentelyrio/netherite
 
+## 1.3.1
+
+### Patch Changes
+
+- 73d7eb8: Graph nodes now shrink as you zoom out, so large graphs no longer clump together. They stop at a quarter of their full size and stay easy to hover and click. Labels and tooltips keep their size.
+- 78fcc8e: Fix the CLI crashing at startup with `Cannot find package 'redis'` on package managers that do not install peer dependencies, such as Yarn v1.
+
 ## 1.3.0
 
 ### Minor Changes
