@@ -1,5 +1,6 @@
 import { designColor, type ItemTypeName } from '@netherite/ui'
 import type { PointerEvent } from 'react'
+import { nodeHitRadius } from './GraphView.constants'
 import type { Placed } from './layout'
 import { NodeShape } from './NodeShape'
 import { StaleDot } from './StaleDot'
@@ -9,6 +10,7 @@ export function GraphNode({
   node: p,
   radius: r,
   scale,
+  zoom,
   opacity,
   focused,
   hovered,
@@ -21,6 +23,7 @@ export function GraphNode({
   readonly node: Placed
   readonly radius: number
   readonly scale: number
+  readonly zoom: number
   readonly opacity: number
   readonly focused: boolean
   readonly hovered: boolean
@@ -67,6 +70,7 @@ export function GraphNode({
       onFocus={() => onHover(true)}
       onBlur={() => onHover(false)}
     >
+      <circle cx={p.x} cy={p.y} r={Math.max(r, nodeHitRadius)} fill="transparent" />
       {glowing && (
         <circle
           cx={p.x}
@@ -111,19 +115,21 @@ export function GraphNode({
           />
         )
       )}
-      {p.status !== undefined ? (
-        <StatusShape
-          type={type}
-          status={p.status}
-          progress={p.progress ?? 0}
-          x={p.x}
-          y={p.y}
-          scale={scale}
-        />
-      ) : (
-        <NodeShape type={type} x={p.x} y={p.y} scale={scale} />
-      )}
-      {p.stale && <StaleDot x={p.x} y={p.y} r={r} />}
+      <g transform={`translate(${p.x} ${p.y}) scale(${zoom}) translate(${-p.x} ${-p.y})`}>
+        {p.status !== undefined ? (
+          <StatusShape
+            type={type}
+            status={p.status}
+            progress={p.progress ?? 0}
+            x={p.x}
+            y={p.y}
+            scale={scale}
+          />
+        ) : (
+          <NodeShape type={type} x={p.x} y={p.y} scale={scale} />
+        )}
+        {p.stale && <StaleDot x={p.x} y={p.y} r={r / zoom} />}
+      </g>
     </g>
   )
 }

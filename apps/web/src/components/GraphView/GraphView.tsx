@@ -34,6 +34,7 @@ import { LegendRow } from './LegendRow'
 import { labelPlacement } from './labelPlacement'
 import { fitTo, layout, neighbourhood, type Placed, subgraph, toGraphology } from './layout'
 import { NodeLabel } from './NodeLabel'
+import { nodeZoom } from './nodeZoom'
 import { styleOf } from './styleOf'
 import { graphTarget } from './target'
 import { toggled } from './toggled'
@@ -168,7 +169,8 @@ export function GraphView({
     p.status === undefined ||
     statusFilter === 'all' ||
     (statusFilter === 'done' ? p.status === 'done' : p.status !== 'done')
-  const radius = (p: Placed) => nodeSpec[p.type as ItemTypeName].radius * nodeScale
+  const zoomed = nodeZoom(view.k)
+  const radius = (p: Placed) => nodeSpec[p.type as ItemTypeName].radius * nodeScale * zoomed
   const dim = (id: string) =>
     near !== undefined && !near.has(id) && !(focusNear?.has(id) && id === focus)
   const named = (p: Placed) =>
@@ -219,7 +221,7 @@ export function GraphView({
           if (!moved) setFocus(undefined)
         }}
       >
-        <GraphArrows />
+        <GraphArrows zoom={zoomed} />
         <g>
           {edges.map((e) => {
             const a = sat.get(e.from)
@@ -236,6 +238,7 @@ export function GraphView({
                 warm={!hot && focus !== undefined && (e.from === focus || e.to === focus)}
                 filtered={!passes(a) || !passes(b)}
                 targetRadius={radius(b)}
+                zoom={zoomed}
               />
             )
           })}
@@ -245,6 +248,7 @@ export function GraphView({
               node={p}
               radius={radius(p)}
               scale={nodeScale}
+              zoom={zoomed}
               opacity={
                 !passes(p)
                   ? statusGlyph.filteredOpacity
