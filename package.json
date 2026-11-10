@@ -31,7 +31,7 @@
     "test:scale": "turbo run test:scale",
     "e2e": "turbo run e2e",
     "docs:gen": "node scripts/gen-reference.mjs",
-    "docs:dev": "vitepress dev apps/docs",
+    "docs:dev": "vitepress dev apps/docs --port 5174",
     "docs:build": "vitepress build apps/docs",
     "docs:check": "node scripts/gen-reference.mjs --check && node scripts/check-npx-name.mjs",
     "netherite:lint": "node packages/cli/dist/bin.mjs lint --fail-on warning",

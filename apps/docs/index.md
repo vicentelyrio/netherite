@@ -30,3 +30,5 @@ cd my-repo
 npx @vicentelyrio/netherite init
 npx @vicentelyrio/netherite
 ```
+
+<video class="home-tour" src="/netherite-tour.mp4" poster="/netherite-tour.jpg" autoplay loop muted playsinline aria-label="A tour of the Netherite app: goals, a project board, a task, the graph, the knowledge index, the timeline, the decision log, stats, tags and the theme setting"></video>
