@@ -1,4 +1,4 @@
-import { NodeServices } from '@effect/platform-node'
+import * as NodeServices from '@effect/platform-node/NodeServices'
 import { runCli } from '@netherite/cli'
 import { Effect } from 'effect'
 import pkg from '../package.json' with { type: 'json' }

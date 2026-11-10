@@ -27,7 +27,7 @@ try {
   const install = join(work, 'install')
   mkdirSync(install)
   writeFileSync(join(install, 'package.json'), '{"private":true}\n')
-  run(npm, ['install', '--no-audit', '--no-fund', join(work, packed)], {
+  run(npm, ['install', '--no-audit', '--no-fund', '--legacy-peer-deps', join(work, packed)], {
     cwd: install,
     stdio: 'inherit',
   })
